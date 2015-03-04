@@ -369,3 +369,6 @@
 
 # /xml/
 /xml/*.bak
+
+/dicto/results/*
+!/dicto/results/README.md
