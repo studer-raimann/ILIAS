@@ -68,7 +68,7 @@ abstract class ilOrgUnitExtensionGUI extends ilObjectPluginGUI {
 
 	protected function getTreeWhiteList() {
 		$whiteList = array("orgu");
-		$pls = ilOrgUnitObjectPluginGUI::getActivePluginIdsForTree();
+		$pls = ilOrgUnitObjectPlugin::getActivePluginIdsForTree();
 		return array_merge($whiteList, $pls);
 	}
 }
