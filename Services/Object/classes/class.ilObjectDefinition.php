@@ -932,21 +932,6 @@ class ilObjectDefinition// extends ilSaxParser
 		$grouped_obj = self::getGroupedPluginObjectTypes($grouped_obj, IL_COMP_SERVICE, "Repository", "robj");
 		$grouped_obj = self::getGroupedPluginObjectTypes($grouped_obj, IL_COMP_MODULE, "OrgUnit", "orguext");
 
-		global $ilPluginAdmin;
-		$pl_names = $ilPluginAdmin->getActivePluginsForSlot(IL_COMP_MODULE, "OrgUnit", "orguext");
-		foreach ($pl_names as $pl_name)
-		{
-			include_once("./Services/Component/classes/class.ilPlugin.php");
-			$pl_id = ilPlugin::lookupIdForName(IL_COMP_MODULE, "OrgUnit", "orguext", $pl_name);
-			if (!isset($grouped_obj[$pl_id]))
-			{
-				$grouped_obj[$pl_id] = array(
-					"pos" => "99992000", // "unassigned" group
-					"objs" => array(0 => $pl_id)
-				);
-			}
-		}
-
 		$ret = ilUtil::sortArray($grouped_obj, "pos", "asc", true, true);
 		return $ret;
 	}
