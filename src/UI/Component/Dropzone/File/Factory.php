@@ -69,11 +69,11 @@ interface Factory {
 	 *      approach to complete some file upload workflow more conveniently. Especially
 	 *      in situation where space is scarce such as appointments in the calendar.
 	 *   composition: >
-	 *      A wrapper dropzone contains one or multiple ILIAS UI components.
-	 *      A roundtrip modal is used to present the dropped files in list as described
+	 *      A Wrapper File Dropzone contains one or multiple ILIAS UI components.
+	 *      A Roundtrip Modal is used to present the dropped files in list as described
 	 *      for the File Dropzone and to initialize the upload process.
 	 *   effect: >
-	 *      The wrapper dropzone is not visible by default but instead shows its content
+	 *      The Wrapper File Dropzone is not visible by default but instead shows its content
 	 *      unmodified. When the user drags a file over the browser window, all wrapper
 	 *      dropzones on the page where the file can be dropped are highlighted. Thus, a
 	 *      user needs to have the knowledge that there are wrapper dropzones present. After
