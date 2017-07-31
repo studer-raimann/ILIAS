@@ -40,12 +40,12 @@ interface Factory {
 	 * rules:
 	 *   usage:
 	 *     1: Standard Dropzones MUST contain a message.
-	 *     1: Standard Dropzones MUST only be used in forms.
-	 *     2: >
+	 *     2: Standard Dropzones MUST only be used in forms.
+	 *     3: >
 	 *        The upload button MUST be disabled if there are no files
 	 *        to be uploaded. Only true if the dropzone is NOT used in
 	 *        a form containing other form elements.
-	 *     3: >
+	 *     4: >
 	 *        Standard dropzones MAY be used in forms.
 	 *   accessibility:
 	 *     1: >
@@ -87,10 +87,10 @@ interface Factory {
 	 * rules:
 	 *   usage:
 	 *     1: Wrapper File Dropzones MUST contain one or more ILIAS UI components.
-	 *     2: Wrapper File Dropzones MUST only be used for Items in Item Listings.
-	 *     2: Wrapper File Dropzones MUST NOT contain any other file dropzones.
-	 *     3: Wrapper File Dropzones MUST NOT be used in modals.
-	 *     4: >
+	 *     2: Wrapper File Dropzones MUST only be used for Items and titles of Items.
+	 *     3: Wrapper File Dropzones MUST NOT contain any other file dropzones.
+	 *     4: Wrapper File Dropzones MUST NOT be used in modals.
+	 *     5: >
 	 *        The upload button in the modal MUST be disabled if there are no files
 	 *        to be uploaded.
 	 * ---
