@@ -21,13 +21,12 @@ interface Factory {
 	 * description:
 	 *   purpose: >
 	 *      The standard dropzone is used to drop files dragged from outside
-	 *      the browser window. The dropped files are presented to the user and
-	 *      can be uploaded to the server.
+	 *      the browser window to upload them as part of a form. The dropped
+	 *      files are presented to the user and can be uploaded to the server.
 	 *   composition: >
 	 *      Standard dropzones consist of a visible area where files can
 	 *      be dropped. They MUST contain a message explaining that it is possible to
-	 *      drop files inside. The dropped files are presented to the user, optionally
-	 *      with some button to start the upload process.
+	 *      drop files inside. The dropped files are presented to the user.
 	 *   effect: >
 	 *      A standard dropzone is highlighted when the user is dragging files
 	 *      over the dropzone. After dropping, the dropped files are presented
@@ -40,7 +39,8 @@ interface Factory {
 	 *
 	 * rules:
 	 *   usage:
-	 *     1: Standard dropzones MUST contain a message.
+	 *     1: Standard Dropzones MUST contain a message.
+	 *     1: Standard Dropzones MUST only be used in forms.
 	 *     2: >
 	 *        The upload button MUST be disabled if there are no files
 	 *        to be uploaded. Only true if the dropzone is NOT used in
