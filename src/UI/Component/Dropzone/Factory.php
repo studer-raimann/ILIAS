@@ -24,8 +24,13 @@ interface Factory {
 	 *   composition: >
 	 *      File dropzones are areas to drop the files. They contain either a message
 	 *      (standard file dropzone) or other ILIAS UI components (wrapper file dropzone).
+	 *      When the user already dropped files into the zone, these are displayed in a list.
+	 *      A Remove glyph is shown for every list item.  If the user is allowed to set filenames
+	 *      and or descriptions, the list entry shows an Expand glyph. 
 	 *   effect: >
-	 *      A dropzone is highlighted when the user drags files over it.
+	 *      A dropzone is highlighted when the user drags files over it. When the dropzone
+	 *      already contains files, these are removed by using the Remove glyph. The Expand glyph
+	 *      opens a form to enter filename and/or description in an accordion.
 	 *
 	 * rules:
 	 *   accessibility:
