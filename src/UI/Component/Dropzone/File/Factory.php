@@ -34,8 +34,8 @@ interface Factory {
 	 *      and file size.
 	 *   rivals:
 	 *      Rival 1: >
-	 *          A wrapper dropzone can hold other ILIAS UI components instead of
-	 *          a message.
+	 *          A wrapper dropzone is used when some UI component should be enhanced
+	 *          with dropzone functionality.
 	 *
 	 * rules:
 	 *   usage:
@@ -64,36 +64,33 @@ interface Factory {
 	 * ---
 	 * description:
 	 *   purpose: >
-	 *      A wrapper dropzone is used to display other ILIAS UI components
-	 *      inside it. In contrast to the standard dropzone, the wrapper
-	 *      dropzone is not visible by default. Only the wrapped components are
-	 *      visible. Any wrapper dropzone gets highlighted once the user is dragging
-	 *      files over the browser window. Thus, a user needs to have the knowledge
-	 *      that there are wrapper dropzones present. They can be introduced to offer
-	 *      additional approaches to complete some workflow more conveniently.
-	 *      Especially in situation where space is scarce such as appointments
-	 *      in the calendar.
+	 *      A wrapper dropzone is used to enhance another UI component with additional
+	 *      dropzone functionality.  They can be introduced to offer an additional
+	 *      approach to complete some file upload workflow more conveniently. Especially
+	 *      in situation where space is scarce such as appointments in the calendar.
 	 *   composition: >
 	 *      A wrapper dropzone contains one or multiple ILIAS UI components.
-	 *      A roundtrip modal is used to present the dropped files and to initialize
-	 *      the upload process.
+	 *      A roundtrip modal is used to present the dropped files in list as described
+	 *      for the File Dropzone and to initialize the upload process.
 	 *   effect: >
-	 *      All wrapper dropzones on the page are highlighted when the user
-	 *      dragging files over the browser window. After dropping the files, the
-	 *      roundtrip modal is opened showing all files. The modal contains a button
-	 *      to start the upload process.
+	 *      The wrapper dropzone is not visible by default but instead shows its content
+	 *      unmodified. When the user drags a file over the browser window, all wrapper
+	 *      dropzones on the page where the file can be dropped are highlighted. Thus, a
+	 *      user needs to have the knowledge that there are wrapper dropzones present. After
+	 *      dropping the file, a Roundtrip Modal shows the list of already dropped files and
+	 *      a Button to start the upload.
 	 *   rivals:
 	 *      Rival 1: >
-	 *          A standard dropzone displays a message instead of other
-	 *          ILIAS UI components.
+	 *          A Standard Dropzone is used in a form and displays a message instead
+	 *          of other ILIAS UI components.
 	 *
 	 * rules:
 	 *   usage:
-	 *     1: Most pages SHOULD NOT contain a wrapper dropzone.
-	 *     2: Wrapper dropzones MUST contain one or more ILIAS UI components.
-	 *     3: Wrapper dropzones MUST NOT contain any other file dropzones.
-	 *     4: Wrapper dropzones MUST NOT be used in modals.
-	 *     5: >
+	 *     1: Wrapper File Dropzones MUST contain one or more ILIAS UI components.
+	 *     2: Wrapper File Dropzones MUST only be used for Items in Item Listings.
+	 *     2: Wrapper File Dropzones MUST NOT contain any other file dropzones.
+	 *     3: Wrapper File Dropzones MUST NOT be used in modals.
+	 *     4: >
 	 *        The upload button in the modal MUST be disabled if there are no files
 	 *        to be uploaded.
 	 * ---
