@@ -17,7 +17,8 @@ interface Factory {
 	 * ---
 	 * description:
 	 *   purpose: >
-	 *      File dropzones are used to drop files from outside the browser window.
+	 *      File dropzones are used to select files from the local device by dragging them
+	 *      from outside the browser window and dropping them in the area of the dropzone.
 	 *      The dropped files are presented to the user and can be uploaded to the server.
 	 *      File dropzones offer additional convenience beside manually selecting files
 	 *      over the file browser.
