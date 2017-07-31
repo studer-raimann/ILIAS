@@ -468,10 +468,10 @@ interface Factory {
 	 * ---
 	 * description:
 	 *   purpose: >
-	 *     Dropzones are containers used to drop either files or other HTML elements.
+	 *     Dropzones are areas used to drop either files or other HTML elements.
 	 *   composition: >
-	 *     A dropzone is a container on the page. Depending on the type of the dropzone,
-	 *     the container is visible by default or it gets highlighted once the user
+	 *     A dropzone is an area on the page. Depending on the type of the dropzone,
+	 *     the area is visible by default or it gets highlighted once the user
 	 *     starts to drag the elements over the browser window.
 	 * rules:
 	 *   usage:
