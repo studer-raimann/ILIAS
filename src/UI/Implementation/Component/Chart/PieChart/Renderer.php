@@ -20,7 +20,7 @@ class Renderer extends AbstractComponentRenderer {
 	 * @inheritDoc
 	 */
 	protected function getComponentInterfaceName(): array {
-		return [ PieChart::class ];
+		return [ PieChartInterface::class ];
 	}
 
 
