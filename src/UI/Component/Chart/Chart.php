@@ -30,8 +30,8 @@ interface Chart {
 
 
 	/**
-	 * @return Background|null
+	 * @return ChartBackground|null
 	 */
-	public function getBackground(): ?Background;
+	public function getBackground(): ?ChartBackground;
 
 }

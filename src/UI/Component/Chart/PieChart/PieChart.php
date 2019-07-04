@@ -2,6 +2,7 @@
 
 namespace ILIAS\UI\Component\Chart\PieChart;
 
+use ILIAS\UI\Component\Chart\Chart;
 use ILIAS\UI\Component\Component;
 
 /**
@@ -11,19 +12,11 @@ use ILIAS\UI\Component\Component;
  *
  * @author  studer + raimann ag - Team Custom 1 <support-custom1@studer-raimann.ch>
  */
-interface PieChart extends Component {
+interface PieChart extends Chart, Component {
 
 	const MAX_ITEMS = 12;
 	const ERR_NO_ITEMS = "Empty array supplied as argument";
 	const ERR_TOO_MANY_ITEMS = "More than " . self::MAX_ITEMS . " Pie Chart Items supplied";
-
-
-	/**
-	 * Get all the created sections. Note that sections are different from PieChartItems
-	 *
-	 * @return Section[]
-	 */
-	public function getSections(): array;
 
 
 	/**

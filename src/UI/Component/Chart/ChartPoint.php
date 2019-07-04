@@ -22,4 +22,20 @@ interface ChartPoint {
 	 */
 	public function getY(): float;
 
+
+	/**
+	 * @param float $x
+	 *
+	 * @return ChartPoint
+	 */
+	public function withX(float $x): self;
+
+
+	/**
+	 * @param float $y
+	 *
+	 * @return ChartPoint
+	 */
+	public function withY(float $y): self;
+
 }

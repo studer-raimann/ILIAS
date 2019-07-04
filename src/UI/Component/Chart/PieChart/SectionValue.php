@@ -2,6 +2,8 @@
 
 namespace ILIAS\UI\Component\Chart\PieChart;
 
+use ILIAS\UI\Component\Chart\ChartPoint;
+
 /**
  * Interface SectionValue
  *
@@ -9,7 +11,7 @@ namespace ILIAS\UI\Component\Chart\PieChart;
  *
  * @author  studer + raimann ag - Team Custom 1 <support-custom1@studer-raimann.ch>
  */
-interface SectionValue {
+interface SectionValue extends ChartPoint {
 
 	/**
 	 * Get the actual value
@@ -17,22 +19,6 @@ interface SectionValue {
 	 * @return float
 	 */
 	public function getValue(): float;
-
-
-	/**
-	 * Get the x percentage this value will be displayed at. (On top of the pie chart section)
-	 *
-	 * @return float
-	 */
-	public function getXPercentage(): float;
-
-
-	/**
-	 * Get the x percentage this value will be displayed at. (On top of the pie chart section)
-	 *
-	 * @return float
-	 */
-	public function getYPercentage(): float;
 
 
 	/**

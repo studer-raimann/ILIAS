@@ -2,8 +2,12 @@
 
 namespace ILIAS\UI\Implementation\Component\Chart\PieChart;
 
+use ILIAS\UI\Component\Chart\ChartBackground as ChartBackgroundInterface;
+use ILIAS\UI\Component\Chart\ChartItem;
+use ILIAS\UI\Component\Chart\ChartLegend;
 use ILIAS\UI\Component\Chart\PieChart\PieChart as PieChartInterface;
 use ILIAS\UI\Component\Chart\PieChart\PieChartItem as PieChartItemInterface;
+use ILIAS\UI\Component\Chart\PieChart\Section as SectionInterface;
 use ILIAS\UI\Implementation\Component\ComponentHelper;
 use InvalidArgumentException;
 
@@ -17,10 +21,23 @@ use InvalidArgumentException;
 class PieChart implements PieChartInterface {
 
 	use ComponentHelper;
+
 	/**
-	 * @var Section[]
+	 * @var string
 	 */
-	private $sections = [];
+	protected $title;
+	/**
+	 * @var ChartLegend
+	 */
+	protected $legend;
+	/**
+	 * @var SectionInterface[]
+	 */
+	protected $chartItems = [];
+	/**
+	 * @var ChartBackgroundInterface
+	 */
+	protected $background = null;
 	/**
 	 * @var float
 	 */
@@ -67,7 +84,7 @@ class PieChart implements PieChartInterface {
 
 		foreach ($pieChartItems as $item) {
 			$section = new Section($item, $this->totalValue, count($pieChartItems), $index, $currentOffset);
-			$this->sections[] = $section;
+			$this->chartItems[] = $section;
 			$currentOffset += $section->getStrokeLength();
 			$index ++;
 		}
@@ -91,14 +108,6 @@ class PieChart implements PieChartInterface {
 	 */
 	public function getTotalValue(): float {
 		return $this->totalValue;
-	}
-
-
-	/**
-	 * @inheritDoc
-	 */
-	public function getSections(): array {
-		return $this->sections;
 	}
 
 
@@ -161,5 +170,37 @@ class PieChart implements PieChartInterface {
 	 */
 	public function getCustomTotalValue(): ?float {
 		return $this->customTotalValue;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getTitle(): string {
+		return $this->title;
+	}
+
+
+	/**
+	 * @return ChartLegend
+	 */
+	public function getLegend(): ChartLegend {
+		return $this->legend;
+	}
+
+
+	/**
+	 * @return ChartItem[]
+	 */
+	public function getChartItems(): array {
+		return $this->chartItems;
+	}
+
+
+	/**
+	 * @return ChartBackgroundInterface|null
+	 */
+	public function getBackground(): ?ChartBackgroundInterface {
+		return $this->background;
 	}
 }

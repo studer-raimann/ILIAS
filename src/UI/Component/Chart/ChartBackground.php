@@ -9,10 +9,10 @@ namespace ILIAS\UI\Component\Chart;
  *
  * @author  studer + raimann ag - Team Custom 1 <support-custom1@studer-raimann.ch>
  */
-interface Background {
+interface ChartBackground {
 
 	/**
-	 * @return ComparisonPath[]
+	 * @return ChartComparisonPath[]
 	 */
 	public function getComparisonPaths(): array;
 

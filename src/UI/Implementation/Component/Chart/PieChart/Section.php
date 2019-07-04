@@ -3,7 +3,6 @@
 namespace ILIAS\UI\Implementation\Component\Chart\PieChart;
 
 use ILIAS\Data\Color;
-use ILIAS\UI\Component\Chart\PieChart\LegendEntry as LegendEntryInterface;
 use ILIAS\UI\Component\Chart\PieChart\PieChartItem as PieChartItemInterface;
 use ILIAS\UI\Component\Chart\PieChart\Section as SectionInterface;
 use ILIAS\UI\Component\Chart\PieChart\SectionValue as SectionValueInterface;
@@ -24,9 +23,9 @@ class Section implements SectionInterface {
 	 */
 	protected $name;
 	/**
-	 * @var SectionValueInterface
+	 * @var float[]
 	 */
-	protected $value;
+	protected $values = [];
 	/**
 	 * @var float
 	 */
@@ -43,10 +42,6 @@ class Section implements SectionInterface {
 	 * @var Color
 	 */
 	protected $color;
-	/**
-	 * @var LegendEntryInterface
-	 */
-	protected $legend;
 	/**
 	 * @var Color
 	 */
@@ -116,14 +111,6 @@ class Section implements SectionInterface {
 	/**
 	 * @inheritDoc
 	 */
-	public function getValue(): SectionValueInterface {
-		return $this->value;
-	}
-
-
-	/**
-	 * @inheritDoc
-	 */
 	public function getPercentage(): float {
 		return $this->percentage;
 	}
@@ -154,14 +141,6 @@ class Section implements SectionInterface {
 
 
 	/**
-	 * @inheritDoc
-	 */
-	public function getLegendEntry(): LegendEntryInterface {
-		return $this->legend;
-	}
-
-
-	/**
 	 * @return Color
 	 */
 	public function getTextColor(): Color {
@@ -177,5 +156,13 @@ class Section implements SectionInterface {
 		$clone->textColor = $textColor;
 
 		return $clone;
+	}
+
+
+	/**
+	 * @return float[]
+	 */
+	public function getValues(): array {
+		return $this->values;
 	}
 }

@@ -13,6 +13,8 @@ use ILIAS\Data\Color;
  */
 interface ChartLegendEntry {
 
+	const LEGEND_X_PERCENTAGE = 55;
+
 	/**
 	 * @return string
 	 */
