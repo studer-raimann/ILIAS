@@ -14,17 +14,6 @@ use ILIAS\Data\Color;
 interface ChartLegendEntry {
 
 	/**
-	 * @param Color $color
-	 */
-	public function withTextColor(Color $color): void;
-
-
-	/**
-	 * @param Color $color
-	 */
-	public function withRectColor(Color $color): void;
-
-	/**
 	 * @return string
 	 */
 	public function getName(): string;

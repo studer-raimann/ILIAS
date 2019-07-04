@@ -24,9 +24,9 @@ interface Chart {
 
 
 	/**
-	 * @return ChartValue[]
+	 * @return ChartItem[]
 	 */
-	public function getChartValues(): array;
+	public function getChartItems(): array;
 
 
 	/**

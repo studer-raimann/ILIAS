@@ -2,6 +2,8 @@
 
 namespace ILIAS\UI\Component\Chart;
 
+use ILIAS\Data\Color;
+
 /**
  * Interface ComparisonPath
  *
@@ -21,5 +23,11 @@ interface ComparisonPath {
 	 * @return ChartPoint[]
 	 */
 	public function getPoints(): array;
+
+
+	/**
+	 * @return Color
+	 */
+	public function getColor(): Color;
 
 }
