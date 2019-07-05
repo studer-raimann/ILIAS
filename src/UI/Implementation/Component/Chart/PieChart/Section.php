@@ -3,8 +3,10 @@
 namespace ILIAS\UI\Implementation\Component\Chart\PieChart;
 
 use ILIAS\Data\Color;
+use ILIAS\UI\Component\Chart\ChartLabel;
 use ILIAS\UI\Component\Chart\PieChart\PieChartItem as PieChartItemInterface;
 use ILIAS\UI\Component\Chart\PieChart\Section as SectionInterface;
+use ILIAS\UI\Component\Chart\PieChart\SectionLabel as SectionLabelInterface;
 use ILIAS\UI\Component\Chart\PieChart\SectionValue as SectionValueInterface;
 use ILIAS\UI\Implementation\Component\ComponentHelper;
 
@@ -43,9 +45,9 @@ class Section implements SectionInterface {
 	 */
 	protected $color;
 	/**
-	 * @var Color
+	 * @var ChartLabel
 	 */
-	protected $textColor;
+	protected $sectionLabel;
 
 
 	/**
@@ -53,33 +55,20 @@ class Section implements SectionInterface {
 	 *
 	 * @param PieChartItemInterface $item
 	 * @param float                 $totalValue
-	 * @param int                   $numSections
-	 * @param int                   $index
 	 * @param float                 $offset
 	 */
-	public function __construct(PieChartItemInterface $item, float $totalValue, int $numSections, int $index, float $offset) {
+	public function __construct(PieChartItemInterface $item, float $totalValue, float $offset) {
 		$name = $item->getName();
-		$value = $item->getValue();
+		$values = $item->getValues();
 		$color = $item->getColor();
-		$textColor = $item->getTextColor();
-		$this->checkStringArg("name", $name);
 		$this->name = $name;
-		$this->checkFloatArg("value", $value);
-		$this->checkArgInstanceOf("color", $color, Color::class);
 		$this->color = $color;
-		$this->checkArgInstanceOf("textColor", $textColor, Color::class);
-		$this->textColor = $textColor;
-		$this->checkFloatArg("totalValue", $totalValue);
-		$this->checkIntArg("numSections", $numSections);
-		$this->checkIntArg("index", $index);
-		$this->checkFloatArg("offset", $offset);
 		$this->offset = $offset;
 
-		$this->calcPercentage($totalValue, $value);
+		$this->calcPercentage($totalValue, $values[0]);
 		$this->calcStrokeLength();
 
-		$this->legend = new LegendEntry($this->name, $numSections, $index);
-		$this->value = new SectionValue($value, $this->stroke_length, $this->offset, $this->percentage);
+		$this->sectionLabel = new SectionLabel($values[0], $this->stroke_length, $this->offset, $this->percentage);
 	}
 
 
@@ -141,28 +130,20 @@ class Section implements SectionInterface {
 
 
 	/**
-	 * @return Color
-	 */
-	public function getTextColor(): Color {
-		return $this->textColor;
-	}
-
-
-	/**
-	 * @inheritDoc
-	 */
-	public function withTextColor(Color $textColor): SectionInterface {
-		$clone = clone $this;
-		$clone->textColor = $textColor;
-
-		return $clone;
-	}
-
-
-	/**
 	 * @return float[]
 	 */
 	public function getValues(): array {
 		return $this->values;
 	}
+
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @return ChartLabel
+	 */
+	public function getSectionLabel(): ChartLabel {
+		return $this->sectionLabel;
+	}
+
 }

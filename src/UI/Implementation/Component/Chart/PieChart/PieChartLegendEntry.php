@@ -6,6 +6,7 @@ namespace ILIAS\UI\Implementation\Component\Chart\PieChart;
 use ILIAS\Data\Color;
 use ILIAS\UI\Component\Chart\ChartLegendEntry as ChartLegendEntryInterface;
 use ILIAS\UI\Component\Chart\ChartPoint as ChartPointInterface;
+use ILIAS\UI\Component\Chart\PieChart\PieChartItem as PieChartItemInterface;
 use ILIAS\UI\Implementation\Component\Chart\ChartPoint;
 use ILIAS\UI\Implementation\Component\ComponentHelper;
 
@@ -22,100 +23,63 @@ class PieChartLegendEntry implements ChartLegendEntryInterface {
 	/**
 	 * @var string
 	 */
-	private $name;
+	protected $text;
 	/**
 	 * @var Color
 	 */
-	private $textColor;
+	protected $color;
+	/**
+	 * @var float
+	 */
+	protected $fontSize;
 	/**
 	 * @var ChartPointInterface
 	 */
-	private $textPoint;
+	protected $point;
 	/**
 	 * @var Color
 	 */
-	private $rectColor;
+	protected $rectColor;
 	/**
 	 * @var ChartPointInterface
 	 */
-	private $rectPoint;
+	protected $rectPoint;
 
 
 	/**
 	 * LegendEntry constructor
 	 *
-	 * @param string $name
-	 * @param int    $numSections
-	 * @param int    $index
-	 * @param float  $rectSpacing
-	 * @param float  $extraY
+	 * @param PieChartItemInterface $item
+	 * @param float                 $fontSize
+	 * @param int                   $numSections
+	 * @param int                   $index
+	 * @param float                 $rectSpacing
+	 * @param float                 $extraY
 	 */
-	public function __construct(string $name, int $numSections, int $index, float $rectSpacing, float $extraY) {
-		$this->checkStringArg("name", $name);
-		$this->checkIntArg("numSections", $numSections);
-		$this->checkIntArg("index", $index);
-
-		$this->textPoint = new ChartPoint(self::LEGEND_X_PERCENTAGE + $rectSpacing / 2, 0);
+	public function __construct(PieChartItemInterface $item, float $fontSize, int $numSections, int $index, float $rectSpacing, float $extraY) {
+		$this->fontSize = $fontSize;
+		$this->point = new ChartPoint(self::LEGEND_X_PERCENTAGE + $rectSpacing / 2, 0);
 		$this->rectPoint = new ChartPoint(self::LEGEND_X_PERCENTAGE - $rectSpacing / 2, 0);
-		$this->name = $name;
+		$this->text = $item->getName();
+		$this->rectColor = $item->getColor();
 		$this->calcCoords($numSections, $index, $extraY);
-		$this->calcSizes($numSections, $name);
+		$this->color = new Color(0,0,0);
 	}
 
 
 	/**
-	 * @param int $numSections
-	 * @param int $index
+	 * @param int   $numSections
+	 * @param int   $index
+	 * @param float $extraY
 	 */
 	private function calcCoords(int $numSections, int $index, float $extraY): void {
 		// Max 1.0: 0%y to 100%y
 		$range = 0.8;
 		$topMargin = (1 - $range) / 2;
 
-		$y = (($topMargin + ($index * ($range / ($numSections + 1)))) * 100) + $extraY;
-		$this->textPoint = $this->textPoint->withY($y);
-		$this->rectPoint = $this->rectPoint->withY($y);
-	}
-
-
-	/**
-	 * @param int    $numSections
-	 * @param string $title
-	 */
-	private function calcSizes(int $numSections, string $title): void {
-		if ($numSections >= 10) {
-			$this->square_size = 1.5;
-			$this->text_y_percentage = $this->y_percentage + 4;
-		} else {
-			$this->square_size = 2;
-			$this->text_y_percentage = $this->y_percentage + 4.5;
-		}
-
-		$this->text_size = 1.5;
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public function getName(): string {
-		return $this->name;
-	}
-
-
-	/**
-	 * @return Color
-	 */
-	public function getTextColor(): Color {
-		return $this->textColor;
-	}
-
-
-	/**
-	 * @return ChartPointInterface
-	 */
-	public function getTextPoint(): ChartPointInterface {
-		return $this->textPoint;
+		$y = (($topMargin + (($index + 1) * ($range / ($numSections + 1)))) * 100);
+		$this->point = $this->point->withY($y + $extraY / 2);
+		$this->rectPoint = $this->rectPoint->withY($y - $extraY / 2);
 	}
 
 
@@ -132,5 +96,37 @@ class PieChartLegendEntry implements ChartLegendEntryInterface {
 	 */
 	public function getRectPoint(): ChartPointInterface {
 		return $this->rectPoint;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getText(): string {
+		return $this->text;
+	}
+
+
+	/**
+	 * @return Color
+	 */
+	public function getColor(): Color {
+		return $this->color;
+	}
+
+
+	/**
+	 * @return float
+	 */
+	public function getFontSize(): float {
+		return $this->fontSize;
+	}
+
+
+	/**
+	 * @return ChartPointInterface
+	 */
+	public function getPoint(): ChartPointInterface {
+		return $this->point;
 	}
 }

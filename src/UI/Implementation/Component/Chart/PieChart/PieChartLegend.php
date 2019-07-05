@@ -2,9 +2,9 @@
 
 namespace ILIAS\UI\Implementation\Component\Chart\PieChart;
 
-use ILIAS\UI\Component\Chart\ChartLegend;
 use ILIAS\UI\Component\Chart\ChartLegendEntry as ChartLegendEntryInterface;
 use ILIAS\UI\Component\Chart\PieChart\PieChartItem as PieChartItemInterface;
+use ILIAS\UI\Component\Chart\PieChart\PieChartLegend as PieChartLegendInterface;
 
 /**
  * Class Legend
@@ -13,7 +13,7 @@ use ILIAS\UI\Component\Chart\PieChart\PieChartItem as PieChartItemInterface;
  *
  * @author  studer + raimann ag - Team Custom 1 <support-custom1@studer-raimann.ch>
  */
-class PieChartLegend implements ChartLegend {
+class PieChartLegend implements PieChartLegendInterface {
 
 	/**
 	 * @var ChartLegendEntryInterface[]
@@ -26,7 +26,15 @@ class PieChartLegend implements ChartLegend {
 	/**
 	 * @var float
 	 */
-	protected $rectSpacing;
+	protected $rectSpacing = 5;
+	/**
+	 * @var float
+	 */
+	protected $extraY;
+	/**
+	 * @var float
+	 */
+	protected $fontSize = 1.5;
 
 
 	/**
@@ -40,10 +48,11 @@ class PieChartLegend implements ChartLegend {
 		for ($i = 0; $i < count($sampleItems); $i++) {
 			$sampleItem = $sampleItems[$i];
 			$itemCount = count($sampleItems);
+			$fontSize = $this->fontSize;
 			$index = $i;
 			$rectSpacing = $this->rectSpacing;
-			$extraY = 4;
-			$this->entries[] = new PieChartLegendEntry($sampleItem->getName(), $itemCount, $index, $rectSpacing, $extraY);
+			$extraY = $this->extraY;
+			$this->entries[] = new PieChartLegendEntry($sampleItem, $fontSize, $itemCount, $index, $rectSpacing, $extraY);
 		}
 	}
 
@@ -51,8 +60,10 @@ class PieChartLegend implements ChartLegend {
 	private function calcSizes(int $numSections): void {
 		if ($numSections >= 10) {
 			$this->rectSize = 1.5;
+			$this->extraY = 4;
 		} else {
 			$this->rectSize = 2;
+			$this->extraY = 4.5;
 		}
 
 	}
@@ -79,5 +90,18 @@ class PieChartLegend implements ChartLegend {
 	 */
 	public function getRectSpacing(): float {
 		return $this->rectSpacing;
+	}
+
+
+	/**
+	 * @return float
+	 */
+	public function getExtraY(): float {
+		return $this->extraY;
+	}
+
+
+	public function getFontSize(): float {
+		// TODO: Implement getFontSize() method.
 	}
 }

@@ -2,7 +2,9 @@
 
 namespace ILIAS\UI\Component\Chart\PieChart;
 
+use ILIAS\Data\Color;
 use ILIAS\UI\Component\Chart\Chart;
+use ILIAS\UI\Component\Chart\ChartWithoutBackground;
 use ILIAS\UI\Component\Component;
 
 /**
@@ -12,11 +14,17 @@ use ILIAS\UI\Component\Component;
  *
  * @author  studer + raimann ag - Team Custom 1 <support-custom1@studer-raimann.ch>
  */
-interface PieChart extends Chart, Component {
+interface PieChart extends ChartWithoutBackground, Component {
 
 	const MAX_ITEMS = 12;
 	const ERR_NO_ITEMS = "Empty array supplied as argument";
 	const ERR_TOO_MANY_ITEMS = "More than " . self::MAX_ITEMS . " Pie Chart Items supplied";
+
+
+	/**
+	 * @return Section[]
+	 */
+	public function getChartItems(): array;
 
 
 	/**
@@ -28,38 +36,6 @@ interface PieChart extends Chart, Component {
 
 
 	/**
-	 * Set a flag for the value of sections to show up in the legend next to the title
-	 *
-	 * @param bool $state
-	 *
-	 * @return self
-	 */
-	public function withValuesInLegend(bool $state): self;
-
-
-	/**
-	 * Get the flag that controls if the value of sections show up in the legend next to the title
-	 *
-	 * @return bool
-	 */
-	public function isValuesInLegend(): bool;
-
-
-	/**
-	 * @param bool $state
-	 *
-	 * @return self
-	 */
-	public function withShowLegend(bool $state): self;
-
-
-	/**
-	 * @return bool
-	 */
-	public function isShowLegend(): bool;
-
-
-	/**
 	 * @param float|null $custom_total_value
 	 *
 	 * @return self
@@ -68,7 +44,51 @@ interface PieChart extends Chart, Component {
 
 
 	/**
+	 * @param bool $state
+	 *
+	 * @return self
+	 */
+	public function withShowLegend(bool $state): Chart;
+
+
+	/**
+	 * @param Color $color
+	 *
+	 * @return self
+	 */
+	public function withCustomLegendTextColor(Color $color): Chart;
+
+
+	/**
+	 * @param Color $color
+	 *
+	 * @return PieChart
+	 */
+	public function withCustomSectionLabelColor(Color $color): self;
+
+
+	/**
+	 * @param Color $color
+	 *
+	 * @return PieChart
+	 */
+	public function withCustomTotalLabelColor(Color $color): self;
+
+
+	/**
 	 * @return float|null
 	 */
 	public function getCustomTotalValue(): ?float;
+
+
+	/**
+	 * @return Color|null
+	 */
+	public function getCustomSectionLabelColor(): ?Color;
+
+
+	/**
+	 * @return Color|null
+	 */
+	public function getCustomTotalLabelColor(): ?Color;
 }

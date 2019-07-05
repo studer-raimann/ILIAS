@@ -2,6 +2,7 @@
 
 namespace ILIAS\UI\Implementation\Component\Chart\PieChart;
 
+use ILIAS\Data\Color;
 use ILIAS\UI\Component\Chart\PieChart\PieChart as PieChartInterface;
 use ILIAS\UI\Component\Component;
 use ILIAS\UI\Implementation\Render\AbstractComponentRenderer;
@@ -43,7 +44,7 @@ class Renderer extends AbstractComponentRenderer {
 	protected function renderStandard(PieChartInterface $component, RendererInterface $default_renderer): string {
 		$tpl = $this->getTemplate("tpl.piechart.html", true, true);
 
-		foreach ($component->getSections() as $section) {
+		foreach ($component->getChartItems() as $section) {
 			$tpl->setCurrentBlock("section");
 			$tpl->setVariable("STROKE_LENGTH", $section->getStrokeLength());
 			$tpl->setVariable("OFFSET", $section->getOffset());
@@ -52,41 +53,59 @@ class Renderer extends AbstractComponentRenderer {
 		}
 
 		if ($component->isShowLegend()) {
-			foreach ($component->getSections() as $section) {
+			foreach ($component->getLegend()->getEntries() as $entry) {
 				$tpl->setCurrentBlock("legend");
-				$tpl->setVariable("SECTION_COLOR", $section->getColor()->asHex());
-				$tpl->setVariable("LEGEND_Y_PERCENTAGE", $section->getLegendEntry()->getYPercentage());
-				$tpl->setVariable("LEGEND_TEXT_Y_PERCENTAGE", $section->getLegendEntry()->getTextYPercentage());
-				$tpl->setVariable("LEGEND_FONT_SIZE", $section->getLegendEntry()->getTextSize());
-				$tpl->setVariable("RECT_SIZE", $section->getLegendEntry()->getSquareSize());
 
-				if ($component->isValuesInLegend()) {
-					$section_name = sprintf($section->getName() . " (%s)", $section->getValue()->getValue());
-				} else {
-					$section_name = $section->getName();
+				$customLegendTextColor = $component->getCustomLegendTextColor();
+
+				if (is_null($component->getCustomLegendTextColor())) {
+					$customLegendTextColor = $entry->getColor();
 				}
 
-				$tpl->setVariable("SECTION_NAME", $section_name);
+				$tpl->setVariable("LEGEND_FONT_COLOR", $customLegendTextColor->asHex());
+				$tpl->setVariable("SECTION_COLOR", $entry->getRectColor()->asHex());
+				$tpl->setVariable("LEGEND_RECT_X_PERCENTAGE", $entry->getRectPoint()->getX());
+				$tpl->setVariable("LEGEND_RECT_Y_PERCENTAGE", $entry->getRectPoint()->getY());
+				$tpl->setVariable("LEGEND_X_PERCENTAGE", $entry->getPoint()->getX());
+				$tpl->setVariable("LEGEND_Y_PERCENTAGE", $entry->getPoint()->getY());
+				$tpl->setVariable("LEGEND_FONT_SIZE", $entry->getFontSize());
+				$tpl->setVariable("RECT_SIZE", $component->getLegend()->getRectSize());
+				$tpl->setVariable("SECTION_NAME", $entry->getText());
 				$tpl->parseCurrentBlock();
 			}
 		}
 
-		foreach ($component->getSections() as $section) {
+		foreach ($component->getChartItems() as $section) {
 			$tpl->setCurrentBlock("section_text");
-			$tpl->setVariable("VALUE_X_PERCENTAGE", $section->getValue()->getXPercentage());
-			$tpl->setVariable("VALUE_Y_PERCENTAGE", $section->getValue()->getYPercentage());
-			$tpl->setVariable("SECTION_VALUE", round($section->getValue()->getValue(), 2));
-			$tpl->setVariable("VALUE_FONT_SIZE", $section->getValue()->getTextSize());
-			$tpl->setVariable("TEXT_COLOR", $section->getTextColor()->asHex());
+
+			$customSectionLabelColor = $component->getCustomSectionLabelColor();
+
+			if (is_null($component->getCustomSectionLabelColor())) {
+				$customSectionLabelColor = $section->getSectionLabel()->getColor();
+			}
+
+			$tpl->setVariable("TEXT_COLOR", $customSectionLabelColor->asHex());
+			$tpl->setVariable("VALUE_X_PERCENTAGE", $section->getSectionLabel()->getPoint()->getX());
+			$tpl->setVariable("VALUE_Y_PERCENTAGE", $section->getSectionLabel()->getPoint()->getY());
+			$tpl->setVariable("SECTION_VALUE", $section->getSectionLabel()->getText());
+			$tpl->setVariable("VALUE_FONT_SIZE", $section->getSectionLabel()->getFontSize());
 			$tpl->parseCurrentBlock();
 		}
 
 		$tpl->setCurrentBlock("total");
 		$total_value = $component->getCustomTotalValue();
+		$total_color = $component->getCustomTotalLabelColor();
+
 		if (is_null($total_value)) {
 			$total_value = $component->getTotalValue();
 		}
+
+		if (is_null($total_color)) {
+			$total_color = new Color(0, 0, 0);
+		}
+
 		$tpl->setVariable("TOTAL_VALUE", round($total_value, 2));
+		$tpl->setVariable("TOTAL_COLOR", $total_color->asHex());
 		$tpl->parseCurrentBlock();
 
 		return $tpl->get();

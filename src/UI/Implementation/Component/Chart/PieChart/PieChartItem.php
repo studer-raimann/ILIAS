@@ -22,9 +22,9 @@ class PieChartItem implements PieChartItemInterface {
 	 */
 	protected $name;
 	/**
-	 * @var float
+	 * @var float[]
 	 */
-	protected $value;
+	protected $values = [];
 	/**
 	 * @var Color
 	 */
@@ -39,21 +39,21 @@ class PieChartItem implements PieChartItemInterface {
 	 * PieChartItem constructor
 	 *
 	 * @param string     $name
-	 * @param float      $value
+	 * @param float[]    $values
 	 * @param Color      $color
 	 * @param Color|null $textColor
 	 */
-	public function __construct(string $name, float $value, Color $color, ?Color $textColor = null) {
-		$this->checkStringArg("name", $name);
-		$this->checkFloatArg("value", $value);
-		$this->checkArgInstanceOf("color", $color, Color::class);
-
+	public function __construct(string $name, array $values, Color $color, ?Color $textColor = null) {
 		if (strlen($name) > self::MAX_TITLE_CHARS) {
 			throw new InvalidArgumentException(self::ERR_TOO_MANY_CHARS);
 		}
 
+		if (count($values) > self::MAX_VALUES) {
+			throw new InvalidArgumentException(self::ERR_TOO_MANY_VALUES);
+		}
+
 		$this->name = $name;
-		$this->value = $value;
+		$this->values = $values;
 		$this->color = $color;
 
 		if (!is_null($textColor)) {
@@ -76,14 +76,6 @@ class PieChartItem implements PieChartItemInterface {
 	/**
 	 * @inheritDoc
 	 */
-	public function getValue(): float {
-		return $this->value;
-	}
-
-
-	/**
-	 * @inheritDoc
-	 */
 	public function getColor(): Color {
 		return $this->color;
 	}
@@ -94,5 +86,13 @@ class PieChartItem implements PieChartItemInterface {
 	 */
 	public function getTextColor(): Color {
 		return $this->textColor;
+	}
+
+
+	/**
+	 * @return float[]
+	 */
+	public function getValues(): array {
+		return $this->values;
 	}
 }

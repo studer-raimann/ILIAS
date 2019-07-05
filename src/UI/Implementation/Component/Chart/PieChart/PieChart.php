@@ -2,6 +2,8 @@
 
 namespace ILIAS\UI\Implementation\Component\Chart\PieChart;
 
+use ILIAS\Data\Color;
+use ILIAS\UI\Component\Chart\Chart;
 use ILIAS\UI\Component\Chart\ChartBackground as ChartBackgroundInterface;
 use ILIAS\UI\Component\Chart\ChartItem;
 use ILIAS\UI\Component\Chart\ChartLegend;
@@ -35,26 +37,29 @@ class PieChart implements PieChartInterface {
 	 */
 	protected $chartItems = [];
 	/**
-	 * @var ChartBackgroundInterface
-	 */
-	protected $background = null;
-	/**
 	 * @var float
 	 */
-	private $totalValue = 0;
+	protected $totalValue = 0;
 	/**
 	 * @var bool
 	 */
-	private $valuesInLegend = false;
-	/**
-	 * @var bool
-	 */
-	private $showLegend = true;
+	protected $showLegend = true;
 	/**
 	 * @var float|null
 	 */
-	private $customTotalValue = null;
-
+	protected $customTotalValue = null;
+	/**
+	 * @var Color|null
+	 */
+	protected $customLegendTextColor = null;
+	/**
+	 * @var Color|null
+	 */
+	protected $customSectionLabelColor = null;
+	/**
+	 * @var Color|null
+	 */
+	protected $customTotalLabelColor = null;
 
 	/**
 	 * PieChart constructor
@@ -72,6 +77,7 @@ class PieChart implements PieChartInterface {
 
 		$this->calcTotalValue($pieChartItems);
 		$this->createSections($pieChartItems);
+		$this->legend = new PieChartLegend($pieChartItems);
 	}
 
 
@@ -83,7 +89,7 @@ class PieChart implements PieChartInterface {
 		$index = 1;
 
 		foreach ($pieChartItems as $item) {
-			$section = new Section($item, $this->totalValue, count($pieChartItems), $index, $currentOffset);
+			$section = new Section($item, $this->totalValue, $currentOffset);
 			$this->chartItems[] = $section;
 			$currentOffset += $section->getStrokeLength();
 			$index ++;
@@ -97,7 +103,7 @@ class PieChart implements PieChartInterface {
 	protected function calcTotalValue(array $pieChartItems): void {
 		$total = 0;
 		foreach ($pieChartItems as $item) {
-			$total += $item->getValue();
+			$total += $item->getValues()[0];
 		}
 		$this->totalValue = $total;
 	}
@@ -108,38 +114,6 @@ class PieChart implements PieChartInterface {
 	 */
 	public function getTotalValue(): float {
 		return $this->totalValue;
-	}
-
-
-	/**
-	 * @inheritDoc
-	 */
-	public function withValuesInLegend(bool $state): PieChartInterface {
-		$this->checkBoolArg("state", $state);
-		$clone = clone $this;
-		$clone->valuesInLegend = $state;
-
-		return $clone;
-	}
-
-
-	/**
-	 * @inheritDoc
-	 */
-	public function isValuesInLegend(): bool {
-		return $this->valuesInLegend;
-	}
-
-
-	/**
-	 * @inheritDoc
-	 */
-	public function withShowLegend(bool $state): PieChartInterface {
-		$this->checkBoolArg("state", $state);
-		$clone = clone $this;
-		$clone->showLegend = $state;
-
-		return $clone;
 	}
 
 
@@ -160,6 +134,32 @@ class PieChart implements PieChartInterface {
 		}
 		$clone = clone $this;
 		$clone->customTotalValue = $custom_total_value;
+
+		return $clone;
+	}
+
+
+	/**
+	 * @param Color $color
+	 *
+	 * @return PieChartInterface
+	 */
+	public function withCustomLegendTextColor(Color $color): Chart {
+		$clone = clone $this;
+		$clone->customLegendTextColor = $color;
+
+		return $clone;
+	}
+
+
+	/**
+	 * @param bool $state
+	 *
+	 * @return self
+	 */
+	public function withShowLegend(bool $state): Chart {
+		$clone = clone $this;
+		$clone->showLegend = $state;
 
 		return $clone;
 	}
@@ -190,7 +190,15 @@ class PieChart implements PieChartInterface {
 
 
 	/**
-	 * @return ChartItem[]
+	 * @return ChartBackgroundInterface|null
+	 */
+	public function getBackground(): ?ChartBackgroundInterface {
+		return $this->background;
+	}
+
+
+	/**
+	 * @return SectionInterface[]
 	 */
 	public function getChartItems(): array {
 		return $this->chartItems;
@@ -198,9 +206,51 @@ class PieChart implements PieChartInterface {
 
 
 	/**
-	 * @return ChartBackgroundInterface|null
+	 * @return Color|null
 	 */
-	public function getBackground(): ?ChartBackgroundInterface {
-		return $this->background;
+	public function getCustomLegendTextColor(): ?Color {
+		return $this->customLegendTextColor;
+	}
+
+
+	/**
+	 * @param Color $color
+	 *
+	 * @return PieChartInterface
+	 */
+	public function withCustomSectionLabelColor(Color $color): PieChartInterface {
+		$clone = clone $this;
+		$clone->customSectionLabelColor = $color;
+
+		return $clone;
+	}
+
+
+	/**
+	 * @param Color $color
+	 *
+	 * @return PieChartInterface
+	 */
+	public function withCustomTotalLabelColor(Color $color): PieChartInterface {
+		$clone = clone $this;
+		$clone->customTotalLabelColor = $color;
+
+		return $clone;
+	}
+
+
+	/**
+	 * @return Color|null
+	 */
+	public function getCustomSectionLabelColor(): ?Color {
+		return $this->customSectionLabelColor;
+	}
+
+
+	/**
+	 * @return Color|null
+	 */
+	public function getCustomTotalLabelColor(): ?Color {
+		return $this->customTotalLabelColor;
 	}
 }

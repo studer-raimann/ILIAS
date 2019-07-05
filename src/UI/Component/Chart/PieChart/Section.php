@@ -4,6 +4,7 @@ namespace ILIAS\UI\Component\Chart\PieChart;
 
 use ILIAS\Data\Color;
 use ILIAS\UI\Component\Chart\ChartItem;
+use ILIAS\UI\Component\Chart\ChartLabel;
 
 /**
  * Interface Section
@@ -13,15 +14,6 @@ use ILIAS\UI\Component\Chart\ChartItem;
  * @author  studer + raimann ag - Team Custom 1 <support-custom1@studer-raimann.ch>
  */
 interface Section extends ChartItem {
-
-	/**
-	 * Set the text color of the value that is on top of the section
-	 *
-	 * @param Color $textColor
-	 *
-	 * @return self
-	 */
-	public function withTextColor(Color $textColor): self;
 
 	/**
 	 * Get the percentage this section takes up compared to the total of all sections
@@ -50,9 +42,9 @@ interface Section extends ChartItem {
 
 
 	/**
-	 * Get the text color of the value that is on top of the section
+	 * Get the label on top of a section
 	 *
-	 * @return Color
+	 * @return ChartLabel
 	 */
-	public function getTextColor(): Color;
+	public function getSectionLabel(): ChartLabel;
 }

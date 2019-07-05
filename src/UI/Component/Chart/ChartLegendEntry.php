@@ -11,26 +11,9 @@ use ILIAS\Data\Color;
  *
  * @author  studer + raimann ag - Team Custom 1 <support-custom1@studer-raimann.ch>
  */
-interface ChartLegendEntry {
+interface ChartLegendEntry extends ChartLabel {
 
 	const LEGEND_X_PERCENTAGE = 55;
-
-	/**
-	 * @return string
-	 */
-	public function getName(): string;
-
-
-	/**
-	 * @return Color
-	 */
-	public function getTextColor(): Color;
-
-
-	/**
-	 * @return ChartPoint
-	 */
-	public function getTextPoint(): ChartPoint;
 
 
 	/**

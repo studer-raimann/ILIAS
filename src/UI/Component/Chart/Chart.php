@@ -2,6 +2,8 @@
 
 namespace ILIAS\UI\Component\Chart;
 
+use ILIAS\Data\Color;
+
 /**
  * Interface Chart
  *
@@ -10,6 +12,22 @@ namespace ILIAS\UI\Component\Chart;
  * @author  studer + raimann ag - Team Custom 1 <support-custom1@studer-raimann.ch>
  */
 interface Chart {
+
+	/**
+	 * @param bool $state
+	 *
+	 * @return Chart
+	 */
+	public function withShowLegend(bool $state): self;
+
+
+	/**
+	 * @param Color $color
+	 *
+	 * @return Chart
+	 */
+	public function withCustomLegendTextColor(Color $color): self;
+
 
 	/**
 	 * @return string
@@ -30,8 +48,15 @@ interface Chart {
 
 
 	/**
-	 * @return ChartBackground|null
+	 * @return bool
 	 */
-	public function getBackground(): ?ChartBackground;
+	public function isShowLegend(): bool;
+
+
+	/**
+	 * @return Color|null
+	 */
+	public function getCustomLegendTextColor(): ?Color;
+
 
 }

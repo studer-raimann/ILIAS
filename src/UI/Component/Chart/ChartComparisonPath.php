@@ -14,6 +14,11 @@ use ILIAS\Data\Color;
 interface ChartComparisonPath {
 
 	/**
+	 * @return ChartLabel
+	 */
+	public function getChartLabel(): ChartLabel;
+
+	/**
 	 * @return float
 	 */
 	public function getValue(): float;

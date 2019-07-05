@@ -15,7 +15,9 @@ use ILIAS\UI\Component\Chart\ChartItem;
 interface PieChartItem extends ChartItem {
 
 	const MAX_TITLE_CHARS = 35;
+	const MAX_VALUES = 1;
 	const ERR_TOO_MANY_CHARS = "More than " . self::MAX_TITLE_CHARS . " characters in the title";
+	const ERR_TOO_MANY_VALUES = "More than " . self::MAX_VALUES . " value per PieChartItem (max) supplied";
 
 	/**
 	 * Get the text color of a pre-section. The default is black.
