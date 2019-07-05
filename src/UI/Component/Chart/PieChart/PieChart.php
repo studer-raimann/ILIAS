@@ -20,7 +20,6 @@ interface PieChart extends ChartWithoutBackground, Component {
 	const ERR_NO_ITEMS = "Empty array supplied as argument";
 	const ERR_TOO_MANY_ITEMS = "More than " . self::MAX_ITEMS . " Pie Chart Items supplied";
 
-
 	/**
 	 * @return Section[]
 	 */

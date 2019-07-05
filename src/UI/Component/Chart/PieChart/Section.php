@@ -2,7 +2,6 @@
 
 namespace ILIAS\UI\Component\Chart\PieChart;
 
-use ILIAS\Data\Color;
 use ILIAS\UI\Component\Chart\ChartItem;
 use ILIAS\UI\Component\Chart\ChartLabel;
 

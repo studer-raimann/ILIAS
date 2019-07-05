@@ -4,8 +4,6 @@ namespace ILIAS\UI\Implementation\Component\Chart\PieChart;
 
 use ILIAS\Data\Color;
 use ILIAS\UI\Component\Chart\Chart;
-use ILIAS\UI\Component\Chart\ChartBackground as ChartBackgroundInterface;
-use ILIAS\UI\Component\Chart\ChartItem;
 use ILIAS\UI\Component\Chart\ChartLegend;
 use ILIAS\UI\Component\Chart\PieChart\PieChart as PieChartInterface;
 use ILIAS\UI\Component\Chart\PieChart\PieChartItem as PieChartItemInterface;
@@ -24,10 +22,6 @@ class PieChart implements PieChartInterface {
 
 	use ComponentHelper;
 
-	/**
-	 * @var string
-	 */
-	protected $title;
 	/**
 	 * @var ChartLegend
 	 */
@@ -174,26 +168,10 @@ class PieChart implements PieChartInterface {
 
 
 	/**
-	 * @return string
-	 */
-	public function getTitle(): string {
-		return $this->title;
-	}
-
-
-	/**
 	 * @return ChartLegend
 	 */
 	public function getLegend(): ChartLegend {
 		return $this->legend;
-	}
-
-
-	/**
-	 * @return ChartBackgroundInterface|null
-	 */
-	public function getBackground(): ?ChartBackgroundInterface {
-		return $this->background;
 	}
 
 

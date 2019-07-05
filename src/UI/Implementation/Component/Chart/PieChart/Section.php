@@ -6,8 +6,6 @@ use ILIAS\Data\Color;
 use ILIAS\UI\Component\Chart\ChartLabel;
 use ILIAS\UI\Component\Chart\PieChart\PieChartItem as PieChartItemInterface;
 use ILIAS\UI\Component\Chart\PieChart\Section as SectionInterface;
-use ILIAS\UI\Component\Chart\PieChart\SectionLabel as SectionLabelInterface;
-use ILIAS\UI\Component\Chart\PieChart\SectionValue as SectionValueInterface;
 use ILIAS\UI\Implementation\Component\ComponentHelper;
 
 /**
