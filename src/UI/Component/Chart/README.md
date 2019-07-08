@@ -9,7 +9,7 @@
 - **ChartItem:** Represents a value in a chart. e.g. they represent a single section in a pie chart diagram while they represent a whole line in a line diagram. A pie chart only uses a single value per item while a line diagram contains multiple values per line. (Goes up and down)
 - **ChartLabel:** Basically just a label with a color, coordinates, font size and text.
 - **ChartLegend:** A typical legend containing legend entries.
-- **ChartLegendEntry:** Shows the user which color belongs to which title.
+- **ChartLegendEntry:** Shows the user which color belongs to which value.
 - **ChartPoint:** A basic coordinate object.
 
 ## How To Implement A New Chart?
