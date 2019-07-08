@@ -12,6 +12,8 @@ namespace ILIAS\UI\Component\Chart;
 interface ChartBackground {
 
 	/**
+	 * Retrieves all comparison paths
+	 *
 	 * @return ChartComparisonPath[]
 	 */
 	public function getComparisonPaths(): array;

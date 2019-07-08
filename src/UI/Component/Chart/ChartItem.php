@@ -14,18 +14,25 @@ use ILIAS\Data\Color;
 interface ChartItem {
 
 	/**
+	 * Gets the main values of a chart.
+	 * e.g. a PieChart section only has 1 value per item while a line diagram has multiple per item (line)
+	 *
 	 * @return float[]
 	 */
 	public function getValues(): array;
 
 
 	/**
+	 * Gets the color of the chart item
+	 *
 	 * @return Color
 	 */
 	public function getColor(): Color;
 
 
 	/**
+	 * Gets the name of the chart item
+	 *
 	 * @return string
 	 */
 	public function getName(): string;

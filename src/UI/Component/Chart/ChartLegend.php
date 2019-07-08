@@ -12,18 +12,24 @@ namespace ILIAS\UI\Component\Chart;
 interface ChartLegend {
 
 	/**
+	 * Gets all entries of the legend
+	 *
 	 * @return ChartLegendEntry[]
 	 */
 	public function getEntries(): array;
 
 
 	/**
+	 * Gets the generic rectangle size of legend entries
+	 *
 	 * @return float
 	 */
 	public function getRectSize(): float;
 
 
 	/**
+	 * Gets the generic space between name and rectangle in legend entries
+	 *
 	 * @return float
 	 */
 	public function getRectSpacing(): float;

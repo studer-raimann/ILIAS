@@ -12,18 +12,24 @@ namespace ILIAS\UI\Component\Chart;
 interface ChartPoint {
 
 	/**
+	 * Get the x coordinate (Usually percentage)
+	 *
 	 * @return float
 	 */
 	public function getX(): float;
 
 
 	/**
+	 * Get the y coordinate (Usually percentage)
+	 *
 	 * @return float
 	 */
 	public function getY(): float;
 
 
 	/**
+	 * Change the x coordinate and return a copy of the current object (Immutability)
+	 *
 	 * @param float $x
 	 *
 	 * @return ChartPoint
@@ -32,6 +38,8 @@ interface ChartPoint {
 
 
 	/**
+	 * Change the y coordinate and return a copy of the current object (Immutability)
+	 *
 	 * @param float $y
 	 *
 	 * @return ChartPoint

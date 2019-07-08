@@ -14,23 +14,31 @@ use ILIAS\Data\Color;
 interface ChartLabel {
 
 	/**
+	 * Gets the coordinates of this label
+	 *
 	 * @return ChartPoint
 	 */
 	public function getPoint(): ChartPoint;
 
 	/**
+	 * Gets the text to be displayed of this label
+	 *
 	 * @return string
 	 */
 	public function getText(): string;
 
 
 	/**
+	 * Gets the text color of this label to be displayed
+	 *
 	 * @return Color
 	 */
 	public function getColor(): Color;
 
 
 	/**
+	 * Gets the font size of this label
+	 *
 	 * @return float
 	 */
 	public function getFontSize(): float;

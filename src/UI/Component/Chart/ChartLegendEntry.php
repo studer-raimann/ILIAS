@@ -17,12 +17,16 @@ interface ChartLegendEntry extends ChartLabel {
 
 
 	/**
+	 * Get the rectangle color
+	 *
 	 * @return Color
 	 */
 	public function getRectColor(): Color;
 
 
 	/**
+	 * Get the coordinates of the rectangle
+	 *
 	 * @return ChartPoint
 	 */
 	public function getRectPoint(): ChartPoint;
