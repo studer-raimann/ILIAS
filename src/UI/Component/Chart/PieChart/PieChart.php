@@ -4,6 +4,7 @@ namespace ILIAS\UI\Component\Chart\PieChart;
 
 use ILIAS\Data\Color;
 use ILIAS\UI\Component\Chart\Chart;
+use ILIAS\UI\Component\Chart\ChartLegend;
 use ILIAS\UI\Component\Chart\ChartWithoutBackground;
 use ILIAS\UI\Component\Component;
 
@@ -19,6 +20,13 @@ interface PieChart extends ChartWithoutBackground, Component {
 	const MAX_ITEMS = 12;
 	const ERR_NO_ITEMS = "Empty array supplied as argument";
 	const ERR_TOO_MANY_ITEMS = "More than " . self::MAX_ITEMS . " Pie Chart Items supplied";
+
+
+	/**
+	 * @return PieChartLegend
+	 */
+	public function getLegend(): ChartLegend;
+
 
 	/**
 	 * @return Section[]
