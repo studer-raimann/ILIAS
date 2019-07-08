@@ -54,8 +54,9 @@ class Section implements SectionInterface {
 	 * @param PieChartItemInterface $item
 	 * @param float                 $totalValue
 	 * @param float                 $offset
+	 * @param Color                 $textColor
 	 */
-	public function __construct(PieChartItemInterface $item, float $totalValue, float $offset) {
+	public function __construct(PieChartItemInterface $item, float $totalValue, float $offset, Color $textColor) {
 		$name = $item->getName();
 		$values = $item->getValues();
 		$color = $item->getColor();
@@ -66,7 +67,7 @@ class Section implements SectionInterface {
 		$this->calcPercentage($totalValue, $values[0]);
 		$this->calcStrokeLength();
 
-		$this->sectionLabel = new SectionLabel($values[0], $this->stroke_length, $this->offset, $this->percentage);
+		$this->sectionLabel = new SectionLabel($values[0], $this->stroke_length, $this->offset, $this->percentage, $textColor);
 	}
 
 

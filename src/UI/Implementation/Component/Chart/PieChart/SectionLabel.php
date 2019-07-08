@@ -27,9 +27,22 @@ class SectionLabel implements ChartLabelInterface {
 	protected $color;
 
 
-	public function __construct(float $value, float $stroke_dasharray, float $stroke_dashoffset, float $section_percentage) {
+	/**
+	 * SectionLabel constructor.
+	 *
+	 * @param float      $value
+	 * @param float      $stroke_dasharray
+	 * @param float      $stroke_dashoffset
+	 * @param float      $section_percentage
+	 * @param Color|NULL $textColor
+	 */
+	public function __construct(float $value, float $stroke_dasharray, float $stroke_dashoffset, float $section_percentage, Color $textColor = NULL) {
+		if (is_null($textColor)) {
+			$this->color = new Color(0, 0, 0);
+		} else {
+			$this->color = $textColor;
+		}
 		$this->text = round($value, 2);
-		$this->color = new Color(0, 0, 0);
 		$this->calcChartCoords($stroke_dasharray, $stroke_dashoffset);
 		$this->calcTextSize($section_percentage);
 	}

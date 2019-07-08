@@ -69,16 +69,6 @@ interface PieChart extends ChartWithoutBackground, Component {
 
 
 	/**
-	 * Sets a custom section label color
-	 *
-	 * @param Color $color
-	 *
-	 * @return PieChart
-	 */
-	public function withCustomSectionLabelColor(Color $color): self;
-
-
-	/**
 	 * Sets a custom total value text color in the center of the pie chart
 	 *
 	 * @param Color $color
@@ -94,14 +84,6 @@ interface PieChart extends ChartWithoutBackground, Component {
 	 * @return float|null
 	 */
 	public function getCustomTotalValue(): ?float;
-
-
-	/**
-	 * Gets the custom section label color
-	 *
-	 * @return Color|null
-	 */
-	public function getCustomSectionLabelColor(): ?Color;
 
 
 	/**

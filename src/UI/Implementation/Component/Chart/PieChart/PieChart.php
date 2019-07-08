@@ -48,10 +48,6 @@ class PieChart implements PieChartInterface {
 	/**
 	 * @var Color|null
 	 */
-	protected $customSectionLabelColor = NULL;
-	/**
-	 * @var Color|null
-	 */
 	protected $customTotalLabelColor = NULL;
 
 
@@ -83,7 +79,7 @@ class PieChart implements PieChartInterface {
 		$index = 1;
 
 		foreach ($pieChartItems as $item) {
-			$section = new Section($item, $this->totalValue, $currentOffset);
+			$section = new Section($item, $this->totalValue, $currentOffset, $item->getTextColor());
 			$this->chartItems[] = $section;
 			$currentOffset += $section->getStrokeLength();
 			$index ++;
@@ -190,30 +186,11 @@ class PieChart implements PieChartInterface {
 	/**
 	 * @inheritDoc
 	 */
-	public function withCustomSectionLabelColor(Color $color): PieChartInterface {
-		$clone = clone $this;
-		$clone->customSectionLabelColor = $color;
-
-		return $clone;
-	}
-
-
-	/**
-	 * @inheritDoc
-	 */
 	public function withCustomTotalLabelColor(Color $color): PieChartInterface {
 		$clone = clone $this;
 		$clone->customTotalLabelColor = $color;
 
 		return $clone;
-	}
-
-
-	/**
-	 * @inheritDoc
-	 */
-	public function getCustomSectionLabelColor(): ?Color {
-		return $this->customSectionLabelColor;
 	}
 
 

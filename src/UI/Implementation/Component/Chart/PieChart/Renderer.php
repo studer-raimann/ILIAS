@@ -77,14 +77,7 @@ class Renderer extends AbstractComponentRenderer {
 
 		foreach ($component->getChartItems() as $section) {
 			$tpl->setCurrentBlock("section_text");
-
-			$customSectionLabelColor = $component->getCustomSectionLabelColor();
-
-			if (is_null($component->getCustomSectionLabelColor())) {
-				$customSectionLabelColor = $section->getSectionLabel()->getColor();
-			}
-
-			$tpl->setVariable("TEXT_COLOR", $customSectionLabelColor->asHex());
+			$tpl->setVariable("TEXT_COLOR", $section->getSectionLabel()->getColor()->asHex());
 			$tpl->setVariable("VALUE_X_PERCENTAGE", $section->getSectionLabel()->getPoint()->getX());
 			$tpl->setVariable("VALUE_Y_PERCENTAGE", $section->getSectionLabel()->getPoint()->getY());
 			$tpl->setVariable("SECTION_VALUE", $section->getSectionLabel()->getText());
