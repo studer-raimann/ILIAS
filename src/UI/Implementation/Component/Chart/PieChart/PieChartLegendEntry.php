@@ -84,7 +84,7 @@ class PieChartLegendEntry implements ChartLegendEntryInterface {
 
 
 	/**
-	 * @return Color
+	 * @inheritDoc
 	 */
 	public function getRectColor(): Color {
 		return $this->rectColor;
@@ -92,7 +92,7 @@ class PieChartLegendEntry implements ChartLegendEntryInterface {
 
 
 	/**
-	 * @return ChartPointInterface
+	 * @inheritDoc
 	 */
 	public function getRectPoint(): ChartPointInterface {
 		return $this->rectPoint;
@@ -100,7 +100,7 @@ class PieChartLegendEntry implements ChartLegendEntryInterface {
 
 
 	/**
-	 * @return string
+	 * @inheritDoc
 	 */
 	public function getText(): string {
 		return $this->text;
@@ -108,7 +108,7 @@ class PieChartLegendEntry implements ChartLegendEntryInterface {
 
 
 	/**
-	 * @return Color
+	 * @inheritDoc
 	 */
 	public function getColor(): Color {
 		return $this->color;
@@ -116,7 +116,7 @@ class PieChartLegendEntry implements ChartLegendEntryInterface {
 
 
 	/**
-	 * @return float
+	 * @inheritDoc
 	 */
 	public function getFontSize(): float {
 		return $this->fontSize;
@@ -124,7 +124,7 @@ class PieChartLegendEntry implements ChartLegendEntryInterface {
 
 
 	/**
-	 * @return ChartPointInterface
+	 * @inheritDoc
 	 */
 	public function getPoint(): ChartPointInterface {
 		return $this->point;

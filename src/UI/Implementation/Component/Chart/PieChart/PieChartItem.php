@@ -90,7 +90,7 @@ class PieChartItem implements PieChartItemInterface {
 
 
 	/**
-	 * @return float[]
+	 * @inheritDoc
 	 */
 	public function getValues(): array {
 		return $this->values;

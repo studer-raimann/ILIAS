@@ -21,7 +21,6 @@ use InvalidArgumentException;
 class PieChart implements PieChartInterface {
 
 	use ComponentHelper;
-
 	/**
 	 * @var ChartLegend
 	 */
@@ -41,19 +40,20 @@ class PieChart implements PieChartInterface {
 	/**
 	 * @var float|null
 	 */
-	protected $customTotalValue = null;
+	protected $customTotalValue = NULL;
 	/**
 	 * @var Color|null
 	 */
-	protected $customLegendTextColor = null;
+	protected $customLegendTextColor = NULL;
 	/**
 	 * @var Color|null
 	 */
-	protected $customSectionLabelColor = null;
+	protected $customSectionLabelColor = NULL;
 	/**
 	 * @var Color|null
 	 */
-	protected $customTotalLabelColor = null;
+	protected $customTotalLabelColor = NULL;
+
 
 	/**
 	 * PieChart constructor
@@ -122,7 +122,7 @@ class PieChart implements PieChartInterface {
 	/**
 	 * @inheritDoc
 	 */
-	public function withCustomTotalValue(?float $custom_total_value = null): PieChartInterface {
+	public function withCustomTotalValue(?float $custom_total_value = NULL): PieChartInterface {
 		if (!is_null($custom_total_value)) {
 			$this->checkFloatArg("custom_total_value", $custom_total_value);
 		}
@@ -134,9 +134,7 @@ class PieChart implements PieChartInterface {
 
 
 	/**
-	 * @param Color $color
-	 *
-	 * @return PieChartInterface
+	 * @inheritDoc
 	 */
 	public function withCustomLegendTextColor(Color $color): Chart {
 		$clone = clone $this;
@@ -147,9 +145,7 @@ class PieChart implements PieChartInterface {
 
 
 	/**
-	 * @param bool $state
-	 *
-	 * @return self
+	 * @inheritDoc
 	 */
 	public function withShowLegend(bool $state): Chart {
 		$clone = clone $this;
@@ -168,7 +164,7 @@ class PieChart implements PieChartInterface {
 
 
 	/**
-	 * @return ChartLegend
+	 * @inheritDoc
 	 */
 	public function getLegend(): ChartLegend {
 		return $this->legend;
@@ -176,7 +172,7 @@ class PieChart implements PieChartInterface {
 
 
 	/**
-	 * @return SectionInterface[]
+	 * @inheritDoc
 	 */
 	public function getChartItems(): array {
 		return $this->chartItems;
@@ -184,7 +180,7 @@ class PieChart implements PieChartInterface {
 
 
 	/**
-	 * @return Color|null
+	 * @inheritDoc
 	 */
 	public function getCustomLegendTextColor(): ?Color {
 		return $this->customLegendTextColor;
@@ -192,9 +188,7 @@ class PieChart implements PieChartInterface {
 
 
 	/**
-	 * @param Color $color
-	 *
-	 * @return PieChartInterface
+	 * @inheritDoc
 	 */
 	public function withCustomSectionLabelColor(Color $color): PieChartInterface {
 		$clone = clone $this;
@@ -205,9 +199,7 @@ class PieChart implements PieChartInterface {
 
 
 	/**
-	 * @param Color $color
-	 *
-	 * @return PieChartInterface
+	 * @inheritDoc
 	 */
 	public function withCustomTotalLabelColor(Color $color): PieChartInterface {
 		$clone = clone $this;
@@ -218,7 +210,7 @@ class PieChart implements PieChartInterface {
 
 
 	/**
-	 * @return Color|null
+	 * @inheritDoc
 	 */
 	public function getCustomSectionLabelColor(): ?Color {
 		return $this->customSectionLabelColor;
@@ -226,7 +218,7 @@ class PieChart implements PieChartInterface {
 
 
 	/**
-	 * @return Color|null
+	 * @inheritDoc
 	 */
 	public function getCustomTotalLabelColor(): ?Color {
 		return $this->customTotalLabelColor;

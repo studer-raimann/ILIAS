@@ -70,7 +70,7 @@ class PieChartLegend implements PieChartLegendInterface {
 
 
 	/**
-	 * @return ChartLegendEntryInterface[]
+	 * @inheritDoc
 	 */
 	public function getEntries(): array {
 		return $this->entries;
@@ -78,7 +78,7 @@ class PieChartLegend implements PieChartLegendInterface {
 
 
 	/**
-	 * @return float
+	 * @inheritDoc
 	 */
 	public function getRectSize(): float {
 		return $this->rectSize;
@@ -86,7 +86,7 @@ class PieChartLegend implements PieChartLegendInterface {
 
 
 	/**
-	 * @return float
+	 * @inheritDoc
 	 */
 	public function getRectSpacing(): float {
 		return $this->rectSpacing;
@@ -94,14 +94,17 @@ class PieChartLegend implements PieChartLegendInterface {
 
 
 	/**
-	 * @return float
+	 * @inheritDoc
 	 */
 	public function getExtraY(): float {
 		return $this->extraY;
 	}
 
 
+	/**
+	 * @inheritDoc
+	 */
 	public function getFontSize(): float {
-		// TODO: Implement getFontSize() method.
+		return $this->fontSize;
 	}
 }

@@ -64,7 +64,7 @@ class SectionLabel implements ChartLabelInterface {
 
 
 	/**
-	 * @return float
+	 * @inheritDoc
 	 */
 	public function getFontSize(): float {
 		return $this->fontSize;
@@ -72,7 +72,7 @@ class SectionLabel implements ChartLabelInterface {
 
 
 	/**
-	 * @return Color
+	 * @inheritDoc
 	 */
 	public function getColor(): Color {
 		return $this->color;
@@ -80,7 +80,7 @@ class SectionLabel implements ChartLabelInterface {
 
 
 	/**
-	 * @return ChartPointInterface
+	 * @inheritDoc
 	 */
 	public function getPoint(): ChartPointInterface {
 		return $this->point;
@@ -88,7 +88,7 @@ class SectionLabel implements ChartLabelInterface {
 
 
 	/**
-	 * @return string
+	 * @inheritDoc
 	 */
 	public function getText(): string {
 		return $this->text;

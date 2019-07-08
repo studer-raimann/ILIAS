@@ -30,5 +30,4 @@ interface ChartLegendEntry extends ChartLabel {
 	 * @return ChartPoint
 	 */
 	public function getRectPoint(): ChartPoint;
-
 }

@@ -79,9 +79,6 @@ class Section implements SectionInterface {
 	}
 
 
-	/**
-	 *
-	 */
 	private function calcStrokeLength(): void {
 		$this->stroke_length = $this->percentage / 2.549;
 	}
@@ -128,7 +125,7 @@ class Section implements SectionInterface {
 
 
 	/**
-	 * @return float[]
+	 * @inheritDoc
 	 */
 	public function getValues(): array {
 		return $this->values;
@@ -137,8 +134,6 @@ class Section implements SectionInterface {
 
 	/**
 	 * @inheritDoc
-	 *
-	 * @return ChartLabel
 	 */
 	public function getSectionLabel(): ChartLabel {
 		return $this->sectionLabel;
