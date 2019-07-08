@@ -38,7 +38,7 @@ If you would like to implement a new chart you should perform the following task
    
    ``` php
     ----- Implemented from Chart interface -----
-        /**
+    /**
      * @param Color $color
      *
      * @return self
@@ -53,15 +53,16 @@ If you would like to implement a new chart you should perform the following task
      */
     public function withCustomSectionLabelColor(Color $color): self;
    ```
+4. Create your classes by implementing either your custom interface (if available) or a predefined one.
    
-4. When creating the template for your chart make sure it's based on SVG.
+5. When creating the template for your chart make sure it's based on SVG, works based on percentages and uses SVG elements. (text, circle, rect, ...)
 
 	``` php
     <svg viewBox="...">
     	...
     </svg>
     ```
-5. As PHP doesn't support generics (yet) return types of interfaces are quite cumbersome to work with. To make the auto-completion work with extended methods from the Chart, ChartWithBackground and ChartWithoutBackground interfaces, it is suggested you do the following:
+6. As PHP doesn't support generics (yet) return types of interfaces are quite cumbersome to work with. To make the auto-completion work with extended methods from the Chart, ChartWithBackground and ChartWithoutBackground interfaces, it is suggested you do the following:
 
    In your main chart interface copy and paste all extended withX() methods and methods which return an extended interface for which you have made a custom interface, and...
    
