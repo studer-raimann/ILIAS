@@ -23,4 +23,3 @@ interface AggregateWithRevisionId {
 	 */
 	public function get_aggregate_revision();
 }
- 

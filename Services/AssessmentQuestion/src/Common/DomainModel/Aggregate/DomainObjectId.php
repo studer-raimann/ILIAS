@@ -2,8 +2,6 @@
 
 namespace ILIAS\AssessmentQuestion\Common\DomainModel\Aggregate;
 
-use Ramsey\Uuid\Uuid;
-
 /**
  * Class AbstractDomainObjectId
  *
@@ -23,7 +21,7 @@ class DomainObjectId {
 
 	public function __construct(string $id = null)
 	{
-		$this->id = $id ?: Uuid::uuid4();
+		$this->id = $id ?: Guid::create();
 	}
 
 	public function getId(): string {

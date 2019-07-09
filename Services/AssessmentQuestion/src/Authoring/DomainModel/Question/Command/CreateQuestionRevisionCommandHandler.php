@@ -3,7 +3,7 @@
 namespace ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Command;
 
 use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Projection\ProjectQuestionsToListDb;
-use ILIAS\AssessmentQuestion\Authoring\Infrastructure\Persistence\QuestionRepository;
+use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\QuestionRepository;
 use ILIAS\AssessmentQuestion\Common\DomainModel\Aggregate\DomainObjectId;
 use ILIAS\AssessmentQuestion\Common\RevisionFactory;
 use ILIAS\Messaging\Contract\Command\Command;
@@ -24,8 +24,8 @@ class CreateQuestionRevisionCommandHandler implements CommandHandler {
 	public function handle(Command $command) {
 		$question = QuestionRepository::getInstance()->getAggregateRootById(new DomainObjectId($command->getQuestionId()));
 		RevisionFactory::setRevisionId($question);
-		QuestionRepository::getInstance()->save($question);
 		$projector = new ProjectQuestionsToListDb();
 		$projector->project($question);
+		QuestionRepository::getInstance()->save($question);
 	}
 }
