@@ -2,13 +2,10 @@
 
 namespace ILIAS\AssessmentQuestion\Authoring\UserInterface\Web\Form;
 use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Question;
-use ILIAS\DI\Container;
-use ILIAS\UI\Implementation\Component\Input\Field\Numeric;
 use ilImageFileInputGUI;
 use ilNumberInputGUI;
 use \ilPropertyFormGUI;
 use \ilTextInputGUI;
-use ilUtil;
 use srag\CustomInputGUIs\SrAssessment\MultiLineInputGUI\MultiLineInputGUI;
 
 //JUST A DEMO

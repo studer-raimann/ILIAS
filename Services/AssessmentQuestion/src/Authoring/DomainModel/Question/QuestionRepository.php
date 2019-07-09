@@ -1,13 +1,10 @@
 <?php
-namespace  ILIAS\AssessmentQuestion\Authoring\Infrastructure\Persistence;
+
+namespace ILIAS\AssessmentQuestion\Authoring\DomainModel\Question;
 
 use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Question;
 use ILIAS\AssessmentQuestion\Authoring\Infrastructure\Persistence\ilDB\ilDBQuestionEventStore;
-use ILIAS\AssessmentQuestion\Common\DomainModel\Aggregate\AbstractEventSourcedAggregateRepository;
-use ILIAS\AssessmentQuestion\Common\DomainModel\Aggregate\AggregateRoot;
-use ILIAS\AssessmentQuestion\Common\DomainModel\Aggregate\DomainObjectId;
-use ILIAS\AssessmentQuestion\Common\DomainModel\Aggregate\Event\DomainEvents;
-use ILIAS\AssessmentQuestion\Common\DomainModel\Aggregate\Event\EventStore;
+use ILIAS\AssessmentQuestion\Common\DomainModel\Aggregate\{AbstractEventSourcedAggregateRepository, AggregateRoot, Event\DomainEvents, Event\EventStore};
 
 /**
  * Class QuestionRepository

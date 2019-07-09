@@ -2,11 +2,10 @@
 
 namespace ILIAS\AssessmentQuestion\Authoring\Infrastructure;
 
-use ILIAS\AssessmentQuestion\Common\DomainModel\Aggregate\Exception\DomainException;
+use DomainException;
 use ILIAS\Messaging\CommandBusBuilder;
 use ILIAS\Messaging\Contract\Command\CommandHandlerMiddleware;
 use ILIAS\Messaging\Contract\Command\Command;
-use SimpleBus\Message\Bus\Middleware\MessageBusMiddleware;
 
 /**
  * Class QuestionCommandBus
@@ -25,7 +24,7 @@ class QuestionCommandBus {
 	 */
 	protected $command_bus;
 	/**
-	 * @var MessageBusMiddleware $middlewares;
+	 * @var array $middlewares;
 	 */
 	protected $middlewares;
 
@@ -74,10 +73,6 @@ class QuestionCommandBus {
 
 		$this->handlers[$command_type]->handle($command);
 	}
-
-
-
-
 
 	/**
 	 * @param array $arr_additional_middleware

@@ -1,4 +1,5 @@
 <?php
+
 namespace ILIAS\AssessmentQuestion\Authoring\_PublicApi;
 
 use ilLanguage;

@@ -1,5 +1,9 @@
 <?php
 
+namespace ILIAS\AssessmentQuestion\Authoring\DomainModel\Question;
+
+use JsonSerializable;
+
 class QuestionData implements JsonSerializable {
 	/**
 	 * @var string

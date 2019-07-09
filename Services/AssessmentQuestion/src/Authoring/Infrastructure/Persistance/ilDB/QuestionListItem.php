@@ -1,5 +1,7 @@
 <?php
 
+namespace ILIAS\AssessmentQuestion\Authoring\Infrastructure\Persistence\ilDB;
+
 class QuestionListItem extends ActiveRecord {
 
 	const STORAGE_NAME = "asq_question_list_item";

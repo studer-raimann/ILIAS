@@ -1,8 +1,6 @@
 <?php
 
-use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Question;
-use ILIAS\AssessmentQuestion\Common\DomainModel\Aggregate\DomainObjectId;
-use ILIAS\AssessmentQuestion\Common\RevisionId;
+namespace ILIAS\AssessmentQuestion\Authoring\DomainModel\Question;
 
 class QuestionDto {
 

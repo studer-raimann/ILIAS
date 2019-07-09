@@ -1,5 +1,9 @@
 <?php
 
+namespace ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Projection;
+
+use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\QuestionData;
+use ILIAS\AssessmentQuestion\Authoring\Infrastructure\Persistence\ilDB\QuestionListItem;
 use ILIAS\AssessmentQuestion\Common\DomainModel\Aggregate\AggregateRoot;
 use ILIAS\AssessmentQuestion\Common\DomainModel\Aggregate\Event\Projection;
 

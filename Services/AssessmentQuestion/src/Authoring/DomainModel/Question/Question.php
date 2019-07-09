@@ -10,9 +10,7 @@ use ILIAS\AssessmentQuestion\Common\DomainModel\Aggregate\AggregateRoot;
 use ILIAS\AssessmentQuestion\Common\DomainModel\Aggregate\Event\DomainEvents;
 use ILIAS\AssessmentQuestion\Common\IsRevisable;
 use ILIAS\AssessmentQuestion\Common\RevisionId;
-use QuestionData;
 use ILIAS\AssessmentQuestion\Common\DomainModel\Aggregate\AbstractEventSourcedAggregateRoot;
-use QuestionId;
 
 /**
  * Class Question
@@ -38,10 +36,6 @@ class Question extends AbstractEventSourcedAggregateRoot implements IsRevisable 
 	 * @var int
 	 */
 	private $creator_id;
-	/**
-	 * @var bool
-	 */
-	private $online = false;
 	/**
 	 * @var QuestionData
 	 */
@@ -86,47 +80,8 @@ class Question extends AbstractEventSourcedAggregateRoot implements IsRevisable 
 		$this->revision_id = new RevisionId($event->getRevisionKey());
 	}
 
-	public function setOnline() {
-		$this->ExecuteEvent(new QuestionStatusHasChangedToOnlineEvent($this->id));
-	}
-
-
-	protected function applyQuestionStatusHasChangedToOnline(QuestionStatusHasChangedToOnlineEvent $event) {
-		$this->online = true;
-	}
-
-
-	public function setOffline() {
-		$this->ExecuteEvent(new QuestionStatusHasChangedToOfflineEvent($this->id));
-	}
-
-	protected function applyQuestionStatusHasChangedToOffline(QuestionStatusHasChangedToOfflineEvent $event) {
-		$this->online = false;
-	}
-
 	public function getOnlineState() : bool {
 		return $this->online;
-	}
-
-
-	// TODO intressiert mich revision hier wirklich, schlussendlich projektion mit id -> wenn bereits projektion mit id dann revision += 1 sonst revision = 1 change revision würde implizieren das ich nach revision 4 plötzlich revision 2 erstellen möchte
-	public function createRevision($revision) {
-		$this->ExecuteEvent(new RevisionWasCreated($this->id, $revision));
-	}
-
-
-	protected function applyRevisionWasCreated(RevisionWasCreated $event) {
-		//TODO implement me
-	}
-
-
-	public function changeSettingsFor($settings) {
-		$this->ExecuteEvent(new QuestionSettingsWereChanged($this->id, $settings));
-	}
-
-
-	protected function applyQuestionSettingsWereChanged(QuestionSettingsWereChanged $event) {
-		$this->settings = $event->settings();
 	}
 
 	/**

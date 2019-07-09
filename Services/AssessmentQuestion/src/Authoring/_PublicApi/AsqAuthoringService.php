@@ -5,14 +5,12 @@ namespace ILIAS\AssessmentQuestion\Authoring\_PublicApi;
 use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Command\CreateQuestionRevisionCommand;
 use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Command\SaveQuestionCommand;
 use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Question;
+use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\QuestionDto;
 use ILIAS\AssessmentQuestion\Authoring\Infrastructure\Persistence\ilDB\ilDBQuestionEventStore;
 use ILIAS\AssessmentQuestion\Authoring\Infrastructure\Persistence\QuestionRepository;
 use ILIAS\AssessmentQuestion\Common\DomainModel\Aggregate\DomainObjectId;
-use ILIAS\AssessmentQuestion\Common\RevisionFactory;
 use ILIAS\Messaging\CommandBusBuilder;
 use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Command\CreateQuestionCommand;
-use ProjectQuestionsToListDb;
-use QuestionDto;
 
 const MSG_SUCCESS = "success";
 

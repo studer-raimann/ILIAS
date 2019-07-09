@@ -1,6 +1,6 @@
 <?php
 
-namespace  ILIAS\AssessmentQuestion\AuthoringInfrastructure;
+namespace  ILIAS\AssessmentQuestion\Authoring\Infrastructure;
 
 /**
  * Class QuestionEventBus

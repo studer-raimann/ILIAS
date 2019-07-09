@@ -2,17 +2,12 @@
 
 namespace ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Command;
 
-use CreateQuestionRevisionCommand;
-use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Question;
+use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Projection\ProjectQuestionsToListDb;
 use ILIAS\AssessmentQuestion\Authoring\Infrastructure\Persistence\QuestionRepository;
 use ILIAS\AssessmentQuestion\Common\DomainModel\Aggregate\DomainObjectId;
 use ILIAS\AssessmentQuestion\Common\RevisionFactory;
 use ILIAS\Messaging\Contract\Command\Command;
 use ILIAS\Messaging\Contract\Command\CommandHandler;
-use ProjectQuestionsToListDb;
-use QuestionData;
-
-;
 
 /**
 * Class CreateQuestionHandler
