@@ -34,7 +34,7 @@ class Course implements AggregateRoot {
 	/**
 	 * @param $usr_id
 	 */
-	public function addCourseMember($usr_id) {exitlk[o]
+	public function addCourseMember($usr_id) {
 		if (!$this->hasManageMemberPermission()) {
 			//TODO
 			new ilException('No Permission');

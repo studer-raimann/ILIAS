@@ -4,9 +4,8 @@ namespace ILIAS\Messaging\Adapter;
 
 use ILIAS\Messaging\Adapter\SimpleBus\Command\CommandHandlerMiddlewareAdapter;
 use ILIAS\Messaging\Contract\Command\CommandHandlerMiddleware as CommandHandlerMiddlewareContract;
-use SimpleBus\Message\Recorder\AggregatesRecordedMessages;
 
-class AggregatesRecordedMessagesAdapter extends AggregatesRecordedMessages implements CommandHandlerMiddlewareContract {
+class AggregatesRecordedMessagesAdapter implements CommandHandlerMiddlewareContract {
 
 	/**
 	 * The provided $next callable should be called whenever the next middleware should start handling the message.
