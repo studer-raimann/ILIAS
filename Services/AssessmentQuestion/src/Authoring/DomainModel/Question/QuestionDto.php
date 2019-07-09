@@ -21,10 +21,6 @@ class QuestionDto {
 	 */
 	private $creator_id;
 	/**
-	 * @var bool
-	 */
-	private $online = false;
-	/**
 	 * @var QuestionData
 	 */
 	private $data;
@@ -39,7 +35,6 @@ class QuestionDto {
 		}
 
 		$dto->creator_id = $question->getCreatorId();
-		$dto->online = $question->getOnlineState();
 		$dto->data = $question->getData();
 		return $dto;
 	}
@@ -74,15 +69,6 @@ class QuestionDto {
 	public function getCreatorId(): int {
 		return $this->creator_id;
 	}
-
-
-	/**
-	 * @return bool
-	 */
-	public function isOnline(): bool {
-		return $this->online;
-	}
-
 
 	/**
 	 * @return QuestionData

@@ -2,7 +2,7 @@
 
 namespace ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Command;
 
-use ILIAS\AssessmentQuestion\Authoring\Infrastructure\Persistence\QuestionRepository;
+use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\QuestionRepository;
 use ILIAS\Messaging\Contract\Command\Command;
 use ILIAS\Messaging\Contract\Command\CommandHandler;
 

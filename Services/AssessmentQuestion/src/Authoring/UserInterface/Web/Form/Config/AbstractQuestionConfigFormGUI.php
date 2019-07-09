@@ -6,8 +6,8 @@
 namespace ILIAS\AssessmentQuestion\Authoring\UserInterface\Web\Form;
 
 use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Question;
-use QuestionData;
-use QuestionDto;
+use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\QuestionData;
+use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\QuestionDto;
 
 /**
  * Class AbstractQuestionFormGUI
