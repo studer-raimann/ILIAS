@@ -2,6 +2,7 @@
 
 namespace ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Command;
 
+use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\QuestionData;
 use ILIAS\Messaging\Contract\Command\AbstractCommand;
 use ILIAS\Messaging\Contract\Command\Command;
 
@@ -14,55 +15,32 @@ use ILIAS\Messaging\Contract\Command\Command;
 class CreateQuestionCommand extends AbstractCommand implements Command
 {
 	/**
-	 * @var string
+	 * @var QuestionData
 	 */
-	private $title;
-	/**
-	 * @var string
-	 */
-	private $description;
-	/**
-	 * @var string
-	 */
-	private $text;
+	private $data;
+
 	/**
 	 * CreateQuestionCommand constructor.
 	 *
-	 * @param string $title
-	 * @param string $description
-	 * @param string $text
-	 * @param int    $creator_id
+	 * @param QuestionData $data
+	 * @param int          $creator_id
 	 */
-	public function __construct(string $title, string $description, string $text, int $creator_id)
+	public function __construct(QuestionData $data, int $creator_id)
 	{
-		$this->title = $title;
-		$this->description = $description;
+		$this->data = $data;
 		$this->issuing_user_id = $creator_id;
-		$this->text = $text;
 	}
 
 	/**
 	 * @return string
 	 */
-	public function getDescription()
+	public function getData()
 	{
-		return $this->description;
-	}
-	/**
-	 * @return string
-	 */
-	public function getTitle()
-	{
-		return $this->title;
+		return $this->data;
 	}
 
 	public function getCreator()
 	{
 		return $this->issuing_user_id;
-	}
-
-	public function getText()
-	{
-		return $this->text;
 	}
 }

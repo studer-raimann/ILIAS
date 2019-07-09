@@ -17,11 +17,26 @@ class QuestionData implements JsonSerializable {
 	 * @var string
 	 */
 	private $question_text;
+	/**
+	 * @var string
+	 */
 
-	public function __construct(string $title, string $description, string $text) {
+	private $author;
+
+
+	/**
+	 * QuestionData constructor.
+	 *
+	 * @param string $title
+	 * @param string $description
+	 * @param string $text
+	 * @param string $author
+	 */
+	public function __construct(string $title, string $description, string $text, string $author) {
 		$this->title = $title;
 		$this->description = $description;
 		$this->question_text = $text;
+		$this->author = $author;
 	}
 
 
@@ -44,6 +59,10 @@ class QuestionData implements JsonSerializable {
 	 */
 	public function getQuestionText(): string {
 		return $this->question_text;
+	}
+
+	public function getAuthor(): string {
+		return $this->author;
 	}
 
 	/**

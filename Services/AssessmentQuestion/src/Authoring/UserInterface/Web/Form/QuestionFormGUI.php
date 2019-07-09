@@ -1,68 +1,73 @@
 <?php
 
 namespace ILIAS\AssessmentQuestion\Authoring\UserInterface\Web\Form;
+use ilHiddenInputGUI;
 use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Question;
+use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\QuestionData;
+use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\QuestionDto;
 use ilImageFileInputGUI;
 use ilNumberInputGUI;
 use \ilPropertyFormGUI;
 use \ilTextInputGUI;
 use srag\CustomInputGUIs\SrAssessment\MultiLineInputGUI\MultiLineInputGUI;
 
-//JUST A DEMO
-
 class QuestionFormGUI extends ilPropertyFormGUI {
-	const QuestionVAR_TITLE = 'title';
-	const QuestionVAR_POSSIBLEANSWER = 'possibleanswers';
-	const QuestionVAR_ANSWER = 'answer';
-	const QuestionVAR_POINTS = 'points';
-	const QuestionVAR_IMAGE = 'image';
-	const QuestionVAR_DESCRIPTION = 'description';
+	const VAR_TITLE = 'title';
+	const VAR_AUTHOR = 'author';
+	const VAR_DESCRIPTION = 'description';
+	const VAR_QUESTION = 'question';
 
 
 	/**
 	 * QuestionFormGUI constructor.
 	 *
-	 * @param Question $question
+	 * @param QuestionDto $question
 	 */
 	public function __construct($question) {
 		$this->initForm($question);
 
-
 		parent::__construct();
 	}
+
 
 	/**
 	 * Init settings property form
 	 *
 	 * @access private
+	 *
+	 * @param QuestionDto $question
 	 */
 	private function initForm($question) {
-
-		$title = new ilTextInputGUI('title', self::QuestionVAR_TITLE);
+		$title = new ilTextInputGUI('title', self::VAR_TITLE);
 		$title->setRequired(true);
-		$title->setValue($question->getTitle());
+		$title->setValue($question->getData()->getTitle());
 		$this->addItem($title);
 
-		$description = new ilTextInputGUI('description',self::QuestionVAR_DESCRIPTION);
-		$description->setValue($question->getDescription());
+		$title = new ilTextInputGUI('author', self::VAR_AUTHOR);
+		$title->setRequired(true);
+		$title->setValue($question->getData()->getAuthor());
+		$this->addItem($title);
+
+		$description = new ilTextInputGUI('description',self::VAR_DESCRIPTION);
+		$description->setValue($question->getData()->getDescription());
 		$this->addItem($description);
 
-
-		$muliliine = new MultiLineInputGUI('answers',self::QuestionVAR_POSSIBLEANSWER);
-		$muliliine->addInput(new ilTextInputGUI('answer', self::QuestionVAR_ANSWER));
-		$muliliine->addInput(new ilImageFileInputGUI('image', self::QuestionVAR_POINTS));
-		$muliliine->addInput(new ilNumberInputGUI('points', self::QuestionVAR_POINTS));
-		$this->addItem($muliliine);
-
+		$title = new ilTextInputGUI('title', self::VAR_TITLE);
+		$title->setRequired(true);
+		$title->setValue($question->getData()->getQuestionText());
+		$this->addItem($title);
 
 		$this->addCommandButton('save', 'Save');
 	}
 
-	public function getQuestionTitle() : string {
-		return $_POST[self::QuestionVAR_TITLE];
-	}
+	public function getQuestion() : QuestionDto {
+		$question = new QuestionDto();
 
-	public function getQuestionDescription() : string {
-		return $_POST[self::QuestionVAR_DESCRIPTION];
+		$question->setData(new QuestionData($_POST[self::VAR_TITLE],
+			                                $_POST[self::VAR_DESCRIPTION],
+			                                $_POST[self::VAR_QUESTION],
+			                                $_POST[self::VAR_AUTHOR]));
+
+		return $question;
 	}
 }

@@ -28,7 +28,7 @@ class CreateQuestionCommandHandler implements CommandHandler {
 	public function handle(Command $command) {
 
 		$question = Question::createNewQuestion($command->getCreator());
-		$question->setData(new QuestionData($command->getTitle(), $command->getDescription(), $command->getText()), $command->getCreator());
+		$question->setData($command->getData(), $command->getCreator());
 		QuestionRepository::getInstance()->save($question);
 	}
 }

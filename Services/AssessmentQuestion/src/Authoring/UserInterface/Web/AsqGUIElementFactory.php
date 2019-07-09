@@ -5,7 +5,9 @@ namespace ILIAS\AssessmentQuestion\Authoring\UserInterface\Web;
 use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\QuestionDto;
 use ILIAS\AssessmentQuestion\Authoring\UserInterface\Web\Form\AbstractQuestionConfigFormGUI;
 use ILIAS\AssessmentQuestion\Authoring\UserInterface\Web\Form\CreateQuestionFormGUI;
+use ILIAS\AssessmentQuestion\Authoring\UserInterface\Web\Form\QuestionFormGUI;
 use ILIAS\AssessmentQuestion\Authoring\UserInterface\Web\Form\SingleChoiceConfigFormGUI;
+use ilPropertyFormGUI;
 
 const MSG_SUCCESS = "success";
 
@@ -36,8 +38,8 @@ class AsqGUIElementFactory {
 		//EditQuestionPresentation.png
 	}
 
-	public static function CreateQuestionForm(QuestionDto $question):AbstractQuestionConfigFormGUI {
+	public static function CreateQuestionForm(QuestionDto $question):ilPropertyFormGUI {
 		//CreateQuestion.png
-		return new SingleChoiceConfigFormGUI($question);
+		return new QuestionFormGUI($question);
 	}
 }

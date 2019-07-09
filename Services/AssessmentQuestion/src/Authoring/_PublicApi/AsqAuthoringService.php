@@ -5,6 +5,7 @@ namespace ILIAS\AssessmentQuestion\Authoring\_PublicApi;
 use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Command\CreateQuestionRevisionCommand;
 use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Command\SaveQuestionCommand;
 use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Question;
+use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\QuestionData;
 use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\QuestionDto;
 use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\QuestionRepository;
 use ILIAS\AssessmentQuestion\Authoring\Infrastructure\Persistence\ilDB\ilDBQuestionEventStore;
@@ -47,9 +48,9 @@ class AsqAuthoringService {
 		return QuestionDto::CreateFromQuestion($question);
 	}
 
-	public function CreateQuestion(string $title, string $description, string $text): void {
+	public function CreateQuestion(QuestionData $data): void {
 		//CreateQuestion.png
-		CommandBusBuilder::getCommandBus()->handle(new CreateQuestionCommand($title, $description, $text, $this->asq_question_spec->user_id));
+		CommandBusBuilder::getCommandBus()->handle(new CreateQuestionCommand($data, $this->asq_question_spec->user_id));
 	}
 
 	public function SaveQuestion(QuestionDto $question_dto) {
