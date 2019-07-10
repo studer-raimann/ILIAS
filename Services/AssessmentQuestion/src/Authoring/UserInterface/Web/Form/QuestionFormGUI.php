@@ -26,6 +26,7 @@ class QuestionFormGUI extends ilPropertyFormGUI {
 
 	const VAR_EDITOR = 'editor';
 	const VAR_PRESENTER = 'presenter';
+	const VAR_SCORING = 'scoring';
 	const VAR_SHUFFLE = 'shuffle';
 	const VAR_WORKING_TIME = 'working_time';
 
@@ -106,6 +107,9 @@ class QuestionFormGUI extends ilPropertyFormGUI {
 		$presenter = new ilTextInputGUI('presenter', self::VAR_PRESENTER);
 		$this->addItem($presenter);
 
+		$scoring = new ilTextInputGUI('scoring', self::VAR_SCORING);
+		$this->addItem($scoring);
+
 		$working_time = new ilDurationInputGUI('working_time', self::VAR_WORKING_TIME);
 		$working_time->setShowHours(TRUE);
 		$working_time->setShowMinutes(TRUE);
@@ -119,6 +123,7 @@ class QuestionFormGUI extends ilPropertyFormGUI {
 		if ($question->getPlayConfiguration() !== null) {
 			$editor->setValue($question->getPlayConfiguration()->getEditorClass());
 			$presenter->setValue($question->getPlayConfiguration()->getPresenterClass());
+			$scoring->setValue($question->getPlayConfiguration()->getScoringClass());
 			$working_time->setHours($question->getPlayConfiguration()->getWorkingTime() / 3600);
 			$working_time->setMinutes($question->getPlayConfiguration()->getWorkingTime() / 60);
 			$working_time->setSeconds($question->getPlayConfiguration()->getWorkingTime() % 60);
@@ -144,11 +149,11 @@ class QuestionFormGUI extends ilPropertyFormGUI {
 	private function readPlayConfiguration(): QuestionPlayConfiguration {
 		/** @var ilDurationInputGUI $working_time_item */
 		$working_time_item = $this->getItemByPostVar(self::VAR_WORKING_TIME);
-
-
+		
 		return new QuestionPlayConfiguration(
 			$_POST[self::VAR_PRESENTER],
 			$_POST[self::VAR_EDITOR],
+			$_POST[self::VAR_SCORING],
 			$this->readWorkingTime($_POST[self::VAR_WORKING_TIME]),
 			filter_var($_POST[self::VAR_SHUFFLE], FILTER_VALIDATE_BOOLEAN)
 		);

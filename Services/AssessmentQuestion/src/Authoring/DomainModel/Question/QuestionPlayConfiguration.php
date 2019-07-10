@@ -22,6 +22,10 @@ class QuestionPlayConfiguration implements JsonSerializable{
 	 */
 	private $editor_class;
 	/**
+	 * @var string
+	 */
+	private $scoring_class;
+	/**
 	 * @var int Working time in seconds
 	 */
 	private $working_time;
@@ -30,18 +34,25 @@ class QuestionPlayConfiguration implements JsonSerializable{
 	 */
 	private $shuffle_answer_options;
 
-
 	/**
 	 * QuestionPlayConfiguration constructor.
 	 *
-	 * @param $presenter_class
-	 * @param $editor_class
-	 * @param $working_time
-	 * @param $shuffle_answer_options
+	 * @param string $presenter_class
+	 * @param string $editor_class
+	 * @param string $scoring_class
+	 * @param int    $working_time
+	 * @param bool   $shuffle_answer_options
 	 */
-	public function __construct(string $presenter_class, string $editor_class, int $working_time, bool $shuffle_answer_options) {
+	public function __construct(
+		string $presenter_class,
+		string $editor_class,
+		string $scoring_class,
+		int $working_time,
+		bool $shuffle_answer_options
+	) {
 		$this->presenter_class = $presenter_class;
 		$this->editor_class = $editor_class;
+		$this->scoring_class = $scoring_class;
 		$this->working_time = $working_time;
 		$this->shuffle_answer_options = $shuffle_answer_options;
 	}
@@ -53,7 +64,6 @@ class QuestionPlayConfiguration implements JsonSerializable{
 		return $this->presenter_class;
 	}
 
-
 	/**
 	 * @return string
 	 */
@@ -61,6 +71,12 @@ class QuestionPlayConfiguration implements JsonSerializable{
 		return $this->editor_class;
 	}
 
+	/**
+	 * @return string
+	 */
+	public function getScoringClass(): string {
+		return $this->scoring_class;
+	}
 
 	/**
 	 * @return int
@@ -75,7 +91,6 @@ class QuestionPlayConfiguration implements JsonSerializable{
 	public function isShuffleAnswerOptions(): bool {
 		return $this->shuffle_answer_options;
 	}
-
 
 	/**
 	 * Specify data which should be serialized to JSON

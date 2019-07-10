@@ -55,6 +55,7 @@ class QuestionPlayConfigurationSetEvent extends AbstractDomainEvent {
 		$data = json_decode($json_data);
 		$this->play_configuration = new QuestionPlayConfiguration($data->presenter_class,
 					                                              $data->editor_class,
+					                                              $data->scoring_class,
 					                                              $data->working_time,
 					                                              $data->shuffle_answer_options);
 	}
