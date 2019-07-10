@@ -14,10 +14,18 @@ use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Answer\Option\Value\
  * @author  Martin Studer <ms@studer-raimann.ch>
  * @author  Theodor Truffer <tt@studer-raimann.ch>
  */
-interface AnswerOption {
+class AnswerOption {
 
 	/**
-	 * @return AnswerOptionValue[]
+	 * @var string
 	 */
-	public function getAnswerOptionValues(): array;
+	private $option_id;
+	/**
+	 * @var ?DisplayDefinition
+	 */
+	private $display_definition;
+	/**
+	 * @var ?ScoringDefinition
+	 */
+	private $scoring_definition;
 }
