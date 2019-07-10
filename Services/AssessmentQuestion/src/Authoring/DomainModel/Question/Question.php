@@ -2,6 +2,7 @@
 
 namespace ILIAS\AssessmentQuestion\Authoring\DomainModel\Question;
 
+use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Event\QuestionPlayConfigurationSetEvent;
 use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Event\QuestionRevisionCreatedEvent;
 use ILIAS\AssessmentQuestion\Common\DomainModel\Aggregate\DomainObjectId;
 use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Event\QuestionDataSetEvent;
@@ -19,6 +20,9 @@ use ILIAS\AssessmentQuestion\Common\DomainModel\Aggregate\AbstractEventSourcedAg
  * @author  Martin Studer <ms@studer-raimann.ch>
  */
 class Question extends AbstractEventSourcedAggregateRoot implements IsRevisable {
+
+	//TODO get that from DB
+	const SYSTEM_USER_ID = 3;
 
 	/**
 	 * @var DomainObjectId
@@ -41,12 +45,15 @@ class Question extends AbstractEventSourcedAggregateRoot implements IsRevisable 
 	 */
 	private $data;
 	/**
+	 * @var QuestionPlayConfiguration
+	 */
+	private $play_configuration;
+
+	/**
 	 * @var
 	 */
 	private $possible_answers;
 
-	//TODO Sollten wir nicht darauf achten, dass ein Objekt immer einen korrekten
-	//Status hat? So hätten wir Fragen ohne Titel. Titel ist m.E. die Mindestanforderung einer Frage!
 	protected function __construct() {
 		parent::__construct();
 	}
@@ -76,6 +83,10 @@ class Question extends AbstractEventSourcedAggregateRoot implements IsRevisable 
 		$this->data = $event->getData();
 	}
 
+	protected function applyQuestionPlayConfigurationSetEvent(QuestionPlayConfigurationSetEvent $event) {
+		$this->play_configuration = $event->getPlayConfiguration();
+	}
+
 	protected function applyQuestionRevisionCreatedEvent(QuestionRevisionCreatedEvent $event) {
 		$this->revision_id = new RevisionId($event->getRevisionKey());
 	}
@@ -96,10 +107,24 @@ class Question extends AbstractEventSourcedAggregateRoot implements IsRevisable 
 	 * @param QuestionData $data
 	 * @param int          $creator_id
 	 */
-	public function setData(QuestionData $data, int $creator_id = 3): void {
+	public function setData(QuestionData $data, int $creator_id = self::SYSTEM_USER_ID): void {
 		$this->ExecuteEvent(new QuestionDataSetEvent($this->getAggregateId(), $creator_id, $data));
 	}
 
+	/**
+	 * @return QuestionPlayConfiguration
+	 */
+	public function getPlayConfiguration(): ?QuestionPlayConfiguration {
+		return $this->play_configuration;
+	}
+
+
+	/**
+	 * @param QuestionPlayConfiguration $play_configuration
+	 */
+	public function setPlayConfiguration(QuestionPlayConfiguration $play_configuration, int $creator_id = self::SYSTEM_USER_ID): void {
+		$this->ExecuteEvent(new QuestionPlayConfigurationSetEvent($this->getAggregateId(), $creator_id, $play_configuration));
+	}
 
 	/**
 	 * @return int

@@ -17,13 +17,13 @@ class QuestionDto {
 	 */
 	private $revision_name = "";
 	/**
-	 * @var int
-	 */
-	private $creator_id;
-	/**
 	 * @var QuestionData
 	 */
 	private $data;
+	/**
+	 * @var QuestionPlayConfiguration
+	 */
+	private $play_configuration;
 
 	public static function CreateFromQuestion(Question $question) : QuestionDto {
 		$dto = new QuestionDto();
@@ -34,8 +34,8 @@ class QuestionDto {
 			$dto->revision_name = $question->getRevisionName();
 		}
 
-		$dto->creator_id = $question->getCreatorId();
 		$dto->data = $question->getData();
+		$dto->play_configuration = $question->getPlayConfiguration();
 		return $dto;
 	}
 
@@ -46,6 +46,13 @@ class QuestionDto {
 		return $this->id;
 	}
 
+
+	/**
+	 * @param string $id
+	 */
+	public function setId(string $id) {
+		$this->id = $id;
+	}
 
 	/**
 	 * @return string
@@ -62,14 +69,6 @@ class QuestionDto {
 		return $this->revision_name;
 	}
 
-
-	/**
-	 * @return int
-	 */
-	public function getCreatorId(): int {
-		return $this->creator_id;
-	}
-
 	/**
 	 * @return QuestionData
 	 */
@@ -83,5 +82,21 @@ class QuestionDto {
 	 */
 	public function setData(QuestionData $data): void {
 		$this->data = $data;
+	}
+
+
+	/**
+	 * @return QuestionPlayConfiguration
+	 */
+	public function getPlayConfiguration(): ?QuestionPlayConfiguration {
+		return $this->play_configuration;
+	}
+
+
+	/**
+	 * @param QuestionPlayConfiguration $play_configuration
+	 */
+	public function setPlayConfiguration(QuestionPlayConfiguration $play_configuration): void {
+		$this->play_configuration = $play_configuration;
 	}
 }

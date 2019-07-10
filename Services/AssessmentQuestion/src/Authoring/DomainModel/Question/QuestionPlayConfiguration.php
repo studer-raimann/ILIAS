@@ -1,6 +1,17 @@
 <?php
 
-class QuestionPlayConfiguration {
+namespace ILIAS\AssessmentQuestion\Authoring\DomainModel\Question;
+
+use JsonSerializable;
+
+/**
+ * Class QuestionPlayConfiguration
+ *
+ * @package ILIAS\AssessmentQuestion\Authoring\DomainModel\Question
+ *
+ * @author  Adrian Lüthi <al@studer-raimann.ch>
+ */
+class QuestionPlayConfiguration implements JsonSerializable{
 
 	/**
 	 * @var string
@@ -28,7 +39,7 @@ class QuestionPlayConfiguration {
 	 * @param $working_time
 	 * @param $shuffle_answer_options
 	 */
-	public function __construct($presenter_class, $editor_class, $working_time, $shuffle_answer_options) {
+	public function __construct(string $presenter_class, string $editor_class, int $working_time, bool $shuffle_answer_options) {
 		$this->presenter_class = $presenter_class;
 		$this->editor_class = $editor_class;
 		$this->working_time = $working_time;
@@ -63,5 +74,18 @@ class QuestionPlayConfiguration {
 	 */
 	public function isShuffleAnswerOptions(): bool {
 		return $this->shuffle_answer_options;
+	}
+
+
+	/**
+	 * Specify data which should be serialized to JSON
+	 *
+	 * @link  https://php.net/manual/en/jsonserializable.jsonserialize.php
+	 * @return mixed data which can be serialized by <b>json_encode</b>,
+	 * which is a value of any type other than a resource.
+	 * @since 5.4.0
+	 */
+	public function jsonSerialize() {
+		return get_object_vars($this);
 	}
 }

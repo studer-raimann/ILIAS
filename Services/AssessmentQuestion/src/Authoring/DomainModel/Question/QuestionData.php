@@ -20,7 +20,6 @@ class QuestionData implements JsonSerializable {
 	/**
 	 * @var string
 	 */
-
 	private $author;
 
 
@@ -75,4 +74,5 @@ class QuestionData implements JsonSerializable {
 	 */
 	public function jsonSerialize() {
 		return get_object_vars($this);
-}}
+	}
+}

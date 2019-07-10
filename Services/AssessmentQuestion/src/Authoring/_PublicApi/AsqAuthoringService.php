@@ -62,6 +62,10 @@ class AsqAuthoringService {
 			$question->setData($question_dto->getData());
 		}
 
+		if ($question_dto->getPlayConfiguration() != $question->getPlayConfiguration()) {
+			$question->setPlayConfiguration($question_dto->getPlayConfiguration());
+		}
+
 		if(count($question->getRecordedEvents()->getEvents()) > 0) {
 			// save changes if there are any
 			CommandBusBuilder::getCommandBus()->handle(new SaveQuestionCommand($question, $this->asq_question_spec->user_id));
