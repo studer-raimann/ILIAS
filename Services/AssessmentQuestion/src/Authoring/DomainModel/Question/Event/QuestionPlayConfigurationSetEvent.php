@@ -47,16 +47,17 @@ class QuestionPlayConfigurationSetEvent extends AbstractDomainEvent {
 		return json_encode($this->play_configuration);
 	}
 
-
 	/**
 	 * @param string $json_data
 	 */
 	public function restoreEventBody(string $json_data) {
 		$data = json_decode($json_data);
-		$this->play_configuration = new QuestionPlayConfiguration($data->presenter_class,
-					                                              $data->editor_class,
-					                                              $data->scoring_class,
-					                                              $data->working_time,
-					                                              $data->shuffle_answer_options);
+		$this->play_configuration = new QuestionPlayConfiguration
+		(
+			$data->presenter_class,
+			$data->editor_class,
+			$data->scoring_class,
+			$data->working_time,
+			call_user_func(array($data->editor_class, 'deserialize'), $data->editor_configuration));
 	}
 }

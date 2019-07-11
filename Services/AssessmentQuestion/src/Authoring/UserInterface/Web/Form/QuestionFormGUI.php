@@ -1,6 +1,7 @@
 <?php
 
 namespace ILIAS\AssessmentQuestion\Authoring\UserInterface\Web\Form;
+
 use ilCheckboxInputGUI;
 use ilDurationInputGUI;
 use ilHiddenInputGUI;
@@ -8,9 +9,14 @@ use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Question;
 use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\QuestionData;
 use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\QuestionDto;
 use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\QuestionPlayConfiguration;
+use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Scoring\AvailableScorings;
+use ILIAS\AssessmentQuestion\Play\Editor\AvailableEditors;
+use ILIAS\AssessmentQuestion\Play\Editor\MultipleChoiceEditor;
+use ILIAS\AssessmentQuestion\Play\Presenter\AvailablePresenters;
 use ilImageFileInputGUI;
 use ilNumberInputGUI;
 use \ilPropertyFormGUI;
+use ilSelectInputGUI;
 use ilTextAreaInputGUI;
 use \ilTextInputGUI;
 use mysql_xdevapi\Exception;
@@ -27,7 +33,6 @@ class QuestionFormGUI extends ilPropertyFormGUI {
 	const VAR_EDITOR = 'editor';
 	const VAR_PRESENTER = 'presenter';
 	const VAR_SCORING = 'scoring';
-	const VAR_SHUFFLE = 'shuffle';
 	const VAR_WORKING_TIME = 'working_time';
 
 	/**
@@ -54,9 +59,9 @@ class QuestionFormGUI extends ilPropertyFormGUI {
 		$id->setValue($question->getId());
 		$this->addItem($id);
 
-		$this->initQuestionDataConfiguration($question);
+		$this->initQuestionDataConfiguration($question->getData());
 
-		$this->initiatePlayConfiguration($question);
+		$this->initiatePlayConfiguration($question->getPlayConfiguration());
 
 		$this->addCommandButton('save', 'Save');
 	}
@@ -72,43 +77,47 @@ class QuestionFormGUI extends ilPropertyFormGUI {
 		return $question;
 	}
 
+
 	/**
-	 * @param QuestionDto $question
+	 * @param QuestionData $data
 	 */
-	private function initQuestionDataConfiguration(QuestionDto $question): void {
+	private function initQuestionDataConfiguration(QuestionData $data): void {
 		$title = new ilTextInputGUI('title', self::VAR_TITLE);
 		$title->setRequired(true);
-		$title->setValue($question->getData()->getTitle());
+		$title->setValue($data->getTitle());
 		$this->addItem($title);
 
 		$author = new ilTextInputGUI('author', self::VAR_AUTHOR);
 		$author->setRequired(true);
-		$author->setValue($question->getData()->getAuthor());
+		$author->setValue($data->getAuthor());
 		$this->addItem($author);
 
 		$description = new ilTextInputGUI('description', self::VAR_DESCRIPTION);
-		$description->setValue($question->getData()->getDescription());
+		$description->setValue($data->getDescription());
 		$this->addItem($description);
 
 		$question_text = new ilTextAreaInputGUI('question', self::VAR_QUESTION);
 		$question_text->setRequired(true);
-		$question_text->setValue($question->getData()->getQuestionText());
+		$question_text->setValue($data->getQuestionText());
 		$question_text->setRows(10);
 		$this->addItem($question_text);
 	}
 
+
 	/**
-	 * @param $question
+	 * @param QuestionPlayConfiguration $play
 	 */
-	private function initiatePlayConfiguration(QuestionDto $question): void {
-		$editor = new ilTextInputGUI('editor', self::VAR_EDITOR);
+	private function initiatePlayConfiguration(?QuestionPlayConfiguration $play): void {
+		$editor = $this->createSelectControl('editor',self::VAR_EDITOR, AvailableEditors::getAvailableEditors());
 		$this->addItem($editor);
 
-		$presenter = new ilTextInputGUI('presenter', self::VAR_PRESENTER);
+		$this->initiateEditorConfiguration($play);
+
+		$presenter = $this->createSelectControl('presenter', self::VAR_PRESENTER, AvailablePresenters::getAvailablePresenters());
 		$this->addItem($presenter);
 
-		$scoring = new ilTextInputGUI('scoring', self::VAR_SCORING);
-		$this->addItem($scoring);
+		$scorings = $this->createSelectControl('scoring', self::VAR_SCORING, AvailableScorings::getAvailableScorings());
+		$this->addItem($scorings);
 
 		$working_time = new ilDurationInputGUI('working_time', self::VAR_WORKING_TIME);
 		$working_time->setShowHours(TRUE);
@@ -116,18 +125,31 @@ class QuestionFormGUI extends ilPropertyFormGUI {
 		$working_time->setShowSeconds(TRUE);
 		$this->addItem($working_time);
 
-		$shuffle = new ilCheckboxInputGUI('shuffle', self::VAR_SHUFFLE);
-		$shuffle->setValue(1);
-		$this->addItem($shuffle);
+		if ($play !== null) {
+			$editor->setValue($play->getEditorClass());
+			$presenter->setValue($play->getPresenterClass());
+			$scorings->setValue($play->getScoringClass());
+			$working_time->setHours($play->getWorkingTime() / 3600);
+			$working_time->setMinutes($play->getWorkingTime() / 60);
+			$working_time->setSeconds($play->getWorkingTime() % 60);
+		}
+	}
 
-		if ($question->getPlayConfiguration() !== null) {
-			$editor->setValue($question->getPlayConfiguration()->getEditorClass());
-			$presenter->setValue($question->getPlayConfiguration()->getPresenterClass());
-			$scoring->setValue($question->getPlayConfiguration()->getScoringClass());
-			$working_time->setHours($question->getPlayConfiguration()->getWorkingTime() / 3600);
-			$working_time->setMinutes($question->getPlayConfiguration()->getWorkingTime() / 60);
-			$working_time->setSeconds($question->getPlayConfiguration()->getWorkingTime() % 60);
-			$shuffle->setChecked($question->getPlayConfiguration()->isShuffleAnswerOptions());
+	private function createSelectControl(string $title, string $post_var, array $options) : ilSelectInputGUI {
+		$control = new ilSelectInputGUI($title, $post_var);
+		$control->setOptions($options);
+		return $control;
+	}
+
+	private function initiateEditorConfiguration(?QuestionPlayConfiguration $play) {
+		$editor_class = $play ? $play->getEditorClass() : 'ILIAS\\AssessmentQuestion\\Play\\Editor\\MultipleChoiceEditor';
+
+		foreach(
+			call_user_func(
+				array($editor_class, 'generateFields'),
+				$play ? $play->getEditorConfiguration() : null
+			) as $field) {
+			$this->addItem($field);
 		}
 	}
 
@@ -147,15 +169,14 @@ class QuestionFormGUI extends ilPropertyFormGUI {
 	 * @return QuestionPlayConfiguration
 	 */
 	private function readPlayConfiguration(): QuestionPlayConfiguration {
-		/** @var ilDurationInputGUI $working_time_item */
-		$working_time_item = $this->getItemByPostVar(self::VAR_WORKING_TIME);
-		
+		$editor_class = $_POST[self::VAR_EDITOR];
+
 		return new QuestionPlayConfiguration(
 			$_POST[self::VAR_PRESENTER],
-			$_POST[self::VAR_EDITOR],
+			$editor_class,
 			$_POST[self::VAR_SCORING],
 			$this->readWorkingTime($_POST[self::VAR_WORKING_TIME]),
-			filter_var($_POST[self::VAR_SHUFFLE], FILTER_VALIDATE_BOOLEAN)
+			call_user_func(array($editor_class, 'readConfig'))
 		);
 	}
 
