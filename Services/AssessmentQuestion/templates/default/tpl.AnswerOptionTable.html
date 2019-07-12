@@ -1,0 +1,41 @@
+<div class="form-inline" id="{ELEMENT_ID}">
+	<table class="singlechoicewizard table table-condensed table-striped">
+		<thead>
+			<tr>
+				<!-- BEGIN header_entry -->
+					<th>{HEADER_TEXT}</th>
+				<!-- END header_entry -->
+				<th><!-- BEGIN commands -->{COMMANDS_TEXT}<!-- END commands --></th>
+			</tr>
+		</thead>
+		<tbody class="scwzd">
+		<!-- BEGIN row -->
+			<tr  class="scwzd">
+				<!-- BEGIN body_entry -->
+				<td class="{ENTRY_CLASS}">
+					{ENTRY}
+				</td>
+				<!-- END body_entry -->
+				<td class="ilValignTop">
+					<button type="button" name="{CMD_ADD}" class="singlechoice_add btn btn-link" id="add_{ID}">
+						<span class="glyphicon glyphicon-plus"></span>
+					</button>
+					<button type="button" name="{CMD_REMOVE}" class="singlechoice_remove btn btn-link" id="remove_{ID}">
+						<span class="glyphicon glyphicon-minus"></span>
+					</button>
+					<!-- BEGIN move -->
+					<button type="button" name="{CMD_UP}" class="singlechoice_up btn btn-link" id="up_{ID}">{UP_BUTTON}</button>
+					<button type="button" name="{CMD_DOWN}" class="singlechoice_down btn btn-link" id="down_{ID}">{DOWN_BUTTON}</button>
+					<!-- END move -->
+				</td>
+			</tr>
+		<!-- END row -->
+		</tbody>
+	</table>
+	<!-- BEGIN image_disclaimer -->
+	<div class="ilFormInfo">{TXT_MAX_SIZE} {TXT_ALLOWED_SUFFIXES}</div>
+	<!-- END image_disclaimer -->
+	<!-- BEGIN count -->
+	<input type="hidden" name="{COUNT_POST_VAR}" value="1" />
+	<!-- END count -->
+</div>

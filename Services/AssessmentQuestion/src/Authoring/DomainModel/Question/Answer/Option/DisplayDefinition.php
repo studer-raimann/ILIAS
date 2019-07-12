@@ -15,5 +15,9 @@ use JsonSerializable;
  * @author  Theodor Truffer <tt@studer-raimann.ch>
  */
 abstract class DisplayDefinition implements JsonSerializable {
+	public abstract static function getFields() : array;
 
+	public abstract function getValues() : array;
+
+	public abstract static function getValueFromPost(string $index);
 }

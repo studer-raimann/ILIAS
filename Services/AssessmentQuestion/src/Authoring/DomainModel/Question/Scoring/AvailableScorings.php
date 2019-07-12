@@ -18,4 +18,8 @@ class AvailableScorings {
 		$scorings[MultipleChoiceScoring::class] = "MultipleChoiceScoring";
 		return $scorings;
 	}
+
+	public static function getDefaultScoring() {
+		return MultipleChoiceScoring::class;
+	}
 }

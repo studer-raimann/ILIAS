@@ -2,6 +2,8 @@
 
 namespace ILIAS\AssessmentQuestion\Authoring\DomainModel\Question;
 
+use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Answer\Option\AnswerOptions;
+
 class QuestionDto {
 
 	/**
@@ -24,7 +26,16 @@ class QuestionDto {
 	 * @var QuestionPlayConfiguration
 	 */
 	private $play_configuration;
+	/**
+	 * @var AnswerOptions
+	 */
+	private $answer_options;
 
+	/**
+	 * @param Question $question
+	 *
+	 * @return QuestionDto
+	 */
 	public static function CreateFromQuestion(Question $question) : QuestionDto {
 		$dto = new QuestionDto();
 		$dto->id = $question->getAggregateId()->getId();
@@ -36,6 +47,7 @@ class QuestionDto {
 
 		$dto->data = $question->getData();
 		$dto->play_configuration = $question->getPlayConfiguration();
+		$dto->answer_options = $question->getAnswerOptions();
 		return $dto;
 	}
 
@@ -98,5 +110,21 @@ class QuestionDto {
 	 */
 	public function setPlayConfiguration(QuestionPlayConfiguration $play_configuration): void {
 		$this->play_configuration = $play_configuration;
+	}
+
+
+	/**
+	 * @return AnswerOptions
+	 */
+	public function getAnswerOptions(): AnswerOptions {
+		return $this->answer_options;
+	}
+
+
+	/**
+	 * @param AnswerOptions $answer_options
+	 */
+	public function setAnswerOptions(AnswerOptions $answer_options): void {
+		$this->answer_options = $answer_options;
 	}
 }

@@ -3,6 +3,8 @@
 namespace ILIAS\AssessmentQuestion\Play\Editor;
 
 use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Answer\Option\DisplayDefinition;
+use ILIAS\AssessmentQuestion\Authoring\UserInterface\Web\Form\Config\AnswerOptionForm;
+use ILIAS\AssessmentQuestion\Authoring\UserInterface\Web\Form\Config\AnswerOptionFormFieldDefinition;
 
 /**
  * Class MultipleChoiceEditorDisplayDefinition
@@ -16,6 +18,9 @@ use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Answer\Option\Displa
  */
 class MultipleChoiceEditorDisplayDefinition extends DisplayDefinition {
 
+	const VAR_MCDD_TEXT = 'mcdd_text' ;
+	const VAR_MCDD_IMAGE = 'mcdd_image';
+
 	/**
 	 * @var string
 	 */
@@ -25,9 +30,9 @@ class MultipleChoiceEditorDisplayDefinition extends DisplayDefinition {
 	 */
 	private $image;
 
-	public function __construct(string $text, string $timage) {
+	public function __construct(string $text, string $image) {
 		$this->text = $text;
-		$this->image = $timage;
+		$this->image = $image;
 	}
 
 
@@ -36,6 +41,10 @@ class MultipleChoiceEditorDisplayDefinition extends DisplayDefinition {
 	 */
 	public function getText(): string {
 		return $this->text;
+	}
+
+	public function getImage(): string {
+		return $this->image;
 	}
 
 	/**
@@ -48,5 +57,33 @@ class MultipleChoiceEditorDisplayDefinition extends DisplayDefinition {
 	 */
 	public function jsonSerialize() {
 		return get_object_vars($this);
+	}
+
+	public static function getFields(): array {
+		$fields[] = new AnswerOptionFormFieldDefinition(
+			'Answer Text',
+			AnswerOptionFormFieldDefinition::TYPE_TEXT,
+			self::VAR_MCDD_TEXT
+		);
+
+		$fields[] = new AnswerOptionFormFieldDefinition(
+			'Answer Image',
+			AnswerOptionFormFieldDefinition::TYPE_IMAGE,
+			self::VAR_MCDD_IMAGE
+		);
+
+
+		return $fields;
+	}
+
+	public static function getValueFromPost(string $index) {
+		return new MultipleChoiceEditorDisplayDefinition(
+			$_POST[$index . self::VAR_MCDD_TEXT],
+			$_POST[$index . self::VAR_MCDD_IMAGE]
+		);
+	}
+
+	public function getValues(): array {
+		return [$this->text, $this->image];
 	}
 }

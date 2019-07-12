@@ -2,6 +2,7 @@
 
 namespace ILIAS\AssessmentQuestion\Authoring\DomainModel\Question;
 
+use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Answer\Option\AnswerOptions;
 use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Event\QuestionPlayConfigurationSetEvent;
 use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Event\QuestionRevisionCreatedEvent;
 use ILIAS\AssessmentQuestion\Common\DomainModel\Aggregate\DomainObjectId;
@@ -48,13 +49,13 @@ class Question extends AbstractEventSourcedAggregateRoot implements IsRevisable 
 	 * @var QuestionPlayConfiguration
 	 */
 	private $play_configuration;
-
 	/**
-	 * @var
+	 * @var AnswerOptions
 	 */
-	private $possible_answers;
+	private $answer_options;
 
 	protected function __construct() {
+		$this->answer_options = new AnswerOptions();
 		parent::__construct();
 	}
 
@@ -102,7 +103,6 @@ class Question extends AbstractEventSourcedAggregateRoot implements IsRevisable 
 		return $this->data;
 	}
 
-
 	/**
 	 * @param QuestionData $data
 	 * @param int          $creator_id
@@ -124,6 +124,13 @@ class Question extends AbstractEventSourcedAggregateRoot implements IsRevisable 
 	 */
 	public function setPlayConfiguration(QuestionPlayConfiguration $play_configuration, int $creator_id = self::SYSTEM_USER_ID): void {
 		$this->ExecuteEvent(new QuestionPlayConfigurationSetEvent($this->getAggregateId(), $creator_id, $play_configuration));
+	}
+
+	/**
+	 * @return AnswerOptions
+	 */
+	public function getAnswerOptions(): AnswerOptions {
+		return $this->answer_options;
 	}
 
 	/**

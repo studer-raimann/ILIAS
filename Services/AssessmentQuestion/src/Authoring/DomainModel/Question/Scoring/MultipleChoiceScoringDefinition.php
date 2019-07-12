@@ -3,6 +3,7 @@
 namespace ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Scoring;
 
 use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Answer\Option\ScoringDefinition;
+use ILIAS\AssessmentQuestion\Authoring\UserInterface\Web\Form\Config\AnswerOptionFormFieldDefinition;
 
 /**
  * Class MultipleChoiceScoringDefinition
@@ -15,6 +16,9 @@ use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Answer\Option\Scorin
  * @author  Theodor Truffer <tt@studer-raimann.ch>
  */
 class MultipleChoiceScoringDefinition extends ScoringDefinition {
+
+	const VAR_MCSD_SELECTED = 'mcsd_selected';
+	const VAR_MCSD_UNSELECTED = 'mcsd_unselected';
 
 	/**
 	 * @var int
@@ -46,7 +50,6 @@ class MultipleChoiceScoringDefinition extends ScoringDefinition {
 		return $this->points_selected;
 	}
 
-
 	/**
 	 * @return int
 	 */
@@ -64,5 +67,32 @@ class MultipleChoiceScoringDefinition extends ScoringDefinition {
 	 */
 	public function jsonSerialize() {
 		return get_object_vars($this);
+	}
+
+	public static function getFields(): array {
+		$fields[] = new AnswerOptionFormFieldDefinition(
+			'Checked',
+			AnswerOptionFormFieldDefinition::TYPE_NUMBER,
+			self::VAR_MCSD_SELECTED
+		);
+
+		$fields[] = new AnswerOptionFormFieldDefinition(
+			'Unchecked',
+			AnswerOptionFormFieldDefinition::TYPE_NUMBER,
+			self::VAR_MCSD_UNSELECTED
+		);
+
+		return $fields;
+	}
+
+	public static function getValueFromPost(string $index) {
+		return new MultipleChoiceScoringDefinition(
+			$_POST[$index . self::VAR_MCSD_SELECTED],
+			$_POST[$index . self::VAR_MCSD_UNSELECTED]
+		);
+	}
+
+	public function getValues(): array {
+		return [$this->points_selected, $this->points_unselected];
 	}
 }

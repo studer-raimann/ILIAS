@@ -18,4 +18,8 @@ class AvailableEditors {
 		$editors[MultipleChoiceEditor::class] = "MultipleChoiceEditor";
 		return $editors;
 	}
+
+	public static function getDefaultEditor() {
+		return MultipleChoiceEditor::class;
+	}
 }

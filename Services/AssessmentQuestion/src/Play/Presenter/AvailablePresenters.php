@@ -18,4 +18,8 @@ class AvailablePresenters {
 		$editors[DefaultPresenter::class] = "DefaultPresenter";
 		return $editors;
 	}
+
+	public static function getDefaultPresenter() {
+		return DefaultPresenter::class;
+	}
 }
