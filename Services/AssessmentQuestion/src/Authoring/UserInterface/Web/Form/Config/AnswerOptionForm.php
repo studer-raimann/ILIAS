@@ -54,8 +54,6 @@ class AnswerOptionForm extends ilTextInputGUI {
 
 		/** @var AnswerOption $option */
 		foreach ($this->options as $option) {
-			$tpl->setCurrentBlock('row');
-
 			$def_pos = 0;
 
 			/** @var AnswerOptionFormFieldDefinition $definition */
@@ -68,6 +66,7 @@ class AnswerOptionForm extends ilTextInputGUI {
 				$def_pos += 1;
 			}
 
+			$tpl->setCurrentBlock('row');
 			$tpl->setVariable('ID', $row_id);
 			$tpl->parseCurrentBlock();
 

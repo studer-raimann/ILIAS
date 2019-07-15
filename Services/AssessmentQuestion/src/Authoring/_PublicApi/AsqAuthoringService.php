@@ -59,11 +59,15 @@ class AsqAuthoringService {
 		$question = QuestionRepository::getInstance()->getAggregateRootById(new DomainObjectId($question_dto->getId()));
 
 		if ($question_dto->getData() != $question->getData()) {
-			$question->setData($question_dto->getData());
+			$question->setData($question_dto->getData(), $this->asq_question_spec->user_id);
 		}
 
 		if ($question_dto->getPlayConfiguration() != $question->getPlayConfiguration()) {
-			$question->setPlayConfiguration($question_dto->getPlayConfiguration());
+			$question->setPlayConfiguration($question_dto->getPlayConfiguration(), $this->asq_question_spec->user_id);
+		}
+
+		if ($question_dto->getAnswerOptions() != $question->getAnswerOptions()){
+			$question->setAnswerOptions($question_dto->getAnswerOptions(), $this->asq_question_spec->user_id);
 		}
 
 		if(count($question->getRecordedEvents()->getEvents()) > 0) {

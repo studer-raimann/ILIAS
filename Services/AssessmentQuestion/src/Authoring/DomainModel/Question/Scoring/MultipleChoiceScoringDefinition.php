@@ -4,6 +4,7 @@ namespace ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Scoring;
 
 use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Answer\Option\ScoringDefinition;
 use ILIAS\AssessmentQuestion\Authoring\UserInterface\Web\Form\Config\AnswerOptionFormFieldDefinition;
+use stdClass;
 
 /**
  * Class MultipleChoiceScoringDefinition
@@ -36,7 +37,7 @@ class MultipleChoiceScoringDefinition extends ScoringDefinition {
 	 * @param int $points_selected
 	 * @param int $points_unselected
 	 */
-	public function __construct(int $points_selected, int $points_unselected = 0)
+	public function __construct(int $points_selected = 0, int $points_unselected = 0)
 	{
 		$this->points_selected = $points_selected;
 		$this->points_unselected = $points_unselected;
@@ -94,5 +95,13 @@ class MultipleChoiceScoringDefinition extends ScoringDefinition {
 
 	public function getValues(): array {
 		return [$this->points_selected, $this->points_unselected];
+	}
+
+
+	public static function deserialize(stdClass $data) {
+		return new MultipleChoiceScoringDefinition(
+			$data->points_selected,
+			$data->points_unselected
+		);
 	}
 }

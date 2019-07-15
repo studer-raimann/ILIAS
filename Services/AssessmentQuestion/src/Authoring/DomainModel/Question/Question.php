@@ -3,6 +3,7 @@
 namespace ILIAS\AssessmentQuestion\Authoring\DomainModel\Question;
 
 use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Answer\Option\AnswerOptions;
+use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Event\QuestionAnswerOptionsSetEvent;
 use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Event\QuestionPlayConfigurationSetEvent;
 use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Event\QuestionRevisionCreatedEvent;
 use ILIAS\AssessmentQuestion\Common\DomainModel\Aggregate\DomainObjectId;
@@ -74,7 +75,6 @@ class Question extends AbstractEventSourcedAggregateRoot implements IsRevisable 
 		return $question;
 	}
 
-
 	protected function applyQuestionCreatedEvent(QuestionCreatedEvent $event) {
 		$this->id = $event->getAggregateId();
 		$this->creator_id = $event->getInitiatingUserId();
@@ -90,6 +90,10 @@ class Question extends AbstractEventSourcedAggregateRoot implements IsRevisable 
 
 	protected function applyQuestionRevisionCreatedEvent(QuestionRevisionCreatedEvent $event) {
 		$this->revision_id = new RevisionId($event->getRevisionKey());
+	}
+
+	protected function applyQuestionAnswerOptionsSetEvent(QuestionAnswerOptionsSetEvent $event) {
+		$this->answer_options = $event->getAnswerOptions();
 	}
 
 	public function getOnlineState() : bool {
@@ -131,6 +135,10 @@ class Question extends AbstractEventSourcedAggregateRoot implements IsRevisable 
 	 */
 	public function getAnswerOptions(): AnswerOptions {
 		return $this->answer_options;
+	}
+
+	public function setAnswerOptions(AnswerOptions $options, int $creator_id = self::SYSTEM_USER_ID) {
+		$this->ExecuteEvent(new QuestionAnswerOptionsSetEvent($this->getAggregateId(), $creator_id, $options));
 	}
 
 	/**

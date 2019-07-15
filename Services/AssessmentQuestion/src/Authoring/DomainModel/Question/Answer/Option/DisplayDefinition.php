@@ -3,6 +3,7 @@
 namespace ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Answer\Option;
 
 use JsonSerializable;
+use stdClass;
 
 /**
  * Abstract Class DisplayDefinition
@@ -20,4 +21,6 @@ abstract class DisplayDefinition implements JsonSerializable {
 	public abstract function getValues() : array;
 
 	public abstract static function getValueFromPost(string $index);
+
+	public abstract static function deserialize(stdClass $data);
 }

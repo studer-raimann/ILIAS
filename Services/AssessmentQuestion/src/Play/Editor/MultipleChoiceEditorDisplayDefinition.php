@@ -5,6 +5,7 @@ namespace ILIAS\AssessmentQuestion\Play\Editor;
 use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Answer\Option\DisplayDefinition;
 use ILIAS\AssessmentQuestion\Authoring\UserInterface\Web\Form\Config\AnswerOptionForm;
 use ILIAS\AssessmentQuestion\Authoring\UserInterface\Web\Form\Config\AnswerOptionFormFieldDefinition;
+use stdClass;
 
 /**
  * Class MultipleChoiceEditorDisplayDefinition
@@ -85,5 +86,13 @@ class MultipleChoiceEditorDisplayDefinition extends DisplayDefinition {
 
 	public function getValues(): array {
 		return [$this->text, $this->image];
+	}
+
+
+	public static function deserialize(stdClass $data) {
+		return new MultipleChoiceEditorDisplayDefinition(
+			$data->text,
+			$data->image
+		);
 	}
 }
