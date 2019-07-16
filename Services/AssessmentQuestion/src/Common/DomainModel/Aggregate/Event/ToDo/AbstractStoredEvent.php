@@ -3,7 +3,6 @@
 namespace ILIAS\AssessmentQuestion\Common\Event;
 
 use ActiveRecord;
-use DateTime;
 use ilDateTime;
 use \ilException;
 

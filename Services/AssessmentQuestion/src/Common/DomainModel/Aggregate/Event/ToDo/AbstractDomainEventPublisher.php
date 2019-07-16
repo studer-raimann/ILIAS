@@ -11,6 +11,7 @@ namespace ILIAS\AssessmentQuestion\Common\Event;
  */
 class AbstractDomainEventPublisher implements DomainEventPublisher {
 
+
 	/**
 	 * @var array
 	 */

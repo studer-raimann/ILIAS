@@ -4,6 +4,7 @@ namespace ILIAS\AssessmentQuestion\Common\Event;
 
 use ActiveRecord;
 
+
 /**
  * Class AbstractEventStore
  *
