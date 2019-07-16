@@ -25,9 +25,13 @@ class AnswerOptionForm extends ilTextInputGUI {
 	public function __construct(string $title, array $definitions, array $options) {
 		parent::__construct($title);
 		$this->definitions = $definitions;
+
+		//add empty row if there are no answers
+		if (sizeof($options) === 0) {
+			$this->options[] = null;
+		}
+
 		$this->options = $options;
-		// add empty row to add new items
-		$this->options[] = null;
 	}
 
 	/**
@@ -75,6 +79,7 @@ class AnswerOptionForm extends ilTextInputGUI {
 
 		$tpl->setCurrentBlock('count');
 		$tpl->setVariable('COUNT_POST_VAR', self::COUNT_POST_VAR);
+		$tpl->setVariable('COUNT', sizeof($this->options));
 		$tpl->parseCurrentBlock();
 
 

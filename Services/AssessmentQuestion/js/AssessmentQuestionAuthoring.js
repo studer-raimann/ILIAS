@@ -22,11 +22,6 @@ let remove_row = function() {
     }
 };
 
-let change_count = function(delta) {
-    let count = $(".js_count");
-    count.val(parseInt(count.val()) + delta);
-};
-
 let clear_row = function(row) {
     row.find("input").each(function() {
         $(this).val('');
