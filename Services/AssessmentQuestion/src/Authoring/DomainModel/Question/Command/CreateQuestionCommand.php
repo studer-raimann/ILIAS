@@ -27,8 +27,8 @@ class CreateQuestionCommand extends AbstractCommand implements Command
 	 */
 	public function __construct(QuestionData $data, int $creator_id)
 	{
+		parent::__construct($creator_id);
 		$this->data = $data;
-		$this->issuing_user_id = $creator_id;
 	}
 
 	/**

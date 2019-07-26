@@ -61,7 +61,7 @@ abstract class AbstractScoring {
 	 *
 	 * @return JsonSerializable|null
 	 */
-	public static function deserialize(stdClass $input) : ?JsonSerializable {
+	public static function deserialize(stdClass $input = null) : ?JsonSerializable {
 		return null;
 	}
 }

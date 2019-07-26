@@ -2,7 +2,7 @@
 
 namespace ILIAS\AssessmentQuestion\Play\Presenter;
 
-use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Question;
+use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\QuestionDto;
 use JsonSerializable;
 use stdClass;
 
@@ -18,24 +18,30 @@ use stdClass;
  */
 abstract class AbstractPresenter {
 	/**
-	 * @var Question
+	 * @var QuestionDto
 	 */
-	private $question;
+	protected $question;
 	/**
-	 * @var array
+	 * @var
 	 */
-	private $configuration;
+	protected $editor;
 
 
 	/**
 	 * AbstractEditor constructor.
 	 *
-	 * @param Question   $question
+	 * @param QuestionDto   $question
 	 * @param array|null $configuration
 	 */
-	public function __construct(Question $question, array $configuration = null) {
+	public function __construct(QuestionDto $question) {
 		$this->question = $question;
-		$this->configuration = $configuration;
+
+		$editor_class = $question->getPlayConfiguration()->getEditorClass();
+		$this->editor = new $editor_class($question);
+	}
+
+	public function getEditor() {
+		return $this->editor;
 	}
 
 	/**
@@ -62,7 +68,7 @@ abstract class AbstractPresenter {
 	 *
 	 * @return JsonSerializable|null
 	 */
-	public static function deserialize(stdClass $input) : ?JsonSerializable {
+	public static function deserialize(?stdClass $input) : ?JsonSerializable {
 		return null;
 	}
 }

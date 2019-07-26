@@ -4,8 +4,9 @@ namespace ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Answer;
 use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Answer\Option\AnswerOption;
 use ILIAS\AssessmentQuestion\Common\DomainModel\Aggregate\DomainObjectId;
 use ILIAS\AssessmentQuestion\Common\DomainModel\Aggregate\Entity;
+use JsonSerializable;
 
-class Answer implements Entity {
+class Answer implements Entity, JsonSerializable {
 
 	/**
 	 * @var int
@@ -19,13 +20,17 @@ class Answer implements Entity {
 	 * @var string
 	 */
 	protected $value;
+	/**
+	 * @var string
+	 */
+	protected $test_id;
 
-	public function __construct(int $anwerer_id, string $question_id, string $value) {
+	public function __construct(int $anwerer_id, string $question_id, string $test_id, string $value) {
 		$this->answerer_id = $anwerer_id;
 		$this->question_id = $question_id;
+		$this->test_id = $test_id;
 		$this->value = $value;
 	}
-
 
 	/**
 	 * @return int
@@ -34,7 +39,6 @@ class Answer implements Entity {
 		return $this->answerer_id;
 	}
 
-
 	/**
 	 * @return string
 	 */
@@ -42,11 +46,29 @@ class Answer implements Entity {
 		return $this->question_id;
 	}
 
-
 	/**
 	 * @return string
 	 */
 	public function getValue(): string {
 		return $this->value;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getTestId(): string {
+		return $this->test_id;
+	}
+
+	/**
+	 * Specify data which should be serialized to JSON
+	 *
+	 * @link  https://php.net/manual/en/jsonserializable.jsonserialize.php
+	 * @return mixed data which can be serialized by <b>json_encode</b>,
+	 * which is a value of any type other than a resource.
+	 * @since 5.4.0
+	 */
+	public function jsonSerialize() {
+		return get_object_vars($this);
 	}
 }

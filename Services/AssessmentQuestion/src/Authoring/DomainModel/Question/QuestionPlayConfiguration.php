@@ -18,6 +18,10 @@ class QuestionPlayConfiguration implements JsonSerializable{
 	 */
 	private $presenter_class;
 	/**
+	 * @var JsonSerializable
+	 */
+	private $presenter_configuration;
+	/**
 	 * @var string
 	 */
 	private $editor_class;
@@ -29,6 +33,10 @@ class QuestionPlayConfiguration implements JsonSerializable{
 	 * @var string
 	 */
 	private $scoring_class;
+	/**
+	 * @var JsonSerializable
+	 */
+	private $scoring_configuration;
 	/**
 	 * @var int Working time in seconds
 	 */
@@ -43,19 +51,25 @@ class QuestionPlayConfiguration implements JsonSerializable{
 	 * @param string                $scoring_class
 	 * @param int                   $working_time
 	 * @param JsonSerializable|null $editor_configuration
+	 * @param JsonSerializable|null $presenter_configuration
+	 * @param JsonSerializable|null $scoring_configuration
 	 */
 	public function __construct(
 		string $presenter_class,
 		string $editor_class,
 		string $scoring_class,
 		int $working_time,
-		JsonSerializable $editor_configuration = null
+		JsonSerializable $editor_configuration = null,
+		JsonSerializable $presenter_configuration = null,
+		JsonSerializable $scoring_configuration = null
 	) {
 		$this->presenter_class = $presenter_class;
 		$this->editor_class = $editor_class;
 		$this->scoring_class = $scoring_class;
 		$this->working_time = $working_time;
 		$this->editor_configuration = $editor_configuration;
+		$this->presenter_configuration = $presenter_configuration;
+		$this->scoring_configuration = $scoring_configuration;
 	}
 
 	/**
@@ -91,6 +105,22 @@ class QuestionPlayConfiguration implements JsonSerializable{
 	 */
 	public function getEditorConfiguration(): ?JsonSerializable {
 		return $this->editor_configuration;
+	}
+
+
+	/**
+	 * @return JsonSerializable
+	 */
+	public function getPresenterConfiguration(): ?JsonSerializable {
+		return $this->presenter_configuration;
+	}
+
+
+	/**
+	 * @return JsonSerializable
+	 */
+	public function getScoringConfiguration(): ?JsonSerializable {
+		return $this->scoring_configuration;
 	}
 
 	/**

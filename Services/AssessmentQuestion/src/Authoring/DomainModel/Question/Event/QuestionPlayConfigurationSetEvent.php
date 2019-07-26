@@ -58,6 +58,8 @@ class QuestionPlayConfigurationSetEvent extends AbstractDomainEvent {
 			$data->editor_class,
 			$data->scoring_class,
 			$data->working_time,
-			call_user_func(array($data->editor_class, 'deserialize'), $data->editor_configuration));
+			call_user_func(array($data->editor_class, 'deserialize'), $data->editor_configuration),
+			call_user_func(array($data->presenter_class, 'deserialize'), $data->presenter_configuration),
+			call_user_func(array($data->scoring_class, 'deserialize'), $data->scoring_configuration));
 	}
 }

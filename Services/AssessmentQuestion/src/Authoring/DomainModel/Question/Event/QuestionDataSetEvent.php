@@ -47,7 +47,6 @@ class QuestionDataSetEvent extends AbstractDomainEvent {
 		return json_encode($this->data);
 	}
 
-
 	/**
 	 * @param string $json_data
 	 */

@@ -2,7 +2,9 @@
 
 namespace ILIAS\AssessmentQuestion\Authoring\DomainModel\Question;
 
+use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Answer\Answer;
 use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Answer\Option\AnswerOptions;
+use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Event\QuestionAnswerAddedEvent;
 use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Event\QuestionAnswerOptionsSetEvent;
 use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Event\QuestionPlayConfigurationSetEvent;
 use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Event\QuestionRevisionCreatedEvent;
@@ -54,8 +56,16 @@ class Question extends AbstractEventSourcedAggregateRoot implements IsRevisable 
 	 * @var AnswerOptions
 	 */
 	private $answer_options;
+	/**
+	 * @var array
+	 */
+	private $answers;
 
+	/**
+	 * Question constructor.
+	 */
 	protected function __construct() {
+		$this->answers = [];
 		$this->answer_options = new AnswerOptions();
 		parent::__construct();
 	}
@@ -96,6 +106,11 @@ class Question extends AbstractEventSourcedAggregateRoot implements IsRevisable 
 		$this->answer_options = $event->getAnswerOptions();
 	}
 
+	protected function applyQuestionAnswerAddedEvent(QuestionAnswerAddedEvent $event) {
+		$answer = $event->getAnswer();
+		$this->answers[$answer->getTestId()][$answer->getAnswererId()] = $answer;
+	}
+
 	public function getOnlineState() : bool {
 		return $this->online;
 	}
@@ -122,7 +137,6 @@ class Question extends AbstractEventSourcedAggregateRoot implements IsRevisable 
 		return $this->play_configuration;
 	}
 
-
 	/**
 	 * @param QuestionPlayConfiguration $play_configuration
 	 */
@@ -139,6 +153,18 @@ class Question extends AbstractEventSourcedAggregateRoot implements IsRevisable 
 
 	public function setAnswerOptions(AnswerOptions $options, int $creator_id = self::SYSTEM_USER_ID) {
 		$this->ExecuteEvent(new QuestionAnswerOptionsSetEvent($this->getAggregateId(), $creator_id, $options));
+	}
+
+	function addAnswer(Answer $answer) {
+		$this->ExecuteEvent(new QuestionAnswerAddedEvent($this->getAggregateId(), $answer->getAnswererId(), $answer));
+	}
+
+	public function getAnswer(int $user_id, string $test_id) : ?Answer {
+		return $this->answers[$test_id][$user_id];
+	}
+
+	function clearAnswer(int $user_id, string $test_id) {
+
 	}
 
 	/**

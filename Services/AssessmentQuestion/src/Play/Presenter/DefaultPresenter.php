@@ -2,6 +2,8 @@
 
 namespace ILIAS\AssessmentQuestion\Play\Presenter;
 
+use ilTemplate;
+
 /**
  * Class DefaultPresenter
  *
@@ -18,6 +20,13 @@ class DefaultPresenter extends AbstractPresenter {
 	 * @return string
 	 */
 	public function generateHtml(): string {
-		// TODO: Implement generateHtml() method.
+		$tpl = new ilTemplate("tpl.DefaultPresenter.html", true, true, "Services/AssessmentQuestion");
+
+		$tpl->setCurrentBlock('question');
+		$tpl->setVariable('QUESTIONTEXT', $this->question->getData()->getQuestionText());
+		$tpl->setVariable('EDITOR', $this->editor->generateHtml());
+		$tpl->parseCurrentBlock();
+
+		return $tpl->get();
 	}
 }

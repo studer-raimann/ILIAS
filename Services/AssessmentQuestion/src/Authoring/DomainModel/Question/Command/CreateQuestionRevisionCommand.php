@@ -13,8 +13,8 @@ class CreateQuestionRevisionCommand extends AbstractCommand implements Command {
 	private $question_id;
 
 	public function __construct(string $question_id, int $issuer_id) {
+		parent::__construct($issuer_id);
 		$this->question_id = $question_id;
-		$this->issuing_user_id = $issuer_id;
 	}
 
 

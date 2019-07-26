@@ -2,7 +2,8 @@
 
 namespace ILIAS\AssessmentQuestion\Play\Editor;
 
-use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Question;
+use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Answer\Answer;
+use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\QuestionDto;
 use JsonSerializable;
 use stdClass;
 
@@ -19,24 +20,18 @@ use stdClass;
 abstract class AbstractEditor {
 
 	/**
-	 * @var Question
+	 * @var QuestionDto
 	 */
-	private $question;
-	/**
-	 * @var array
-	 */
-	private $configuration;
-
+	protected $question;
 
 	/**
 	 * AbstractEditor constructor.
 	 *
-	 * @param Question   $question
+	 * @param QuestionDto   $question
 	 * @param array|null $configuration
 	 */
-	public function __construct(Question $question, array $configuration = null) {
+	public function __construct(QuestionDto $question) {
 		$this->question = $question;
-		$this->configuration = $configuration;
 	}
 
 	/**
@@ -44,6 +39,17 @@ abstract class AbstractEditor {
 	 */
 	abstract public function generateHtml(): string;
 
+
+	/**
+	 * @return Answer
+	 */
+	abstract public function readAnswer(): string;
+
+
+	/**
+	 * @param string $answer
+	 */
+	abstract public function setAnswer(string $answer) : void;
 
 	/**
 	 * @param JsonSerializable|null $config
@@ -66,7 +72,7 @@ abstract class AbstractEditor {
 	 *
 	 * @return JsonSerializable|null
 	 */
-	public static function deserialize(stdClass $input) : ?JsonSerializable {
+	public static function deserialize(?stdClass $input) : ?JsonSerializable {
 		return null;
 	}
 }
