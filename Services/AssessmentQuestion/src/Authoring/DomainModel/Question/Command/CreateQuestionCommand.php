@@ -22,18 +22,17 @@ class CreateQuestionCommand extends AbstractCommand implements CommandContract {
 	 */
 	protected $question_uuid;
 	/**
-	 * @var QuestionContainer;
+	 * @var ?int;
 	 */
-	protected $question_container;
+	protected $container_id;
 	/**
 	 * @var int
 	 */
 	protected $initiating_user_id;
 	/**
-	 * @var AnswerType
+	 * @var int
 	 */
-	protected $answer_type;
-	//TODO AnswerTypeMultipleChoice should be a ValueObject!!
+	protected $answer_type_id;
 
 
 	/**
@@ -44,11 +43,16 @@ class CreateQuestionCommand extends AbstractCommand implements CommandContract {
 	 * @param QuestionContainer  $question_container
 	 * @param AnswerType $answer_type
 	 */
-	public function __construct(DomainObjectId $question_uuid, int $initiating_user_id, QuestionContainer $question_container, AnswerType $answer_type) {
+	public function __construct(
+		DomainObjectId $question_uuid,
+		int $initiating_user_id,
+		?int $container_id = null,
+		?int $answer_type_id = null
+	) {
 		$this->question_uuid = $question_uuid;
 		$this->initiating_user_id = $initiating_user_id;
-		$this->question_container = $question_container;
-		$this->answer_type = $answer_type;
+		$this->container_id = $container_id;
+		$this->answer_type_id = $answer_type_id;
 	}
 
 
@@ -63,8 +67,8 @@ class CreateQuestionCommand extends AbstractCommand implements CommandContract {
 	/**
 	 * @return ;
 	 */
-	public function getQuestionContainer(): QuestionContainer {
-		return $this->question_container;
+	public function getQuestionContainer(): ?int {
+		return $this->container_id;
 	}
 
 
@@ -77,9 +81,9 @@ class CreateQuestionCommand extends AbstractCommand implements CommandContract {
 
 
 	/**
-	 * @return AnswerType
+	 * @return int
 	 */
-	public function getAnswerType(): AnswerType {
-		return $this->answer_type;
+	public function getAnswerType(): ?int {
+		return $this->answer_type_id;
 	}
 }

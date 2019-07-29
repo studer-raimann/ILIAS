@@ -9,8 +9,8 @@ use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\QuestionData;
 use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\QuestionDto;
 use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\QuestionRepository;
 use ILIAS\AssessmentQuestion\Authoring\Infrastructure\Persistence\ilDB\ilDBQuestionEventStore;
+use ILIAS\AssessmentQuestion\Common\DomainModel\Aggregate\Command\CommandBusBuilder;
 use ILIAS\AssessmentQuestion\Common\DomainModel\Aggregate\DomainObjectId;
-use ILIAS\Messaging\CommandBusBuilder;
 use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Command\CreateQuestionCommand;
 
 const MSG_SUCCESS = "success";

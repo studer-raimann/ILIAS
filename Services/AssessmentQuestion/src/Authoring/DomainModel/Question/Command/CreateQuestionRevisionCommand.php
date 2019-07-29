@@ -2,10 +2,10 @@
 
 namespace ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Command;
 
-use ILIAS\Messaging\Contract\Command\AbstractCommand;
-use ILIAS\Messaging\Contract\Command\Command;
+use ILIAS\AssessmentQuestion\Common\DomainModel\Aggregate\Command\AbstractCommand;
+use ILIAS\AssessmentQuestion\Common\DomainModel\Aggregate\Command\CommandContract;
 
-class CreateQuestionRevisionCommand extends AbstractCommand implements Command {
+class CreateQuestionRevisionCommand extends AbstractCommand implements CommandContract {
 
 	/**
 	 * @var string

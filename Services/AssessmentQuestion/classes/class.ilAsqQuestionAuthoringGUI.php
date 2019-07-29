@@ -11,6 +11,7 @@ use ILIAS\AssessmentQuestion\Authoring\UserInterface\Web\Form\Command\saveCreate
 use ILIAS\AssessmentQuestion\Authoring\UserInterface\Web\Form\Command\saveLegacyQuestionFormCommand;
 use ILIAS\AssessmentQuestion\Authoring\UserInterface\Web\Form\Command\showCreateQuestionFormCommand;
 use ILIAS\AssessmentQuestion\Authoring\UserInterface\Web\Form\Command\showLegacyQuestionFormCommand;
+use ILIAS\AssessmentQuestion\Authoring\UserInterface\Web\Form\Form\CreateQuestionForm;
 use ILIAS\AssessmentQuestion\Authoring\UserInterface\Web\Form\Form\CreateQuestionFormSpec;
 use ILIAS\AssessmentQuestion\Authoring\UserInterface\Web\Form\Form\EditQuestionForm;
 use ILIAS\AssessmentQuestion\Authoring\UserInterface\Web\Form\Form\EditQuestionFormSpec;
@@ -31,6 +32,10 @@ use ILIAS\Services\AssessmentQuestion\PublicApi\Contracts\AuthoringServiceSpecCo
  */
 class ilAsqQuestionAuthoringGUI
 {
+	const CMD_CREATE_QUESTION = 'createQuestion';
+	const CMD_EDIT_QUESTION_DATA = 'editQuestionData';
+	const CMD_EDIT_QUESTION = 'editQuestion';
+
 	protected $asq_authoring_help_component_screen_id = "asq_authoring";
 	/**
 	 * @var Question
@@ -71,32 +76,13 @@ class ilAsqQuestionAuthoringGUI
 		switch (strtolower($next_class)) {
 			default:
 				switch ($cmd) {
-					case showCreateQuestionFormCommand::getName():
-						FormCommandBusBuilder::getFormCommandBus()->handle(
-							new showCreateQuestionFormCommand($this->buildCreateQuestionFormSpec($DIC)
-							)
-						);
-						break;
-					case saveCreateQuestionFormCommand::getName():
-						FormCommandBusBuilder::getFormCommandBus()->handle(
-							new saveCreateQuestionFormCommand(
-								$this->buildCreateQuestionFormSpec($DIC),
-								$DIC->http()->request()
-							)
-						);
-					case showLegacyQuestionFormCommand::getName():
-						FormCommandBusBuilder::getFormCommandBus()->handle(
-							new showLegacyQuestionFormCommand($this->buildEditQuestionFormSpec($DIC)
-							)
-						);
-						break;
-					case saveLegacyQuestionFormCommand::getName():
+					case self::CMD_CREATE_QUESTION:
 
-						FormCommandBusBuilder::getFormCommandBus()->handle(
-							new saveLegacyQuestionFormCommand(
-								$this->buildEditQuestionFormSpec($DIC)
-							)
-						);
+						break;
+					case self::CMD_EDIT_QUESTION_DATA:
+
+						break;
+					case self::CMD_EDIT_QUESTION:
 						break;
 					default:
 						// Unknown command
@@ -107,35 +93,4 @@ class ilAsqQuestionAuthoringGUI
 				break;
 		}
 	}
-
-
-	/**
-	 * @param \ILIAS\DI\Container $DIC
-	 *
-	 * @return CreateQuestionFormSpec
-	 * @throws ReflectionException
-	 */
-	protected function buildCreateQuestionFormSpec(\ILIAS\DI\Container $DIC): CreateQuestionFormSpec {
-
-		//TODO
-		$answer_types = [
-			AnswerTypeMultipleChoice::TYPE_ID => AnswerTypeMultipleChoice::TYPE_ID];
-
-		return new CreateQuestionFormSpec($DIC->ctrl()
-			->getLinkTarget($this, saveCreateQuestionFormCommand::getName()), new QuestionTypeSection($answer_types));
-	}
-
-	/**
-	 * @param \ILIAS\DI\Container $DIC
-	 *
-	 * @return CreateQuestionFormSpec
-	 * @throws ReflectionException
-	 */
-	protected function buildEditQuestionFormSpec(\ILIAS\DI\Container $DIC): EditQuestionFormSpec {
-
-		return new EditQuestionFormSpec($DIC->ctrl()
-			->getLinkTarget($this, saveLegacyQuestionFormCommand::getName()), new QuestionDataSection($this->question));
-	}
-
-
 }

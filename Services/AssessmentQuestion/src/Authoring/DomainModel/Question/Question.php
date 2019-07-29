@@ -9,6 +9,7 @@ use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Event\QuestionAnswer
 use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Event\QuestionAnswerOptionsSetEvent;
 use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Event\QuestionAnswerTypeSetEvent;
 use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Event\QuestionContainerSetEvent;
+use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Event\QuestionLegacyDataSetEvent;
 use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Event\QuestionPlayConfigurationSetEvent;
 use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Event\QuestionRevisionCreatedEvent;
 use ILIAS\AssessmentQuestion\Common\DomainModel\Aggregate\DomainObjectId;
@@ -47,14 +48,6 @@ class Question extends AbstractEventSourcedAggregateRoot implements IsRevisable 
 	 * @var int
 	 */
 	private $creator_id;
-	/**
-	 * @var int;
-	 */
-	protected $container_obj_id;
-	/**
-	 * @var AnswerType
-	 */
-	protected $answer_type;
 
 	/**
 	 * @var QuestionData
@@ -72,6 +65,10 @@ class Question extends AbstractEventSourcedAggregateRoot implements IsRevisable 
 	 * @var array
 	 */
 	private $answers;
+	/**
+	 * @var QuestionLegacyData
+	 */
+	private $legacy_data;
 
 	/**
 	 * Question constructor.
@@ -80,8 +77,6 @@ class Question extends AbstractEventSourcedAggregateRoot implements IsRevisable 
 		$this->answers = [];
 		$this->answer_options = new AnswerOptions();
 
-		//TODO
-		$this->data = new QuestionData('','','','');
 		parent::__construct();
 	}
 
@@ -89,14 +84,12 @@ class Question extends AbstractEventSourcedAggregateRoot implements IsRevisable 
 	/**
 	 * @param DomainObjectId $question_uuid
 	 * @param int $initiating_user_id
-	 * @param AnswerType $answer_type
 	 *
 	 * @return Question
 	 */
 	public static function createNewQuestion(
 		DomainObjectId $question_uuid,
-		int $initiating_user_id,
-		AnswerType $answer_type): Question {
+		int $initiating_user_id): Question {
 		$question = new Question();
 		$question->ExecuteEvent(
 			new QuestionCreatedEvent(
@@ -104,50 +97,12 @@ class Question extends AbstractEventSourcedAggregateRoot implements IsRevisable 
 				$initiating_user_id
 		));
 
-		$question->ExecuteEvent(
-			new QuestionAnswerTypeSetEvent(
-				$question_uuid,
-				$initiating_user_id,
-				$answer_type
-		));
-
 		return $question;
 	}
-
-
-	/**
-	 * @param DomainObjectId    $question_uuid
-	 * @param int               $initiating_user_id
-	 * @param QuestionContainer $question_container
-	 */
-	public function setQuestionContainer(
-		DomainObjectId $question_uuid,
-		int $initiating_user_id,
-		QuestionContainer $question_container):void {
-
-		$this->ExecuteEvent(
-			new QuestionContainerSetEvent(
-				$question_uuid,
-				$initiating_user_id,
-				$question_container
-			));
-	}
-
-
 
 	protected function applyQuestionCreatedEvent(QuestionCreatedEvent $event) {
 		$this->id = $event->getAggregateId();
 		$this->creator_id = $event->getInitiatingUserId();
-	}
-
-	protected function applyQuestionContainerSetEvent(QuestionContainerSetEvent $event) {
-		$this->question_container = $event->getQuestionContainer();
-	}
-
-
-	protected function applyQuestionAnswerTypeSetEvent(QuestionAnswerTypeSetEvent $event)
-	{
-		$this->answer_type = $event->getAnswerType();
 	}
 
 	protected function applyQuestionDataSetEvent(QuestionDataSetEvent $event) {
@@ -169,6 +124,10 @@ class Question extends AbstractEventSourcedAggregateRoot implements IsRevisable 
 	protected function applyQuestionAnswerAddedEvent(QuestionAnswerAddedEvent $event) {
 		$answer = $event->getAnswer();
 		$this->answers[$answer->getTestId()][$answer->getAnswererId()] = $answer;
+	}
+
+	protected function applyQuestionLegacyDataSetEvent(QuestionLegacyDataSetEvent $event) {
+		$this->legacy_data = $event->getLegacyData();
 	}
 
 	public function getOnlineState() : bool {
@@ -202,6 +161,23 @@ class Question extends AbstractEventSourcedAggregateRoot implements IsRevisable 
 	 */
 	public function setPlayConfiguration(QuestionPlayConfiguration $play_configuration, int $creator_id = self::SYSTEM_USER_ID): void {
 		$this->ExecuteEvent(new QuestionPlayConfigurationSetEvent($this->getAggregateId(), $creator_id, $play_configuration));
+	}
+
+
+	/**
+	 * @return QuestionLegacyData
+	 */
+	public function getLegacyData(): QuestionLegacyData {
+		return $this->legacy_data;
+	}
+
+	/**
+	 * @param QuestionLegacyData $legacy_data
+	 */
+	public function setLegacyData(QuestionLegacyData $legacy_data, int $creator_id = self::SYSTEM_USER_ID): void {
+		$this->ExecuteEvent(new QuestionLegacyDataSetEvent($this->getAggregateId(),
+		                                                   $creator_id,
+		                                                   $legacy_data));
 	}
 
 	/**

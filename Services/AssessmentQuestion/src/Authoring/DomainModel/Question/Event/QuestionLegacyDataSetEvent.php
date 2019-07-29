@@ -2,7 +2,8 @@
 
 namespace ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Event;
 
-use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Answer\Type\AnswerType;
+use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Question;
+use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\QuestionLegacyData;
 use ILIAS\AssessmentQuestion\Common\DomainModel\Aggregate\DomainObjectId;
 use ILIAS\AssessmentQuestion\Common\DomainModel\Aggregate\Event\AbstractDomainEvent;
 
@@ -12,19 +13,24 @@ use ILIAS\AssessmentQuestion\Common\DomainModel\Aggregate\Event\AbstractDomainEv
  * @package ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Event
  * @author  Martin Studer <ms@studer-raimann.ch>
  */
-class QuestionAnswerTypeSetEvent extends AbstractDomainEvent {
+class QuestionLegacyDataSetEvent extends AbstractDomainEvent {
 
-	public const NAME = 'QuestionAnswerTypeSetEvent';
+	public const NAME = 'QuestionLegacyDataSetEvent';
 
 	/**
-	 * @var AnswerType
+	 * @var QuestionLegacyData
 	 */
-	protected $answer_type;
+	protected $legacy_data;
 
-	public function __construct(DomainObjectId $question_uuid, int $initiating_user_id, AnswerType $answer_type = null)
+	public function __construct
+	(
+		DomainObjectId $question_uuid,
+		int $initiating_user_id,
+		QuestionLegacyData $legacy_data = null
+	)
 	{
 		parent::__construct($question_uuid, $initiating_user_id);
-		$this->answer_type = $answer_type;
+		$this->legacy_data = $legacy_data;
 	}
 
 	/**
@@ -38,15 +44,15 @@ class QuestionAnswerTypeSetEvent extends AbstractDomainEvent {
 	}
 
 	/**
-	 * @return AnswerType
+	 * @return QuestionLegacyData
 	 */
-	public function getAnswerType(): AnswerType {
-		return $this->answer_type;
+	public function getLegacyData(): QuestionLegacyData {
+		return $this->legacy_data;
 	}
 
 
 	public function getEventBody(): string {
-		return json_encode($this->answer_type);
+		return json_encode($this->legacy_data);
 	}
 
 	/**
@@ -54,6 +60,9 @@ class QuestionAnswerTypeSetEvent extends AbstractDomainEvent {
 	 */
 	public function restoreEventBody(string $json_data) {
 		$data = json_decode($json_data);
-		$this->answer_type = new AnswerType($data->answer_type_id);
+		$this->legacy_data = new QuestionLegacyData
+		(
+			$data->answer_type_id,
+			$data->container_obj_id);
 	}
 }
