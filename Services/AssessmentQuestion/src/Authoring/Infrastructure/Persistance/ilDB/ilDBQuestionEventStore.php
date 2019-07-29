@@ -3,6 +3,7 @@
 namespace ILIAS\AssessmentQuestion\Authoring\Infrastructure\Persistence\ilDB;
 
 use ILIAS\AssessmentQuestion\Common\DomainModel\Aggregate\DomainObjectId;
+use ILIAS\AssessmentQuestion\Common\DomainModel\Aggregate\Event\AbstractDomainEvent;
 use ILIAS\AssessmentQuestion\Common\DomainModel\Aggregate\Event\DomainEvent;
 use ILIAS\AssessmentQuestion\Common\DomainModel\Aggregate\Event\DomainEvents;
 use ILIAS\AssessmentQuestion\Common\DomainModel\Aggregate\Event\EventStore;
@@ -46,7 +47,6 @@ class ilDBQuestionEventStore implements EventStore {
 		$event_stream = new DomainEvents();
 		while ($row = $DIC->database()->fetchAssoc($res)) {
 			/**@var AbstractDomainEvent $event */
-			//TODO should not be saved in DB like this
 			$event_name = "ILIAS\\AssessmentQuestion\\Authoring\\DomainModel\\Question\\Event\\".utf8_encode(trim($row['event_name']));
 			$event = new $event_name(new DomainObjectId($row['aggregate_id']), $row['initiating_user_id']);
 			$event->restoreEventBody($row['event_body']);

@@ -1042,7 +1042,12 @@ class ilInitialisation
 	/**
 	 * ilias initialisation
 	 */
-	public static function initILIAS()
+	public static function
+
+
+
+
+	initILIAS()
 	{
 		if (self::$already_initialized)
 		{

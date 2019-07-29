@@ -8,4 +8,8 @@ abstract class AbstractCommand implements CommandContract {
 	 * @var int
 	 */
 	protected $issuing_user_id;
+
+	public function __construct(int $issuing_user_id) {
+		$this->issuing_user_id = $issuing_user_id;
+	}
 }

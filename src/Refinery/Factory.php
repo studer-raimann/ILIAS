@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace ILIAS\Refinery;
 
 use ILIAS\Refinery\In;
+use ILIAS\Refinery\Numeric\Group;
 use ILIAS\Refinery\To;
 
 class Factory

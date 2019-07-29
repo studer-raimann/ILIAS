@@ -42,7 +42,6 @@
 	},
 	"require-dev": {
 		"mikey179/vfsstream": "^1.6",
-		"phpunit/phpunit": "^8.0",
 		"phpunit/php-code-coverage": "^7.0",
 		"mockery/mockery": "^1.2",
 		"phpunit/php-token-stream": "^3.0",
@@ -335,7 +334,6 @@
 			"approved-by": "Jour Fixe",
 			"approved-date": "2019-07-15"
 		},
-
 		"patches": {
 			"tecnickcom/tcpdf": {
 				"ILIAS TCPDF Patches": "patches/tcpdf.patch"

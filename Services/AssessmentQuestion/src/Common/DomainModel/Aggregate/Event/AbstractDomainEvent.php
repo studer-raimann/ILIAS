@@ -72,6 +72,7 @@ abstract class AbstractDomainEvent implements DomainEvent {
 	 */
 	public function getInitiatingUserId(): int {
 		return $this->initiating_user_id;
+
 	}
 
 

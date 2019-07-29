@@ -4,7 +4,6 @@ namespace ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Command;
 
 use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Answer\Type\AnswerType;
 use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\QuestionContainer;
-use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\QuestionData;
 use ILIAS\AssessmentQuestion\Common\DomainModel\Aggregate\Command\AbstractCommand;
 use ILIAS\AssessmentQuestion\Common\DomainModel\Aggregate\Command\CommandContract;
 use ILIAS\AssessmentQuestion\Common\DomainModel\Aggregate\DomainObjectId;
@@ -49,8 +48,8 @@ class CreateQuestionCommand extends AbstractCommand implements CommandContract {
 		?int $container_id = null,
 		?int $answer_type_id = null
 	) {
+		parent::__construct($initiating_user_id);
 		$this->question_uuid = $question_uuid;
-		$this->initiating_user_id = $initiating_user_id;
 		$this->container_id = $container_id;
 		$this->answer_type_id = $answer_type_id;
 	}

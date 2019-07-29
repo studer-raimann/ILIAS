@@ -63,7 +63,6 @@ class QuestionCreatedEvent extends AbstractDomainEvent {
 		return $this->initiating_user_id;
 	}
 
-
 	public function restoreEventBody(string $json_data) {
 		//no other properties
 	}

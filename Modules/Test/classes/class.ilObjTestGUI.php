@@ -10,6 +10,11 @@ require_once './Modules/Test/classes/class.ilTestExpressPage.php';
 require_once 'Modules/OrgUnit/classes/Positions/Operation/class.ilOrgUnitOperation.php';
 require_once 'Modules/Test/classes/class.ilTestParticipantAccessFilter.php';
 
+
+use ILIAS\AssessmentQuestion\Authoring\_PublicApi\AsqAuthoringService;
+use ILIAS\AssessmentQuestion\Authoring\_PublicApi\AsqAuthoringSpec;
+use ILIAS\AssessmentQuestion\Authoring\UserInterface\Web\AsqGUIElementFactory;
+
 /**
  * Class ilObjTestGUI
  *
@@ -743,7 +748,58 @@ class ilObjTestGUI extends ilObjectGUI
 			$this->tpl->printToStdout();
 		}
 	}
-	
+
+
+	protected function createQuestionByAPIObject() {
+		global $DIC;
+
+		$authoring_service = new AsqAuthoringService(null);
+
+		$form =  AsqGUIElementFactory::CreateQuestionCreationForm();
+		switch ($_SERVER['REQUEST_METHOD']) {
+			case 'GET':
+				$this->tpl->setContent($form->getHTML());
+				break;
+			case 'POST':
+				$form->setValuesByPost();
+				$authoring_service->CreateQuestion(
+					$form->getQuestionTitle(),
+					$form->getQuestionDescription(),
+					$DIC->user()->getId());
+				ilutil::sendSuccess("Question Created");
+				break;
+		}
+
+		/*
+		require_once 'Services/AssessmentQuestion/src/Authoring/APIGateway/AsqAdiGateway.php';
+		global $DIC;
+
+		$form =  AsqAdiGateway::GetCreationForm();
+
+		switch ($_SERVER['REQUEST_METHOD']) {
+			case 'GET':
+				$this->tpl->setContent($form->getHTML());
+				break;
+			case 'POST':
+				$form->setValuesByPost();
+
+				$response =AsqAdiGateway::CreateQuestion(
+					$form->getQuestionTitle(),
+					$form->getQuestionDescription(),
+					$DIC->user()->getId());
+
+				if ($response->isSuccessful()) {
+					ilutil::sendSuccess($response->getMessage());
+					//TODO proceed
+				} else {
+					ilUtil::sendFailure($response->getMessage());
+					$this->tpl->setContent($form->getHTML());
+				}
+
+				break;
+		}*/
+	}
+
 	protected function trackTestObjectReadEvent()
 	{
 		/* @var ILIAS\DI\Container $DIC */ global $DIC;

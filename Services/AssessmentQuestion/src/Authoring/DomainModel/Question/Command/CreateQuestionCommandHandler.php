@@ -9,6 +9,8 @@ use ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\QuestionRepository;
 use ILIAS\AssessmentQuestion\Common\DomainModel\Aggregate\Command\CommandContract;
 use ILIAS\AssessmentQuestion\Common\DomainModel\Aggregate\Command\CommandHandlerContract;
 
+
+
 /**
  * Class CreateQuestionHandler
  *
@@ -28,17 +30,18 @@ class CreateQuestionCommandHandler implements CommandHandlerContract {
 
 		$question = Question::createNewQuestion(
 			$command->getQuestionUuid(),
-			$command->getInitiatingUserId());
+			$command->getInitiatingUserId()
+		);
 
-		if (!is_null($command->getAnswerType()) ||
-		    !is_null($command->getQuestionContainer())
+		if (!is_null($command->getAnswerType())
+			|| !is_null($command->getQuestionContainer())
 		) {
 			$question->setLegacyData(
 				new QuestionLegacyData(
 					$command->getAnswerType(),
-					$command->getQuestionContainer()));
+					$command->getQuestionContainer()
+				)
+			);
 		}
-
-		QuestionRepository::getInstance()->save($question);
 	}
 }
