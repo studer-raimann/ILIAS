@@ -48,9 +48,18 @@ class AsqAuthoringService {
 		return QuestionDto::CreateFromQuestion($question);
 	}
 
-	public function CreateQuestion(QuestionData $data): void {
+	public function CreateQuestion(
+		DomainObjectId $question_uuid,
+		?int $container_id = null,
+		?int $answer_type_id = null
+	): void {
 		//CreateQuestion.png
-		CommandBusBuilder::getCommandBus()->handle(new CreateQuestionCommand($data, $this->asq_question_spec->user_id));
+		CommandBusBuilder::getCommandBus()->handle
+		(new CreateQuestionCommand
+		    ($question_uuid,
+		     $this->asq_question_spec->user_id,
+			 $container_id,
+			 $answer_type_id));
 	}
 
 	public function SaveQuestion(QuestionDto $question_dto) {

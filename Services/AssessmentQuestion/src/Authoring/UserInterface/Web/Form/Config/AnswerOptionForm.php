@@ -29,9 +29,9 @@ class AnswerOptionForm extends ilTextInputGUI {
 		//add empty row if there are no answers
 		if (sizeof($options) === 0) {
 			$this->options[] = null;
+		} else {
+			$this->options = $options;
 		}
-
-		$this->options = $options;
 	}
 
 	/**

@@ -27,12 +27,7 @@ class CreateQuestionCommand extends AbstractCommand implements CommandContract {
 	/**
 	 * @var int
 	 */
-	protected $initiating_user_id;
-	/**
-	 * @var int
-	 */
 	protected $answer_type_id;
-
 
 	/**
 	 * CreateQuestionCommand constructor.
@@ -75,7 +70,7 @@ class CreateQuestionCommand extends AbstractCommand implements CommandContract {
 	 * @return int
 	 */
 	public function getInitiatingUserId(): int {
-		return $this->initiating_user_id;
+		return $this->issuing_user_id;
 	}
 
 

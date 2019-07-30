@@ -32,6 +32,31 @@ class QuestionLegacyData implements JsonSerializable {
 		$this->container_obj_id = $container_obj_id;
 	}
 
+
+	public static function getQuestionTypes() : array {
+		$question_types = [];
+		$question_types[0] = 'GenericQuestion ';
+		$question_types[1] = 'Single Choice ';
+		$question_types[2] = 'Multiple Choice ';
+		$question_types[3] = 'Cloze Test ';
+		$question_types[4] = 'Matching Question ';
+		$question_types[5] = 'Ordering Question ';
+		$question_types[6] = 'Imagemap Question ';
+		$question_types[7] = 'Java Applet ';
+		$question_types[8] = 'Text Question ';
+		$question_types[9] = 'Numeric ';
+		$question_types[10] = 'Text Subset ';
+		$question_types[11] = 'Flash Question ';
+		$question_types[12] = 'Ordering Horizontal ';
+		$question_types[13] = 'File Upload ';
+		$question_types[14] = 'Error Text ';
+		$question_types[15] = 'Formula Question ';
+		$question_types[16] = 'Kprim Choice ';
+		$question_types[17] = 'Long Menu ';
+		return $question_types;
+	}
+
+
 	/**
 	 * @return int
 	 */

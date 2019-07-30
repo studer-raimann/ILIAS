@@ -78,7 +78,9 @@ class MultipleChoiceEditor extends AbstractEditor {
 			$tpl->setVariable('ANSWER_ID', $answer_option->getOptionId());
 			$tpl->setVariable('POST_NAME', $this->getPostName($answer_option->getOptionId()));
 
-			if (in_array($answer_option->getOptionId(), $this->selected_answers)) {
+			if (!is_null($this->selected_answers) &&
+				in_array($answer_option->getOptionId(), $this->selected_answers)
+			) {
 				$tpl->setVariable('CHECKED', 'checked="checked"');
 			}
 

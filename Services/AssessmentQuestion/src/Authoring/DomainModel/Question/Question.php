@@ -133,7 +133,7 @@ class Question extends AbstractEventSourcedAggregateRoot implements IsRevisable 
 	/**
 	 * @return QuestionData
 	 */
-	public function getData(): QuestionData {
+	public function getData(): ?QuestionData {
 		return $this->data;
 	}
 
@@ -162,7 +162,7 @@ class Question extends AbstractEventSourcedAggregateRoot implements IsRevisable 
 	/**
 	 * @return QuestionLegacyData
 	 */
-	public function getLegacyData(): QuestionLegacyData {
+	public function getLegacyData(): ?QuestionLegacyData {
 		return $this->legacy_data;
 	}
 

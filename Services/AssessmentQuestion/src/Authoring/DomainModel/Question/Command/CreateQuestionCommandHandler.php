@@ -43,5 +43,7 @@ class CreateQuestionCommandHandler implements CommandHandlerContract {
 				)
 			);
 		}
+
+		QuestionRepository::getInstance()->save($question);
 	}
 }
