@@ -27,6 +27,10 @@ class QuestionDto {
 	 */
 	private $play_configuration;
 	/**
+	 * @var QuestionLegacyData
+	 */
+	private $legacy_data;
+	/**
 	 * @var AnswerOptions
 	 */
 	private $answer_options;
@@ -48,6 +52,7 @@ class QuestionDto {
 		$dto->data = $question->getData();
 		$dto->play_configuration = $question->getPlayConfiguration();
 		$dto->answer_options = $question->getAnswerOptions();
+		$dto->legacy_data = $question->getLegacyData();
 		return $dto;
 	}
 
@@ -84,7 +89,7 @@ class QuestionDto {
 	/**
 	 * @return QuestionData
 	 */
-	public function getData(): QuestionData {
+	public function getData(): ?QuestionData {
 		return $this->data;
 	}
 
@@ -96,6 +101,21 @@ class QuestionDto {
 		$this->data = $data;
 	}
 
+
+	/**
+	 * @return QuestionLegacyData
+	 */
+	public function getLegacyData(): ?QuestionLegacyData {
+		return $this->legacy_data;
+	}
+
+
+	/**
+	 * @param QuestionLegacyData $legacy_data
+	 */
+	public function setLegacyData(QuestionLegacyData $legacy_data): void {
+		$this->legacy_data = $legacy_data;
+	}
 
 	/**
 	 * @return QuestionPlayConfiguration

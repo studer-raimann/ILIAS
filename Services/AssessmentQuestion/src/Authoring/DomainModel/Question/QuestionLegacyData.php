@@ -2,6 +2,9 @@
 
 namespace ILIAS\AssessmentQuestion\Authoring\DomainModel\Question;
 
+use Exception;
+use ILIAS\AssessmentQuestion\Authoring\UserInterface\Web\Form\Legacy\SingleChoiceQuestionGUI;
+use ilPropertyFormGUI;
 use JsonSerializable;
 
 /**
@@ -12,6 +15,10 @@ use JsonSerializable;
  * @author  Adrian Lüthi <al@studer-raimann.ch>
  */
 class QuestionLegacyData implements JsonSerializable {
+	const TYPE_GENERIC = 0;
+	const TYPE_SINGLE_CHOICE = 1;
+	const TYPE_MULTIPLE_CHOICE = 2;
+
 	/**
 	 * @var int;
 	 */
@@ -27,7 +34,7 @@ class QuestionLegacyData implements JsonSerializable {
 	 * @param int $answer_type_id
 	 * @param int $container_obj_id
 	 */
-	public function __construct(int $answer_type_id, int $container_obj_id) {
+	public function __construct(int $answer_type_id, int $container_obj_id = null) {
 		$this->answer_type_id = $answer_type_id;
 		$this->container_obj_id = $container_obj_id;
 	}
@@ -35,9 +42,9 @@ class QuestionLegacyData implements JsonSerializable {
 
 	public static function getQuestionTypes() : array {
 		$question_types = [];
-		$question_types[0] = 'GenericQuestion ';
-		$question_types[1] = 'Single Choice ';
-		$question_types[2] = 'Multiple Choice ';
+		$question_types[self::TYPE_GENERIC] = 'GenericQuestion ';
+		$question_types[self::TYPE_SINGLE_CHOICE] = 'Single Choice ';
+		$question_types[self::TYPE_MULTIPLE_CHOICE] = 'Multiple Choice ';
 		$question_types[3] = 'Cloze Test ';
 		$question_types[4] = 'Matching Question ';
 		$question_types[5] = 'Ordering Question ';
@@ -60,7 +67,7 @@ class QuestionLegacyData implements JsonSerializable {
 	/**
 	 * @return int
 	 */
-	public function getContainerObjId(): int {
+	public function getContainerObjId(): ?int {
 		return $this->container_obj_id;
 	}
 
@@ -71,6 +78,16 @@ class QuestionLegacyData implements JsonSerializable {
 		return $this->answer_type_id;
 	}
 
+	public function createLegacyForm(QuestionDto $question): ilPropertyFormGUI {
+		switch($this->answer_type_id) {
+			case self::TYPE_SINGLE_CHOICE:
+				return new SingleChoiceQuestionGUI($question);
+			case self::TYPE_MULTIPLE_CHOICE:
+				return null;
+			default:
+				throw new Exception("Implement missing case please");
+		}
+	}
 
 	/**
 	 * Specify data which should be serialized to JSON

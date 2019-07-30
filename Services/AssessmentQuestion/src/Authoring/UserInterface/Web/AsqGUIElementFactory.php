@@ -39,7 +39,11 @@ class AsqGUIElementFactory {
 	}
 
 	public static function CreateQuestionForm(QuestionDto $question):ilPropertyFormGUI {
-		//CreateQuestion.png
-		return new QuestionFormGUI($question);
+		if (is_null($question->getLegacyData())) {
+			return new QuestionFormGUI($question);
+		} else {
+			return $question->getLegacyData()->createLegacyForm($question);
+		}
+
 	}
 }
