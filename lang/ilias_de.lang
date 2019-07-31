@@ -1996,6 +1996,10 @@ background_tasks#:#proceed_job#:#Weiter
 background_tasks#:#remove#:#Entfernen
 background_tasks#:#scheduled#:#Geplant
 background_tasks#:#task_might_be_failed#:#Diese Aufgabe hat seit einiger Zeit nicht geantwortet, Sie können sie beenden, falls nötig.
+background_tasks#:#ui_msg_num_files#:#%s Datei(-en) wurden gefunden, möchten Sie fortfahren?
+background_tasks#:#ui_msg_no_files_found#:#Es wurden keine Dateien gefunden. Der Download wird abgebrochen.
+background_tasks#:#ui_msg_sum_file_sizes#:#Die Gesamtdownloadgrösse vor Erstellung des Zip-Ordners beträgt %s. Möchten Sie fortfahren?
+background_tasks#:#ui_msg_files_violate_maxsize#:#Die Gesamtdownloadgrösse überschreitet das globale Limit. Der Download wird abgebrochen.
 background_tasks#:#waiting#:#Warten
 badge#:#badge_activity_badges#:#Activity-Badges
 badge#:#badge_add_template#:#Template hinzufügen
@@ -4222,6 +4226,7 @@ common#:#msg_user_last_role2#:#Bitte löschen Sie die Benutzer oder weisen Sie i
 common#:#msg_userassignment_changed#:#Benutzerzuweisung geändert
 common#:#msg_wrong_filetypes#:#Erlaubte Dateiendungen:
 common#:#msg_wrong_format#:#Der Wert, den Sie eingegeben haben, erfüllt nicht das vorgegebene Format.
+common#:#msg_bt_download_started#:#ILIAS erzeugt ein ZIP-Archiv mit allen zugehörigen Dateien. Sie können diese anschließend per Klick auf das Koffer-Icon in der Kopfzeile herunterladen.
 common#:#my_bms#:#Meine Bookmarks
 common#:#my_certificates#:#Meine Zertifikate
 common#:#my_contacts#:#Meine Kontakte

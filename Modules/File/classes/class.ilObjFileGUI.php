@@ -149,7 +149,6 @@ class ilObjFileGUI extends ilObject2GUI
                 }
                 $this->ctrl->forwardCommand(new ilFileVersionsGUI($this->object));
                 break;
-
             default:
                 // in personal workspace use object2gui
                 if ($this->id_type == self::WORKSPACE_NODE_ID) {
@@ -555,6 +554,7 @@ class ilObjFileGUI extends ilObject2GUI
 
         $form = new ilPropertyFormGUI();
         $form->setFormAction($this->ctrl->getFormAction($this, 'update'));
+
         $form->setTitle($this->lng->txt('file_edit'));
         $form->addCommandButton('update', $this->lng->txt('save'));
         $form->addCommandButton('cancel', $this->lng->txt('cancel'));
