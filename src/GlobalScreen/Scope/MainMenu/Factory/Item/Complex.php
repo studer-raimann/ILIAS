@@ -1,7 +1,6 @@
 <?php namespace ILIAS\GlobalScreen\Scope\MainMenu\Factory\Item;
 
 use ILIAS\GlobalScreen\Scope\MainMenu\Factory\AbstractChildItem;
-use ILIAS\GlobalScreen\Scope\MainMenu\Factory\hasAsyncContent;
 use ILIAS\GlobalScreen\Scope\MainMenu\Factory\hasContent;
 use ILIAS\GlobalScreen\Scope\MainMenu\Factory\hasSymbol;
 use ILIAS\GlobalScreen\Scope\MainMenu\Factory\hasTitle;
@@ -13,7 +12,7 @@ use ILIAS\UI\Component\Symbol\Symbol;
  *
  * @author Fabian Schmid <fs@studer-raimann.ch>
  */
-class Complex extends AbstractChildItem implements hasAsyncContent, hasContent, hasTitle, hasSymbol
+class Complex extends AbstractChildItem implements hasContent, hasTitle, hasSymbol
 {
 
     /**
@@ -32,29 +31,6 @@ class Complex extends AbstractChildItem implements hasAsyncContent, hasContent, 
      * @var Symbol
      */
     private $symbol;
-
-
-    /**
-     * @inheritDoc
-     */
-    public function getAsyncContentURL() : string
-    {
-        return $this->async_content_url;
-    }
-
-
-    /**
-     * @param string $async_content_url
-     *
-     * @return Complex
-     */
-    public function withAsyncContentURL(string $async_content_url) : hasAsyncContent
-    {
-        $clone = clone($this);
-        $clone->async_content_url = $async_content_url;
-
-        return $clone;
-    }
 
 
     /**
