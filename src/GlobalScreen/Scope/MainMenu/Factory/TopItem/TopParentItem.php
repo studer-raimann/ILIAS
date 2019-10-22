@@ -4,6 +4,7 @@ use ILIAS\GlobalScreen\Scope\MainMenu\Factory\AbstractParentItem;
 use ILIAS\GlobalScreen\Scope\MainMenu\Factory\hasSymbol;
 use ILIAS\GlobalScreen\Scope\MainMenu\Factory\hasTitle;
 use ILIAS\GlobalScreen\Scope\MainMenu\Factory\isTopItem;
+use ILIAS\GlobalScreen\Scope\MainMenu\Factory\supportsAsynchronousLoading;
 use ILIAS\UI\Component\Symbol\Symbol;
 
 /**
@@ -11,7 +12,7 @@ use ILIAS\UI\Component\Symbol\Symbol;
  *
  * @author Fabian Schmid <fs@studer-raimann.ch>
  */
-class TopParentItem extends AbstractParentItem implements isTopItem, hasTitle, hasSymbol
+class TopParentItem extends AbstractParentItem implements isTopItem, hasTitle, hasSymbol, supportsAsynchronousLoading
 {
 
     /**
@@ -74,5 +75,14 @@ class TopParentItem extends AbstractParentItem implements isTopItem, hasTitle, h
     public function hasSymbol() : bool
     {
         return $this->symbol instanceof Symbol;
+    }
+
+
+    /**
+     * @inheritDoc
+     */
+    public function supportsAsynchronousLoading() : bool
+    {
+        return true;
     }
 }

@@ -4,9 +4,9 @@
 
 namespace ILIAS\UI\Component\MainControls\Slate;
 
+use ILIAS\UI\Component\Component;
 use ILIAS\UI\Component\JavaScriptBindable;
 use ILIAS\UI\Component\Signal;
-use ILIAS\UI\Component\Component;
 use ILIAS\UI\Component\Symbol\Symbol;
 
 /**
@@ -45,4 +45,17 @@ interface Slate extends Component, JavaScriptBindable
      * @return Component[]
      */
     public function getContents();
+
+
+    /**
+     * @param string $url
+     *
+     * @return Slate
+     */
+    public function withAsyncContentURL(string $url) : Slate;
+
+    /**
+     * @return string|null
+     */
+    public function getAsyncContentURL() : ?string;
 }

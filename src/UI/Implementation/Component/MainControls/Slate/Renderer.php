@@ -4,10 +4,10 @@
 
 namespace ILIAS\UI\Implementation\Component\MainControls\Slate;
 
-use ILIAS\UI\Implementation\Render\AbstractComponentRenderer;
-use ILIAS\UI\Renderer as RendererInterface;
 use ILIAS\UI\Component;
 use ILIAS\UI\Component\MainControls\Slate as ISlate;
+use ILIAS\UI\Implementation\Render\AbstractComponentRenderer;
+use ILIAS\UI\Renderer as RendererInterface;
 
 class Renderer extends AbstractComponentRenderer
 {
@@ -72,14 +72,25 @@ class Renderer extends AbstractComponentRenderer
             return "
 				$(document).on('{$toggle_signal}', function(event, signalData) {
 					il.UI.maincontrols.slate.onToggleSignal(event, signalData, '{$id}');
-					return false;
+					return true;
 				});
 				$(document).on('{$show_signal}', function(event, signalData) {
 					il.UI.maincontrols.slate.onShowSignal(event, signalData, '{$id}');
-					return false;
+					return true;
 				});
 			";
         });
+        if ($component->getAsyncContentURL() !== null) {
+            $url = $component->getAsyncContentURL();
+            $component = $component->withAdditionalOnLoadCode(function ($id) use ($toggle_signal, $url) {
+                return "
+				$(document).on('{$toggle_signal}', function(event, signalData) {
+					$('#$id').load('$url .il-maincontrols-slate-content');
+				});
+			";
+            });
+        }
+
         $id = $this->bindJavaScript($component);
         $tpl->setVariable('ID', $id);
 
