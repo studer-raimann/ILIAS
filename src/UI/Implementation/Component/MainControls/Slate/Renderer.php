@@ -4,10 +4,10 @@
 
 namespace ILIAS\UI\Implementation\Component\MainControls\Slate;
 
-use ILIAS\UI\Component;
-use ILIAS\UI\Component\MainControls\Slate as ISlate;
 use ILIAS\UI\Implementation\Render\AbstractComponentRenderer;
 use ILIAS\UI\Renderer as RendererInterface;
+use ILIAS\UI\Component;
+use ILIAS\UI\Component\MainControls\Slate as ISlate;
 
 class Renderer extends AbstractComponentRenderer
 {
@@ -66,31 +66,18 @@ class Renderer extends AbstractComponentRenderer
             $tpl->touchBlock('disengaged');
         }
 
-        $toggle_signal = $component->getToggleSignal();
-        $show_signal = $component->getShowSignal();
-        $component = $component->withAdditionalOnLoadCode(function ($id) use ($toggle_signal, $show_signal) {
-            return "
-				$(document).on('{$toggle_signal}', function(event, signalData) {
-					il.UI.maincontrols.slate.onToggleSignal(event, signalData, '{$id}');
-					return true;
-				});
-				$(document).on('{$show_signal}', function(event, signalData) {
-					il.UI.maincontrols.slate.onShowSignal(event, signalData, '{$id}');
-					return true;
-				});
-			";
+        $slate_signals = [
+            'toggle' => $component->getToggleSignal(),
+            'engage' => $component->getEngageSignal(),
+            'replace' => $component->getReplaceSignal()
+        ];
+        $component = $component->withAdditionalOnLoadCode(function ($id) use ($slate_signals) {
+            $js = "fn = il.UI.maincontrols.slate.onSignal;";
+            foreach ($slate_signals as $key => $signal) {
+                $js .= "$(document).on('{$signal}', function(event, signalData) { fn('{$key}', event, signalData, '{$id}'); return false;});";
+            }
+            return $js;
         });
-        if ($component->getAsyncContentURL() !== null) {
-            $url = $component->getAsyncContentURL();
-            $component = $component->withAdditionalOnLoadCode(function ($id) use ($toggle_signal, $url) {
-                return "
-				$(document).on('{$toggle_signal}', function(event, signalData) {
-					$('#$id').load('$url .il-maincontrols-slate-content');
-				});
-			";
-            });
-        }
-
         $id = $this->bindJavaScript($component);
         $tpl->setVariable('ID', $id);
 

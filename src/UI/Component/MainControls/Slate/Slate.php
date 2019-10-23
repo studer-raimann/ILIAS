@@ -4,9 +4,10 @@
 
 namespace ILIAS\UI\Component\MainControls\Slate;
 
-use ILIAS\UI\Component\Component;
 use ILIAS\UI\Component\JavaScriptBindable;
 use ILIAS\UI\Component\Signal;
+use ILIAS\UI\Component\ReplaceSignal;
+use ILIAS\UI\Component\Component;
 use ILIAS\UI\Component\Symbol\Symbol;
 
 /**
@@ -16,9 +17,6 @@ interface Slate extends Component, JavaScriptBindable
 {
     public function getName() : string;
 
-    /**
-     * @return Symbol
-     */
     public function getSymbol() : Symbol;
 
     /**
@@ -27,9 +25,9 @@ interface Slate extends Component, JavaScriptBindable
     public function getToggleSignal() : Signal;
 
     /**
-     * Signal that engages the slate when triggered.
+     * Signal that  engages the slate when triggered.
      */
-    public function getShowSignal() : Signal;
+    public function getEngageSignal() : Signal;
 
     /**
      * Configures the slate to be rendered as engaged (or not).
@@ -46,16 +44,8 @@ interface Slate extends Component, JavaScriptBindable
      */
     public function getContents();
 
-
     /**
-     * @param string $url
-     *
-     * @return Slate
+     * Signal to replace the contents of the slate.
      */
-    public function withAsyncContentURL(string $url) : Slate;
-
-    /**
-     * @return string|null
-     */
-    public function getAsyncContentURL() : ?string;
+    public function getReplaceSignal() : ReplaceSignal;
 }
