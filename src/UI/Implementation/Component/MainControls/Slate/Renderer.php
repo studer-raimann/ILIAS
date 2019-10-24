@@ -97,7 +97,6 @@ class Renderer extends AbstractComponentRenderer
         $component = $component->withAdditionalOnLoadCode(function ($id) use ($replace_signal) {
             return "$(document).on('$replace_signal', function(event, signalData) {
                     il.UI.maincontrols.slate.onSignal('replace', signalData, '{$id}');
-                    event.
                     return event;
                 });";
         });
