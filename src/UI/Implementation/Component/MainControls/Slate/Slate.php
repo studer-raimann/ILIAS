@@ -148,6 +148,6 @@ abstract class Slate implements ISlate\Slate
      */
     public function appendOnEngage(Signal $signal) : \ILIAS\UI\Component\MainControls\Slate\Slate
     {
-        return $this->appendTriggeredSignal($signal, $this->getEngageSignal()->getId());
+        return $this->appendTriggeredSignal($signal, 'in_view');
     }
 }

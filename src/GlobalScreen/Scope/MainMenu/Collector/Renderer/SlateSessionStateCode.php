@@ -26,7 +26,10 @@ trait SlateSessionStateCode
      */
     public function addOnloadCode(Slate $slate, isItem $item) : Slate
     {
-        $signal = $slate->getEngageSignal();
+
+        $signal_generator = new \ILIAS\UI\Implementation\Component\SignalGenerator();
+        $signal = $signal_generator->create();
+        $slate = $slate->appendOnEngage($signal);
 
         $identification = $item->getProviderIdentification()->serialize();
 

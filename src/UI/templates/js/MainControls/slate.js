@@ -65,6 +65,7 @@ il.UI.maincontrols = il.UI.maincontrols || {};
 			slate.addClass(_cls_engaged);
 			slate.attr("aria-expanded", "true");
 			slate.attr("aria-hidden", "false");
+			slate.trigger('in_view');
 		};
 
 		var disengage = function(slate) {
