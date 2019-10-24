@@ -32,13 +32,6 @@ class TopParentItemRenderer extends BaseTypeRenderer
 
         $slate = $f->mainControls()->slate()->combined($item->getTitle(), $this->getStandardSymbol($item));
 
-        if (strpos($_SERVER['SCRIPT_NAME'], 'src/GlobalScreen/Client/content.php') === false) {
-            $slate = $slate->withAsyncContentURL("./src/GlobalScreen/Client/content.php?item="
-                . $this->hash($item->getProviderIdentification()->serialize()));
-        } else {
-            $a = 1;
-        }
-
         foreach ($item->getChildren() as $child) {
             $component = $child->getTypeInformation()->getRenderer()->getComponentForItem($child);
             if ($this->isComponentSupportedForCombinedSlate($component)) {

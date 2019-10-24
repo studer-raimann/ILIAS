@@ -9,7 +9,7 @@ il.UI.maincontrols = il.UI.maincontrols || {};
 			,_cls_single_slate = 'il-maincontrols-slate'
 		;
 
-		var onSignal = function(kind_of_signal, event, signalData, id) {
+		var onSignal = function(kind_of_signal, signalData, id) {
 			var slate = $('#' + id),
 				triggerer = signalData.triggerer,
 				is_in_metabar_more = triggerer.parents('.il-metabar-more-slate').length > 0;
@@ -25,6 +25,7 @@ il.UI.maincontrols = il.UI.maincontrols || {};
 					replaceFromSignal(id, signalData);
 					break;
 			};
+			return true;
 		};
 
 		var onToggleSignal = function(slate, triggerer, is_in_metabar_more) {

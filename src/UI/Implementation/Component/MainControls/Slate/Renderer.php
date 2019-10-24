@@ -4,13 +4,14 @@
 
 namespace ILIAS\UI\Implementation\Component\MainControls\Slate;
 
-use ILIAS\UI\Implementation\Render\AbstractComponentRenderer;
-use ILIAS\UI\Renderer as RendererInterface;
 use ILIAS\UI\Component;
 use ILIAS\UI\Component\MainControls\Slate as ISlate;
+use ILIAS\UI\Implementation\Render\AbstractComponentRenderer;
+use ILIAS\UI\Renderer as RendererInterface;
 
 class Renderer extends AbstractComponentRenderer
 {
+
     /**
      * @inheritdoc
      */
@@ -22,8 +23,10 @@ class Renderer extends AbstractComponentRenderer
         } else {
             $contents = $component->getContents();
         }
+
         return $this->renderSlate($component, $contents, $default_renderer);
     }
+
 
     protected function getCombinedSlateContents(
         ISlate\Slate $component
@@ -48,8 +51,10 @@ class Renderer extends AbstractComponentRenderer
             }
             $contents[] = $entry;
         }
+
         return $contents;
     }
+
 
     protected function renderSlate(
         ISlate\Slate $component,
@@ -66,23 +71,43 @@ class Renderer extends AbstractComponentRenderer
             $tpl->touchBlock('disengaged');
         }
 
+        $toggle_signal = $component->getToggleSignal();
+        $engage_signal = $component->getEngageSignal();
+        $replace_signal = $component->getReplaceSignal();
         $slate_signals = [
-            'toggle' => $component->getToggleSignal(),
-            'engage' => $component->getEngageSignal(),
-            'replace' => $component->getReplaceSignal()
+            'toggle'  => $toggle_signal,
+            'engage'  => $engage_signal,
+            'replace' => $replace_signal,
         ];
-        $component = $component->withAdditionalOnLoadCode(function ($id) use ($slate_signals) {
-            $js = "fn = il.UI.maincontrols.slate.onSignal;";
-            foreach ($slate_signals as $key => $signal) {
-                $js .= "$(document).on('{$signal}', function(event, signalData) { fn('{$key}', event, signalData, '{$id}'); return false;});";
-            }
-            return $js;
+
+        $component = $component->withAdditionalOnLoadCode(function ($id) use ($toggle_signal) {
+            return "$(document).on('$toggle_signal', function(event, signalData) {
+                    il.UI.maincontrols.slate.onSignal('toggle', signalData, '{$id}');
+                    return event;
+                });";
         });
+
+        $component = $component->withAdditionalOnLoadCode(function ($id) use ($engage_signal) {
+            return "$(document).on('$engage_signal', function(event, signalData) {
+                    il.UI.maincontrols.slate.onSignal('engage', signalData, '{$id}');
+                    return event;
+                });";
+        });
+
+        $component = $component->withAdditionalOnLoadCode(function ($id) use ($replace_signal) {
+            return "$(document).on('$replace_signal', function(event, signalData) {
+                    il.UI.maincontrols.slate.onSignal('replace', signalData, '{$id}');
+                    event.
+                    return event;
+                });";
+        });
+
         $id = $this->bindJavaScript($component);
         $tpl->setVariable('ID', $id);
 
         return $tpl->get();
     }
+
 
     /**
      * @inheritdoc
@@ -93,6 +118,7 @@ class Renderer extends AbstractComponentRenderer
         $registry->register('./src/UI/templates/js/MainControls/slate.js');
     }
 
+
     /**
      * @inheritdoc
      */
@@ -100,7 +126,7 @@ class Renderer extends AbstractComponentRenderer
     {
         return array(
             ISlate\Legacy::class,
-            ISlate\Combined::class
+            ISlate\Combined::class,
         );
     }
 }

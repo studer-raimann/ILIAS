@@ -4,6 +4,7 @@ use ILIAS\GlobalScreen\Scope\MainMenu\Factory\AbstractChildItem;
 use ILIAS\GlobalScreen\Scope\MainMenu\Factory\hasContent;
 use ILIAS\GlobalScreen\Scope\MainMenu\Factory\hasSymbol;
 use ILIAS\GlobalScreen\Scope\MainMenu\Factory\hasTitle;
+use ILIAS\GlobalScreen\Scope\MainMenu\Factory\supportsAsynchronousLoading;
 use ILIAS\UI\Component\Component;
 use ILIAS\UI\Component\Symbol\Symbol;
 
@@ -12,17 +13,13 @@ use ILIAS\UI\Component\Symbol\Symbol;
  *
  * @author Fabian Schmid <fs@studer-raimann.ch>
  */
-class Complex extends AbstractChildItem implements hasContent, hasTitle, hasSymbol
+class Complex extends AbstractChildItem implements hasContent, hasTitle, hasSymbol, supportsAsynchronousLoading
 {
 
     /**
      * @var
      */
     private $content;
-    /**
-     * @var string
-     */
-    private $async_content_url = '';
     /**
      * @var string
      */
@@ -106,5 +103,14 @@ class Complex extends AbstractChildItem implements hasContent, hasTitle, hasSymb
     public function hasSymbol() : bool
     {
         return $this->symbol instanceof Symbol;
+    }
+
+
+    /**
+     * @inheritDoc
+     */
+    public function supportsAsynchronousLoading() : bool
+    {
+        return true;
     }
 }

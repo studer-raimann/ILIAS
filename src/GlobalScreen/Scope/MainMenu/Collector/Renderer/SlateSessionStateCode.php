@@ -43,12 +43,15 @@ trait SlateSessionStateCode
                 $identification = addslashes($identification);
 
                 return "
-                il.GS.Client.register(il.GS.Identification.getFromServerSideString('{$identification}'), '{$id}', {$level});
-                
+                // il.GS.Client.register(il.GS.Identification.getFromServerSideString('{$identification}'), '{$id}', {$level});
                 $(document).on('{$signal}', function(event, signalData) {
-                    il.GS.Client.trigger('$id');
-                    return false;
+                    console.log('SlateSessionStateCode');
+                    return event;
                 });
+                // $(document).on('{$signal}', function(event, signalData) {
+                //     il.GS.Client.trigger('$id');
+                //     return false;
+                // });
                 ";
             }
         );

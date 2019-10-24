@@ -30,9 +30,27 @@ trait MakeSlateAsync
 
         $engage_signal = $slate->getEngageSignal();
 
-        $slate = $slate->withAdditionalOnLoadCode(function ($id) use ($engage_signal) {
-            return "console.log('Engage-Signal: {$engage_signal->getId()}')";
+        $serialize = $item->getProviderIdentification()->serialize();
+        $hash = $this->hash($serialize);
+        $url = "./src/GlobalScreen/Client/content.php?item=" . $hash;
+
+        $replace_signal = $slate->getReplaceSignal()->withAsyncRenderUrl($url);
+
+        // $slate = $slate->appendOnEngage($replace_signal);
+        //
+        $slate = $slate->withAdditionalOnLoadCode(function ($id) use ($engage_signal, $replace_signal) {
+            return "$('#$id').on('$engage_signal', function (event, signalData) {
+                  console.log('MakeSlateAsync');
+                  return event;
+            });";
         });
+
+        /*
+         *  return "$('#$id').on('click', function(event) {
+							window.location = '{$action}';
+							return false;
+					});";
+         */
 
         return $slate;
     }

@@ -428,6 +428,7 @@ logic for this kind of interactions.
 ### About Triggerables, Triggerer and Signals
 
 Before describing the concept in more detail, you should be aware of the following definitions:
+
 * **Signal** A signal describes a javascript action of a component which can be triggered by another component of the
 framework.
 * **Triggerable** A component offering some signals that can be triggered by other components.
@@ -444,11 +445,13 @@ Again, consider the example if a user opens a modal by clicking on a button:
 ### How to trigger Signals of Components
 
 This code snippet shows how to open a modal by clicking on a button:
+
 ```php
 $modal = $factory->modal()->roundtrip('Title', $factory->legacy('Hello World'));
 $button = $factory->button()->standard('Open Modal', '#')
   ->withOnClick($modal->getShowSignal());
 ```
+
 The button is a triggerer component. As such, it offers the method `withOnClick` which takes any `Signal` 
 offered by a triggerable. This is how the framework connects triggerer components with signals of triggerable components.
 Similar to the click event, there exist methods `withOnHover` and `withOnLoad` to abstract the javascript events on
@@ -457,12 +460,14 @@ which a signal is being triggered.
 #### Attention: Immutable Objects and Signals
 Each triggerer component stores the signals it triggers. By cloning a component, these signals are cloned as well.
 This means that a cloned component may trigger the same signals as the original. Consider the following example:
+
  ```php
 $modal = $factory->modal()->roundtrip('Title', $factory->legacy('Hello World'));
 $button1 = $factory->button()->standard('Open Modal', '#')
   ->withOnClick($modal->getShowSignal());
 $button2 = $button1->withLabel('Open the same Modal');   
  ```
+ 
 In the example above, `$button2` will open the same modal as `$button1`. In order to reset any triggered signals, use
  the method `$button2->withResetTriggeredSignals()`.
 
