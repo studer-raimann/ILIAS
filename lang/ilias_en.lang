@@ -10125,7 +10125,7 @@ dcl#:#dcl_activate_notification#:#Enable Notification
 dcl#:#dcl_table_id#:#Table ID
 dcl#:#dcl_add_new_record#:#Add New Entry
 dcl#:#dcl_list_fields#:#Fields
-dcl#:#dcl_list_visibility_and_filter#:#Visibility and filter
+dcl#:#dcl_list_visibility_and_filter#:#List View
 dcl#:#dcl_add_new_field#:#Add New Field
 dcl#:#dcl_add_new_table#:#Add New Table
 dcl#:#dcl_add_new_view#:#Add New View
@@ -10177,7 +10177,7 @@ dcl#:#dcl_select#:#Select for Presentation
 dcl#:#dcl_tableviews#:#Views
 dcl#:#dcl_tableviews_table#:#Views of Selected Table
 dcl#:#dcl_tableview#:#View
-dcl#:#dcl_detailed_view#:#Detailed View
+dcl#:#dcl_detailed_view#:#Single View
 dcl#:#dcl_tableview_add#:#Add New View
 dcl#:#dcl_delete_views#:#Delete Views
 dcl#:#dcl_delete_tables#:#Delete Tables
