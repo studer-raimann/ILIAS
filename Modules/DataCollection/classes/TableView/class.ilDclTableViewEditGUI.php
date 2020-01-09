@@ -147,6 +147,8 @@ class ilDclTableViewEditGUI
         $this->tabs_gui->addTab('general_settings', $this->lng->txt('settings'), $this->ctrl->getLinkTarget($this, 'editGeneralSettings'));
         $this->tabs_gui->addTab('field_settings', $this->lng->txt('dcl_list_visibility_and_filter'), $this->ctrl->getLinkTarget($this, 'editFieldSettings'));
         $this->tabs_gui->addTab('detailed_view', $this->lng->txt('dcl_detailed_view'), $this->ctrl->getLinkTargetByClass('ilDclDetailedViewDefinitionGUI', 'edit'));
+        $this->tabs_gui->addTab('edit_view', $this->lng->txt('dcl_edit_view'), $this->ctrl->getLinkTargetByClass('ilDclDetailedViewDefinitionGUI', 'edit'));
+        $this->tabs_gui->addTab('create_view', $this->lng->txt('dcl_create_view'), $this->ctrl->getLinkTargetByClass('ilDclDetailedViewDefinitionGUI', 'edit'));
         $this->tabs_gui->setTabActive($active);
     }
 
