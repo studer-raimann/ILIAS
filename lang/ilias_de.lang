@@ -10351,6 +10351,11 @@ dcl#:#dcl_detailed_view#:#Einzelansicht
 dcl#:#dcl_edit_view#:#Ansicht bearbeiten
 dcl#:#dcl_create_view#:#Ansicht erstellen
 dcl#:#dcl_tableview_add#:#Neue Ansicht hinzufügen
+dcl#:#dcl_tableview_create_fieldtitle#:#Feld-Titel
+dcl#:#dcl_tableview_create_locked#:#Gesperrt
+dcl#:#dcl_tableview_create_required#:#Verpflichtend
+dcl#:#dcl_tableview_create_default_value#:#Standardwert
+dcl#:#dcl_tableview_create_visible#:#Sichtbar
 dcl#:#dcl_delete_views#:#Ansichten löschen
 dcl#:#dcl_delete_tables#:#Tabellen löschen
 dcl#:#dcl_msg_tableview_updated#:#Ansicht aktualisiert

@@ -7,6 +7,7 @@
  * @ingroup      ModulesDataCollection
  *
  * @ilCtrl_Calls ilDclTableViewEditGUI: ilDclDetailedViewDefinitionGUI
+ * @ilCtrl_Calls ilDclTableViewEditGUI: ilDclCreateViewDefinitionGUI
  */
 class ilDclTableViewEditGUI
 {
@@ -110,6 +111,17 @@ class ilDclTableViewEditGUI
                 $ilTabs->removeTab('clipboard'); // Fixme
                 $ilTabs->removeTab('pg');
                 break;
+            case 'ildclcreateviewdefinitiongui':
+                $this->setTabs('create_view');
+                $recordedit_gui = new ilDclCreateViewDefinitionGUI($this->tableview->getId());
+                $this->ctrl->forwardCommand($recordedit_gui);
+                global $DIC;
+                $ilTabs = $DIC['ilTabs'];
+                $ilTabs->removeTab('edit');
+                $ilTabs->removeTab('history');
+                $ilTabs->removeTab('clipboard'); // Fixme
+                $ilTabs->removeTab('pg');
+                break;
             default:
                 switch ($cmd) {
                     case 'show':
@@ -147,8 +159,8 @@ class ilDclTableViewEditGUI
         $this->tabs_gui->addTab('general_settings', $this->lng->txt('settings'), $this->ctrl->getLinkTarget($this, 'editGeneralSettings'));
         $this->tabs_gui->addTab('field_settings', $this->lng->txt('dcl_list_visibility_and_filter'), $this->ctrl->getLinkTarget($this, 'editFieldSettings'));
         $this->tabs_gui->addTab('detailed_view', $this->lng->txt('dcl_detailed_view'), $this->ctrl->getLinkTargetByClass('ilDclDetailedViewDefinitionGUI', 'edit'));
-        $this->tabs_gui->addTab('edit_view', $this->lng->txt('dcl_edit_view'), $this->ctrl->getLinkTargetByClass('ilDclDetailedViewDefinitionGUI', 'edit'));
-        $this->tabs_gui->addTab('create_view', $this->lng->txt('dcl_create_view'), $this->ctrl->getLinkTargetByClass('ilDclDetailedViewDefinitionGUI', 'edit'));
+        $this->tabs_gui->addTab('edit_view', $this->lng->txt('dcl_edit_view'), $this->ctrl->getLinkTargetByClass('ilDclCreateViewDefinitionGUI', 'edit'));
+        $this->tabs_gui->addTab('create_view', $this->lng->txt('dcl_create_view'), $this->ctrl->getLinkTargetByClass('ilDclCreateViewDefinitionGUI', 'presentation'));
         $this->tabs_gui->setTabActive($active);
     }
 
