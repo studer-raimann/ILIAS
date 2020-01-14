@@ -43,11 +43,9 @@ class ilDclFieldListTableGUI extends ilTable2GUI
         $this->addColumn('', '', '1', true);
         $this->addColumn($lng->txt('dcl_order'), null, '30px');
         $this->addColumn($lng->txt('dcl_fieldtitle'), null, 'auto');
-        $this->addColumn($lng->txt('dcl_locked'), null, '30px', false, "", $lng->txt('dcl_locked_tooltip'));
         $this->addColumn($lng->txt('dcl_in_export'), null, '30px');
         $this->addColumn($lng->txt('dcl_description'), null, 'auto');
         $this->addColumn($lng->txt('dcl_field_datatype'), null, 'auto');
-        $this->addColumn($lng->txt('dcl_required'), null, 'auto');
         $this->addColumn($lng->txt('dcl_unique'), null, 'auto');
         $this->addColumn($lng->txt('actions'), null, '30px');
         // Only add mutli command for custom fields
@@ -135,14 +133,6 @@ class ilDclFieldListTableGUI extends ilTable2GUI
         $this->tpl->setVariable('DATATYPE', $a_set->getDatatypeTitle());
 
         if (!$a_set->isStandardField()) {
-            switch ($a_set->getRequired()) {
-                case 0:
-                    $required = ilUtil::getImagePath('icon_not_ok.svg');
-                    break;
-                case 1:
-                    $required = ilUtil::getImagePath('icon_ok.svg');
-                    break;
-            }
             switch ($a_set->isUnique()) {
                 case 0:
                     $uniq = ilUtil::getImagePath('icon_not_ok.svg');
@@ -151,10 +141,8 @@ class ilDclFieldListTableGUI extends ilTable2GUI
                     $uniq = ilUtil::getImagePath('icon_ok.svg');
                     break;
             }
-            $this->tpl->setVariable('REQUIRED', $required);
             $this->tpl->setVariable('UNIQUE', $uniq);
         } else {
-            $this->tpl->setVariable('NO_REQUIRED', '');
             $this->tpl->setVariable('NO_UNIQUE', '');
         }
 
