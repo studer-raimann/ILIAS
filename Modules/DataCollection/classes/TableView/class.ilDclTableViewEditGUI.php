@@ -74,7 +74,8 @@ class ilDclTableViewEditGUI
 
         $this->ctrl->saveParameterByClass('ilDclTableEditGUI', 'table_id');
         $this->ctrl->saveParameter($this, 'tableview_id');
-        $locator->addItem($this->tableview->getTitle(), $this->ctrl->getLinkTarget($this, 'show'));
+        $tableview_title = $this->tableview->getTitle() ? $this->tableview->getTitle() : '';
+        $locator->addItem($tableview_title, $this->ctrl->getLinkTarget($this, 'show'));
         $this->tpl->setLocator();
     }
 
