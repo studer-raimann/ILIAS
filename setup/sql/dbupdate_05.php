@@ -4109,3 +4109,59 @@ ilOrgUnitOperationQueries::registerNewOperationForMultipleContexts(ilOrgUnitOper
     ilOrgUnitOperationContext::CONTEXT_SVY,
 ]);
 ?>
+<#5650>
+<?php
+if (!$ilDB->tableColumnExists('il_dcl_tview_set', 'default_value')) {
+    $ilDB->addTableColumn(
+        'il_dcl_tview_set',
+        'default_value',
+        array(
+            'type'    => 'text',
+            'length'  => 255,
+            'notnull' => false
+        )
+    );
+}
+?>
+<#5651>
+<?php
+if (!$ilDB->tableColumnExists('il_dcl_tview_set', 'required')) {
+    $ilDB->addTableColumn(
+        'il_dcl_tview_set',
+        'required',
+        array(
+            'type'    => 'integer',
+            'length'  => 1,
+            'notnull' => true,
+            'default' => 0
+        )
+    );
+}
+?>
+<#5652>
+<?php
+if (!$ilDB->tableColumnExists('il_dcl_tview_set', 'locked')) {
+    $ilDB->addTableColumn(
+        'il_dcl_tview_set',
+        'locked',
+        array(
+            'type'    => 'integer',
+            'length'  => 1,
+            'notnull' => true,
+            'default' => 0
+        )
+    );
+}
+?>
+<#5653>
+<?php
+if ($ilDB->tableColumnExists('il_dcl_field', 'required')) {
+    $ilDB->dropTableColumn('il_dcl_field', 'required');
+}
+?>
+<#5654>
+<?php
+if ($ilDB->tableColumnExists('il_dcl_field', 'is_locked')) {
+    $ilDB->dropTableColumn('il_dcl_field', 'is_locked');
+}
+?>

@@ -74,6 +74,30 @@ class ilDclTableViewFieldSetting extends ActiveRecord
      * @db_length           1
      */
     protected $filter_changeable;
+    /**
+     * @var bool
+     *
+     * @db_has_field        true
+     * @db_fieldtype        integer
+     * @db_length           1
+     */
+    protected $required;
+    /**
+     * @var bool
+     *
+     * @db_has_field        true
+     * @db_fieldtype        integer
+     * @db_length           1
+     */
+    protected $locked;
+    /**
+     * @var string
+     *
+     * @db_has_field        true
+     * @db_fieldtype        text
+     * @db_length           128
+     */
+    protected $default_value;
 
 
     /**
@@ -209,6 +233,60 @@ class ilDclTableViewFieldSetting extends ActiveRecord
     public function setId($id)
     {
         $this->id = $id;
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function isRequired()
+    {
+        return $this->required;
+    }
+
+
+    /**
+     * @param bool $required
+     */
+    public function setRequired($required)
+    {
+        $this->required = $required;
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function isLocked()
+    {
+        return $this->locked;
+    }
+
+
+    /**
+     * @param bool $locked
+     */
+    public function setLocked($locked)
+    {
+        $this->locked = $locked;
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getDefaultValue()
+    {
+        return $this->default_value;
+    }
+
+
+    /**
+     * @param string $default_value
+     */
+    public function setDefaultValue($default_value)
+    {
+        $this->default_value = $default_value;
     }
 
 

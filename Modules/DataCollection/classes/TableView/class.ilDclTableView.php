@@ -367,6 +367,8 @@ class ilDclTableView extends ActiveRecord
             $field_set->setField($field_id);
             $field_set->setVisible(!ilDclStandardField::_isStandardField($field_id));
             $field_set->setFilterChangeable(true);
+            $field_set->setLocked(false);
+            $field_set->setRequired(true);
             $field_set->create();
         }
     }

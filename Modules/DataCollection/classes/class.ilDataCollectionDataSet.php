@@ -220,9 +220,7 @@ class ilDataCollectionDataSet extends ilDataSet
                     $field->setDatatypeId($a_rec['datatype_id']);
                     $field->setTitle($a_rec['title']);
                     $field->setDescription($a_rec['description']);
-                    $field->setRequired($a_rec['required']);
                     $field->setUnique($a_rec['is_unique']);
-                    $field->setLocked($a_rec['is_locked']);
                     $field->doCreate();
                     $a_mapping->addMapping('Modules/DataCollection', 'il_dcl_field', $a_rec['id'], $field->getId());
                     // Check if this field was used as default order by, if so, update to new id
@@ -529,9 +527,7 @@ class ilDataCollectionDataSet extends ilDataSet
                     'title'       => 'text',
                     'description' => 'text',
                     'datatype_id' => 'integer',
-                    'required'    => 'integer',
-                    'is_unique'   => 'integer',
-                    'is_locked'   => 'integer',
+                    'is_unique'   => 'integer'
                 );
             case 'il_dcl_tview_set':
                 return array(
@@ -542,6 +538,9 @@ class ilDataCollectionDataSet extends ilDataSet
                     'in_filter'         => 'integer',
                     'filter_value'      => 'text',
                     'filter_changeable' => 'integer',
+                    'required' => 'integer',
+                    'locked' => 'integer',
+                    'default_value' => 'text',
                 );
             case 'il_dcl_tfield_set':
                 return array(

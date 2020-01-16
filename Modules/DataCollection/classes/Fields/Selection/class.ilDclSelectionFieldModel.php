@@ -122,7 +122,6 @@ abstract class ilDclSelectionFieldModel extends ilDclBaseFieldModel
             'title'       => $this->getTitle(),
             'datatype'    => $this->getDatatypeId(),
             'description' => $this->getDescription(),
-            'required'    => $this->getRequired(),
             'unique'      => $this->isUnique(),
         );
 
