@@ -226,4 +226,34 @@ class ilDclCreateViewDefinitionGUI extends ilPageObjectGUI
 
         return $a_output;
     }
+
+
+    /**
+     * Save table entries
+     */
+    public function saveTable() {
+        /**
+         * @var ilDclTableViewFieldSetting $setting
+         */
+        foreach ($this->tableview->getFieldSettings() as $setting) {
+
+            // Checkboxes
+            foreach (array("Locked", "Required", "Visible") as $attribute) {
+                $key = $attribute . '_' . $setting->getField();
+                $setting->{'set' . $attribute}($_POST[$key] == 'on');
+            }
+
+            // Text Inputs
+            foreach (array("DefaultValue") as $attribute) {
+                $key = $attribute . '_' . $setting->getField();
+                $setting->{'set' . $attribute}($_POST[$key]);
+            }
+
+            $setting->update();
+        }
+
+        ilUtil::sendSuccess($this->lng->txt('dcl_msg_tableview_updated'), true);
+        $this->ctrl->saveParameter($this, 'tableview_id');
+        $this->ctrl->redirect($this, 'presentation');
+    }
 }
