@@ -283,15 +283,24 @@ class ilDclRecordEditGUI
         $allFields = $this->table->getRecordFields();
         $inline_css = '';
         foreach ($allFields as $field) {
-            $item = ilDclCache::getFieldRepresentation($field)->getInputField($this->form, $this->record_id);
-            if ($item === null) {
-                continue; // Fields calculating values at runtime, e.g. ilDclFormulaFieldModel do not have input
-            }
+            $field_settings = $field->getFieldSettings();
+            foreach ($field_settings as $field_setting) {
+                if ($field_setting->getTableViewId() === $this->tableview_id) {
+                    $item = ilDclCache::getFieldRepresentation($field)->getInputField($this->form, $this->record_id);
+                    if ($item === null) {
+                        continue; // Fields calculating values at runtime, e.g. ilDclFormulaFieldModel do not have input
+                    }
 
-            if (!ilObjDataCollectionAccess::hasWriteAccess($this->parent_obj->ref_id) && $field->getLocked()) {
-                $item->setDisabled(true);
+                    if (!ilObjDataCollectionAccess::hasWriteAccess($this->parent_obj->ref_id) && $field_setting->isLocked()) {
+                        $item->setDisabled(true);
+                    }
+
+                    $item->setRequired($field_setting->isRequired());
+                    $item->setValue($field_setting->getDefaultValue());
+
+                    $this->form->addItem($item);
+                }
             }
-            $this->form->addItem($item);
         }
 
         $this->tpl->addInlineCss($inline_css);

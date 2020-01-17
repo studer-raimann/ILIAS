@@ -117,7 +117,6 @@ abstract class ilDclBaseFieldRepresentation
      */
     protected function setupInputField(ilFormPropertyGUI $input, ilDclBaseFieldModel $field)
     {
-        $input->setRequired($field->getRequired());
         $input->setInfo($field->getDescription() . ($input->getInfo() ? '<br>' . $input->getInfo() : ''));
     }
 
