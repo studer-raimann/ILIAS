@@ -37,6 +37,11 @@ class ClozeEditor extends AbstractEditor {
      */
     private $answers;
     
+    /**
+     * @var AsqTableInput[]
+     */
+    private static $gap_tables;
+    
     public function __construct(QuestionDto $question) {
         $this->answers = [];
         $this->configuration = $question->getPlayConfiguration()->getEditorConfiguration();
@@ -59,9 +64,33 @@ class ClozeEditor extends AbstractEditor {
     {
         return ClozeEditorConfiguration::create(
             ilAsqHtmlPurifier::getInstance()->purify($_POST[self::VAR_CLOZE_TEXT]),
-            []);
+            self::readGapConfig());
     }
 
+    /**
+     * @return array
+     */
+    public static function readGapConfig() : array {
+        $i = 1;
+        $gap_configs = [];
+        
+        while (array_key_exists($i . self::VAR_GAP_TYPE, $_POST)) {            
+            $gap_configs[] = 
+                ClozeGapConfiguration::create(
+                    $_POST[$i . self::VAR_GAP_TYPE], 
+                    array_map(function($raw_item) {
+                        return ClozeGapItem::create(
+                            $raw_item[ClozeGapItem::VAR_TEXT], 
+                            $raw_item[ClozeGapItem::VAR_POINTS]
+                        );
+                    }, self::$gap_tables[$i]->readValues()));
+            
+            $i += 1;
+        }
+        
+        return $gap_configs;
+    }
+    
     public function setAnswer(string $answer): void
     {
         $this->answers = json_decode($answer, true);
@@ -153,6 +182,7 @@ class ClozeEditor extends AbstractEditor {
         /** @var ClozeEditorConfiguration $config */
         global $DIC;
         
+        self::$gap_tables = [];
         $fields = [];
         
         $cloze_text = new ilTextAreaInputGUI($DIC->language()->txt('asq_label_cloze_text'), self::VAR_CLOZE_TEXT);
@@ -202,6 +232,7 @@ class ClozeEditor extends AbstractEditor {
                 AsqTableInputFieldDefinition::TYPE_TEXT,
                 ClozeGapItem::VAR_POINTS)
         ]);
+        self::$gap_tables[$index] = $gap_items;
         $fields[$index .self::VAR_GAP_ITEMS] = $gap_items;
         
         if (!is_null($gap)) {

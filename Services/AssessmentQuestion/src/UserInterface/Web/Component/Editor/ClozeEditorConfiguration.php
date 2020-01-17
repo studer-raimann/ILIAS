@@ -4,6 +4,7 @@ namespace ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor;
 
 use ILIAS\AssessmentQuestion\CQRS\Aggregate\AbstractValueObject;
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
+use ILIAS\AssessmentQuestion\UserInterface\Web\Fields\AsqTableInput;
 
 /**
  * Class ClozeEditorConfiguration
@@ -49,7 +50,9 @@ class ClozeEditorConfiguration extends AbstractConfiguration {
      */
     public function getGaps()
     {
-        //return $this->gaps;
+        if ($this->gaps != []) {
+            return $this->gaps;
+        }
         
         $gaps = [];
         

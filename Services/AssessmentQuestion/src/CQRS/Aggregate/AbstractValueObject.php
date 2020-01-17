@@ -69,58 +69,35 @@ abstract class AbstractValueObject implements JsonSerializable {
 			return null;
 		}
 
-		$std_data = json_decode($data);
+		$data_array = json_decode($data, true);
 
-		if ($std_data === null) {
+		if ($data_array === null) {
 			return null;
 		}
 
-		/** @var AbstractValueObject $object */
-		$object = new $std_data->{self::VAR_CLASSNAME}();
-		$object->setFromStdClass($std_data);
-
-		return $object;
+		return self::createFromArray($data_array);
 	}
 
-	private function setFromStdClass(StdClass $data) {
-		foreach ($data as $property=>$value) {
-			if ($value instanceof StdClass)
-			{
-			    if (empty($value->{self::VAR_CLASSNAME})) {
-			        // get array from stdclass
-			        $this->$property = json_decode(json_encode($value), true);
-			    }
-			    else {
-    				/** @var AbstractValueObject $object */
-    				$object = new $value->{self::VAR_CLASSNAME}();
-    				$object->setFromStdClass($value);
-    				$this->$property = $object;
-			    }
-			}
-		    else if (is_array($value)) {
-		        $transformed = [];
-		        foreach ($value as $key=>$val) {
-		             if ($val instanceof StdClass)
-		             {
-		                 if (property_exists($val, self::VAR_CLASSNAME)) {
-		                     /** @var AbstractValueObject $object */
-		                     $object = new $val->{self::VAR_CLASSNAME}();
-		                     $object->setFromStdClass($val);
-		                     $transformed[$key] =$object;
-		                 }
-		                 else {
-		                     $transformed[$key] = json_decode(json_encode($val), true);
-		                 }
-		             }
-		             else {
-		                 $transformed[$key] = $val;
-		             }
-		        }
-		        $this->$property = $transformed;
-		    }
-			else {
-				$this->$property = $value;
-			}
-		}
+	private static function createFromArray(array $data) {
+	    
+	    if (array_key_exists(self::VAR_CLASSNAME, $data))  {
+    	    /** @var AbstractValueObject $object */
+    	    $object = new $data[self::VAR_CLASSNAME]();
+    	    
+    	    foreach ($data as $key=>$value) {
+    	        $object->$key = is_array($value) ? self::createFromArray($value) : $value;
+    	    }
+    	    
+    	    return $object;
+	    }
+	    else {
+	        foreach ($data as $key=>$value) {
+	            if (is_array($value)) {
+	                $data[$key] = self::createFromArray($value);
+	            }
+	        }
+	        
+	        return $data;
+	    }
 	}
 }

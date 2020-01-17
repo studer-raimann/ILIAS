@@ -150,7 +150,7 @@ let process_row = function(row, current_row) {
 };
 
 let update_input_name = function(old_name, current_row) {
-    return current_row + old_name.match(/\D+/);
+    return current_row + old_name.match(/\D.*/);
 };
 
 let update_form = function() {
