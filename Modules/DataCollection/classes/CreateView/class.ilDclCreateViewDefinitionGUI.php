@@ -237,19 +237,21 @@ class ilDclCreateViewDefinitionGUI extends ilPageObjectGUI
          */
         foreach ($this->tableview->getFieldSettings() as $setting) {
 
-            // Checkboxes
-            foreach (array("Locked", "Required", "Visible") as $attribute) {
-                $key = $attribute . '_' . $setting->getField();
-                $setting->{'set' . $attribute}($_POST[$key] == 'on');
-            }
+            if (!$setting->getFieldObject()->isStandardField()) {
+                // Checkboxes
+                foreach (array("Locked", "Required", "VisibleCreate") as $attribute) {
+                    $key = $attribute . '_' . $setting->getField();
+                    $setting->{'set' . $attribute}($_POST[$key] == 'on');
+                }
 
-            // Text Inputs
-            foreach (array("DefaultValue") as $attribute) {
-                $key = $attribute . '_' . $setting->getField();
-                $setting->{'set' . $attribute}($_POST[$key]);
-            }
+                // Text Inputs
+                foreach (array("DefaultValue") as $attribute) {
+                    $key = $attribute . '_' . $setting->getField();
+                    $setting->{'set' . $attribute}($_POST[$key]);
+                }
 
-            $setting->update();
+                $setting->update();
+            }
         }
 
         ilUtil::sendSuccess($this->lng->txt('dcl_msg_tableview_updated'), true);

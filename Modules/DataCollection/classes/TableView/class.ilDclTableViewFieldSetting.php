@@ -98,6 +98,22 @@ class ilDclTableViewFieldSetting extends ActiveRecord
      * @db_length           128
      */
     protected $default_value;
+    /**
+     * @var bool
+     *
+     * @db_has_field        true
+     * @db_fieldtype        integer
+     * @db_length           1
+     */
+    protected $visible_create;
+    /**
+     * @var bool
+     *
+     * @db_has_field        true
+     * @db_fieldtype        integer
+     * @db_length           1
+     */
+    protected $visible_edit;
 
 
     /**
@@ -287,6 +303,42 @@ class ilDclTableViewFieldSetting extends ActiveRecord
     public function setDefaultValue($default_value)
     {
         $this->default_value = $default_value;
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function isVisibleCreate()
+    {
+        return $this->visible_create;
+    }
+
+
+    /**
+     * @param bool $visible_create
+     */
+    public function setVisibleCreate($visible_create)
+    {
+        $this->visible_create = $visible_create;
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function isVisibleEdit()
+    {
+        return $this->visible_edit;
+    }
+
+
+    /**
+     * @param bool $visible_edit
+     */
+    public function setVisibleEdit($visible_edit)
+    {
+        $this->visible_edit = $visible_edit;
     }
 
 
