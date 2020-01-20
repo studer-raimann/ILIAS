@@ -1,15 +1,15 @@
 <tr class="{CSS_ROW}" id="{ID}">
 	<td class="name">{TITLE}</td>
 	<td class="std">
-		<input type="checkbox" name="Locked_{FIELD_ID}" {IS_LOCKED}>
+		<input type="checkbox" name="Locked_{FIELD_ID}" {IS_LOCKED} {HIDDEN}>
 	</td>
 	<td class="std">
-		<input type="checkbox" name="Required_{FIELD_ID}" {IS_REQUIRED}>
+		<input type="checkbox" name="Required_{FIELD_ID}" {IS_REQUIRED} {HIDDEN}>
 	</td>
 	<td class="std">
-		<input type="text" name="DefaultValue_{FIELD_ID}" value="{DEFAULT_VALUE}">
+		<input type="text" name="DefaultValue_{FIELD_ID}" value="{DEFAULT_VALUE}" {HIDDEN}>
 	</td>
 	<td class="std">
-		<input type="checkbox" name="Visible_{FIELD_ID}" {IS_VISIBLE}>
+		<input type="checkbox" name="VisibleCreate_{FIELD_ID}" {IS_VISIBLE} {HIDDEN}>
 	</td>
 </tr>

@@ -55,11 +55,17 @@ class ilDclCreateViewTableGUI extends ilTable2GUI
     {
         $field = $a_set->getFieldObject();
 
+        if (!$field->isStandardField()) {
+            $this->tpl->setVariable('IS_LOCKED', $a_set->isLocked() ? 'checked' : '');
+            $this->tpl->setVariable('IS_REQUIRED', $a_set->isRequired() ? 'checked' : '');
+            $this->tpl->setVariable('DEFAULT_VALUE', $a_set->getDefaultValue());
+            $this->tpl->setVariable('IS_VISIBLE', $a_set->isVisibleCreate() ? 'checked' : '');
+        } else {
+            $this->tpl->setVariable('HIDDEN', 'hidden');
+        }
+
         $this->tpl->setVariable('FIELD_ID', $a_set->getField());
         $this->tpl->setVariable('TITLE', $field->getTitle());
-        $this->tpl->setVariable('IS_LOCKED', $a_set->isLocked() ? 'checked' : '');
-        $this->tpl->setVariable('IS_REQUIRED', $a_set->isRequired() ? 'checked' : '');
-        $this->tpl->setVariable('DEFAULT_VALUE', $a_set->getDefaultValue());
-        $this->tpl->setVariable('IS_VISIBLE', $a_set->isVisible() ? 'checked' : '');
+        $this->tpl->parseCurrentBlock();
     }
 }
