@@ -1,5 +1,7 @@
 <?php namespace ILIAS\MainMenu\Provider;
 
+use ILIAS\DI\Container;
+use ILIAS\GlobalScreen\Helper\BasicAccessCheckClosures;
 use ILIAS\GlobalScreen\Scope\MainMenu\Collector\Information\TypeInformation;
 use ILIAS\GlobalScreen\Scope\MainMenu\Collector\Information\TypeInformationCollection;
 use ILIAS\GlobalScreen\Scope\MainMenu\Collector\Renderer\ComplexItemRenderer;
@@ -8,6 +10,7 @@ use ILIAS\GlobalScreen\Scope\MainMenu\Collector\Renderer\LinkListItemRenderer;
 use ILIAS\GlobalScreen\Scope\MainMenu\Collector\Renderer\LostItemRenderer;
 use ILIAS\GlobalScreen\Scope\MainMenu\Collector\Renderer\TopLinkItemRenderer;
 use ILIAS\GlobalScreen\Scope\MainMenu\Collector\Renderer\TopParentItemRenderer;
+use ILIAS\GlobalScreen\Scope\MainMenu\Collector\Renderer\RepositoryLinkItemRenderer;
 use ILIAS\GlobalScreen\Scope\MainMenu\Factory\hasAction;
 use ILIAS\GlobalScreen\Scope\MainMenu\Factory\hasTitle;
 use ILIAS\GlobalScreen\Scope\MainMenu\Factory\isChild;
@@ -38,9 +41,23 @@ class CustomMainBarProvider extends AbstractStaticMainMenuProvider implements St
 {
 
     /**
+     * @var BasicAccessCheckClosures
+     */
+    private $access_helper;
+    /**
      * @var \ILIAS\DI\Container
      */
     protected $dic;
+
+
+    /**
+     * @inheritDoc
+     */
+    public function __construct(Container $dic)
+    {
+        parent::__construct($dic);
+        $this->access_helper = BasicAccessCheckClosures::getInstance();
+    }
 
 
     /**
@@ -87,7 +104,7 @@ class CustomMainBarProvider extends AbstractStaticMainMenuProvider implements St
     {
         $identification = $this->globalScreen()->identification()->core($this)->identifier($storage->getIdentifier());
 
-        $item = $this->globalScreen()->mainBar()->custom($storage->getType(), $identification);
+        $item = $this->globalScreen()->mainBar()->custom($storage->getType(), $identification)->withVisibilityCallable($this->access_helper->isUserLoggedIn());
 
         if ($item instanceof hasTitle && $storage->getDefaultTitle() !== '') {
             $item = $item->withTitle($storage->getDefaultTitle());
@@ -97,7 +114,7 @@ class CustomMainBarProvider extends AbstractStaticMainMenuProvider implements St
         }
         if ($item instanceof isChild) {
             $mm_item = ilMMItemStorage::find($identification->serialize());
-            $parent_identification = "";
+            $parent_identification = '';
             if ($mm_item instanceof ilMMItemStorage) {
                 $parent_identification = $mm_item->getParentIdentification();
             }
@@ -139,7 +156,7 @@ class CustomMainBarProvider extends AbstractStaticMainMenuProvider implements St
         // Separator
         $c->add(new TypeInformation(Separator::class, $this->translateType(Separator::class), null, new ilMMTypeHandlerSeparator(), $this->translateByline(Separator::class)));
         // RepositoryLink
-        $c->add(new TypeInformation(RepositoryLink::class, $this->translateType(RepositoryLink::class), null, new ilMMTypeHandlerRepositoryLink()));
+        $c->add(new TypeInformation(RepositoryLink::class, $this->translateType(RepositoryLink::class), new RepositoryLinkItemRenderer(), new ilMMTypeHandlerRepositoryLink()));
         // Lost
         $lost = new TypeInformation(Lost::class, $this->translateType(Lost::class), new LostItemRenderer());
         $lost->setCreationPrevented(true);

@@ -212,6 +212,69 @@ asq#:#asq_question_hints_form_header#:#Hint for Question: %s
 asq#:#asq_question_hints_label_hint#:#Hint
 asq#:#asq_question_hints_label_points_deduction#:#Point Deduction
 asq#:#asq_answer_feedback_header#:#Feedback
+dash#:#dash_remove_from_list#:#Remove from List
+dash#:#dash_make_favourite#:#Add to Favourites
+dash#:#dash_item_removed#:#Recommendation has been removed from the list.
+dash#:#dash_added_to_favs#:#Recommendation has been added to personal favourites.
+common#:#obj_nots_desc#:#Notes settings
+common#:#obj_nots#:#Notes
+note#:#note_enable_notes#:#Enable Notes
+common#:#obj_coms_desc#:#Comments settings
+common#:#obj_coms#:#Comments
+note#:#note_enable_comments#:#Enable Comments
+administration#:#org_op_edit_user_accounts#:#Edit User Accounts
+administration#:#adm_communication#:#Communication
+note#:#note_enable_comments_del_user#:#Comments may be deleted by their authors
+note#:#note_enable_comments_del_tutor#:#Any Comment may be deleted by tutors
+note#:#note_enable_comments_del_tutor_info#:#User with "Edit Settings" permission for an object can delete any comment made in this object.
+note#:#note_comments_notification#:#General notification about all comments
+note#:#note_comments_notification_info#:#Comma separated list of accounts that are notified for each comment
+common#:#obj_lhts_desc#:#Learning history settings
+common#:#obj_lhts#:#Learning History
+common#:#obj_dshs_desc#:#Dashboard settings
+common#:#obj_dshs#:#Dashboard
+lhist#:#lhist_enable_learning_history#:#Learning History
+lhist#:#lhist_enable_learning_history_info#:#Enables an overview of all achievements of a user.
+common#:#obj_prss_desc#:#Personal resources settings
+common#:#obj_prss#:#Personal Resources
+pwsp#:#pwsp_enable_wsp_blogs#:#Enable Blogs
+pwsp#:#pwsp_enable_wsp_files#:#Enable Files
+pwsp#:#pwsp_enable_wsp_certificates#:#Enable Certificates
+pwsp#:#pwsp_enable_wsp_links#:#Enable Links
+dash#:#dash_main_panel#:#Main Panel
+dash#:#dash_side_panel#:#Side Panel
+dash#:#dash_enable_favourites#:#Favourites
+dash#:#dash_enable_memberships#:#My Courses and Groups
+dash#:#dash_view_courses_groups#:#Section ‘My Courses and Groups’
+dash#:#dash_view_favourites#:#Section ‘Favourites’
+dash#:#dash_enable_cal#:#Calendar
+dash#:#dash_enable_news#:#News
+dash#:#dash_enable_mail#:#Mail
+dash#:#dash_enable_task#:#Tasks
+dash#:#dash_avail_sortation#:#Available Sortations
+dash#:#dash_default_sortation#:#Default Sortation
+dash#:#dash_sortation#:#Sortation
+dash#:#dash_presentation#:#Presentation
+dash#:#dash_avail_presentation#:#Available Presentations
+dash#:#dash_default_presentation#:#Default Presentation
+dash#:#dash_list#:#List
+dash#:#dash_tile#:#Tile
+dash#:#dash_activation#:#activation
+dash#:#dash_sort_by_location#:#Sort by Location
+dash#:#dash_sort_by_type#:#Sort by Type
+dash#:#dash_sort_by_start_date#:#Sort by Start Date
+dash#:#dash_dashboard#:#Dashboard
+help#:#help_no_content#:#There is no help content available for the current screen. You may use the search tool.
+user#:#user_privacy_checklist#:#Privacy Checklist
+user#:#user_profile_data#:#Profile Data
+user#:#user_publish_options#:#Publish Profile
+user#:#user_visibility_settings#:#Visibility
+user#:#user_save_continue#:#Save and Continue
+user#:#user_profile_data_checked#:#Profile data checked
+user#:#user_check_profile_data#:#Check profile data
+user#:#show_own_online_status#:#Show My Online Status
+user#:#user_set_visibilty_options#:#Set visibility options
+user#:#user_set_publishing_options#:#Set publishing options
 chatroom#:#osc_noti_title#:#New Chat Message
 chatroom#:#osc_enable_browser_notifications_label#:#Browser Notifications
 chatroom#:#osc_enable_browser_notifications_info#:#If enabled, a browser notification will be shown if you receive new messages and conversations when the ILIAS browser tab is in background, or if the browser is hidden. You will also receive a browser notification for new messages in a conversation after %s minute(s) of idling if the ILIAS tab is in foreground.
@@ -9805,7 +9868,6 @@ rbac#:#tst_tst_statistics#:#User has access to test statistics
 common#:#ignore_required_fields#:#Ignore required fields
 common#:#ignore_required_fields_info#:#If activated, you can submit this form without filling out all mandatory fields. The new user has to add the missing information on the personal profile after the next login.
 assessment#:#test_has_datasets_warning_page_view#:#The test already contains data sets. You cannot edit the test questions until you remove these data sets.
-assessment#:#test_is_online_no_editing_possible#:#The test is already online. You can't edit in questions in online tests!
 assessment#:#test_has_datasets_warning_page_view_link#:#Participant Results
 wsp#:#wsp_share_with_users#:#Share with users
 acc#:#acc_last_rep_visited#:#Repository/Last Visited

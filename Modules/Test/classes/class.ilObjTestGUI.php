@@ -13,15 +13,6 @@ require_once 'Modules/OrgUnit/classes/Positions/Operation/class.ilOrgUnitOperati
 require_once 'Modules/Test/classes/class.ilTestParticipantAccessFilter.php';
 
 /**
- * TODO Remove this before merge
- */
-// /////////////////
-// /////////////////
-require_once './Services/AssessmentQuestion/examples/class.exAsqExamplesGUI.php';
-
-// ////////////////
-
-/**
  * Class ilObjTestGUI
  *
  * @author Helmut Schottmüller <helmut.schottmueller@mac.com>
@@ -328,20 +319,6 @@ class ilObjTestGUI extends ilObjectGUI
         $this->determineObjectiveOrientedContainer();
 
         switch ($next_class) {
-            /**
-             * TODO Remove this before merge
-             */
-            // /////////////////
-            // /////////////////
-            case strtolower(exAsqExamplesGUI::class):
-                $this->prepareOutput();
-                $this->addHeaderAction();
-                $DIC->tabs()->activateTab('assQuestions');
-                $gui = new exAsqExamplesGUI();
-                $DIC->ctrl()->forwardCommand($gui);
-                break;
-            // /////////////////
-
             case strtolower(ilAsqQuestionAuthoringGUI::class):
                 $this->prepareOutput();
                 $this->addHeaderAction();
@@ -2301,8 +2278,8 @@ class ilObjTestGUI extends ilObjectGUI
 
                 // TODO check the is Complete at the ASQ Question Service side
                 if (! $this->object->getOfflineStatus()  )
-				/*if( !$this->object->getOfflineStatus() && $this->object->isComplete( $this->testQuestionSetConfigFactory->getQuestionSetConfig() ) )*/
-				{
+                /*if( !$this->object->getOfflineStatus() && $this->object->isComplete( $this->testQuestionSetConfigFactory->getQuestionSetConfig() ) )*/
+                {
                     if ((! $this->object->getFixedParticipants() || $online_access) && $ilAccess->checkAccess("read", "", $this->ref_id)) {
                         $testSession = $this->testSessionFactory->getSession();
                         $testSequence = $this->testSequenceFactory->getSequenceByTestSession($testSession);
@@ -2351,9 +2328,6 @@ class ilObjTestGUI extends ilObjectGUI
 
         $table_gui->init();
 
-        // $asqQuestionListAssocArray = $DIC->assessment()->questionProcessing(
-        // $this->object->getId(), $DIC->user()->getId()
-        // )->questionList()->getQuestionsOfContainerAsAssocArray();
         $asqQuestionListAssocArray = $DIC->assessment()
             ->questionAuthoring($this->object->getId(), $DIC->user()
             ->getId())
@@ -3704,15 +3678,15 @@ class ilObjTestGUI extends ilObjectGUI
                     break;
 
                 case 'redirection_enabled':
-					/* if( $templateData[$field]['value'] > REDIRECT_NONE )
-					{
-						$object->setRedirectionMode($templateData[$field]['value']);
-					}
-					else
-					{
-						$object->setRedirectionMode(REDIRECT_NONE);
-					} */
-					if (strlen($templateData[$field]['value'])) {
+                        /* if( $templateData[$field]['value'] > REDIRECT_NONE )
+                         {
+                         $object->setRedirectionMode($templateData[$field]['value']);
+                         }
+                         else
+                         {
+                         $object->setRedirectionMode(REDIRECT_NONE);
+                         } */
+                        if (strlen($templateData[$field]['value'])) {
                         $object->setRedirectionMode(REDIRECT_ALWAYS);
                         $object->setRedirectionUrl($templateData[$field]['value']);
                     } else {
@@ -3939,8 +3913,8 @@ class ilObjTestGUI extends ilObjectGUI
             if (! $this->object->getOfflineStatus()) {
                 return false;
             }
-            return true;
+                return true;
+            }
+            return false;
         }
-        return false;
     }
-}

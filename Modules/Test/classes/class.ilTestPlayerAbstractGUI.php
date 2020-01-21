@@ -1,9 +1,6 @@
 <?php
 /* Copyright (c) 1998-2013 ILIAS open source, Extended GPL, see docs/LICENSE */
 
-use ILIAS\Modules\Test\Result\TestResultService;
-use ILIAS\Services\AssessmentQuestion\PublicApi\Common\QuestionConfig;
-
 require_once './Modules/Test/classes/inc.AssessmentConstants.php';
 require_once './Modules/Test/classes/class.ilTestPlayerCommands.php';
 require_once './Modules/Test/classes/class.ilTestServiceGUI.php';
@@ -29,10 +26,6 @@ abstract class ilTestPlayerAbstractGUI extends ilTestServiceGUI
 {
 	const PRESENTATION_MODE_VIEW = 'view';
 	const PRESENTATION_MODE_EDIT = 'edit';
-
-    const CMD_REDIRECT_TO_NEXT_QUESTION = 'redirectToNextQuestion';
-    const CMD_REDIRECT_TO_PREVIOUS_QUESTION = 'redirectToPreviousQuestion';
-    const CMD_FINISH_TEST_SESSION = 'confirmFinishTest';
 
 	const FIXED_SHUFFLER_SEED_MIN_LENGTH = 8;
 	
@@ -67,45 +60,28 @@ abstract class ilTestPlayerAbstractGUI extends ilTestServiceGUI
 	 * @var ilTestSequence|ilTestSequenceDynamicQuestionSet
 	 */
 	protected $testSequence = null;
+
     /**
-     * @var QuestionConfig
-     */
-    protected $question_config;
-
-	/**
-	* ilTestOutputGUI constructor
-	*
-	* @param ilObjTest $a_object
-	*/
-	public function __construct($a_object)
-	{
-	    global $ilDB, $ilPluginAdmin;
-
-		parent::__construct($a_object);
-		$this->ref_id = $_GET["ref_id"];
-		
-		global $DIC;
-		$rbacsystem = $DIC['rbacsystem'];
-		$ilUser = $DIC['ilUser'];
-		$lng = $DIC['lng'];
-		require_once 'Modules/Test/classes/class.ilTestPasswordChecker.php';
-		$this->passwordChecker = new ilTestPasswordChecker($rbacsystem, $ilUser, $this->object, $lng);
-		
-		$this->processLocker = null;
-		$this->testSession = null;
-		$this->assSettings = null;
-
-        $testSessionFactory = new ilTestSessionFactory($this->object);
-        $this->testSession = $testSessionFactory->getSession($_GET['active_id']);
-
-        $testSequenceFactory = new ilTestSequenceFactory($ilDB, $lng, $ilPluginAdmin, $this->object);
-        $this->testSequence = $testSequenceFactory->getSequenceByTestSession($this->testSession);
-        $this->testSequence->loadFromDb();
-        $this->testSequence->loadQuestions();
-
-		//TODO please set those settings by Test setting!
-        $this->question_config = $this->getQuestionConfig();
-	}
+    * ilTestOutputGUI constructor
+    *
+    * @param ilObjTest $a_object
+    */
+    public function __construct($a_object)
+    {
+        parent::__construct($a_object);
+        $this->ref_id = $_GET["ref_id"];
+        
+        global $DIC;
+        $rbacsystem = $DIC['rbacsystem'];
+        $ilUser = $DIC['ilUser'];
+        $lng = $DIC['lng'];
+        require_once 'Modules/Test/classes/class.ilTestPasswordChecker.php';
+        $this->passwordChecker = new ilTestPasswordChecker($rbacsystem, $ilUser, $this->object, $lng);
+        
+        $this->processLocker = null;
+        $this->testSession = null;
+        $this->assSettings = null;
+    }
 
 	protected function checkReadAccess()
 	{
@@ -771,11 +747,6 @@ abstract class ilTestPlayerAbstractGUI extends ilTestServiceGUI
 		global $DIC;
 		$ilUser = $DIC['ilUser'];
 
-        //Last Question Revision ID
-        $revision_id = $this->testSequence->getQuestionRevisionIdForSequence($this->getCurrentSequenceElement());
-        $this->persistUserAnswerResult($revision_id,$this->getCurrentSequenceElement());
-
-
 		require_once 'Services/Utilities/classes/class.ilConfirmationGUI.php';
 		$confirmation = new ilConfirmationGUI();
 		$confirmation->setFormAction($this->ctrl->getFormAction($this, 'confirmFinish'));
@@ -1386,13 +1357,7 @@ abstract class ilTestPlayerAbstractGUI extends ilTestServiceGUI
 	}
 	// hey.
 
-    abstract protected function getQuestionConfig():QuestionConfig;
-
 	abstract protected function showQuestionCmd();
-
-	abstract protected function redirectToNextQuestionCmd();
-
-    abstract protected function redirectToPreviousQuestionCmd();
 
 	abstract protected function editSolutionCmd();
 
@@ -1740,16 +1705,9 @@ abstract class ilTestPlayerAbstractGUI extends ilTestServiceGUI
 			$this->tpl->addCss(ilUtil::getStyleSheetLocation("output", "test_print_hide_content.css", "Modules/Test"), "print");
 		}
 
-		$this->tpl->setCurrentBlock("adm_content");
-		$solution = $this->getCorrectSolutionOutput($_GET["evaluation"], $_GET["active_id"], $_GET["pass"]);/*
-		$this->tpl->setVariable("OUTPUT_SOLUTION", $solution);
-		$this->tpl->setVariable("TEXT_BACK", $this->lng->txt("back"));
-		$this->ctrl->saveParameter($this, "pass");
-		$this->ctrl->saveParameter($this, "active_id");
-		$this->tpl->setVariable("URL_BACK", $this->ctrl->getLinkTarget($this, "outUserResultsOverview"));
-		$this->tpl->parseCurrentBlock();*/
+        $this->tpl->addBlockFile($this->getContentBlockName(), "adm_content", "tpl.il_as_tst_finish_list_of_answers.html", "Modules/Test");
 	}
-
+	
 	/**
 	* Creates an output of the list of answers for a test participant during the test
 	* (only the actual pass will be shown)
@@ -3053,40 +3011,4 @@ abstract class ilTestPlayerAbstractGUI extends ilTestServiceGUI
 			unset($_SESSION['forced_feedback_navigation_url'][$this->testSession->getActiveId()]);
 		}
 	}
-
-    protected function isValidSequenceElement($sequenceElement)
-    {
-        if( $sequenceElement === false )
-        {
-            return false;
-        }
-
-        if( $sequenceElement < 1 )
-        {
-            return false;
-        }
-
-        if( !$this->testSequence->getPositionOfSequence($sequenceElement) )
-        {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * @param \ILIAS\DI\Container $DIC
-     * @param string              $revision_id
-     */
-    protected function persistUserAnswerResult(string $revision_id, $order) : void
-    {
-        global $DIC;
-
-        $test_result_service = new TestResultService(
-            $DIC->ctrl()->getContextObjId(),
-            $this->testSession->getActiveId(),
-            $this->testSession->getPass(),
-            $DIC->user()->getId());
-        $test_result_service->persistAnswerResult($revision_id, 0, $order);
-    }
 }

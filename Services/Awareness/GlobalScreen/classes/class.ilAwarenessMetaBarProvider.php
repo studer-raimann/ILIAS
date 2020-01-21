@@ -52,26 +52,24 @@ class ilAwarenessMetaBarProvider extends AbstractStaticMetaBarProvider implement
         $online = explode(":", $result["cnt"]);
         $online = $online[0];
 
-        //$icon = $this->dic->ui()->factory()->symbol()->icon()->custom(\ilUtil::getImagePath("simpleline/people.svg"), "");
-
         $item = $mb
             ->topLegacyItem($this->getId())
             ->withLegacyContent($content())
-            ->withSymbol($this->dic->ui()->factory()
+            ->withSymbol(
+                $this->dic->ui()->factory()
                 ->symbol()
                 ->glyph()
                 ->user()
                 ->withCounter($f->counter()->status((int) $online))
             )
             ->withTitle("Who is online")
-            ->withPosition(0)
+            ->withPosition(2)
             ->withAvailableCallable(
-                function () use ($DIC, $online){
+                function () use ($DIC, $online) {
                     $ilUser = $DIC->user();
 
                     $awrn_set = new ilSetting("awrn");
-                    if ($online <= 0 || !$awrn_set->get("awrn_enabled", false) || ANONYMOUS_USER_ID == $ilUser->getId())
-                    {
+                    if ($online <= 0 || !$awrn_set->get("awrn_enabled", false) || ANONYMOUS_USER_ID == $ilUser->getId()) {
                         return false;
                     }
                     return true;

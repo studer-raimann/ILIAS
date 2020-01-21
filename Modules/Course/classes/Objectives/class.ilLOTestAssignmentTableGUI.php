@@ -180,161 +180,146 @@ class ilLOTestAssignmentTableGUI extends ilTable2GUI
 			$this->tpl->setVariable('VAL_DESC',$set['description']);
 		}
 
-		switch($set['ttype'])
-		{
-			case ilTestQuestionSetConfig::TYPE_FIXED:
-				$type = $this->lng->txt('tst_question_set_type_fixed');
-				break;
-			
-			case ilTestQuestionSetConfig::TYPE_RANDOM:
-				$type = $this->lng->txt('tst_question_set_type_random');
-				break;
-		}
-		
-		$this->tpl->setVariable('VAL_TTYPE',$type);
-		$this->tpl->setVariable('VAL_QST_QPL',$set['qst_info']);
-		
-		if(isset($set['qpls']) && is_array($set['qpls']) && count($set['qpls']) > 0)
-		{
-			foreach($set['qpls'] as $title)
-			{
-				$this->tpl->setCurrentBlock('qpl');
-				$this->tpl->setVariable('MAT_TITLE',$title);
-				$this->tpl->parseCurrentBlock();
-			}
-			$this->tpl->touchBlock('ul_begin');
-			$this->tpl->touchBlock('ul_end');
-		}
-	}
-	
-	public function parseMultipleAssignments()
-	{
-		include_once './Modules/Course/classes/Objectives/class.ilLOTestAssignments.php';
-		$assignments = ilLOTestAssignments::getInstance($this->container_id);
-		
-		$available = $assignments->getAssignmentsByType($this->test_type);
-		$data = array();
-		foreach($available as $assignment)
-		{
-			try
-			{
-				$tmp = $this->doParse($assignment->getTestRefId(),$assignment->getObjectiveId());
-			}
-			catch(ilLOInvalidConfigurationException $e)
-			{
-				$assignment->delete();
-				continue;
-			}
-			if($tmp)
-			{
-				// add assignment id
-				$tmp['assignment_id'] = $assignment->getAssignmentId();
-				$data[] = $tmp;
-			}
-		}
-		
-		$this->setData($data);
-	}
-	
-	/**
-	 * Parse single test assignment
-	 * @param type $a_tst_ref_id
-	 * @return boolean
-	 */
-	public function parse($a_tst_ref_id)
-	{
-		$this->setData(array($this->doParse($a_tst_ref_id)));
-		return TRUE;
-	}
-	
-	/**
-	 * Parse test
-	 * throws ilLOInvalidConfigurationException in case assigned test cannot be found.
-	 */
-	protected function doParse($a_tst_ref_id, $a_objective_id = 0)
-	{
-		include_once './Modules/Test/classes/class.ilObjTest.php';
-		$tst = ilObjectFactory::getInstanceByRefId($a_tst_ref_id,false);
-		
-		if(!$tst instanceof ilObjTest)
-		{
-			throw new ilLOInvalidConfigurationException('No valid test given');
-		}
-		$tst_data['ref_id'] = $tst->getRefId();
-		$tst_data['title'] = $tst->getTitle();
-		$tst_data['description'] = $tst->getLongDescription();
-		$tst_data['ttype'] = $tst->getQuestionSetType();
+        switch ($set['ttype']) {
+            case ilObjTest::QUESTION_SET_TYPE_FIXED:
+                $type = $this->lng->txt('tst_question_set_type_fixed');
+                break;
+            
+            case ilObjTest::QUESTION_SET_TYPE_RANDOM:
+                $type = $this->lng->txt('tst_question_set_type_random');
+                break;
+        }
+        
+        $this->tpl->setVariable('VAL_TTYPE', $type);
+        $this->tpl->setVariable('VAL_QST_QPL', $set['qst_info']);
+        
+        if (isset($set['qpls']) && is_array($set['qpls']) && count($set['qpls']) > 0) {
+            foreach ($set['qpls'] as $title) {
+                $this->tpl->setCurrentBlock('qpl');
+                $this->tpl->setVariable('MAT_TITLE', $title);
+                $this->tpl->parseCurrentBlock();
+            }
+            $this->tpl->touchBlock('ul_begin');
+            $this->tpl->touchBlock('ul_end');
+        }
+    }
+    
+    public function parseMultipleAssignments()
+    {
+        include_once './Modules/Course/classes/Objectives/class.ilLOTestAssignments.php';
+        $assignments = ilLOTestAssignments::getInstance($this->container_id);
+        
+        $available = $assignments->getAssignmentsByType($this->test_type);
+        $data = array();
+        foreach ($available as $assignment) {
+            try {
+                $tmp = $this->doParse($assignment->getTestRefId(), $assignment->getObjectiveId());
+            } catch (ilLOInvalidConfigurationException $e) {
+                $assignment->delete();
+                continue;
+            }
+            if ($tmp) {
+                // add assignment id
+                $tmp['assignment_id'] = $assignment->getAssignmentId();
+                $data[] = $tmp;
+            }
+        }
+        
+        $this->setData($data);
+    }
+    
+    /**
+     * Parse single test assignment
+     * @param type $a_tst_ref_id
+     * @return boolean
+     */
+    public function parse($a_tst_ref_id)
+    {
+        $this->setData(array($this->doParse($a_tst_ref_id)));
+        return true;
+    }
+    
+    /**
+     * Parse test
+     * throws ilLOInvalidConfigurationException in case assigned test cannot be found.
+     */
+    protected function doParse($a_tst_ref_id, $a_objective_id = 0)
+    {
+        include_once './Modules/Test/classes/class.ilObjTest.php';
+        $tst = ilObjectFactory::getInstanceByRefId($a_tst_ref_id, false);
+        
+        if (!$tst instanceof ilObjTest) {
+            throw new ilLOInvalidConfigurationException('No valid test given');
+        }
+        $tst_data['ref_id'] = $tst->getRefId();
+        $tst_data['title'] = $tst->getTitle();
+        $tst_data['description'] = $tst->getLongDescription();
+        $tst_data['ttype'] = $tst->getQuestionSetType();
 
-		
-		if($this->getAssignmentType() == self::TYPE_MULTIPLE_ASSIGNMENTS)
-		{
-			include_once './Modules/Course/classes/class.ilCourseObjective.php';
-			$tst_data['objective'] = ilCourseObjective::lookupObjectiveTitle($a_objective_id);
-		}
-		
-		switch($tst->getQuestionSetType())
-		{
-			case ilTestQuestionSetConfig::TYPE_FIXED:
-				$tst_data['qst_info'] = $this->lng->txt('crs_loc_tst_num_qst');
-				$tst_data['qst_info'] .= (' ' . count($tst->getAllQuestions()));
-				break;
-			
-			default:
-				// get available assiged question pools
-				include_once './Modules/Test/classes/class.ilTestRandomQuestionSetSourcePoolDefinitionFactory.php';
-				include_once './Modules/Test/classes/class.ilTestRandomQuestionSetSourcePoolDefinitionList.php';
-				
-				$list = new ilTestRandomQuestionSetSourcePoolDefinitionList(
-						$GLOBALS['DIC']['ilDB'],
-						$tst,
-						new ilTestRandomQuestionSetSourcePoolDefinitionFactory(
-								$GLOBALS['DIC']['ilDB'],
-								$tst
-						)
-				);
-				
-				$list->loadDefinitions();
-				
-				// tax translations
-				include_once './Modules/Test/classes/class.ilTestTaxonomyFilterLabelTranslater.php';
-				$translater = new ilTestTaxonomyFilterLabelTranslater($GLOBALS['DIC']['ilDB']);
-				$translater->loadLabels($list);
-				
-				$tst_data['qst_info'] = $this->lng->txt('crs_loc_tst_qpls');
-				$num = 0;
-				foreach ($list as $definition)
-				{
-					/** @var ilTestRandomQuestionSetSourcePoolDefinition[] $definition */
-					$title = $definition->getPoolTitle();
-					// fau: taxFilter/typeFilter - get title for extended filter conditions
-					$filterTitle = array();
-					$filterTitle[] = $translater->getTaxonomyFilterLabel($definition->getMappedTaxonomyFilter());
-					$filterTitle[] = $translater->getTypeFilterLabel($definition->getTypeFilter());
-					if (!empty($filterTitle))
-					{
-						$title .= ' -> '.implode(' / ', $filterTitle);
-					}
-					#$tax_id = $definition->getMappedFilterTaxId();
-					#if($tax_id)
-					#{
-					#	$title .= (' -> '. $translater->getTaxonomyTreeLabel($tax_id));
-					#}
-					#$tax_node = $definition->getMappedFilterTaxNodeId();
-					#if($tax_node)
-					#{
-					#	$title .= (' -> ' .$translater->getTaxonomyNodeLabel($tax_node));
-					#}
-					// fau.
-					$tst_data['qpls'][] = $title;
-					++$num;
-				}
-				if(!$num)
-				{
-					$tst_data['qst_info'] .= (' '. (int) 0);
-				}
-				break;
-		}
-		return $tst_data;
-	}
+        
+        if ($this->getAssignmentType() == self::TYPE_MULTIPLE_ASSIGNMENTS) {
+            include_once './Modules/Course/classes/class.ilCourseObjective.php';
+            $tst_data['objective'] = ilCourseObjective::lookupObjectiveTitle($a_objective_id);
+        }
+        
+        switch ($tst->getQuestionSetType()) {
+            case ilObjTest::QUESTION_SET_TYPE_FIXED:
+                $tst_data['qst_info'] = $this->lng->txt('crs_loc_tst_num_qst');
+                $tst_data['qst_info'] .= (' ' . count($tst->getAllQuestions()));
+                break;
+            
+            default:
+                // get available assiged question pools
+                include_once './Modules/Test/classes/class.ilTestRandomQuestionSetSourcePoolDefinitionFactory.php';
+                include_once './Modules/Test/classes/class.ilTestRandomQuestionSetSourcePoolDefinitionList.php';
+                
+                $list = new ilTestRandomQuestionSetSourcePoolDefinitionList(
+                    $GLOBALS['DIC']['ilDB'],
+                    $tst,
+                    new ilTestRandomQuestionSetSourcePoolDefinitionFactory(
+                            $GLOBALS['DIC']['ilDB'],
+                            $tst
+                        )
+                );
+                
+                $list->loadDefinitions();
+                
+                // tax translations
+                include_once './Modules/Test/classes/class.ilTestTaxonomyFilterLabelTranslater.php';
+                $translater = new ilTestTaxonomyFilterLabelTranslater($GLOBALS['DIC']['ilDB']);
+                $translater->loadLabels($list);
+                
+                $tst_data['qst_info'] = $this->lng->txt('crs_loc_tst_qpls');
+                $num = 0;
+                foreach ($list as $definition) {
+                    /** @var ilTestRandomQuestionSetSourcePoolDefinition[] $definition */
+                    $title = $definition->getPoolTitle();
+                    // fau: taxFilter/typeFilter - get title for extended filter conditions
+                    $filterTitle = array();
+                    $filterTitle[] = $translater->getTaxonomyFilterLabel($definition->getMappedTaxonomyFilter());
+                    $filterTitle[] = $translater->getTypeFilterLabel($definition->getTypeFilter());
+                    if (!empty($filterTitle)) {
+                        $title .= ' -> ' . implode(' / ', $filterTitle);
+                    }
+                    #$tax_id = $definition->getMappedFilterTaxId();
+                    #if($tax_id)
+                    #{
+                    #	$title .= (' -> '. $translater->getTaxonomyTreeLabel($tax_id));
+                    #}
+                    #$tax_node = $definition->getMappedFilterTaxNodeId();
+                    #if($tax_node)
+                    #{
+                    #	$title .= (' -> ' .$translater->getTaxonomyNodeLabel($tax_node));
+                    #}
+                    // fau.
+                    $tst_data['qpls'][] = $title;
+                    ++$num;
+                }
+                if (!$num) {
+                    $tst_data['qst_info'] .= (' ' . (int) 0);
+                }
+                break;
+        }
+        return $tst_data;
+    }
 }
-?>

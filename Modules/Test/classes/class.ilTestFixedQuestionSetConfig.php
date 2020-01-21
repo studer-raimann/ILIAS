@@ -1,37 +1,18 @@
 <?php
 /* Copyright (c) 1998-2013 ILIAS open source, Extended GPL, see docs/LICENSE */
+
 require_once 'Modules/Test/classes/class.ilTestQuestionSetConfig.php';
 
 /**
  * class that manages/holds the data for a question set configuration for continues tests
  *
- * @author Björn Heyser <bheyser@databay.de>
- * @version $Id$
- *         
- * @package Modules/Test
+ * @author		Björn Heyser <bheyser@databay.de>
+ * @version		$Id$
+ *
+ * @package		Modules/Test
  */
 class ilTestFixedQuestionSetConfig extends ilTestQuestionSetConfig
 {
-
-    /**
-     *
-     * @var ilTestFixedQuestionSetQuestionList
-     */
-    protected $testQuestionList = null;
-
-    /**
-     *
-     * @return ilTestFixedQuestionSetQuestionList
-     */
-    public function getTestQuestionList()
-    {
-        if ($this->testQuestionList === null) {
-            $this->testQuestionList = new ilTestFixedQuestionSetQuestionList($this->testOBJ->getTestId());
-        }
-
-        return $this->testQuestionList;
-    }
-
     /**
      * returns the fact wether a useable question set config exists or not
      *
@@ -39,9 +20,13 @@ class ilTestFixedQuestionSetConfig extends ilTestQuestionSetConfig
      */
     public function isQuestionSetConfigured()
     {
-        return $this->getTestQuestionList()->hasQuestions();
-    }
+        if (count($this->testOBJ->questions)) {
+            return true;
+        }
 
+        return false;
+    }
+    
     /**
      * returns the fact wether a useable question set config exists or not
      *
@@ -51,34 +36,29 @@ class ilTestFixedQuestionSetConfig extends ilTestQuestionSetConfig
     {
         return $this->isQuestionSetConfigured();
     }
-
+    
     /**
      * removes all question set config related data
      */
     public function removeQuestionSetRelatedData()
     {
-        global $DIC; /* @var \ILIAS\DI\Container $DIC */
-
-        $asqAuthoringService = $DIC->assessment()->questionAuthoring($this->testOBJ->getId(), $DIC->user()
-            ->getId());
-
-        $testQuestionList = $this->getTestQuestionList();
-
-        foreach ($testQuestionList as $testQuestion) {
-            $qUid = $DIC->assessment()
-                ->entityIdBuilder()
-                ->fromString($testQuestion->getQuestionUid());
-
-            $asqQuestion = $asqAuthoringService->question($qUid);
-
-            $asqQuestion->deleteQuestion();
-        }
-
-        $testQuestionList->delete();
+        $res = $this->db->queryF(
+            "SELECT question_fi FROM tst_test_question WHERE test_fi = %s",
+            array('integer'),
+            array($this->testOBJ->getTestId())
+        );
 
         while ($row = $this->db->fetchAssoc($res)) {
             $this->testOBJ->removeQuestion($row["question_fi"]);
         }
+
+        $this->db->manipulateF(
+            "DELETE FROM tst_test_question WHERE test_fi = %s",
+            array('integer'),
+            array($this->testOBJ->getTestId())
+        );
+
+        $this->testOBJ->questions = array();
 
         $this->testOBJ->saveCompleteStatus($this);
     }
@@ -136,9 +116,8 @@ class ilTestFixedQuestionSetConfig extends ilTestQuestionSetConfig
     {
         // TODO: Implement saveToDb() method.
     }
-
+    
     /**
-     *
      * @return ilTestReindexedSequencePositionMap
      */
     public function reindexQuestionOrdering()
@@ -148,44 +127,37 @@ class ilTestFixedQuestionSetConfig extends ilTestQuestionSetConfig
 			WHERE test_fi = %s
 			ORDER BY sequence ASC
 		";
-
-        $res = $this->db->queryF($query, array(
-            'integer'
-        ), array(
-            $this->testOBJ->getTestId()
-        ));
-
+        
+        $res = $this->db->queryF(
+            $query,
+            array('integer'),
+            array($this->testOBJ->getTestId())
+        );
+        
         $sequenceIndex = 0;
-
+        
         require_once 'Modules/Test/classes/class.ilTestReindexedSequencePositionMap.php';
         $reindexedSequencePositionMap = new ilTestReindexedSequencePositionMap();
-
+        
         while ($row = $this->db->fetchAssoc($res)) {
-            $sequenceIndex ++; // start with 1
-
+            $sequenceIndex++; // start with 1
+            
             $reindexedSequencePositionMap->addPositionMapping($row['sequence'], $sequenceIndex);
-
-            $this->db->update('tst_test_question', array(
-                'sequence' => array(
-                    'integer',
-                    $sequenceIndex
-                )
-            ), array(
-                'question_fi' => array(
-                    'integer',
-                    $row['question_fi']
-                )
-            ));
+            
+            $this->db->update(
+                'tst_test_question',
+                array('sequence' => array('integer', $sequenceIndex)),
+                array('question_fi' => array('integer', $row['question_fi']))
+            );
         }
-
+        
         return $reindexedSequencePositionMap;
     }
 
     /**
      * saves the question set config for test with given id to the database
      *
-     * @param
-     *            $testId
+     * @param $testId
      */
     public function cloneToDbForTestId($testId)
     {
@@ -203,37 +175,5 @@ class ilTestFixedQuestionSetConfig extends ilTestQuestionSetConfig
     public function isResultTaxonomyFilterSupported()
     {
         return false;
-    }
-
-    public function registerCreatedQuestion(\ILIAS\AssessmentQuestion\DomainModel\QuestionDto $questionDto)
-    {
-        $testQuestion = $this->getTestQuestionList()->appendQuestion($questionDto->getQuestionIntId(), $questionDto->getId());
-
-        if (ilObjAssessmentFolder::_enabledAssessmentLogging()) {
-            global $DIC; /* @var \ILIAS\DI\Container $DIC */
-            $logMsg = $DIC->language()->txtlng("assessment", "log_question_added", ilObjAssessmentFolder::_getLogLanguage());
-            $logMsg .= ": {$testQuestion->getSequencePosition()}";
-            $this->testOBJ->logAction($logMsg, $testQuestion->getQuestionId());
-        }
-
-        $this->testOBJ->loadQuestions();
-        $this->testOBJ->saveCompleteStatus($this);
-    }
-
-    public function updateRevisionId(string $questionUid, string $questionRevisionId): void
-    {
-        global $DIC;
-
-        $DIC->database()->update('tst_test_question', [
-            'revision_id' => [
-                'text',
-                $questionRevisionId
-            ]
-        ], [
-            'question_uid' => [
-                'text',
-                $questionUid
-            ]
-        ]);
     }
 }

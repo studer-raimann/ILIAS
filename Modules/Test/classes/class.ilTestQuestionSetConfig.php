@@ -1,31 +1,27 @@
 <?php
-
 /* Copyright (c) 1998-2013 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 /**
  * abstract parent class that manages/holds the data for a question set configuration
  *
- * @author Björn Heyser <bheyser@databay.de>
- * @version $Id$
- *         
- * @package Modules/Test
+ * @author		Björn Heyser <bheyser@databay.de>
+ * @version		$Id$
+ *
+ * @package		Modules/Test
  */
 abstract class ilTestQuestionSetConfig
 {
-
     const TYPE_RANDOM = 'RANDOM_QUEST_SET';
-
     const TYPE_DYNAMIC = 'DYNAMIC_QUEST_SET';
-
     const TYPE_FIXED = 'FIXED_QUEST_SET';
-
+    
     /**
      * global $tree object instance
      *
      * @var ilTree
      */
     protected $tree = null;
-
+    
     /**
      * global $ilDB object instance
      *
@@ -48,7 +44,6 @@ abstract class ilTestQuestionSetConfig
     protected $testOBJ = null;
 
     /**
-     *
      * @param ilTree $tree
      * @param ilDBInterface $db
      * @param ilPluginAdmin $pluginAdmin
@@ -61,7 +56,7 @@ abstract class ilTestQuestionSetConfig
         $this->pluginAdmin = $pluginAdmin;
         $this->testOBJ = $testOBJ;
     }
-
+    
     /**
      * loads the question set config for current test from the database
      */
@@ -75,8 +70,7 @@ abstract class ilTestQuestionSetConfig
     /**
      * saves the question set config for test with given id to the database
      *
-     * @param
-     *            $testId
+     * @param $testId
      */
     abstract public function cloneToDbForTestId($testId);
 
@@ -89,39 +83,39 @@ abstract class ilTestQuestionSetConfig
     {
         return false;
     }
-
+    
     public function getDepenciesInVulnerableStateMessage(ilLanguage $lng)
     {
         return '';
     }
-
+    
     public function areDepenciesBroken()
     {
         return false;
     }
-
+    
     public function getDepenciesBrokenMessage(ilLanguage $lng)
     {
         return '';
     }
-
+    
     public function isValidRequestOnBrokenQuestionSetDepencies($nextClass, $cmd)
     {
         return true;
     }
-
+    
     public function getHiddenTabsOnBrokenDepencies()
     {
         return array();
     }
-
+        
     abstract public function isQuestionSetConfigured();
-
+    
     /**
      * checks wether question set config related data exists or not
      */
     abstract public function doesQuestionSetRelatedDataExist();
-
+    
     /**
      * removes all question set config related data
      */
@@ -138,37 +132,38 @@ abstract class ilTestQuestionSetConfig
      * @param ilObjTest $cloneTestOBJ
      */
     abstract public function cloneQuestionSetRelatedData(ilObjTest $cloneTestOBJ);
-
+    
     /**
-     *
      * @param integer $poolId
      * @return string
      */
     public function getQuestionPoolPathString($poolId)
     {
-        $nodePath = $this->tree->getNodePath(current(ilObject::_getAllReferences($poolId)));
+        $nodePath = $this->tree->getNodePath(
+            current(ilObject::_getAllReferences($poolId))
+        );
 
         $questionPoolPathString = '';
-
+        
         $i = 0;
         $j = count($nodePath) - 2;
-
+        
         foreach ($nodePath as $node) {
             if ($i > 0) {
                 $questionPoolPathString .= ' > ';
             }
-
+            
             $questionPoolPathString .= $node['title'];
-
+            
             if ($i == $j) {
                 break;
             }
-
-            $i ++;
+            
+            $i++;
         }
-
+        
         return $questionPoolPathString;
     }
 
-    abstract public function isResultTaxonomyFilterSupported();
+	abstract public function isResultTaxonomyFilterSupported();
 }

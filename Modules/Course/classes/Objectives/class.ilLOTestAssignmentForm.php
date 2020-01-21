@@ -121,34 +121,34 @@ class ilLOTestAssignmentForm
 		$ti->setRequired(true);
 		$new->addSubItem($ti);
 
-		// description
-		$ta = new ilTextAreaInputGUI($this->lng->txt("description"), "desc");
-		$ta->setCols(40);
-		$ta->setRows(2);
-		$new->addSubItem($ta);
-		
-		// Question assignment type
-		include_once './Modules/Test/classes/class.ilObjTest.php';
-		$this->lng->loadLanguageModule('assessment');
-		$qst = new ilRadioGroupInputGUI($this->lng->txt('tst_question_set_type'),'qtype');
-		$qst->setRequired(true);
-		
-		$random = new ilRadioOption(
-				$this->lng->txt('tst_question_set_type_random'),
+        // description
+        $ta = new ilTextAreaInputGUI($this->lng->txt("description"), "desc");
+        $ta->setCols(40);
+        $ta->setRows(2);
+        $new->addSubItem($ta);
+        
+        // Question assignment type
+        include_once './Modules/Test/classes/class.ilObjTest.php';
+        $this->lng->loadLanguageModule('assessment');
+        $qst = new ilRadioGroupInputGUI($this->lng->txt('tst_question_set_type'), 'qtype');
+        $qst->setRequired(true);
+        
+        $random = new ilRadioOption(
+            $this->lng->txt('tst_question_set_type_random'),
             ilTestQuestionSetConfig::TYPE_RANDOM
-		);
-		$qst->addOption($random);
-		
-		$fixed = new ilRadioOption(
-				$this->lng->txt('tst_question_set_type_fixed'),
+        );
+        $qst->addOption($random);
+        
+        $fixed = new ilRadioOption(
+            $this->lng->txt('tst_question_set_type_fixed'),
             ilTestQuestionSetConfig::TYPE_FIXED
-		);
-		$qst->addOption($fixed);
-		$new->addSubItem($qst);
-		$cr_mode->addOption($new);
-		
-		// assign existing
-		$existing = new ilRadioOption($this->lng->txt('crs_loc_form_assign'),self::TEST_ASSIGN);
+        );
+        $qst->addOption($fixed);
+        $new->addSubItem($qst);
+        $cr_mode->addOption($new);
+        
+        // assign existing
+        $existing = new ilRadioOption($this->lng->txt('crs_loc_form_assign'), self::TEST_ASSIGN);
 
 		switch($this->getTestType())
 		{

@@ -29,41 +29,98 @@ abstract class ilObject2 extends ilObject
 	
 	final function withReferences() { return parent::withReferences(); }
 
-	/**
-	* Read data from db
-	*/
-	final public function read()
-	{
-		parent::read();
-		$this->doRead();
-	}
-	protected function doRead()
-	{
-		
-	}
-	
-	function getId():int { return parent::getId(); }
-	function setId($a_id) { return parent::setId($a_id); }
-	final function setRefId($a_id) { return parent::setRefId($a_id); }
-	final function getRefId() { return parent::getRefId(); }
-	final function getType() { return parent::getType(); }
-	final function setType($a_type) { return parent::setType($a_type); }
-	final function getPresentationTitle() { return parent::getPresentationTitle(); }
-	final function getTitle() { return parent::getTitle(); }
-	final function getUntranslatedTitle() { return parent::getUntranslatedTitle(); }
-	final function setTitle($a_title) { return parent::setTitle($a_title); }
-	final function getDescription() { return parent::getDescription(); }
-	final function setDescription($a_desc) { return parent::setDescription($a_desc); }
-	final function getLongDescription() { return parent::getLongDescription(); }
-	final function getImportId() { return parent::getImportId(); }
-	final function setImportId($a_import_id) { return parent::setImportId($a_import_id); }
-	final static function _lookupObjIdByImportId($a_import_id) { return parent::_lookupObjIdByImportId($a_import_id); }
-	final function getOwner() { return parent::getOwner(); }
-	final function getOwnerName() { return parent::getOwnerName(); }
-	final static function _lookupOwnerName($a_owner_id) { return parent::_lookupOwnerName($a_owner_id); }
-	final function setOwner($a_owner) { return parent::setOwner($a_owner); }
-	final function getCreateDate() { return parent::getCreateDate(); }
-	final function getLastUpdateDate() { return parent::getLastUpdateDate(); }
+    /**
+    * Read data from db
+    */
+    final public function read()
+    {
+        parent::read();
+        $this->doRead();
+    }
+    protected function doRead()
+    {
+    }
+    
+    final public function setRefId($a_id)
+    {
+        return parent::setRefId($a_id);
+    }
+    final public function getRefId()
+    {
+        return parent::getRefId();
+    }
+    final public function getType()
+    {
+        return parent::getType();
+    }
+    final public function setType($a_type)
+    {
+        return parent::setType($a_type);
+    }
+    final public function getPresentationTitle()
+    {
+        return parent::getPresentationTitle();
+    }
+    final public function getTitle()
+    {
+        return parent::getTitle();
+    }
+    final public function getUntranslatedTitle()
+    {
+        return parent::getUntranslatedTitle();
+    }
+    final public function setTitle($a_title)
+    {
+        return parent::setTitle($a_title);
+    }
+    final public function getDescription()
+    {
+        return parent::getDescription();
+    }
+    final public function setDescription($a_desc)
+    {
+        return parent::setDescription($a_desc);
+    }
+    final public function getLongDescription()
+    {
+        return parent::getLongDescription();
+    }
+    final public function getImportId()
+    {
+        return parent::getImportId();
+    }
+    final public function setImportId($a_import_id)
+    {
+        return parent::setImportId($a_import_id);
+    }
+    final public static function _lookupObjIdByImportId($a_import_id)
+    {
+        return parent::_lookupObjIdByImportId($a_import_id);
+    }
+    final public function getOwner()
+    {
+        return parent::getOwner();
+    }
+    final public function getOwnerName()
+    {
+        return parent::getOwnerName();
+    }
+    final public static function _lookupOwnerName($a_owner_id)
+    {
+        return parent::_lookupOwnerName($a_owner_id);
+    }
+    final public function setOwner($a_owner)
+    {
+        return parent::setOwner($a_owner);
+    }
+    final public function getCreateDate()
+    {
+        return parent::getCreateDate();
+    }
+    final public function getLastUpdateDate()
+    {
+        return parent::getLastUpdateDate();
+    }
 
 	final function create($a_clone_mode = false)
 	{
