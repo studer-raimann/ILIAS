@@ -4156,12 +4156,32 @@ if (!$ilDB->tableColumnExists('il_dcl_tview_set', 'locked')) {
 <#5653>
 <?php
 if ($ilDB->tableColumnExists('il_dcl_field', 'required')) {
+	// Migration
+    $res = $ilDB->query("SELECT id, required FROM il_dcl_field");
+    while ($rec = $ilDB->fetchAssoc($res)) {
+        $ilDB->queryF(
+            "UPDATE il_dcl_tview_set SET required = %s WHERE field = %s",
+            array('integer', 'text'),
+            array($data['required'], $data['id'])
+        );
+    }
+
     $ilDB->dropTableColumn('il_dcl_field', 'required');
 }
 ?>
 <#5654>
 <?php
 if ($ilDB->tableColumnExists('il_dcl_field', 'is_locked')) {
+    // Migration
+    $res = $ilDB->query("SELECT id, is_locked FROM il_dcl_field");
+    while ($rec = $ilDB->fetchAssoc($res)) {
+        $ilDB->queryF(
+            "UPDATE il_dcl_tview_set SET locked = %s WHERE field = %s",
+            array('integer', 'text'),
+            array($data['is_locked'], $data['id'])
+        );
+    }
+
     $ilDB->dropTableColumn('il_dcl_field', 'is_locked');
 }
 ?>
