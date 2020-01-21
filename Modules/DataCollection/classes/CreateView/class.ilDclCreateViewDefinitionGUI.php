@@ -13,7 +13,7 @@ class ilDclCreateViewDefinitionGUI extends ilPageObjectGUI
 {
 
     /**
-     * @var ilDclDetailedViewDefinition
+     * @var ilDclCreateViewDefinition
      */
     public $obj;
     /**
