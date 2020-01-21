@@ -61,6 +61,10 @@ class ilDclRecordEditGUI
      * @var ilDclPropertyFormGUI
      */
     protected $form;
+    /**
+     * @var ilDclTableView
+     */
+    protected $tableview;
 
 
     /**
@@ -82,6 +86,7 @@ class ilDclRecordEditGUI
         $this->record_id = $_REQUEST['record_id'];
         $this->table_id = $_REQUEST['table_id'];
         $this->tableview_id = $_REQUEST['tableview_id'];
+        $this->tableview = ilDclTableView::findOrGetInstance($this->tableview_id);
     }
 
 
@@ -307,9 +312,14 @@ class ilDclRecordEditGUI
 
         // Add possibility to change the owner in edit mode
         if ($this->record_id) {
-            $ownerField = $this->table->getField('owner');
-            $inputfield = ilDclCache::getFieldRepresentation($ownerField)->getInputField($this->form);
-            $this->form->addItem($inputfield);
+            /** @var ilDclTableViewFieldSetting $field_setting */
+            foreach ($this->tableview->getFieldSettings() as $field_setting) {
+                if ($field_setting->getField() === 'owner' && $field_setting->isVisibleEdit()) {
+                    $ownerField = $this->table->getField('owner');
+                    $inputfield = ilDclCache::getFieldRepresentation($ownerField)->getInputField($this->form);
+                    $this->form->addItem($inputfield);
+                }
+            }
         }
 
         // save and cancel commands
