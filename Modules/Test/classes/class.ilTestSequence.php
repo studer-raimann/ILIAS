@@ -1,981 +1,984 @@
 <?php
 /* Copyright (c) 1998-2013 ILIAS open source, Extended GPL, see docs/LICENSE */
-
 require_once 'Modules/Test/interfaces/interface.ilTestQuestionSequence.php';
 require_once 'Modules/Test/interfaces/interface.ilTestSequenceSummaryProvider.php';
 
 /**
-* Test sequence handler
-*
-* This class manages the sequence settings for a given user
-*
-* @author		Helmut Schottmüller <helmut.schottmueller@mac.com>
-* @version	$Id$
-* @ingroup ModulesTest
-*/
+ * Test sequence handler
+ *
+ * This class manages the sequence settings for a given user
+ *
+ * @author Helmut Schottmüller <helmut.schottmueller@mac.com>
+ * @version $Id$
+ * @ingroup ModulesTest
+ */
 class ilTestSequence implements ilTestQuestionSequence, ilTestSequenceSummaryProvider
 {
-	/**
-	* An array containing the sequence data
-	*
-	* @var array
-	*/
-	var $sequencedata;
 
-	/**
-	* The mapping of the sequence numbers to the questions
-	*
-	* @var array
-	 * @deprecated please use $question_revision_ids
-	*/
-	var $questions;
+    /**
+     * An array containing the sequence data
+     *
+     * @var array
+     */
+    var $sequencedata;
 
-	/**
-	 * The mapping of the sequence numbers to the $question_revision_ids
-	 *
-	 * @var array
-	 */
-	var $question_revision_ids;
+    /**
+     * The mapping of the sequence numbers to the questions
+     *
+     * @var array
+     * @deprecated please use $question_revision_ids
+     */
+    var $questions;
 
-	/**
-	* The active id of the sequence data
-	*
-	* @var integer
-	*/
-	var $active_id;
+    /**
+     * The mapping of the sequence numbers to the $question_revision_ids
+     *
+     * @var array
+     */
+    var $question_revision_ids;
 
-	/**
-	* The pass of the current sequence
-	*
-	* @var integer
-	*/
-	var $pass;
+    /**
+     * The active id of the sequence data
+     *
+     * @var integer
+     */
+    var $active_id;
 
-	/**
-	* Indicates wheather the active test is a random test or not
-	*
-	* @var boolean
-	*/
-	var $isRandomTest;
-	
-	/**
-	 * @var integer[]
-	 */
-	protected $alreadyPresentedQuestions = array();
-	
-	/**
-	 * @var int
-	 */
-	protected $newlyPresentedQuestion = 0;
+    /**
+     * The pass of the current sequence
+     *
+     * @var integer
+     */
+    var $pass;
 
-	/**
-	 * @var array
-	 */
-	protected $alreadyCheckedQuestions;
+    /**
+     * Indicates wheather the active test is a random test or not
+     *
+     * @var boolean
+     */
+    var $isRandomTest;
 
-	/**
-	 * @var integer
-	 */
-	protected $newlyCheckedQuestion;
+    /**
+     *
+     * @var integer[]
+     */
+    protected $alreadyPresentedQuestions = array();
 
-	/**
-	 * @var array
-	 */
-	protected $optionalQuestions;
+    /**
+     *
+     * @var int
+     */
+    protected $newlyPresentedQuestion = 0;
 
-	/**
-	 * @var bool
-	 */
-	private $answeringOptionalQuestionsConfirmed;
+    /**
+     *
+     * @var array
+     */
+    protected $alreadyCheckedQuestions;
 
-	/**
-	 * @var bool
-	 */
-	private $considerHiddenQuestionsEnabled;
+    /**
+     *
+     * @var integer
+     */
+    protected $newlyCheckedQuestion;
 
-	/**
-	 * @var bool
-	 */
-	private $considerOptionalQuestionsEnabled;
-	
-	/**
-	* ilTestSequence constructor
-	*
-	* The constructor takes possible arguments an creates an instance of 
-	* the ilTestSequence object.
-	*
-	* @param object $a_object A reference to the test container object
-	* @access public
-	*/
-	public function __construct($active_id, $pass, $randomtest)
-	{
-		$this->active_id = $active_id;
-		$this->pass = $pass;
-		$this->isRandomTest = $randomtest;
-		$this->sequencedata = array(
-			"sequence" => array(),
-			"postponed" => array(),
-			"hidden" => array()
-		);
-		
-		$this->alreadyCheckedQuestions = array();
-		$this->newlyCheckedQuestion = null;
-		
-		$this->optionalQuestions = array();
-		$this->answeringOptionalQuestionsConfirmed = false;
-		
-		$this->considerHiddenQuestionsEnabled = false;
-		$this->considerOptionalQuestionsEnabled = true;
-	}
-	
-	function getActiveId()
-	{
-		return $this->active_id;
-	}
-	
-	function createNewSequence($max, $shuffle)
-	{
-		$newsequence = array();
-		if ($max > 0)
-		{
-			for ($i = 1; $i <= $max; $i++)
-			{
-				array_push($newsequence, $i);
-			}
-			if ($shuffle) $newsequence = $this->pcArrayShuffle($newsequence);
-		}
-		$this->sequencedata["sequence"] = $newsequence;
-	}
-	
-	/**
-	* Loads the question mapping
-	*/
-	public function loadQuestions(ilTestQuestionSetConfig $testQuestionSetConfig = null, $taxonomyFilterSelection = array())
-	{
-		$testQuestionList = new ilTestFixedQuestionSetQuestionList(
-			ilObjTest::_getTestIDFromObjectID(
-				ilObjTest::_getObjectIDFromActiveID($this->active_id)
-			)
-		);
+    /**
+     *
+     * @var array
+     */
+    protected $optionalQuestions;
 
-		$index = 1;
+    /**
+     *
+     * @var bool
+     */
+    private $answeringOptionalQuestionsConfirmed;
 
-		foreach($testQuestionList as $testQuestion)
-		{
-			$this->questions[$index++] = $testQuestion->getQuestionId();
+    /**
+     *
+     * @var bool
+     */
+    private $considerHiddenQuestionsEnabled;
 
-			$this->question_revision_ids[$testQuestion->getSequencePosition()] = $testQuestion->getQuestionRevisionId();
-		}
-	}
-	
-	/**
-	* Loads the sequence data for a given active id
-	*
-	* @return string The filesystem path of the certificate
-	*/
-	public function loadFromDb()
-	{
-		$this->loadQuestionSequence();
-		$this->loadPresentedQuestions();
-		$this->loadCheckedQuestions();
-		$this->loadOptionalQuestions();
-	}
-	
-	private function loadQuestionSequence()
-	{
-		global $DIC;
-		$ilDB = $DIC['ilDB'];
-		$result = $ilDB->queryF("SELECT * FROM tst_sequence WHERE active_fi = %s AND pass = %s",
-			array('integer','integer'),
-			array($this->active_id, $this->pass)
-		);
-		if ($result->numRows())
-		{
-			$row = $ilDB->fetchAssoc($result);
-			$this->sequencedata = array(
-				"sequence" => unserialize($row["sequence"]),
-				"postponed" => unserialize($row["postponed"]),
-				"hidden" => unserialize($row["hidden"])
-			);
-			if (!is_array($this->sequencedata["sequence"])) $this->sequencedata["sequence"] = array();
-			if (!is_array($this->sequencedata["postponed"])) $this->sequencedata["postponed"] = array();
-			if (!is_array($this->sequencedata["hidden"])) $this->sequencedata["hidden"] = array();
-			
-			$this->setAnsweringOptionalQuestionsConfirmed((bool)$row['ans_opt_confirmed']);
-		}
-	}
-	
-	protected function loadPresentedQuestions()
-	{
-		global $DIC; /* @var ILIAS\DI\Container $DIC */
-		
-		$res = $DIC->database()->queryF(
-			"SELECT question_fi FROM tst_seq_qst_presented WHERE active_fi = %s AND pass = %s",
-			array('integer','integer'), array($this->active_id, $this->pass)
-		);
-		
-		while( $row = $DIC->database()->fetchAssoc($res) )
-		{
-			$this->alreadyPresentedQuestions[ $row['question_fi'] ] = $row['question_fi'];
-		}
-	}
-	
-	private function loadCheckedQuestions()
-	{
-		global $DIC;
-		$ilDB = $DIC['ilDB'];
+    /**
+     *
+     * @var bool
+     */
+    private $considerOptionalQuestionsEnabled;
 
-		$res = $ilDB->queryF("SELECT question_fi FROM tst_seq_qst_checked WHERE active_fi = %s AND pass = %s",
-			array('integer','integer'), array($this->active_id, $this->pass)
-		);
-		
-		while( $row = $ilDB->fetchAssoc($res) )
-		{
-			$this->alreadyCheckedQuestions[ $row['question_fi'] ] = $row['question_fi'];
-		}
-	}
-	
-	private function loadOptionalQuestions()
-	{
-		global $DIC;
-		$ilDB = $DIC['ilDB'];
+    /**
+     * ilTestSequence constructor
+     *
+     * The constructor takes possible arguments an creates an instance of
+     * the ilTestSequence object.
+     *
+     * @param object $a_object
+     *            A reference to the test container object
+     * @access public
+     */
+    public function __construct($active_id, $pass, $randomtest)
+    {
+        $this->active_id = $active_id;
+        $this->pass = $pass;
+        $this->isRandomTest = $randomtest;
+        $this->sequencedata = array(
+            "sequence" => array(),
+            "postponed" => array(),
+            "hidden" => array()
+        );
 
-		$res = $ilDB->queryF("SELECT question_fi FROM tst_seq_qst_optional WHERE active_fi = %s AND pass = %s",
-			array('integer','integer'), array($this->active_id, $this->pass)
-		);
+        $this->alreadyCheckedQuestions = array();
+        $this->newlyCheckedQuestion = null;
 
-		while( $row = $ilDB->fetchAssoc($res) )
-		{
-			$this->optionalQuestions[ $row['question_fi'] ] = $row['question_fi'];
-		}
-	}
-	
-	/**
-	* Saves the sequence data for a given pass to the database
-	*
-	* @access public
-	*/
-	public function saveToDb()
-	{
-		$this->saveQuestionSequence();
-		$this->saveNewlyPresentedQuestion();
-		$this->saveNewlyCheckedQuestion();
-		$this->saveOptionalQuestions();
-	}
-	
-	private function saveQuestionSequence()
-	{
-		global $DIC;
-		$ilDB = $DIC['ilDB'];
+        $this->optionalQuestions = array();
+        $this->answeringOptionalQuestionsConfirmed = false;
 
-		$postponed = NULL;
-		if ((is_array($this->sequencedata["postponed"])) && (count($this->sequencedata["postponed"])))
-		{
-			$postponed = serialize($this->sequencedata["postponed"]);
-		}
-		$hidden = NULL;
-		if ((is_array($this->sequencedata["hidden"])) && (count($this->sequencedata["hidden"])))
-		{
-			$hidden = serialize($this->sequencedata["hidden"]);
-		}
+        $this->considerHiddenQuestionsEnabled = false;
+        $this->considerOptionalQuestionsEnabled = true;
+    }
 
-		$affectedRows = $ilDB->manipulateF("DELETE FROM tst_sequence WHERE active_fi = %s AND pass = %s",
-			array('integer','integer'),
-			array($this->active_id, $this->pass)
-		);
+    function getActiveId()
+    {
+        return $this->active_id;
+    }
 
-		$affectedRows = $ilDB->insert("tst_sequence", array(
-			"active_fi" => array("integer", $this->active_id),
-			"pass" => array("integer", $this->pass),
-			"sequence" => array("clob", serialize($this->sequencedata["sequence"])),
-			"postponed" => array("text", $postponed),
-			"hidden" => array("text", $hidden),
-			"tstamp" => array("integer", time()),
-			'ans_opt_confirmed' => array('integer', (int)$this->isAnsweringOptionalQuestionsConfirmed())
-		));
-	}
-	
-	protected function saveNewlyPresentedQuestion()
-	{
-		if( (int)$this->newlyPresentedQuestion )
-		{
-			global $DIC; /* @var ILIAS\DI\Container $DIC */
-			
-			$DIC->database()->replace('tst_seq_qst_presented', array(
-				'active_fi' => array('integer', (int)$this->active_id),
-				'pass' => array('integer', (int)$this->pass),
-				'question_fi' => array('integer', (int)$this->newlyPresentedQuestion)
-			), array());
-		}
-	}
+    function createNewSequence($max, $shuffle)
+    {
+        $newsequence = array();
+        if ($max > 0) {
+            for ($i = 1; $i <= $max; $i ++) {
+                array_push($newsequence, $i);
+            }
+            if ($shuffle)
+                $newsequence = $this->pcArrayShuffle($newsequence);
+        }
+        $this->sequencedata["sequence"] = $newsequence;
+    }
 
-	/**
-	 * @global ilDBInterface $ilDB
-	 */
-	private function saveNewlyCheckedQuestion()
-	{
-		if( (int)$this->newlyCheckedQuestion )
-		{
-			global $DIC;
-			$ilDB = $DIC['ilDB'];
-			
-			$ilDB->replace('tst_seq_qst_checked', array(
-				'active_fi' => array('integer', (int)$this->active_id),
-				'pass' => array('integer', (int)$this->pass),
-				'question_fi' => array('integer', (int)$this->newlyCheckedQuestion)
-			), array());
-		}
-	}
+    /**
+     * Loads the question mapping
+     */
+    public function loadQuestions(ilTestQuestionSetConfig $testQuestionSetConfig = null, $taxonomyFilterSelection = array())
+    {
+        $testQuestionList = new ilTestFixedQuestionSetQuestionList(ilObjTest::_getTestIDFromObjectID(ilObjTest::_getObjectIDFromActiveID($this->active_id)));
 
-	/**
-	 * @global ilDBInterface $ilDB
-	 */
-	private function saveOptionalQuestions()
-	{
-		global $DIC;
-		$ilDB = $DIC['ilDB'];
-		
-		$NOT_IN_questions = $ilDB->in('question_fi', $this->optionalQuestions, true, 'integer');
-		
-		$ilDB->queryF(
-			"DELETE FROM tst_seq_qst_optional WHERE active_fi = %s AND pass = %s AND $NOT_IN_questions",
-			array('integer', 'integer'), array($this->active_id, $this->pass)
-		);
+        $index = 1;
 
-		foreach($this->optionalQuestions as $questionId)
-		{
-			$ilDB->replace('tst_seq_qst_optional', array(
-				'active_fi' => array('integer', (int)$this->active_id),
-				'pass' => array('integer', (int)$this->pass),
-				'question_fi' => array('integer', (int)$questionId)
-			), array());
-		}
-	}
-	
-	function postponeQuestion($question_id)
-	{
-		if (!$this->isPostponedQuestion($question_id))
-		{
-			array_push($this->sequencedata["postponed"], intval($question_id));
-		}
-	}
-	
-	function hideQuestion($question_id)
-	{
-		if (!$this->isHiddenQuestion($question_id))
-		{
-			array_push($this->sequencedata["hidden"], intval($question_id));
-		}
-	}
-	
-	function isPostponedQuestion($question_id)
-	{
-		if (!is_array($this->sequencedata["postponed"])) return FALSE;
-		if (!in_array($question_id, $this->sequencedata["postponed"]))
-		{
-			return FALSE;
-		}
-		else
-		{
-			return TRUE;
-		}
-	}
-	
-	function isHiddenQuestion($question_id)
-	{
-		if (!is_array($this->sequencedata["hidden"])) return FALSE;
-		if (!in_array($question_id, $this->sequencedata["hidden"]))
-		{
-			return FALSE;
-		}
-		else
-		{
-			return TRUE;
-		}
-	}
-	
-	function isPostponedSequence($sequence)
-	{
-		if (!array_key_exists($sequence, $this->questions)) return FALSE;
-		if (!is_array($this->sequencedata["postponed"])) return FALSE;
-		if (!in_array($this->questions[$sequence], $this->sequencedata["postponed"]))
-		{
-			return FALSE;
-		}
-		else
-		{
-			return TRUE;
-		}
-	}
-	
-	function isHiddenSequence($sequence)
-	{
-		if (!array_key_exists($sequence, $this->questions)) return FALSE;
-		if (!is_array($this->sequencedata["hidden"])) return FALSE;
-		if (!in_array($this->questions[$sequence], $this->sequencedata["hidden"]))
-		{
-			return FALSE;
-		}
-		else
-		{
-			return TRUE;
-		}
-	}
-	
-	function postponeSequence($sequence)
-	{
-		if (!$this->isPostponedSequence($sequence))
-		{
-			if (array_key_exists($sequence, $this->questions))
-			{
-				if (!is_array($this->sequencedata["postponed"])) $this->sequencedata["postponed"] = array();
-				array_push($this->sequencedata["postponed"], intval($this->questions[$sequence]));
-			}
-		}
-	}
-	
-	function hideSequence($sequence)
-	{
-		if (!$this->isHiddenSequence($sequence))
-		{
-			if (array_key_exists($sequence, $this->questions))
-			{
-				if (!is_array($this->sequencedata["hidden"])) $this->sequencedata["hidden"] = array();
-				array_push($this->sequencedata["hidden"], intval($this->questions[$sequence]));
-			}
-		}
-	}
-	
-	public function setQuestionPresented($questionId)
-	{
-		$this->newlyPresentedQuestion = $questionId;
-	}
-	
-	public function isQuestionPresented($questionId)
-	{
-		return (
-			$this->newlyPresentedQuestion == $questionId || in_array($questionId, $this->alreadyPresentedQuestions)
-		);
-	}
-	
-	public function isNextQuestionPresented($questionId)
-	{
-		$nextQstId = $this->getQuestionForSequence(
-			$this->getNextSequence( $this->getSequenceForQuestion($questionId) )
-		);
-		
-		if( !$nextQstId )
-		{
-			return false;
-		}
-		
-		if( $this->newlyPresentedQuestion == $nextQstId )
-		{
-			return true;
-		}
-		
-		if( in_array($nextQstId, $this->alreadyPresentedQuestions) )
-		{
-			return true;
-		}
-		
-		return false;
-	}
-	
-	public function setQuestionChecked($questionId)
-	{
-		$this->newlyCheckedQuestion = $questionId;
-	}
-	
-	public function isQuestionChecked($questionId)
-	{
-		return isset($this->alreadyCheckedQuestions[$questionId]);
-	}
-	
-	function getPositionOfSequence($sequence)
-	{
-		$correctedsequence = $this->getCorrectedSequence();
-		$sequencekey = array_search($sequence, $correctedsequence);
-		if ($sequencekey !== FALSE)
-		{
-			return $sequencekey + 1;
-		}
-		else
-		{
-			return "";
-		}
-	}
-	
-	function getUserQuestionCount()
-	{
-		return count($this->getCorrectedSequence());
-	}
-	
-	function getOrderedSequence()
-	{
-		$sequenceKeys = array();
-		
-		foreach(array_keys($this->questions) as $sequenceKey)
-		{
-			if( $this->isHiddenSequence($sequenceKey) && !$this->isConsiderHiddenQuestionsEnabled() )
-			{
-				continue;
-			}
-			
-			if( $this->isSequenceOptional($sequenceKey) && !$this->isConsiderOptionalQuestionsEnabled() )
-			{
-				continue;
-			}
-			
-			$sequenceKeys[] = $sequenceKey;
-		}
-		
-		return $sequenceKeys;
-	}
-	
-	function getOrderedSequenceQuestions()
-	{
-		$questions = array();
-		
-		foreach($this->questions as $questionId)
-		{
-			if( $this->isHiddenQuestion($questionId) && !$this->isConsiderHiddenQuestionsEnabled() )
-			{
-				continue;
-			}
-			
-			if( $this->isQuestionOptional($questionId) && !$this->isConsiderOptionalQuestionsEnabled() )
-			{
-				continue;
-			}
-			
-			$questions[] = $questionId;
-		}
-		
-		return $questions;
-	}
-	
-	function getUserSequence()
-	{
-		return $this->getCorrectedSequence();
-	}
+        foreach ($testQuestionList as $testQuestion) {
+            $this->questions[$index ++] = $testQuestion->getQuestionId();
 
-	function getUserSequenceQuestions()
-	{
-		$seq = $this->getCorrectedSequence();
-		$found = array();
-		foreach ($seq as $sequence)
-		{
-			array_push($found, $this->getQuestionForSequence($sequence));
-		}
-		return $found;
-	}
-	
-	private function ensureQuestionNotInSequence($sequence, $questionId)
-	{
-		$questionKey = array_search($questionId, $this->questions);
-		
-		if( $questionKey === false )
-		{
-			return $sequence;
-		}
-		
-		$sequenceKey = array_search($questionKey, $sequence);
-		
-		if( $sequenceKey === FALSE )
-		{
-			return $sequence;
-		}
+            $this->question_revision_ids[$testQuestion->getSequencePosition()] = $testQuestion->getQuestionRevisionId();
+        }
+    }
 
-		unset($sequence[$sequenceKey]);
-		
-		return $sequence;
-	}
+    /**
+     * Loads the sequence data for a given active id
+     *
+     * @return string The filesystem path of the certificate
+     */
+    public function loadFromDb()
+    {
+        $this->loadQuestionSequence();
+        $this->loadPresentedQuestions();
+        $this->loadCheckedQuestions();
+        $this->loadOptionalQuestions();
+    }
 
-	protected function getCorrectedSequence()
-	{
-		$correctedsequence = $this->sequencedata["sequence"];
-		if( !$this->isConsiderHiddenQuestionsEnabled() )
-		{
-			if (is_array($this->sequencedata["hidden"]))
-			{
-				foreach ($this->sequencedata["hidden"] as $question_id)
-				{
-					$correctedsequence = $this->ensureQuestionNotInSequence($correctedsequence, $question_id);
-				}
-			}
-		}
-		if( !$this->isConsiderOptionalQuestionsEnabled() )
-		{
-			foreach($this->optionalQuestions as $questionId)
-			{
-				$correctedsequence = $this->ensureQuestionNotInSequence($correctedsequence, $questionId);
-			}
-		}
-		if (is_array($this->sequencedata["postponed"]))
-		{
-			foreach ($this->sequencedata["postponed"] as $question_id)
-			{
-				$foundsequence = array_search($question_id, $this->questions);
-				if ($foundsequence !== FALSE)
-				{
-					$sequencekey = array_search($foundsequence, $correctedsequence);
-					if ($sequencekey !== FALSE)
-					{
-						unset($correctedsequence[$sequencekey]);
-						array_push($correctedsequence, $foundsequence);
-					}
-				}
-			}
-		}
-		return array_values($correctedsequence);
-	}
-	
-	function getSequenceForQuestion($question_id)
-	{
-		return array_search($question_id, $this->questions);
-	}
-	
-	function getFirstSequence()
-	{
-		$correctedsequence = $this->getCorrectedSequence();
-		if (count($correctedsequence))
-		{
-			return reset($correctedsequence);
-		}
-		else
-		{
-			return FALSE;
-		}
-	}
-	
-	function getLastSequence()
-	{
-		$correctedsequence = $this->getCorrectedSequence();
-		if (count($correctedsequence))
-		{
-			return end($correctedsequence);
-		}
-		else
-		{
-			return FALSE;
-		}
-	}
-	
-	function getNextSequence($sequence)
-	{
-		$correctedsequence = $this->getCorrectedSequence();
-		$sequencekey = array_search($sequence, $correctedsequence);
-		if ($sequencekey !== FALSE)
-		{
-			$nextsequencekey = $sequencekey + 1;
-			if (array_key_exists($nextsequencekey, $correctedsequence))
-			{
-				return $correctedsequence[$nextsequencekey];
-			}
-		}
-		return FALSE;
-	}
-	
-	function getPreviousSequence($sequence)
-	{
-		$correctedsequence = $this->getCorrectedSequence();
-		$sequencekey = array_search($sequence, $correctedsequence);
-		if ($sequencekey !== FALSE)
-		{
-			$prevsequencekey = $sequencekey - 1;
-			if (($prevsequencekey >= 0) && (array_key_exists($prevsequencekey, $correctedsequence)))
-			{
-				return $correctedsequence[$prevsequencekey];
-			}
-		}
-		return FALSE;
-	}
-	
-	/**
-	* Shuffles the values of a given array
-	*
-	* Shuffles the values of a given array
-	*
-	* @param array $array An array which should be shuffled
-	* @access public
-	*/
-	function pcArrayShuffle($array)
-	{
-		$keys = array_keys($array);
-		shuffle($keys);
-		$result = array();
-		foreach ($keys as $key)
-		{
-			$result[$key] = $array[$key];
-		}
-		return $result;
-	}
+    private function loadQuestionSequence()
+    {
+        global $DIC;
+        $ilDB = $DIC['ilDB'];
+        $result = $ilDB->queryF("SELECT * FROM tst_sequence WHERE active_fi = %s AND pass = %s", array(
+            'integer',
+            'integer'
+        ), array(
+            $this->active_id,
+            $this->pass
+        ));
+        if ($result->numRows()) {
+            $row = $ilDB->fetchAssoc($result);
+            $this->sequencedata = array(
+                "sequence" => unserialize($row["sequence"]),
+                "postponed" => unserialize($row["postponed"]),
+                "hidden" => unserialize($row["hidden"])
+            );
+            if (! is_array($this->sequencedata["sequence"]))
+                $this->sequencedata["sequence"] = array();
+            if (! is_array($this->sequencedata["postponed"]))
+                $this->sequencedata["postponed"] = array();
+            if (! is_array($this->sequencedata["hidden"]))
+                $this->sequencedata["hidden"] = array();
 
+            $this->setAnsweringOptionalQuestionsConfirmed((bool) $row['ans_opt_confirmed']);
+        }
+    }
 
-	/**
-	 * @deprecated use getQuestionRevisionIdForSequence
-	 */
-	function getQuestionForSequence(int $sequence)
-	{
-		if ($sequence < 1) return FALSE;
-		if (array_key_exists($sequence, $this->questions))
-		{
-			return $this->questions[$sequence];
-		}
-		else
-		{
-			return FALSE;
-		}
-	}
+    protected function loadPresentedQuestions()
+    {
+        global $DIC; /* @var ILIAS\DI\Container $DIC */
 
-	/**
-	 * @param int $sequence
-	 *
-	 * @return string $revision_id
-	 */
-	function getQuestionRevisionIdForSequence(int $sequence): string
-	{
-		if ($sequence < 1) return FALSE;
-		if (array_key_exists($sequence, $this->question_revision_ids))
-		{
-			return $this->question_revision_ids[$sequence];
-		}
-		else
-		{
-			return FALSE;
-		}
-	}
-	
-	public function getSequenceSummary($obligationsFilterEnabled = false)
-	{
-		$correctedsequence = $this->getCorrectedSequence();
-		$result_array = array();
-		include_once "./Modules/Test/classes/class.ilObjTest.php";
-		$solved_questions = ilObjTest::_getSolvedQuestions($this->active_id);
-		$key = 1;
-		foreach ($correctedsequence as $sequence)
-		{
-			$question =& ilObjTest::_instanciateQuestion($this->getQuestionForSequence($sequence));
-			if (is_object($question))
-			{
-				$worked_through = $question->_isWorkedThrough($this->active_id, $question->getId(), $this->pass);
-				$solved  = 0;
-				if (array_key_exists($question->getId(), $solved_questions))
-				{
-					$solved =  $solved_questions[$question->getId()]["solved"];
-				}
-				$is_postponed = $this->isPostponedQuestion($question->getId());
+        $res = $DIC->database()->queryF("SELECT question_fi FROM tst_seq_qst_presented WHERE active_fi = %s AND pass = %s", array(
+            'integer',
+            'integer'
+        ), array(
+            $this->active_id,
+            $this->pass
+        ));
 
-				$row = array(
-					"nr" => "$key",
-					"title" => $question->getTitle(),
-					"qid" => $question->getId(),
-					"presented" => $this->isQuestionPresented($question->getId()),
-					"visited" => $worked_through,
-					"solved" => (($solved)?"1":"0"),
-					"description" => $question->getComment(),
-					"points" => $question->getMaximumPoints(),
-					"worked_through" => $worked_through,
-					"postponed" => $is_postponed,
-					"sequence" => $sequence,
-					"obligatory" => ilObjTest::isQuestionObligatory($question->getId()),
-					'isAnswered' => $question->isAnswered($this->active_id, $this->pass)
-				);
-				
-				if( !$obligationsFilterEnabled || $row['obligatory'] )
-				{
-					array_push($result_array, $row);
-				}
-				
-				$key++;
-			}
-		}
-		return $result_array;
-	}
-	
-	function getPass()
-	{
-		return $this->pass;
-	}
-	
-	function setPass($pass)
-	{
-		$this->pass = $pass;
-	}
-	
-	function hasSequence()
-	{
-		if ((is_array($this->sequencedata["sequence"])) && (count($this->sequencedata["sequence"]) > 0))
-		{
-			return TRUE;
-		}
-		else
-		{
-			return FALSE;
-		}
-	}
+        while ($row = $DIC->database()->fetchAssoc($res)) {
+            $this->alreadyPresentedQuestions[$row['question_fi']] = $row['question_fi'];
+        }
+    }
 
-	function hasHiddenQuestions()
-	{
-		if ((is_array($this->sequencedata["hidden"])) && (count($this->sequencedata["hidden"]) > 0))
-		{
-			return TRUE;
-		}
-		else
-		{
-			return FALSE;
-		}
-	}
-	
-	function clearHiddenQuestions()
-	{
-		$this->sequencedata["hidden"] = array();
-	}
-	
-	private function hideCorrectAnsweredQuestions(ilObjTest $testOBJ, $activeId, $pass)
-	{
-		if( $activeId > 0 )
-		{
-			$result = $testOBJ->getTestResult($activeId, $pass, TRUE);
-			
-			foreach( $result as $sequence => $question )
-			{
-				if( is_numeric($sequence) )
-				{
-					if( $question['reached'] == $question['max'] )
-					{
-						$this->hideQuestion($question['qid']);
-					}
-				}
-			}
-			
-			$this->saveToDb();
-		}
-	}
-	
-	public function hasStarted(ilTestSession $testSession)
-	{
-		if( $testSession->getLastSequence() < 1 )
-		{
-			return false;
-		}
-		
-		// WTF ?? heard about tests with only one question !?
-		if( $testSession->getLastSequence() == $this->getFirstSequence() )
-		{
-			return false;
-		}
-				
-		return true;
-	}
-	
-	public function openQuestionExists()
-	{
-		return $this->getFirstSequence() !== false;
-	}
+    private function loadCheckedQuestions()
+    {
+        global $DIC;
+        $ilDB = $DIC['ilDB'];
 
-	public function getQuestionIds()
-	{
-		return array_values($this->questions);
-	}
+        $res = $ilDB->queryF("SELECT question_fi FROM tst_seq_qst_checked WHERE active_fi = %s AND pass = %s", array(
+            'integer',
+            'integer'
+        ), array(
+            $this->active_id,
+            $this->pass
+        ));
 
-	public function questionExists($revision_key)
-	{
-		return in_array($revision_key, $this->question_revision_ids);
-	}
+        while ($row = $ilDB->fetchAssoc($res)) {
+            $this->alreadyCheckedQuestions[$row['question_fi']] = $row['question_fi'];
+        }
+    }
 
-	public function setQuestionOptional($questionId)
-	{
-		$this->optionalQuestions[$questionId] = $questionId;
-	}
+    private function loadOptionalQuestions()
+    {
+        global $DIC;
+        $ilDB = $DIC['ilDB'];
 
-	public function isQuestionOptional($questionId)
-	{
-		return isset($this->optionalQuestions[$questionId]);
-	}
-	
-	public function hasOptionalQuestions()
-	{
-		return (bool)count($this->optionalQuestions);
-	}
+        $res = $ilDB->queryF("SELECT question_fi FROM tst_seq_qst_optional WHERE active_fi = %s AND pass = %s", array(
+            'integer',
+            'integer'
+        ), array(
+            $this->active_id,
+            $this->pass
+        ));
 
-	public function getOptionalQuestions()
-	{
-		return $this->optionalQuestions;
-	}
+        while ($row = $ilDB->fetchAssoc($res)) {
+            $this->optionalQuestions[$row['question_fi']] = $row['question_fi'];
+        }
+    }
 
-	public function clearOptionalQuestions()
-	{
-		$this->optionalQuestions = array();
-	}
-	
-	public function reorderOptionalQuestionsToSequenceEnd()
-	{
-		$optionalSequenceKeys = array();
-		
-		foreach($this->sequencedata['sequence'] as $index => $sequenceKey)
-		{
-			if( $this->isQuestionOptional($this->getQuestionForSequence($sequenceKey)) )
-			{
-				$optionalSequenceKeys[$index] = $sequenceKey;
-				unset($this->sequencedata['sequence'][$index]);
-			}
-		}
-		
-		foreach($optionalSequenceKeys as $index => $sequenceKey)
-		{
-			$this->sequencedata['sequence'][$index] = $sequenceKey;
-		}
-	}
+    /**
+     * Saves the sequence data for a given pass to the database
+     *
+     * @access public
+     */
+    public function saveToDb()
+    {
+        $this->saveQuestionSequence();
+        $this->saveNewlyPresentedQuestion();
+        $this->saveNewlyCheckedQuestion();
+        $this->saveOptionalQuestions();
+    }
 
-	/**
-	 * @return boolean
-	 */
-	public function isAnsweringOptionalQuestionsConfirmed()
-	{
-		return $this->answeringOptionalQuestionsConfirmed;
-	}
+    private function saveQuestionSequence()
+    {
+        global $DIC;
+        $ilDB = $DIC['ilDB'];
 
-	/**
-	 * @param boolean $answeringOptionalQuestionsConfirmed
-	 */
-	public function setAnsweringOptionalQuestionsConfirmed($answeringOptionalQuestionsConfirmed)
-	{
-		$this->answeringOptionalQuestionsConfirmed = $answeringOptionalQuestionsConfirmed;
-	}
+        $postponed = NULL;
+        if ((is_array($this->sequencedata["postponed"])) && (count($this->sequencedata["postponed"]))) {
+            $postponed = serialize($this->sequencedata["postponed"]);
+        }
+        $hidden = NULL;
+        if ((is_array($this->sequencedata["hidden"])) && (count($this->sequencedata["hidden"]))) {
+            $hidden = serialize($this->sequencedata["hidden"]);
+        }
 
-	/**
-	 * @return boolean
-	 */
-	public function isConsiderHiddenQuestionsEnabled()
-	{
-		return $this->considerHiddenQuestionsEnabled;
-	}
+        $affectedRows = $ilDB->manipulateF("DELETE FROM tst_sequence WHERE active_fi = %s AND pass = %s", array(
+            'integer',
+            'integer'
+        ), array(
+            $this->active_id,
+            $this->pass
+        ));
 
-	/**
-	 * @param boolean $considerHiddenQuestionsEnabled
-	 */
-	public function setConsiderHiddenQuestionsEnabled($considerHiddenQuestionsEnabled)
-	{
-		$this->considerHiddenQuestionsEnabled = $considerHiddenQuestionsEnabled;
-	}
+        $affectedRows = $ilDB->insert("tst_sequence", array(
+            "active_fi" => array(
+                "integer",
+                $this->active_id
+            ),
+            "pass" => array(
+                "integer",
+                $this->pass
+            ),
+            "sequence" => array(
+                "clob",
+                serialize($this->sequencedata["sequence"])
+            ),
+            "postponed" => array(
+                "text",
+                $postponed
+            ),
+            "hidden" => array(
+                "text",
+                $hidden
+            ),
+            "tstamp" => array(
+                "integer",
+                time()
+            ),
+            'ans_opt_confirmed' => array(
+                'integer',
+                (int) $this->isAnsweringOptionalQuestionsConfirmed()
+            )
+        ));
+    }
 
-	/**
-	 * @return boolean
-	 */
-	public function isConsiderOptionalQuestionsEnabled()
-	{
-		return $this->considerOptionalQuestionsEnabled;
-	}
+    protected function saveNewlyPresentedQuestion()
+    {
+        if ((int) $this->newlyPresentedQuestion) {
+            global $DIC; /* @var ILIAS\DI\Container $DIC */
 
-	/**
-	 * @param boolean $considerOptionalQuestionsEnabled
-	 */
-	public function setConsiderOptionalQuestionsEnabled($considerOptionalQuestionsEnabled)
-	{
-		$this->considerOptionalQuestionsEnabled = $considerOptionalQuestionsEnabled;
-	}
+            $DIC->database()->replace('tst_seq_qst_presented', array(
+                'active_fi' => array(
+                    'integer',
+                    (int) $this->active_id
+                ),
+                'pass' => array(
+                    'integer',
+                    (int) $this->pass
+                ),
+                'question_fi' => array(
+                    'integer',
+                    (int) $this->newlyPresentedQuestion
+                )
+            ), array());
+        }
+    }
+
+    /**
+     *
+     * @global ilDBInterface $ilDB
+     */
+    private function saveNewlyCheckedQuestion()
+    {
+        if ((int) $this->newlyCheckedQuestion) {
+            global $DIC;
+            $ilDB = $DIC['ilDB'];
+
+            $ilDB->replace('tst_seq_qst_checked', array(
+                'active_fi' => array(
+                    'integer',
+                    (int) $this->active_id
+                ),
+                'pass' => array(
+                    'integer',
+                    (int) $this->pass
+                ),
+                'question_fi' => array(
+                    'integer',
+                    (int) $this->newlyCheckedQuestion
+                )
+            ), array());
+        }
+    }
+
+    /**
+     *
+     * @global ilDBInterface $ilDB
+     */
+    private function saveOptionalQuestions()
+    {
+        global $DIC;
+        $ilDB = $DIC['ilDB'];
+
+        $NOT_IN_questions = $ilDB->in('question_fi', $this->optionalQuestions, true, 'integer');
+
+        $ilDB->queryF("DELETE FROM tst_seq_qst_optional WHERE active_fi = %s AND pass = %s AND $NOT_IN_questions", array(
+            'integer',
+            'integer'
+        ), array(
+            $this->active_id,
+            $this->pass
+        ));
+
+        foreach ($this->optionalQuestions as $questionId) {
+            $ilDB->replace('tst_seq_qst_optional', array(
+                'active_fi' => array(
+                    'integer',
+                    (int) $this->active_id
+                ),
+                'pass' => array(
+                    'integer',
+                    (int) $this->pass
+                ),
+                'question_fi' => array(
+                    'integer',
+                    (int) $questionId
+                )
+            ), array());
+        }
+    }
+
+    function postponeQuestion($question_id)
+    {
+        if (! $this->isPostponedQuestion($question_id)) {
+            array_push($this->sequencedata["postponed"], intval($question_id));
+        }
+    }
+
+    function hideQuestion($question_id)
+    {
+        if (! $this->isHiddenQuestion($question_id)) {
+            array_push($this->sequencedata["hidden"], intval($question_id));
+        }
+    }
+
+    function isPostponedQuestion($question_id)
+    {
+        if (! is_array($this->sequencedata["postponed"]))
+            return FALSE;
+        if (! in_array($question_id, $this->sequencedata["postponed"])) {
+            return FALSE;
+        } else {
+            return TRUE;
+        }
+    }
+
+    function isHiddenQuestion($question_id)
+    {
+        if (! is_array($this->sequencedata["hidden"]))
+            return FALSE;
+        if (! in_array($question_id, $this->sequencedata["hidden"])) {
+            return FALSE;
+        } else {
+            return TRUE;
+        }
+    }
+
+    function isPostponedSequence($sequence)
+    {
+        if (! array_key_exists($sequence, $this->questions))
+            return FALSE;
+        if (! is_array($this->sequencedata["postponed"]))
+            return FALSE;
+        if (! in_array($this->questions[$sequence], $this->sequencedata["postponed"])) {
+            return FALSE;
+        } else {
+            return TRUE;
+        }
+    }
+
+    function isHiddenSequence($sequence)
+    {
+        if (! array_key_exists($sequence, $this->questions))
+            return FALSE;
+        if (! is_array($this->sequencedata["hidden"]))
+            return FALSE;
+        if (! in_array($this->questions[$sequence], $this->sequencedata["hidden"])) {
+            return FALSE;
+        } else {
+            return TRUE;
+        }
+    }
+
+    function postponeSequence($sequence)
+    {
+        if (! $this->isPostponedSequence($sequence)) {
+            if (array_key_exists($sequence, $this->questions)) {
+                if (! is_array($this->sequencedata["postponed"]))
+                    $this->sequencedata["postponed"] = array();
+                array_push($this->sequencedata["postponed"], intval($this->questions[$sequence]));
+            }
+        }
+    }
+
+    function hideSequence($sequence)
+    {
+        if (! $this->isHiddenSequence($sequence)) {
+            if (array_key_exists($sequence, $this->questions)) {
+                if (! is_array($this->sequencedata["hidden"]))
+                    $this->sequencedata["hidden"] = array();
+                array_push($this->sequencedata["hidden"], intval($this->questions[$sequence]));
+            }
+        }
+    }
+
+    public function setQuestionPresented($questionId)
+    {
+        $this->newlyPresentedQuestion = $questionId;
+    }
+
+    public function isQuestionPresented($questionId)
+    {
+        return ($this->newlyPresentedQuestion == $questionId || in_array($questionId, $this->alreadyPresentedQuestions));
+    }
+
+    public function isNextQuestionPresented($questionId)
+    {
+        $nextQstId = $this->getQuestionForSequence($this->getNextSequence($this->getSequenceForQuestion($questionId)));
+
+        if (! $nextQstId) {
+            return false;
+        }
+
+        if ($this->newlyPresentedQuestion == $nextQstId) {
+            return true;
+        }
+
+        if (in_array($nextQstId, $this->alreadyPresentedQuestions)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function setQuestionChecked($questionId)
+    {
+        $this->newlyCheckedQuestion = $questionId;
+    }
+
+    public function isQuestionChecked($questionId)
+    {
+        return isset($this->alreadyCheckedQuestions[$questionId]);
+    }
+
+    function getPositionOfSequence($sequence)
+    {
+        $correctedsequence = $this->getCorrectedSequence();
+        $sequencekey = array_search($sequence, $correctedsequence);
+        if ($sequencekey !== FALSE) {
+            return $sequencekey + 1;
+        } else {
+            return "";
+        }
+    }
+
+    function getUserQuestionCount()
+    {
+        return count($this->getCorrectedSequence());
+    }
+
+    function getOrderedSequence()
+    {
+        $sequenceKeys = array();
+
+        foreach (array_keys($this->questions) as $sequenceKey) {
+            if ($this->isHiddenSequence($sequenceKey) && ! $this->isConsiderHiddenQuestionsEnabled()) {
+                continue;
+            }
+
+            if ($this->isSequenceOptional($sequenceKey) && ! $this->isConsiderOptionalQuestionsEnabled()) {
+                continue;
+            }
+
+            $sequenceKeys[] = $sequenceKey;
+        }
+
+        return $sequenceKeys;
+    }
+
+    function getOrderedSequenceQuestions()
+    {
+        $questions = array();
+
+        foreach ($this->questions as $questionId) {
+            if ($this->isHiddenQuestion($questionId) && ! $this->isConsiderHiddenQuestionsEnabled()) {
+                continue;
+            }
+
+            if ($this->isQuestionOptional($questionId) && ! $this->isConsiderOptionalQuestionsEnabled()) {
+                continue;
+            }
+
+            $questions[] = $questionId;
+        }
+
+        return $questions;
+    }
+
+    function getUserSequence()
+    {
+        return $this->getCorrectedSequence();
+    }
+
+    function getUserSequenceQuestions()
+    {
+        $seq = $this->getCorrectedSequence();
+        $found = array();
+        foreach ($seq as $sequence) {
+            array_push($found, $this->getQuestionForSequence($sequence));
+        }
+        return $found;
+    }
+
+    private function ensureQuestionNotInSequence($sequence, $questionId)
+    {
+        $questionKey = array_search($questionId, $this->questions);
+
+        if ($questionKey === false) {
+            return $sequence;
+        }
+
+        $sequenceKey = array_search($questionKey, $sequence);
+
+        if ($sequenceKey === FALSE) {
+            return $sequence;
+        }
+
+        unset($sequence[$sequenceKey]);
+
+        return $sequence;
+    }
+
+    protected function getCorrectedSequence()
+    {
+        $correctedsequence = $this->sequencedata["sequence"];
+        if (! $this->isConsiderHiddenQuestionsEnabled()) {
+            if (is_array($this->sequencedata["hidden"])) {
+                foreach ($this->sequencedata["hidden"] as $question_id) {
+                    $correctedsequence = $this->ensureQuestionNotInSequence($correctedsequence, $question_id);
+                }
+            }
+        }
+        if (! $this->isConsiderOptionalQuestionsEnabled()) {
+            foreach ($this->optionalQuestions as $questionId) {
+                $correctedsequence = $this->ensureQuestionNotInSequence($correctedsequence, $questionId);
+            }
+        }
+        if (is_array($this->sequencedata["postponed"])) {
+            foreach ($this->sequencedata["postponed"] as $question_id) {
+                $foundsequence = array_search($question_id, $this->questions);
+                if ($foundsequence !== FALSE) {
+                    $sequencekey = array_search($foundsequence, $correctedsequence);
+                    if ($sequencekey !== FALSE) {
+                        unset($correctedsequence[$sequencekey]);
+                        array_push($correctedsequence, $foundsequence);
+                    }
+                }
+            }
+        }
+        return array_values($correctedsequence);
+    }
+
+    function getSequenceForQuestion($question_id)
+    {
+        return array_search($question_id, $this->questions);
+    }
+
+    function getFirstSequence()
+    {
+        $correctedsequence = $this->getCorrectedSequence();
+        if (count($correctedsequence)) {
+            return reset($correctedsequence);
+        } else {
+            return FALSE;
+        }
+    }
+
+    function getLastSequence()
+    {
+        $correctedsequence = $this->getCorrectedSequence();
+        if (count($correctedsequence)) {
+            return end($correctedsequence);
+        } else {
+            return FALSE;
+        }
+    }
+
+    function getNextSequence($sequence)
+    {
+        $correctedsequence = $this->getCorrectedSequence();
+        $sequencekey = array_search($sequence, $correctedsequence);
+        if ($sequencekey !== FALSE) {
+            $nextsequencekey = $sequencekey + 1;
+            if (array_key_exists($nextsequencekey, $correctedsequence)) {
+                return $correctedsequence[$nextsequencekey];
+            }
+        }
+        return FALSE;
+    }
+
+    function getPreviousSequence($sequence)
+    {
+        $correctedsequence = $this->getCorrectedSequence();
+        $sequencekey = array_search($sequence, $correctedsequence);
+        if ($sequencekey !== FALSE) {
+            $prevsequencekey = $sequencekey - 1;
+            if (($prevsequencekey >= 0) && (array_key_exists($prevsequencekey, $correctedsequence))) {
+                return $correctedsequence[$prevsequencekey];
+            }
+        }
+        return FALSE;
+    }
+
+    /**
+     * Shuffles the values of a given array
+     *
+     * Shuffles the values of a given array
+     *
+     * @param array $array
+     *            An array which should be shuffled
+     * @access public
+     */
+    function pcArrayShuffle($array)
+    {
+        $keys = array_keys($array);
+        shuffle($keys);
+        $result = array();
+        foreach ($keys as $key) {
+            $result[$key] = $array[$key];
+        }
+        return $result;
+    }
+
+    /**
+     *
+     * @deprecated use getQuestionRevisionIdForSequence
+     */
+    function getQuestionForSequence(int $sequence)
+    {
+        if ($sequence < 1)
+            return FALSE;
+        if (array_key_exists($sequence, $this->questions)) {
+            return $this->questions[$sequence];
+        } else {
+            return FALSE;
+        }
+    }
+
+    /**
+     *
+     * @param int $sequence
+     *
+     * @return string $revision_id
+     */
+    function getQuestionRevisionIdForSequence(int $sequence): string
+    {
+        if ($sequence < 1)
+            return FALSE;
+        if (array_key_exists($sequence, $this->question_revision_ids)) {
+            return $this->question_revision_ids[$sequence];
+        } else {
+            return FALSE;
+        }
+    }
+
+    public function getSequenceSummary($obligationsFilterEnabled = false)
+    {
+        $correctedsequence = $this->getCorrectedSequence();
+        $result_array = array();
+        include_once "./Modules/Test/classes/class.ilObjTest.php";
+        $solved_questions = ilObjTest::_getSolvedQuestions($this->active_id);
+        $key = 1;
+        foreach ($correctedsequence as $sequence) {
+            $question = &ilObjTest::_instanciateQuestion($this->getQuestionForSequence($sequence));
+            if (is_object($question)) {
+                $worked_through = $question->_isWorkedThrough($this->active_id, $question->getId(), $this->pass);
+                $solved = 0;
+                if (array_key_exists($question->getId(), $solved_questions)) {
+                    $solved = $solved_questions[$question->getId()]["solved"];
+                }
+                $is_postponed = $this->isPostponedQuestion($question->getId());
+
+                $row = array(
+                    "nr" => "$key",
+                    "title" => $question->getTitle(),
+                    "qid" => $question->getId(),
+                    "presented" => $this->isQuestionPresented($question->getId()),
+                    "visited" => $worked_through,
+                    "solved" => (($solved) ? "1" : "0"),
+                    "description" => $question->getComment(),
+                    "points" => $question->getMaximumPoints(),
+                    "worked_through" => $worked_through,
+                    "postponed" => $is_postponed,
+                    "sequence" => $sequence,
+                    "obligatory" => ilObjTest::isQuestionObligatory($question->getId()),
+                    'isAnswered' => $question->isAnswered($this->active_id, $this->pass)
+                );
+
+                if (! $obligationsFilterEnabled || $row['obligatory']) {
+                    array_push($result_array, $row);
+                }
+
+                $key ++;
+            }
+        }
+        return $result_array;
+    }
+
+    function getPass()
+    {
+        return $this->pass;
+    }
+
+    function setPass($pass)
+    {
+        $this->pass = $pass;
+    }
+
+    function hasSequence()
+    {
+        if ((is_array($this->sequencedata["sequence"])) && (count($this->sequencedata["sequence"]) > 0)) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+
+    function hasHiddenQuestions()
+    {
+        if ((is_array($this->sequencedata["hidden"])) && (count($this->sequencedata["hidden"]) > 0)) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+
+    function clearHiddenQuestions()
+    {
+        $this->sequencedata["hidden"] = array();
+    }
+
+    private function hideCorrectAnsweredQuestions(ilObjTest $testOBJ, $activeId, $pass)
+    {
+        if ($activeId > 0) {
+            $result = $testOBJ->getTestResult($activeId, $pass, TRUE);
+
+            foreach ($result as $sequence => $question) {
+                if (is_numeric($sequence)) {
+                    if ($question['reached'] == $question['max']) {
+                        $this->hideQuestion($question['qid']);
+                    }
+                }
+            }
+
+            $this->saveToDb();
+        }
+    }
+
+    public function hasStarted(ilTestSession $testSession)
+    {
+        if ($testSession->getLastSequence() < 1) {
+            return false;
+        }
+
+        // WTF ?? heard about tests with only one question !?
+        if ($testSession->getLastSequence() == $this->getFirstSequence()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function openQuestionExists()
+    {
+        return $this->getFirstSequence() !== false;
+    }
+
+    public function getQuestionIds()
+    {
+        return array_values($this->questions);
+    }
+
+    public function questionExists($revision_key)
+    {
+        return in_array($revision_key, $this->question_revision_ids);
+    }
+
+    public function setQuestionOptional($questionId)
+    {
+        $this->optionalQuestions[$questionId] = $questionId;
+    }
+
+    public function isQuestionOptional($questionId)
+    {
+        return isset($this->optionalQuestions[$questionId]);
+    }
+
+    public function hasOptionalQuestions()
+    {
+        return (bool) count($this->optionalQuestions);
+    }
+
+    public function getOptionalQuestions()
+    {
+        return $this->optionalQuestions;
+    }
+
+    public function clearOptionalQuestions()
+    {
+        $this->optionalQuestions = array();
+    }
+
+    public function reorderOptionalQuestionsToSequenceEnd()
+    {
+        $optionalSequenceKeys = array();
+
+        foreach ($this->sequencedata['sequence'] as $index => $sequenceKey) {
+            if ($this->isQuestionOptional($this->getQuestionForSequence($sequenceKey))) {
+                $optionalSequenceKeys[$index] = $sequenceKey;
+                unset($this->sequencedata['sequence'][$index]);
+            }
+        }
+
+        foreach ($optionalSequenceKeys as $index => $sequenceKey) {
+            $this->sequencedata['sequence'][$index] = $sequenceKey;
+        }
+    }
+
+    /**
+     *
+     * @return boolean
+     */
+    public function isAnsweringOptionalQuestionsConfirmed()
+    {
+        return $this->answeringOptionalQuestionsConfirmed;
+    }
+
+    /**
+     *
+     * @param boolean $answeringOptionalQuestionsConfirmed
+     */
+    public function setAnsweringOptionalQuestionsConfirmed($answeringOptionalQuestionsConfirmed)
+    {
+        $this->answeringOptionalQuestionsConfirmed = $answeringOptionalQuestionsConfirmed;
+    }
+
+    /**
+     *
+     * @return boolean
+     */
+    public function isConsiderHiddenQuestionsEnabled()
+    {
+        return $this->considerHiddenQuestionsEnabled;
+    }
+
+    /**
+     *
+     * @param boolean $considerHiddenQuestionsEnabled
+     */
+    public function setConsiderHiddenQuestionsEnabled($considerHiddenQuestionsEnabled)
+    {
+        $this->considerHiddenQuestionsEnabled = $considerHiddenQuestionsEnabled;
+    }
+
+    /**
+     *
+     * @return boolean
+     */
+    public function isConsiderOptionalQuestionsEnabled()
+    {
+        return $this->considerOptionalQuestionsEnabled;
+    }
+
+    /**
+     *
+     * @param boolean $considerOptionalQuestionsEnabled
+     */
+    public function setConsiderOptionalQuestionsEnabled($considerOptionalQuestionsEnabled)
+    {
+        $this->considerOptionalQuestionsEnabled = $considerOptionalQuestionsEnabled;
+    }
 }
 
 ?>
