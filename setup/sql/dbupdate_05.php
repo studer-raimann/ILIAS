@@ -4153,7 +4153,38 @@ if (!$ilDB->tableColumnExists('il_dcl_tview_set', 'locked')) {
     );
 }
 ?>
+
 <#5653>
+<?php
+if (!$ilDB->tableColumnExists('il_dcl_tview_set', 'visible_create')) {
+    $ilDB->addTableColumn(
+        'il_dcl_tview_set',
+        'visible_create',
+        array(
+            'type'    => 'integer',
+            'length'  => 1,
+            'notnull' => true,
+            'default' => 1
+        )
+    );
+}
+?>
+<#5654>
+<?php
+if (!$ilDB->tableColumnExists('il_dcl_tview_set', 'visible_edit')) {
+    $ilDB->addTableColumn(
+        'il_dcl_tview_set',
+        'visible_edit',
+        array(
+            'type'    => 'integer',
+            'length'  => 1,
+            'notnull' => true,
+            'default' => 1
+        )
+    );
+}
+?>
+<#5655>
 <?php
 if ($ilDB->tableColumnExists('il_dcl_field', 'required')) {
 	// Migration
@@ -4169,7 +4200,7 @@ if ($ilDB->tableColumnExists('il_dcl_field', 'required')) {
     $ilDB->dropTableColumn('il_dcl_field', 'required');
 }
 ?>
-<#5654>
+<#5656>
 <?php
 if ($ilDB->tableColumnExists('il_dcl_field', 'is_locked')) {
     // Migration
@@ -4183,35 +4214,5 @@ if ($ilDB->tableColumnExists('il_dcl_field', 'is_locked')) {
     }
 
     $ilDB->dropTableColumn('il_dcl_field', 'is_locked');
-}
-?>
-<#5655>
-<?php
-if (!$ilDB->tableColumnExists('il_dcl_tview_set', 'visible_create')) {
-    $ilDB->addTableColumn(
-        'il_dcl_tview_set',
-        'visible_create',
-        array(
-            'type'    => 'integer',
-            'length'  => 1,
-            'notnull' => true,
-            'default' => 1
-        )
-    );
-}
-?>
-<#5656>
-<?php
-if (!$ilDB->tableColumnExists('il_dcl_tview_set', 'visible_edit')) {
-    $ilDB->addTableColumn(
-        'il_dcl_tview_set',
-        'visible_edit',
-        array(
-            'type'    => 'integer',
-            'length'  => 1,
-            'notnull' => true,
-            'default' => 1
-        )
-    );
 }
 ?>
