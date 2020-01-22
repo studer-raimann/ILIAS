@@ -49,7 +49,7 @@ class AnswerOptionForm extends AsqTableInput {
 		parent::__construct($title, 
 		                    self::VAR_POST,
                 		    array_map(function($option) {
-                		        return $option->rawValues();
+                		        return !is_null($option) ? $option->rawValues() : null;
                 		    }, $options->getOptions()),
 		                    $definitions,
 		                    $form_configuration);
