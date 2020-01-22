@@ -44,6 +44,10 @@ abstract class AnswerDefinition implements JsonSerializable {
 	    return '';
 	}
 	
+	protected static function getPostKey(int $index, string $name) {
+	    return sprintf('%s_answer_options_%s', $index, $name);
+	}
+	
 	/**
 	 * Specify data which should be serialized to JSON
 	 *

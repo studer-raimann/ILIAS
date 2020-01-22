@@ -71,9 +71,9 @@ class EssayScoringDefinition extends AnswerDefinition {
 
     public static function getValueFromPost(string $index)
     {
-        $pointkey = $index . self::VAR_POINTS;
+        $pointkey = self::getPostKey($index, self::VAR_POINTS);
         
-        return new EssayScoringDefinition(ilAsqHtmlPurifier::getInstance()->purify($_POST[$index . self::VAR_TEXT]),
+        return new EssayScoringDefinition(ilAsqHtmlPurifier::getInstance()->purify($_POST[self::getPostKey($index, self::VAR_TEXT)]),
                                           array_key_exists($pointkey, $_POST) ? intval($_POST[$pointkey]) : 0);            
     }
 

@@ -77,8 +77,8 @@ class TextSubsetScoringDefinition extends AnswerDefinition {
     }
     
     public static function getValueFromPost(string $index) {
-        return new TextSubsetScoringDefinition(intval($_POST[$index . self::VAR_TSSD_POINTS]),
-                                               ilAsqHtmlPurifier::getInstance()->purify($_POST[$index . self::VAR_TSSD_TEXT]));
+        return new TextSubsetScoringDefinition(intval($_POST[self::getPostKey($index, self::VAR_TSSD_POINTS)]),
+            ilAsqHtmlPurifier::getInstance()->purify($_POST[self::getPostKey($index, self::VAR_TSSD_TEXT)]));
     }
     
     public function getValues(): array {

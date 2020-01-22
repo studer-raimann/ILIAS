@@ -4,6 +4,7 @@ namespace ILIAS\AssessmentQuestion\DomainModel\Scoring;
 
 use ILIAS\AssessmentQuestion\DomainModel\QuestionPlayConfiguration;
 use ILIAS\AssessmentQuestion\DomainModel\Answer\Option\AnswerDefinition;
+use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\KprimChoiceEditorConfiguration;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Fields\AsqTableInputFieldDefinition;
 use stdClass;
 
@@ -71,7 +72,7 @@ class KprimChoiceScoringDefinition extends AnswerDefinition {
 
     public static function getValueFromPost(string $index)
     {
-        return new KprimChoiceScoringDefinition($_POST[$index . self::VAR_KPSD_CORRECT] === self::STR_TRUE);
+        return new KprimChoiceScoringDefinition($_POST[self::getPostKey($index, self::VAR_KPSD_CORRECT)] === self::STR_TRUE);
     }
 
     public static function deserialize(stdClass $data)

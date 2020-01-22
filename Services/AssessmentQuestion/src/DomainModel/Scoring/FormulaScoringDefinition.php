@@ -113,9 +113,9 @@ class FormulaScoringDefinition extends AnswerDefinition {
 
     public static function getValueFromPost(string $index)
     {          
-        return new FormulaScoringDefinition(ilAsqHtmlPurifier::getInstance()->purify($_POST[$index . self::VAR_FORMULA]),
-                                            ilAsqHtmlPurifier::getInstance()->purify($_POST[$index . self::VAR_UNIT]), 
-                                            intval($_POST[$index . self::VAR_POINTS]));            
+        return new FormulaScoringDefinition(ilAsqHtmlPurifier::getInstance()->purify($_POST[self::getPostKey($index, self::VAR_FORMULA)]),
+            ilAsqHtmlPurifier::getInstance()->purify($_POST[self::getPostKey($index, self::VAR_UNIT)]), 
+            intval($_POST[self::getPostKey($index, self::VAR_POINTS)]));            
     }
 
     public static function deserialize(stdClass $data)

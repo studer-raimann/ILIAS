@@ -118,9 +118,9 @@ class ImageMapEditorDisplayDefinition extends AnswerDefinition {
     
     public static function getValueFromPost($index) {
         return new ImageMapEditorDisplayDefinition(
-            ilAsqHtmlPurifier::getInstance()->purify($_POST[$index . self::VAR_TOOLTIP]), 
-            intval($_POST[$index . self::VAR_TYPE]), 
-            ilAsqHtmlPurifier::getInstance()->purify($_POST[$index . self::VAR_COORDINATES]));
+            ilAsqHtmlPurifier::getInstance()->purify($_POST[self::getPostKey($index, self::VAR_TOOLTIP)]), 
+            intval($_POST[self::getPostKey($index, self::VAR_TYPE)]), 
+            ilAsqHtmlPurifier::getInstance()->purify($_POST[self::getPostKey($index, self::VAR_COORDINATES)]));
     }
     
     public function getValues(): array {

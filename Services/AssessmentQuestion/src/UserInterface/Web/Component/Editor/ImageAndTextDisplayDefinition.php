@@ -71,11 +71,9 @@ class ImageAndTextDisplayDefinition extends AnswerDefinition {
 	}
 
 	public static function getValueFromPost(string $index) {
-	    $image_key = $index . self::VAR_MCDD_IMAGE;
-	    
 		return new ImageAndTextDisplayDefinition(
-		    ilAsqHtmlPurifier::getInstance()->purify($_POST[$index . self::VAR_MCDD_TEXT]),
-		    ImageUploader::getInstance()->processImage($image_key)
+		    ilAsqHtmlPurifier::getInstance()->purify($_POST[self::getPostKey($index, self::VAR_MCDD_TEXT)]),
+		    ImageUploader::getInstance()->processImage(self::getPostKey($index, self::VAR_MCDD_IMAGE))
 		);
 	}
 
@@ -105,7 +103,7 @@ class ImageAndTextDisplayDefinition extends AnswerDefinition {
 	    global $DIC;
 	    
 	    for ($i = 1; $i <= $count; $i++) {
-	        if ($_POST[$i . self::VAR_MCDD_TEXT] == null)
+	        if ($_POST[self::getPostKey($i, self::VAR_MCDD_TEXT)] == null)
 	        {
 	            self::$error_message = $DIC->language()->txt('msg_input_is_required');
 	            return false;

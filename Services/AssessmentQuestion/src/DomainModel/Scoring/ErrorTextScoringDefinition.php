@@ -139,10 +139,10 @@ class ErrorTextScoringDefinition extends AnswerDefinition {
     
     public static function getValueFromPost(string $index) {
         return new ErrorTextScoringDefinition(
-            intval($_POST[$index . self::VAR_WORD_INDEX]),
-            intval($_POST[$index . self::VAR_WORD_LENGTH]),
-            ilAsqHtmlPurifier::getInstance()->purify($_POST[$index . self::VAR_CORRECT_TEXT]),
-            intval($_POST[$index . self::VAR_POINTS]));
+            intval($_POST[self::getPostKey($index, self::VAR_WORD_INDEX)]),
+            intval($_POST[self::getPostKey($index, self::VAR_WORD_LENGTH)]),
+            ilAsqHtmlPurifier::getInstance()->purify($_POST[self::getPostKey($index, self::VAR_CORRECT_TEXT)]),
+            intval($_POST[self::getPostKey($index, self::VAR_POINTS)]));
     }
     
     public function getValues(): array {
