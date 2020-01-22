@@ -187,6 +187,7 @@ class ClozeEditor extends AbstractEditor {
         
         $cloze_text = new ilTextAreaInputGUI($DIC->language()->txt('asq_label_cloze_text'), self::VAR_CLOZE_TEXT);
         $cloze_text->setRequired(true);
+        $cloze_text->setInfo($DIC->language()->txt('asq_description_cloze_text'));
         $fields[self::VAR_CLOZE_TEXT] = $cloze_text;
         
         for ($i = 1; $i <= count($config->getGaps()); $i += 1) {

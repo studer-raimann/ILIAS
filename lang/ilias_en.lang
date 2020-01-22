@@ -14,6 +14,17 @@
 // to the corresponding mode!
 // Language file names refer to ISO 639, see: http://www.oasis-open.org/cover/iso639a.html
 <!-- language file start -->
+asq#:#asq_question_essay#:#Essay Question
+asq#:#asq_question_cloze#:#Cloze Question
+asq#:#asq_question_ordering_text#:#Text Order Question
+asq#:#asq_label_cloze_text#:#Cloze Text
+asq#:#asq_description_cloze_text#:#To add a new gap set the cursor to the position of your choice and use the dropdown ‘Text Gap’. Corresponding editing sections will appear below. You can also edit gaps by clicking on the gaps within the gap text.
+asq#:#asq_label_gap_type#:#Type
+asq#:#asq_label_gap_items#:#Values
+asq#:#asq_header_value#:#Answer Text
+asq#:#asq_label_gap_type_dropdown#:#Select Gap
+asq#:#asq_label_gap_type_text#:#Text Gap
+asq#:#asq_label_gap_type_number#:#Numeric Gap
 asq#:#asq_parse_question#:#Parse Question
 asq#:#asq_info_question#:#You can define variables by inserting $v1, $v2 ... $vn, results by inserting $r1, $r2 .... $rn at the desired position in the question text. Click on the button ‘Parse Question’ to create editing forms for variables and results.
 asq#:#asq_info_results#:#You may enter predefined variables ($v1 to $vn), defined results (e.g. $r1), braces for expressions, mathematical operators + (addition), - (subtraction), * (multiplication), / (division), ^ (nth power), the constants ‘pi’ for pi and ‘e’ for euler's constant, as well as the functions ‘sin’, ‘sinh’, ‘arcsin’, ‘asin’, ‘arcsinh’, ‘asinh’, ‘cos’, ‘cosh’, ‘arccos’, ‘acos’, ‘arccosh’, ‘acosh’, ‘tan’, ‘tanh’, ‘arctan’, ‘atan’, ‘arctanh’, ‘atanh’, ‘sqrt’, ‘abs’, ‘ln’ and ‘log’.
@@ -116,7 +127,7 @@ asq#:#asq_question_kprim_answer#:#Multiple Choice Question (Kprim Answer)
 asq#:#asq_question_error_text#:#Error Text
 asq#:#asq_question_image_map#:#Hot Spot / Image Map Question
 asq#:#asq_question_numeric#:#Numeric Question
-asq#:#asq_question_formula#:#WIP Formula Question
+asq#:#asq_question_formula#:#Formula Question
 asq#:#asq_question_text_subset#:#Text Subset Question
 asq#:#asq_question_ordering#:#Ordering Question
 asq#:#asq_question_file_upload#:#File Upload Question
