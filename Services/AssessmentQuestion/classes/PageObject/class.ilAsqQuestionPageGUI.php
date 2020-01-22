@@ -4,7 +4,6 @@
 
 
 use ILIAS\AssessmentQuestion\UserInterface\Web\Component\QuestionComponent;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Page\AsqPageObject;
 
 /**
  * Class ilAsqQuestionPageGUI
@@ -73,9 +72,7 @@ class ilAsqQuestionPageGUI extends ilPageObjectGUI
     private function createPageIfNotExists(string $page_type, int $parent_int_id, int $page_int_id, string $lng_key)
     {
         if (ilPageObject::_exists($page_type, $page_int_id, $lng_key) === false) {
-            /**
-             * @var \ilPageObject $page
-             */
+            include_once("./Services/AssessmentQuestion/src/UserInterface/Web/Page/class.AsqPageObject.php");
             $page = new AsqPageObject();
             $page->setParentType($page_type);
             $page->setParentId($parent_int_id);
