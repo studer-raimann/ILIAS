@@ -17,6 +17,7 @@ use ilRadioOption;
 use ilTextInputGUI;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Fields\AsqTableInput;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Fields\AsqTableInputFieldDefinition;
+use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\FormulaEditor;
 
 /**
  * Class FormulaScoring
@@ -76,6 +77,7 @@ class FormulaScoring extends AbstractScoring {
             
             $result_given = null;
             $raw_result = $answers['$r' . $option->getOptionId()];
+            $unit_given = $answers['$r' . $option->getOptionId() . FormulaEditor::VAR_UNIT] ?? '';
             
             //get decimal value of answer if allowed
             if (($this->configuration->getResultType() === FormulaScoringConfiguration::TYPE_ALL ||
@@ -108,7 +110,8 @@ class FormulaScoring extends AbstractScoring {
                 $difference = abs($result_expected - $result_given);
                 $max_allowed_difference = $result_expected / 100 * $this->configuration->getTolerance();
                 
-                if ($difference <= $max_allowed_difference) {
+                if ($difference <= $max_allowed_difference &&
+                    $unit_given === $result->getUnit()) {
                     $reached_points += $result->getPoints();
                 }
             }

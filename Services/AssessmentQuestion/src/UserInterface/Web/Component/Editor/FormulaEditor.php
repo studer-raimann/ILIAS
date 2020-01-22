@@ -20,6 +20,8 @@ use ILIAS\AssessmentQuestion\DomainModel\Scoring\FormulaScoringVariable;
  * @author  Theodor Truffer <tt@studer-raimann.ch>
  */
 class FormulaEditor extends AbstractEditor {
+    const VAR_UNIT = 'fe_unit';
+    
     /**
      * @var FormulaScoringConfiguration
      */
@@ -55,9 +57,15 @@ class FormulaEditor extends AbstractEditor {
     
     private function processVar($name, &$answers) : bool {
         $postname = $this->getPostVariable($name);
+        $unit_postname = $this->getUnitPostVariable($name);
         
         if (array_key_exists($postname, $_POST)) {
             $answers[$name] = ilAsqHtmlPurifier::getInstance()->purify($_POST[$postname]);
+            
+            if (array_key_exists($unit_postname, $_POST)) {
+                $answers[$name . self::VAR_UNIT] = ilAsqHtmlPurifier::getInstance()->purify($_POST[$unit_postname]);
+            }
+            
             return true;
         }
         
@@ -80,7 +88,7 @@ class FormulaEditor extends AbstractEditor {
         
         $resindex = 1;
         foreach ($this->question->getAnswerOptions()->getOptions() as $option) {
-            $output = $this->createResult($resindex, $output);
+            $output = $this->createResult($resindex, $output, $this->question->getPlayConfiguration()->getScoringConfiguration()->getUnits());
             $resindex += 1;
         }
         
@@ -93,22 +101,31 @@ class FormulaEditor extends AbstractEditor {
         return $output;
     }
     
-    private function createResult(int $index, string $output) :string {
+    private function createResult(int $index, string $output, string $units) :string {
         $name = '$r' . $index;
-        
-        $html = sprintf('<input type="text" length="20" name="%s" value="%s" />',
-            $this->getPostVariable($name),
-            $this->answers[$name] ?? '');
-        
+
+        $html = sprintf('<input type="text" length="20" name="%s" value="%s" />%s', $this->getPostVariable($name), $this->answers[$name] ?? '', ! empty($units) ? $this->createUnitSelection($units, $name) : '');
+
         return str_replace($name, $html, $output);
+    }
+
+    private function createUnitSelection(string $units, string $name) {
+        return sprintf('<select name="%s">%s</select>',
+                       $this->getUnitPostVariable($name),
+                       implode(array_map(function($unit) use ($name) {
+                           return sprintf('<option value="%1$s" %2$s>%1$s</option>', 
+                               $unit,
+                               $this->answers[$name . self::VAR_UNIT] === $unit ? 'selected="selected"': '');
+                       }, explode(',', $units))));
     }
     
     private function createVariable(int $index, string $output, FormulaScoringVariable $def) :string {
         $name = '$v' . $index;
         
-        $html = sprintf('<input type="hidden" name="%1$s" value="%2$s" />%2$s',
+        $html = sprintf('<input type="hidden" name="%1$s" value="%2$s" />%2$s %3$s',
             $this->getPostVariable($name),
-            $this->answers[$name] ?? $this->generateVariableValue($def));
+            $this->answers[$name] ?? $this->generateVariableValue($def),
+            $def->getUnit());
         
         return str_replace($name, $html, $output);
     }
@@ -137,6 +154,10 @@ class FormulaEditor extends AbstractEditor {
     
     private function getPostVariable(string $name) {
         return $name . $this->question->getId();
+    }
+    
+    private function getUnitPostVariable(string $name) {
+        return $name . $this->question->getId() . self::VAR_UNIT;
     }
     
     /**
