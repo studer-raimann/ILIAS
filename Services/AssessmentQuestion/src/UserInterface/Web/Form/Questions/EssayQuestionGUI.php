@@ -40,8 +40,8 @@ class EssayQuestionGUI extends QuestionFormGUI {
     }
     
     protected function readAnswerOptions(QuestionDto $question) : AnswerOptions {
-        $count = intval($_POST[EssayScoring::VAR_ANSWERS_COUNT]);
         $selected = intval($_POST[EssayScoring::VAR_SCORING_MODE]);
+        $options = new AnswerOptions();
         
         if ($selected !== EssayScoring::SCORING_MANUAL) {
             if ($selected === EssayScoring::SCORING_AUTOMATIC_ALL) {
@@ -54,7 +54,6 @@ class EssayQuestionGUI extends QuestionFormGUI {
                 $prefix = EssayScoring::VAR_ANSWERS_ONE;
             }
             
-            $options = new AnswerOptions();
             $i = 1; 
             
             while (array_key_exists($i . $prefix . EssayScoringDefinition::VAR_TEXT, $_POST)) {
