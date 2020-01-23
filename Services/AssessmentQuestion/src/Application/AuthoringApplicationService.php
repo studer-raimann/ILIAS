@@ -15,7 +15,6 @@ use ILIAS\AssessmentQuestion\DomainModel\Command\CreateQuestionRevisionCommand;
 use ILIAS\AssessmentQuestion\DomainModel\Command\SaveQuestionCommand;
 use ILIAS\AssessmentQuestion\Infrastructure\Persistence\EventStore\QuestionEventStoreRepository;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Component\QuestionComponent;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Page\AsqPageObject;
 use ILIAS\Services\AssessmentQuestion\PublicApi\Common\AssessmentEntityId;
 use ILIAS\Services\AssessmentQuestion\PublicApi\Common\QuestionCommands;
 use ILIAS\Services\AssessmentQuestion\PublicApi\Common\QuestionConfig;
@@ -143,9 +142,9 @@ class AuthoringApplicationService
 
         if($il_qti_item->getQuestiontype() == ilQtiImportService::MATCHING_QUESTION ||
             $il_qti_item->getQuestiontype() == ilQtiImportService::TEXT_QUESTION ||
-        $il_qti_item->getQuestiontype() == ilQtiImportService::FILE_UPLOAD_QUESTION ||
-            $il_qti_item->getQuestiontype() ==   ilQtiImportService::NUMERIC_QUESTION ||
-            $il_qti_item->getQuestiontype() ==   ilQtiImportService::ERROR_TEXT) {
+            $il_qti_item->getQuestiontype() == ilQtiImportService::FILE_UPLOAD_QUESTION ||
+            $il_qti_item->getQuestiontype() == ilQtiImportService::NUMERIC_QUESTION ||
+            $il_qti_item->getQuestiontype() == ilQtiImportService::ERROR_TEXT) {
             return;
         }
 
@@ -198,8 +197,10 @@ class AuthoringApplicationService
 
     public function DeleteQuestion(string $question_id)
     {
-        // deletes question
-        // no image
+        /** @var Question $question */
+        $question = QuestionRepository::getInstance()->getAggregateRootById(new DomainObjectId($question_id));
+        $question->delete();
+        CommandBusBuilder::getCommandBus()->handle(new SaveQuestionCommand($question, $this->actor_user_id));
     }
 
     /* Ich würde die Answers immer als Ganzes behandeln
