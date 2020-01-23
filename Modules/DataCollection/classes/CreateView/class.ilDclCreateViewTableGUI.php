@@ -16,11 +16,11 @@ class ilDclCreateViewTableGUI extends ilTable2GUI
 
         $this->setId('dcl_tableviews');
         $this->setTitle($lng->txt('dcl_tableview_fieldsettings'));
-        $this->addColumn($lng->txt('dcl_tableview_create_fieldtitle'), null, 'auto');
-        $this->addColumn($lng->txt('dcl_tableview_create_locked'), null, 'auto');
-        $this->addColumn($lng->txt('dcl_tableview_create_required'), null, 'auto');
-        $this->addColumn($lng->txt('dcl_tableview_create_default_value'), null, 'auto');
-        $this->addColumn($lng->txt('dcl_tableview_create_visible'), null, 'auto');
+        $this->addColumn($lng->txt('dcl_tableview_fieldtitle'), null, 'auto');
+        $this->addColumn($lng->txt('dcl_tableview_locked'), null, 'auto');
+        $this->addColumn($lng->txt('dcl_tableview_required'), null, 'auto');
+        $this->addColumn($lng->txt('dcl_tableview_default_value'), null, 'auto');
+        $this->addColumn($lng->txt('dcl_tableview_visible'), null, 'auto');
 
         $ilCtrl->saveParameter($this, 'tableview_id');
         $this->setFormAction($ilCtrl->getFormActionByClass('ildclcreateviewdefinitiongui'));

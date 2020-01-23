@@ -10178,14 +10178,14 @@ dcl#:#dcl_tableviews#:#Views
 dcl#:#dcl_tableviews_table#:#Views of Selected Table
 dcl#:#dcl_tableview#:#View
 dcl#:#dcl_detailed_view#:#Single View
-dcl#:#dcl_edit_view#:#Edit View
-dcl#:#dcl_create_view#:#Create View
+dcl#:#dcl_edit_entry_rules#:#Define Editing Rules
+dcl#:#dcl_create_entry_rules#:#Define Creation Rules
 dcl#:#dcl_tableview_add#:#Add New View
-dcl#:#dcl_tableview_create_fieldtitle#:#Field Title
-dcl#:#dcl_tableview_create_locked#:#Locked
-dcl#:#dcl_tableview_create_required#:#Required
-dcl#:#dcl_tableview_create_default_value#:#Default Value
-dcl#:#dcl_tableview_create_visible#:#Visible
+dcl#:#dcl_tableview_fieldtitle#:#Field Title
+dcl#:#dcl_tableview_locked#:#Locked
+dcl#:#dcl_tableview_required#:#Required
+dcl#:#dcl_tableview_default_value#:#Default Value
+dcl#:#dcl_tableview_visible#:#Visible
 dcl#:#dcl_delete_views#:#Delete Views
 dcl#:#dcl_delete_tables#:#Delete Tables
 dcl#:#dcl_msg_tableview_updated#:#View updated
