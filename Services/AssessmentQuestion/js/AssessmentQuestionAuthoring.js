@@ -25,14 +25,18 @@ let add_row = function() {
 };
 
 let clear_tiny = function(table) {
-    table.find('textarea').each(function(index, item) {
-        has_tiny = true;
+    table.find('textarea, input[type=text]').each(function(index, item) {
         let element = $(item);
+        if (!element.attr('id')) {
+            return;
+        }
+        
         let editor = tinymce.get(element.attr('id'));
-
         if(!editor) {
             return;
         }
+        
+        has_tiny = true;
         
         element.val(editor.getContent());
         element.show();
@@ -153,26 +157,6 @@ let update_input_name = function(old_name, current_row) {
     return current_row + old_name.match(/\D.*/);
 };
 
-let update_form = function() {
-    let initiator = $(this);
-    // decode &amp to &
-    let decoded_link = $('<div>').html($('#form_part_link').val()).text();
-
-    let url = decoded_link + '&class=' + initiator.children("option:selected").text();
-
-    $.ajax(url)
-    .done (function (data) {
-        let initiator_row = initiator.parents('.form-group');
-
-        while (initiator_row.next().find("#editor, #presenter, #scoring, #answer_form").length === 0 &&
-                !initiator_row.next().hasClass("ilFormFooter")) {
-            initiator_row.next().remove();
-        }
-
-        initiator_row.after($(data).find('.form-horizontal > .form-group'));
-        $('#answer_form').parents('.form-group').remove();
-    });
-};
 
 $(document).ready(function() {
     // hack to prevent image verification error
@@ -183,7 +167,6 @@ $(document).on("click", ".js_add", add_row);
 $(document).on("click", ".js_remove", remove_row);
 $(document).on("click", ".js_up", up_row);
 $(document).on("click", ".js_down", down_row);
-$(document).on("change", "#editor, #presenter, #scoring", update_form);
 $(document).on("submit", "form", save_tiny);
 
 //**********************************************************************************************
@@ -193,9 +176,12 @@ $(document).on("submit", "form", save_tiny);
 let image_header = '';
 
 let show_multiline_editor = function() {
-    tinymce.init(tinyMCE.EditorManager.editors[0].settings);
+    let tiny_settings = tinyMCE.EditorManager.editors[0].settings;
+    tiny_settings.mode = '';
+    tiny_settings.selector = 'input[id$=mcdd_text]';
+    tinymce.init(tiny_settings);
     
-    $('textarea[id$=mcdd_image]').each(function(index, item) {
+    $('input[id$=mcdd_image]').each(function(index, item) {
         let td = $(item).parents('td');
         td.children().hide();
         
@@ -231,6 +217,8 @@ let update_editor = function() {
         show_multiline_editor();
     }
 }
+
+$(window).load(update_editor);
 
 $(document).on("change", "#singleline", update_editor);
 

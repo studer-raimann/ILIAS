@@ -95,7 +95,7 @@ class AsqTableInput extends ilTextInputGUI {
         }
         
         foreach ($this->values as $value) {
-            /** @var AnswerOptionFormFieldDefinition $definition */
+            /** @var AsqTableInputFieldDefinition $definition */
             foreach ($this->definitions as $definition) {
                 $tpl->setCurrentBlock('body_entry');
                 $tpl->setVariable('ENTRY_CLASS', '');
