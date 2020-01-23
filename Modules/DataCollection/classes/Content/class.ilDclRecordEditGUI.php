@@ -335,6 +335,8 @@ class ilDclRecordEditGUI
 
                     if (!ilObjDataCollectionAccess::hasWriteAccess($this->parent_obj->ref_id) && $field_setting->isLocked()) {
                         $inputfield->setDisabled(true);
+                    } else {
+                        $inputfield->setRequired(true);
                     }
 
                     $this->form->addItem($inputfield);
