@@ -709,8 +709,12 @@ class ilDclTable
         $editableFields = array();
 
         foreach ($fields as $field) {
-            if (!$field->getLocked()) {
-                $editableFields[] = $field;
+            foreach ($field->getFieldSettings() as $field_setting) {
+                if ($field_setting->getField() == $field->getId() && $field_setting->getTableViewId() == $_POST["tableview_id"]) {
+                    if (!$field_setting->isLocked()) {
+                        $editableFields[] = $field;
+                    }
+                }
             }
         }
 

@@ -290,20 +290,35 @@ class ilDclRecordEditGUI
         foreach ($allFields as $field) {
             $field_settings = $field->getFieldSettings();
             foreach ($field_settings as $field_setting) {
-                if ($field_setting->getTableViewId() === $this->tableview_id) {
-                    $item = ilDclCache::getFieldRepresentation($field)->getInputField($this->form, $this->record_id);
-                    if ($item === null) {
-                        continue; // Fields calculating values at runtime, e.g. ilDclFormulaFieldModel do not have input
+                if ($field_setting->getTableViewId() == $this->tableview_id) {
+                    // If edit mode
+                    if ($this->record_id) {
+                        $visible = $field_setting->getVisibleEdit();
+                    } else {
+                        $visible = $field_setting->getVisibleCreate();
                     }
 
-                    if (!ilObjDataCollectionAccess::hasWriteAccess($this->parent_obj->ref_id) && $field_setting->isLocked()) {
-                        $item->setDisabled(true);
+                    if ($visible) {
+                        $item = ilDclCache::getFieldRepresentation($field)->getInputField($this->form, $this->record_id);
+                        if ($item === null) {
+                            continue; // Fields calculating values at runtime, e.g. ilDclFormulaFieldModel do not have input
+                        }
+
+                        if (!ilObjDataCollectionAccess::hasWriteAccess($this->parent_obj->ref_id) && $field_setting->isLocked()) {
+                            $item->setDisabled(true);
+                        }
+
+                        // A simultaneously locked and required field can cause problems as the form can't be saved with an empty value
+                        if ($field_setting->isLocked() && $field_setting->isRequired()) {
+                            $item->setRequired(false);
+                        } else {
+                            $item->setRequired($field_setting->isRequired());
+                        }
+
+                        $item->setValue($field_setting->getDefaultValue());
+
+                        $this->form->addItem($item);
                     }
-
-                    $item->setRequired($field_setting->isRequired());
-                    $item->setValue($field_setting->getDefaultValue());
-
-                    $this->form->addItem($item);
                 }
             }
         }
@@ -317,6 +332,11 @@ class ilDclRecordEditGUI
                 if ($field_setting->getField() === 'owner' && $field_setting->isVisibleEdit()) {
                     $ownerField = $this->table->getField('owner');
                     $inputfield = ilDclCache::getFieldRepresentation($ownerField)->getInputField($this->form);
+
+                    if (!ilObjDataCollectionAccess::hasWriteAccess($this->parent_obj->ref_id) && $field_setting->isLocked()) {
+                        $inputfield->setDisabled(true);
+                    }
+
                     $this->form->addItem($inputfield);
                 }
             }
@@ -355,7 +375,12 @@ class ilDclRecordEditGUI
             //Get Table Field Definitions
             $allFields = $this->table->getFields();
             foreach ($allFields as $field) {
-                $record_obj->fillRecordFieldFormInput($field->getId(), $this->form);
+                $field_settings = $field->getFieldSettings();
+                foreach ($field_settings as $field_setting) {
+                    if ($field_setting->getTableViewId() == $this->tableview_id && $field_setting->isVisibleEdit()) {
+                        $record_obj->fillRecordFieldFormInput($field->getId(), $this->form);
+                    }
+                }
             }
         } else {
             $this->form->setValuesByPost();
@@ -566,7 +591,21 @@ class ilDclRecordEditGUI
 
             //edit values, they are valid we already checked them above
             foreach ($all_fields as $field) {
-                $record_obj->setRecordFieldValueFromForm($field->getId(), $this->form);
+                $field_settings = $field->getFieldSettings();
+                foreach ($field_settings as $field_setting) {
+                    if ($field_setting->getTableViewId() == $this->tableview_id) {
+                        // If edit mode
+                        if ($create_mode) {
+                            $visible = $field_setting->getVisibleCreate();
+                        } else {
+                            $visible = $field_setting->getVisibleEdit();
+                        }
+
+                        if ($visible) {
+                            $record_obj->setRecordFieldValueFromForm($field->getId(), $this->form);
+                        }
+                    }
+                }
             }
 
             // Do we need to set a new owner for this record?
