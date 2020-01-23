@@ -2,7 +2,7 @@
 
 namespace ILIAS\AssessmentQuestion\Infrastructure\Persistence\EventStore;
 
-use ILIAS\AssessmentQuestion\CQRS\Event\AbstractIlContainerStoredEvent;
+use ILIAS\AssessmentQuestion\CQRS\Event\AbstractIliasObjectStoredEvent;
 
 /**
  * Class questionEventStore
@@ -14,7 +14,7 @@ use ILIAS\AssessmentQuestion\CQRS\Event\AbstractIlContainerStoredEvent;
  * @author  Martin Studer <ms@studer-raimann.ch>
  * @author  Theodor Truffer <tt@studer-raimann.ch>
  */
-class QuestionEventStoreAr extends AbstractIlContainerStoredEvent {
+class QuestionEventStoreAr extends AbstractIliasObjectStoredEvent {
 
 	const STORAGE_NAME = "asq_qst_event_store";
 

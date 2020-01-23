@@ -5,6 +5,7 @@ namespace ILIAS\AssessmentQuestion\CQRS\Aggregate;
 
 use ILIAS\AssessmentQuestion\CQRS\Event\DomainEvent;
 use ILIAS\AssessmentQuestion\CQRS\Event\DomainEvents;
+use ILIAS\AssessmentQuestion\CQRS\Exception\AggregateDeletedException;
 
 /**
  * Class AbstractEventSourcedAggregateRoot
@@ -24,7 +25,11 @@ abstract class AbstractEventSourcedAggregateRoot implements AggregateRoot, Recor
 	 */
 	private $recordedEvents;
 
-
+	/**
+	 * @var bool
+	 */
+    private $is_deleted;
+	
 	protected function __construct() {
 		$this->recordedEvents = new DomainEvents();
 	}
@@ -45,6 +50,10 @@ abstract class AbstractEventSourcedAggregateRoot implements AggregateRoot, Recor
 
 
 	protected function applyEvent(DomainEvent $event) {
+	    if ($this->is_deleted === true) {
+	        throw new AggregateDeletedException();
+	    }
+	    
 		$action_handler = $this->getHandlerName($event);
 
 		if (method_exists($this, $action_handler)) {
@@ -52,6 +61,13 @@ abstract class AbstractEventSourcedAggregateRoot implements AggregateRoot, Recor
 		}
 	}
 
+	public function delete() {
+	    
+	}
+	
+	protected function applyDeleteAggregateEvent() {
+	    $this->is_deleted = true;
+	}
 
 	private function getHandlerName(DomainEvent $event) {
 		return self::APPLY_PREFIX . join('', array_slice(explode('\\', get_class($event)), - 1));

@@ -5,8 +5,10 @@ namespace ILIAS\AssessmentQuestion\Infrastructure\Persistence\EventStore;
 
 
 use ILIAS\AssessmentQuestion\CQRS\Aggregate\DomainObjectId;
+use ILIAS\AssessmentQuestion\CQRS\Event\AbstractDomainEvent;
 use ILIAS\AssessmentQuestion\CQRS\Event\DomainEvents;
 use ILIAS\AssessmentQuestion\CQRS\Event\EventStore;
+use ILIAS\AssessmentQuestion\CQRS\Event\AbstractIliasObjectDomainEvent;
 
 /**
  * Class QuestionEventStoreRepository
@@ -28,7 +30,7 @@ class QuestionEventStoreRepository implements EventStore {
 	 * @return void
 	 */
 	public function commit(DomainEvents $events) : void {
-		/** @var IlContainerDomainEvent $event */
+		/** @var AbstractIliasObjectDomainEvent $event */
 		foreach ($events->getEvents() as $event) {
 			$stored_event = new QuestionEventStoreAr();
 			$stored_event->setEventData(
@@ -37,7 +39,7 @@ class QuestionEventStoreRepository implements EventStore {
 				$event->getOccurredOn(),
 				$event->getContainerObjId(),
 				$event->getInitiatingUserId(),
-			    $event->getQuestionIntId(),
+			    $event->getObjectId(),
 				$event->getEventBody());
 
 			$stored_event->create();

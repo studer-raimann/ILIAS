@@ -3,7 +3,7 @@
 namespace ILIAS\AssessmentQuestion\DomainModel\Event;
 
 use ILIAS\AssessmentQuestion\CQRS\Aggregate\DomainObjectId;
-use ILIAS\AssessmentQuestion\CQRS\Event\AbstractIlContainerDomainEvent;
+use ILIAS\AssessmentQuestion\CQRS\Event\AbstractIliasObjectDomainEvent;
 
 /**
  * Class QuestionCreatedEvent
@@ -15,7 +15,7 @@ use ILIAS\AssessmentQuestion\CQRS\Event\AbstractIlContainerDomainEvent;
  * @author  Martin Studer <ms@studer-raimann.ch>
  * @author  Theodor Truffer <tt@studer-raimann.ch>
  */
-class QuestionCreatedEvent extends AbstractIlContainerDomainEvent {
+class QuestionCreatedEvent extends AbstractIliasObjectDomainEvent {
 
 	public const NAME = 'QuestionCreatedEvent';
 
@@ -42,11 +42,7 @@ class QuestionCreatedEvent extends AbstractIlContainerDomainEvent {
 	public function getEventName(): string {
 		return self::NAME;
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \ILIAS\AssessmentQuestion\CQRS\Event\AbstractIlContainerDomainEvent::restoreEventBody()
-	 */
+
     public function restoreEventBody(string $json_data)
     {
         //no additional fields

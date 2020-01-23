@@ -16,7 +16,7 @@ use \ilException;
  * @author  Martin Studer <ms@studer-raimann.ch>
  * @author  Theodor Truffer <tt@studer-raimann.ch>
  */
-abstract class AbstractIlContainerStoredEvent extends ActiveRecord {
+abstract class AbstractIliasObjectStoredEvent extends ActiveRecord {
 
 	/**
 	 * @var int

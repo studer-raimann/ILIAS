@@ -5,7 +5,7 @@ namespace ILIAS\AssessmentQuestion\DomainModel\Event;
 
 
 use ILIAS\AssessmentQuestion\CQRS\Aggregate\DomainObjectId;
-use ILIAS\AssessmentQuestion\CQRS\Event\AbstractIlContainerDomainEvent;
+use ILIAS\AssessmentQuestion\CQRS\Event\AbstractIliasObjectDomainEvent;
 use ILIAS\AssessmentQuestion\DomainModel\Hint\QuestionHints;
 
 /**
@@ -18,7 +18,7 @@ use ILIAS\AssessmentQuestion\DomainModel\Hint\QuestionHints;
  * @author  Martin Studer <ms@studer-raimann.ch>
  * @author  Theodor Truffer <tt@studer-raimann.ch>
  */
-class QuestionHintsSetEvent extends AbstractIlContainerDomainEvent {
+class QuestionHintsSetEvent extends AbstractIliasObjectDomainEvent {
 
     public const NAME = 'QuestionHintsSetEvent';
     /**

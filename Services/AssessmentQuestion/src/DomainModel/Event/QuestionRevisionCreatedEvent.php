@@ -3,9 +3,9 @@
 namespace ILIAS\AssessmentQuestion\DomainModel\Event;
 
 
-use ilDateTimeException;
 use ILIAS\AssessmentQuestion\CQRS\Aggregate\DomainObjectId;
-use ILIAS\AssessmentQuestion\CQRS\Event\AbstractIlContainerDomainEvent;
+use ILIAS\AssessmentQuestion\CQRS\Event\AbstractIliasObjectDomainEvent;
+use ilDateTimeException;
 
 /**
  * Class QuestionRevisionCreatedEvent
@@ -17,7 +17,7 @@ use ILIAS\AssessmentQuestion\CQRS\Event\AbstractIlContainerDomainEvent;
  * @author  Martin Studer <ms@studer-raimann.ch>
  * @author  Theodor Truffer <tt@studer-raimann.ch>
  */
-class QuestionRevisionCreatedEvent extends AbstractIlContainerDomainEvent {
+class QuestionRevisionCreatedEvent extends AbstractIliasObjectDomainEvent {
 	public const NAME = 'QuestionRevisionCreatedEvent';
 	/**
 	 * @var string
