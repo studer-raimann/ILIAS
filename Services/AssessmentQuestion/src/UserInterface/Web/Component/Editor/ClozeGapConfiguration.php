@@ -25,19 +25,49 @@ class ClozeGapConfiguration extends AbstractValueObject {
     protected $type;
     
     /**
-     * @var ClozeGapItem[]
+     * @var ?ClozeGapItem[]
      */
     protected $items;
+    
+    /**
+     * @var ?float
+     */
+    protected $value;
+    
+    /**
+     * @var ?float
+     */
+    protected $upper;
+    
+    /**
+     * @var ?float
+     */
+    protected $lower;
+    
+    /**
+     * @var ?int
+     */
+    protected $points;
     
     /**
      * @param string $type
      * @param array $items
      * @return ClozeGapConfiguration
      */
-    public static function create(string $type, array $items) : ClozeGapConfiguration {
+    public static function createText(string $type, array $items) : ClozeGapConfiguration {
         $config = new ClozeGapConfiguration();
         $config->type = $type;
         $config->items = $items;
+        return $config;
+    }
+    
+    public static function createNumber(string $type, float $value, float $upper, float $lower, int $points) {
+        $config = new ClozeGapConfiguration();
+        $config->type = $type;
+        $config->value = $value;
+        $config->upper = $upper;
+        $config->lower = $lower;
+        $config->points = $points;
         return $config;
     }
     
@@ -56,18 +86,52 @@ class ClozeGapConfiguration extends AbstractValueObject {
     {
         return $this->items;
     }
-    
+
     /**
      * @return array
      */
     public function getItemsArray(): array {
         $var_array = [];
         
-        foreach($this->items as $variable) {
-            $var_array[] = $variable->getAsArray();
+        if (!is_null($this->items)) {
+            foreach($this->items as $variable) {
+                $var_array[] = $variable->getAsArray();
+            }
         }
         
         return $var_array;
+    }
+
+    /**
+     * @return ?float
+     */
+    public function getValue()
+    {
+        return $this->value;
+    }
+
+    /**
+     * @return ?float
+     */
+    public function getUpper()
+    {
+        return $this->upper;
+    }
+
+    /**
+     * @return ?float
+     */
+    public function getLower()
+    {
+        return $this->lower;
+    }
+
+    /**
+     * @return ?int
+     */
+    public function getPoints()
+    {
+        return $this->points;
     }
 
     public function equals(AbstractValueObject $other): bool
@@ -75,6 +139,10 @@ class ClozeGapConfiguration extends AbstractValueObject {
         /** @var ClozeGapConfiguration $other */
         return get_class($this) === get_class($other) &&
         $this->type === $other->type &&
+        abs($this->value - $other->value) < PHP_FLOAT_EPSILON &&
+        abs($this->upper - $other->upper) < PHP_FLOAT_EPSILON &&
+        abs($this->lower - $other->lower) < PHP_FLOAT_EPSILON &&
+        $this->points === $other->points &&
         $this->itemsEquals($other->items);
     }
     
@@ -82,8 +150,12 @@ class ClozeGapConfiguration extends AbstractValueObject {
      * @param array $items
      * @return bool
      */
-    private function itemsEquals(array $items) : bool
+    private function itemsEquals(?array $items) : bool
     {
+        if (is_null($items) || is_null($this->items)) {
+            return is_null($items) && is_null($this->items);
+        }
+        
         if (count($this->items) !== count($items)) {
             return false;
         }

@@ -74,8 +74,8 @@ class NumericScoringConfiguration extends AbstractConfiguration {
     {
         /** @var NumericScoringConfiguration $other */
         return get_class($this) === get_class($other) &&
-               $this->lower_bound === $other->lower_bound &&
-               $this->upper_bound === $other->upper_bound &&
+               abs($this->lower_bound - $other->lower_bound) < PHP_FLOAT_EPSILON &&
+               abs($this->upper_bound - $other->upper_bound) < PHP_FLOAT_EPSILON &&
                $this->points === $other->points;
     }
 }

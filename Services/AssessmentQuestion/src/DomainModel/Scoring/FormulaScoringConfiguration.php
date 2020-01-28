@@ -118,7 +118,7 @@ class FormulaScoringConfiguration extends AbstractConfiguration {
         return get_class($this) === get_class($other) &&
                $this->units === $other->units &&
                $this->precision === $other->precision &&
-               $this->tolerance === $other->tolerance &&
+               abs($this->tolerance - $other->tolerance) < PHP_FLOAT_EPSILON &&
                $this->result_type === $other->result_type &&
                $this->variablesMatch($other->getVariables());
     }

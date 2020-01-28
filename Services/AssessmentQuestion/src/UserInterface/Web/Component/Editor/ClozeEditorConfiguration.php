@@ -83,7 +83,7 @@ class ClozeEditorConfiguration extends AbstractConfiguration {
      * @param array $gaps
      * @return bool
      */
-    private function gapsEquals(array $gaps) : bool
+    private function gapsEquals(?array $gaps) : bool
     {
         if (count($this->gaps) !== count($gaps)) {
             return false;

@@ -2,6 +2,7 @@
 
 namespace ILIAS\AssessmentQuestion\UserInterface\Web\Fields;
 
+use ILIAS\AssessmentQuestion\ilAsqHtmlPurifier;
 use ILIAS\AssessmentQuestion\DomainModel\QuestionPlayConfiguration;
 use ILIAS\AssessmentQuestion\DomainModel\Answer\Option\AnswerOptions;
 use Exception;
@@ -165,7 +166,9 @@ class AsqTableInput extends ilTextInputGUI {
             $new_value = [];
             
             foreach ($this->definitions as $definition) {
-                $new_value[$definition->getPostVar()] = $_POST[$this->getTableItemPostVar($i, $definition->getPostVar())];
+                $new_value[$definition->getPostVar()] = 
+                    ilAsqHtmlPurifier::getInstance()->purify(
+                        $_POST[$this->getTableItemPostVar($i, $definition->getPostVar())]);
             }
             
             $this->values[] = $new_value;

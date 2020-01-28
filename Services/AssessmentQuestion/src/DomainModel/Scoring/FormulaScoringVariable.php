@@ -105,9 +105,9 @@ class FormulaScoringVariable extends AbstractValueObject {
     {
         /** @var FormulaScoringVariable $other */
         return get_class($this) === get_class($other) &&
-               $this->min === $other->min &&
-               $this->max === $other->max &&
+               abs($this->min - $other->min) < PHP_FLOAT_EPSILON &&
+               abs($this->max - $other->max) < PHP_FLOAT_EPSILON &&
                $this->unit === $other->unit &&
-               $this->multiple_of === $other->multiple_of;
+               abs($this->multiple_of - $other->multiple_of) < PHP_FLOAT_EPSILON;
     }
 }
