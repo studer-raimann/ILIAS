@@ -1,17 +1,20 @@
 <?php
 
-namespace ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor;
+namespace ILIAS\AssessmentQuestion\Questions\Cloze;
 
 use ILIAS\AssessmentQuestion\ilAsqHtmlPurifier;
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
 use ILIAS\AssessmentQuestion\DomainModel\Question;
 use ILIAS\AssessmentQuestion\DomainModel\QuestionDto;
+use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\AbstractEditor;
+use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\EmptyDisplayDefinition;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Fields\AsqTableInput;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Fields\AsqTableInputFieldDefinition;
 use ilFormSectionHeaderGUI;
 use ilSelectInputGUI;
 use ilTextAreaInputGUI;
 use ilNumberInputGUI;
+use ilPropertyFormGUI;
 
 /**
  * Class ClozeEditor
@@ -89,7 +92,7 @@ class ClozeEditor extends AbstractEditor {
                                 $raw_item[ClozeGapItem::VAR_TEXT], 
                                 $raw_item[ClozeGapItem::VAR_POINTS]
                             );
-                        }, self::$gap_tables[$i]->readValues()));
+                        }, AsqTableInput::readValuesFromPost($i . self::VAR_GAP_ITEMS, self::getTextGapFieldsDefinitions())));
             }
             else if ($_POST[$i . self::VAR_GAP_TYPE] == ClozeGapConfiguration::TYPE_NUMBER) {
                 $gap_configs[] =
@@ -201,7 +204,12 @@ class ClozeEditor extends AbstractEditor {
         
         $cloze_text = new ilTextAreaInputGUI($DIC->language()->txt('asq_label_cloze_text'), self::VAR_CLOZE_TEXT);
         $cloze_text->setRequired(true);
-        $cloze_text->setInfo($DIC->language()->txt('asq_description_cloze_text'));
+        //TODO? template addidtion is rather hacky
+        $cloze_text->setInfo($DIC->language()->txt('asq_description_cloze_text') . 
+                             '<br /><input type="button" 
+                                           value="' . $DIC->language()->txt('asq_parse_question') . '" 
+                                           class="js_parse_cloze_question btn btn-default" />' .
+                                           self::createTemplates());
         $fields[self::VAR_CLOZE_TEXT] = $cloze_text;
         
         for ($i = 1; $i <= count($config->getGaps()); $i += 1) {
@@ -211,11 +219,29 @@ class ClozeEditor extends AbstractEditor {
         if ($config !== null) {
             $cloze_text->setValue($config->getClozeText());
         }
-        else {
-            $fields = array_merge($fields, ClozeEditor::createGapFields(1));
-        }
-
+        
         return $fields;
+    }
+    
+    private static function createTemplates() : string{
+        return sprintf('<div class="cloze_template" style="display: none;">
+                            <div class="text">%s</div>
+                            <div class="number">%s</div>
+                        </div>',
+                        self::createTemplate(ClozeGapConfiguration::createText(ClozeGapConfiguration::TYPE_TEXT, [])),
+                        self::createTemplate(ClozeGapConfiguration::createNumber(ClozeGapConfiguration::TYPE_NUMBER)));
+    }
+    
+    private static function createTemplate(ClozeGapConfiguration $config) : string {
+        $fields = self::createGapFields(0, $config);
+        
+        $template_form = new ilPropertyFormGUI();
+        
+        foreach ($fields as $field) {
+            $template_form->addItem($field);
+        }
+        
+        return '<div class="ilFormHeader"></div>' . $template_form->getHTML();
     }
     
     private static function createGapFields(int $index, ClozeGapConfiguration $gap = null) {
@@ -250,14 +276,28 @@ class ClozeEditor extends AbstractEditor {
         return $fields;
     }
     
-    private static function createTextGapFields(ClozeGapConfiguration $gap, int $index) {
+    private static function createTextGapFields(ClozeGapConfiguration $gap, int $index) { 
         global $DIC;
-        
         $fields = [];
         
         $items = is_null($gap) ? [] : $gap->getItemsArray();
         
-        $gap_items = new AsqTableInput($DIC->language()->txt('asq_label_gap_items'), $index .self::VAR_GAP_ITEMS, $items, [
+        $gap_items = new AsqTableInput(
+            $DIC->language()->txt('asq_label_gap_items'), 
+            $index . self::VAR_GAP_ITEMS, 
+            $items, 
+            self::getTextGapFieldsDefinitions());
+        $gap_items->setRequired(true);
+        self::$gap_tables[$index] = $gap_items;
+        $fields[$index .self::VAR_GAP_ITEMS] = $gap_items;
+        
+        return $fields;
+    }
+    
+    private static function getTextGapFieldsDefinitions() {
+        global $DIC;
+        
+        return [
             new AsqTableInputFieldDefinition(
                 $DIC->language()->txt('asq_header_value'),
                 AsqTableInputFieldDefinition::TYPE_TEXT,
@@ -266,12 +306,7 @@ class ClozeEditor extends AbstractEditor {
                 $DIC->language()->txt('asq_header_points'),
                 AsqTableInputFieldDefinition::TYPE_TEXT,
                 ClozeGapItem::VAR_POINTS)
-        ]);
-        $gap_items->setRequired(true);
-        self::$gap_tables[$index] = $gap_items;
-        $fields[$index .self::VAR_GAP_ITEMS] = $gap_items;
-        
-        return $fields;
+        ];
     }
     
     private static function createNumberGapFields(ClozeGapConfiguration $gap, int $index) {

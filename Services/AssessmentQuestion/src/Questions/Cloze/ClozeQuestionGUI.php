@@ -1,12 +1,8 @@
 <?php
 
-namespace ILIAS\AssessmentQuestion\UserInterface\Web\Form\Questions;
+namespace ILIAS\AssessmentQuestion\Questions\Cloze;
 
 use ILIAS\AssessmentQuestion\DomainModel\QuestionPlayConfiguration;
-use ILIAS\AssessmentQuestion\DomainModel\Scoring\ClozeScoring;
-use ILIAS\AssessmentQuestion\DomainModel\Scoring\ClozeScoringConfiguration;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\ClozeEditor;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\ClozeEditorConfiguration;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Form\QuestionFormGUI;
 
 /**

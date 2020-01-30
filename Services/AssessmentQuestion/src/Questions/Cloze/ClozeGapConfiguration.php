@@ -1,6 +1,6 @@
 <?php
 
-namespace ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor;
+namespace ILIAS\AssessmentQuestion\Questions\Cloze;
 
 use ILIAS\AssessmentQuestion\CQRS\Aggregate\AbstractValueObject;
 
@@ -61,7 +61,11 @@ class ClozeGapConfiguration extends AbstractValueObject {
         return $config;
     }
     
-    public static function createNumber(string $type, float $value, float $upper, float $lower, int $points) {
+    public static function createNumber(string $type, 
+                                        ?float $value = null, 
+                                        ?float $upper = null, 
+                                        ?float $lower = null, 
+                                        ?int $points = null) {
         $config = new ClozeGapConfiguration();
         $config->type = $type;
         $config->value = $value;
@@ -80,7 +84,7 @@ class ClozeGapConfiguration extends AbstractValueObject {
     }
 
     /**
-     * @return ClozeGapItem[] 
+     * @return ?array
      */
     public function getItems()
     {

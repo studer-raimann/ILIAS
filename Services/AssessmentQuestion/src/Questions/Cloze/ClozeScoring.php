@@ -1,15 +1,13 @@
 <?php
 
-namespace ILIAS\AssessmentQuestion\DomainModel\Scoring;
+namespace ILIAS\AssessmentQuestion\Questions\Cloze;
 
 use ILIAS\AssessmentQuestion\DomainModel\AnswerScoreDto;
 use ILIAS\AssessmentQuestion\DomainModel\Question;
 use ILIAS\AssessmentQuestion\DomainModel\QuestionDto;
 use ILIAS\AssessmentQuestion\DomainModel\Answer\Answer;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\ClozeGapItem;
+use ILIAS\AssessmentQuestion\DomainModel\Scoring\AbstractScoring;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\EmptyScoringDefinition;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\ClozeEditorConfiguration;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\ClozeGapConfiguration;
 
 /**
  * Class ClozeScoring

@@ -1,6 +1,6 @@
 <?php
 
-namespace ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor;
+namespace ILIAS\AssessmentQuestion\Questions\Cloze;
 
 use ILIAS\AssessmentQuestion\CQRS\Aggregate\AbstractValueObject;
 

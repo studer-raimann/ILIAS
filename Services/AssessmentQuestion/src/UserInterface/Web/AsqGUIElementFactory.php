@@ -3,6 +3,7 @@
 namespace ILIAS\AssessmentQuestion\UserInterface\Web;
 
 use ILIAS\AssessmentQuestion\DomainModel\QuestionDto;
+use ILIAS\AssessmentQuestion\Questions\Cloze\ClozeQuestionGUI;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Form\QuestionFeedbackFormGUI;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Form\Questions\ErrorTextQuestionGUI;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Form\Questions\EssayQuestionGUI;
@@ -20,7 +21,6 @@ use Exception;
 use ilPropertyFormGUI;
 use ILIAS\AssessmentQuestion\DomainModel\QuestionData;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Form\Questions\OrderingTextQuestionGUI;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Form\Questions\ClozeQuestionGUI;
 
 const MSG_SUCCESS = "success";
 

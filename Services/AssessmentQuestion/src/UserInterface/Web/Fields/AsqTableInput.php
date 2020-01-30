@@ -153,32 +153,38 @@ class AsqTableInput extends ilTextInputGUI {
         return true;
     }
     
+    public static function readValuesFromPost($post_var, $definitions) {
+        $count = intval($_POST[$post_var]);
+        
+        $values = [];
+        for ($i = 1; $i <= $count; $i++) {
+            $new_value = [];
+            
+            foreach ($definitions as $definition) {
+                $new_value[$definition->getPostVar()] =
+                ilAsqHtmlPurifier::getInstance()->purify(
+                    $_POST[self::getTableItemPostVar($i, $post_var, $definition->getPostVar())]);
+            }
+            
+            $values[] = $new_value;
+        }
+        
+        return $values;
+    }
+    
+    private static function getTableItemPostVar(int $id, string $postvar, string $definition_postvar) {
+        return sprintf('%s_%s_%s', $id, $postvar, $definition_postvar);
+    }
+        
+    
     /**
      * @param QuestionPlayConfiguration $play
      *
      * @return array
      */
     public function readValues() {
-        $count = intval($_POST[$this->getPostVar()]);
-        
-        $this->values = [];
-        for ($i = 1; $i <= $count; $i++) {
-            $new_value = [];
-            
-            foreach ($this->definitions as $definition) {
-                $new_value[$definition->getPostVar()] = 
-                    ilAsqHtmlPurifier::getInstance()->purify(
-                        $_POST[$this->getTableItemPostVar($i, $definition->getPostVar())]);
-            }
-            
-            $this->values[] = $new_value;
-        }
-        
+        $this->values = self::readValuesFromPost($this->getPostVar(), $this->definitions);
         return $this->values;
-    }
-    
-    private function getTableItemPostVar(int $id, string $definition_postvar) {
-        return sprintf('%s_%s_%s', $id, $this->getPostVar(), $definition_postvar);
     }
     
     /**
@@ -193,21 +199,21 @@ class AsqTableInput extends ilTextInputGUI {
     {
         switch ($definition->getType()) {
             case AsqTableInputFieldDefinition::TYPE_TEXT:
-                return $this->generateTextField($this->getTableItemPostVar($row_id, $definition->getPostVar()), $value);
+                return $this->generateTextField(self::getTableItemPostVar($row_id, $this->getPostVar(), $definition->getPostVar()), $value);
             case AsqTableInputFieldDefinition::TYPE_TEXT_AREA:
-                return $this->generateTextArea($this->getTableItemPostVar($row_id, $definition->getPostVar()), $value);
+                return $this->generateTextArea(self::getTableItemPostVar($row_id, $this->getPostVar(), $definition->getPostVar()), $value);
             case AsqTableInputFieldDefinition::TYPE_IMAGE:
-                return $this->generateImageField($this->getTableItemPostVar($row_id, $definition->getPostVar()), $value);
+                return $this->generateImageField(self::getTableItemPostVar($row_id, $this->getPostVar(), $definition->getPostVar()), $value);
             case AsqTableInputFieldDefinition::TYPE_NUMBER:
-                return $this->generateNumberField($this->getTableItemPostVar($row_id, $definition->getPostVar()), $value);
+                return $this->generateNumberField(self::getTableItemPostVar($row_id, $this->getPostVar(), $definition->getPostVar()), $value);
             case AsqTableInputFieldDefinition::TYPE_RADIO:
-                return $this->generateRadioField($this->getTableItemPostVar($row_id, $definition->getPostVar()), $value, $definition->getOptions());
+                return $this->generateRadioField(self::getTableItemPostVar($row_id, $this->getPostVar(), $definition->getPostVar()), $value, $definition->getOptions());
             case AsqTableInputFieldDefinition::TYPE_DROPDOWN:
-                return $this->generateDropDownField($this->getTableItemPostVar($row_id, $definition->getPostVar()), $value, $definition->getOptions());
+                return $this->generateDropDownField(self::getTableItemPostVar($row_id, $this->getPostVar(), $definition->getPostVar()), $value, $definition->getOptions());
             case AsqTableInputFieldDefinition::TYPE_BUTTON:
-                return $this->generateButton($this->getTableItemPostVar($row_id, $definition->getPostVar()), $definition->getOptions());
+                return $this->generateButton(self::getTableItemPostVar($row_id, $this->getPostVar(), $definition->getPostVar()), $definition->getOptions());
             case AsqTableInputFieldDefinition::TYPE_HIDDEN:
-                return $this->generateHiddenField($this->getTableItemPostVar($row_id, $definition->getPostVar()), $value ?? $definition->getOptions()[0]);
+                return $this->generateHiddenField(self::getTableItemPostVar($row_id, $this->getPostVar(), $definition->getPostVar()), $value ?? $definition->getOptions()[0]);
             case AsqTableInputFieldDefinition::TYPE_LABEL:
                 return $this->generateLabel($value, $definition->getPostVar());
             default:
