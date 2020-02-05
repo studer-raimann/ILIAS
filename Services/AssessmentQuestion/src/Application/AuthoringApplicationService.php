@@ -3,10 +3,6 @@
 namespace ILIAS\AssessmentQuestion\Application;
 
 use ILIAS\AssessmentQuestion\Application\Import\ilQti\ilQtiImportService;
-use ILIAS\AssessmentQuestion\CQRS\Aggregate\AbstractValueObject;
-use ILIAS\AssessmentQuestion\CQRS\Aggregate\DomainObjectId;
-use ILIAS\AssessmentQuestion\CQRS\Aggregate\IsValueOfOrderedList;
-use ILIAS\AssessmentQuestion\CQRS\Command\CommandBusBuilder;
 use ILIAS\AssessmentQuestion\DomainModel\Question;
 use ILIAS\AssessmentQuestion\DomainModel\QuestionDto;
 use ILIAS\AssessmentQuestion\DomainModel\QuestionRepository;
@@ -20,6 +16,9 @@ use ILIAS\Services\AssessmentQuestion\PublicApi\Common\QuestionCommands;
 use ILIAS\Services\AssessmentQuestion\PublicApi\Common\QuestionConfig;
 use ilAsqQuestionPageGUI;
 use ilQTIItem;
+use srag\CQRS\Aggregate\AbstractValueObject;
+use srag\CQRS\Aggregate\DomainObjectId;
+use srag\CQRS\Command\CommandBusBuilder;
 
 /**
  * Class AuthoringApplicationService
@@ -268,30 +267,4 @@ class AuthoringApplicationService
 
         return $page_gui;
     }
-
-
-    /**
-     * @param isValueOfOrderedList[] $items
-     * @param int   $order_gap
-     */
-    public function reOrderListItems(array $items, int $order_gap) {
-        $order_number = $order_gap;
-
-        //reorder hints
-        $ordered_items = [];
-        usort($items, array('ILIAS\AssessmentQuestion\Application\AuthoringApplicationService', 'compareOrderNumber'));
-        foreach ($items as $item) {
-            /** $item */
-            $ordered_items[] = $item::createWithNewOrderNumber($item, $order_number);
-
-            $order_number = $order_number + $order_gap;
-        }
-        return $ordered_items;
-    }
-
-    private static function compareOrderNumber(IsValueOfOrderedList $a, IsValueOfOrderedList $b)
-    {
-        return $a->getOrderNumber() - $b->getOrderNumber();
-    }
-
 }

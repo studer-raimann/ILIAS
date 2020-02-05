@@ -4,7 +4,7 @@
 
 namespace ILIAS\Services\AssessmentQuestion\DomainModel;
 
-use ILIAS\AssessmentQuestion\CQRS\Aggregate\AbstractValueObject;
+use srag\CQRS\Aggregate\AbstractValueObject;
 
 /**
  * Class Feedback

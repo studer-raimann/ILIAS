@@ -2,10 +2,8 @@
 
 namespace ILIAS\AssessmentQuestion\DomainModel\Command;
 
-
-
-use ILIAS\AssessmentQuestion\CQRS\Command\CommandContract;
-use ILIAS\AssessmentQuestion\CQRS\Command\CommandHandlerContract;
+use srag\CQRS\Command\CommandContract;
+use srag\CQRS\Command\CommandHandlerContract;
 
 /**
  * Class ScoreTestAttemptCommandHandler

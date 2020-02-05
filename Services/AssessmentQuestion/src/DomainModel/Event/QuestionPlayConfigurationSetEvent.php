@@ -4,10 +4,10 @@ namespace ILIAS\AssessmentQuestion\DomainModel\Event;
 
 
 
-use ILIAS\AssessmentQuestion\CQRS\Aggregate\AbstractValueObject;
-use ILIAS\AssessmentQuestion\CQRS\Aggregate\DomainObjectId;
-use ILIAS\AssessmentQuestion\CQRS\Event\AbstractIliasObjectDomainEvent;
 use ILIAS\AssessmentQuestion\DomainModel\QuestionPlayConfiguration;
+use srag\CQRS\Aggregate\AbstractValueObject;
+use srag\CQRS\Aggregate\DomainObjectId;
+use srag\CQRS\Event\AbstractIlContainerItemDomainEvent;
 
 /**
  * Class QuestionPlayConfigurationSetEvent
@@ -19,7 +19,7 @@ use ILIAS\AssessmentQuestion\DomainModel\QuestionPlayConfiguration;
  * @author  Martin Studer <ms@studer-raimann.ch>
  * @author  Theodor Truffer <tt@studer-raimann.ch>
  */
-class QuestionPlayConfigurationSetEvent extends AbstractIliasObjectDomainEvent {
+class QuestionPlayConfigurationSetEvent extends AbstractIlContainerItemDomainEvent {
 
 	public const NAME = 'QuestionPlayConfigurationSetEvent';
 	/**

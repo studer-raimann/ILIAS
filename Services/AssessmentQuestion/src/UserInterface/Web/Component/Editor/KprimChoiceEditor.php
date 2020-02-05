@@ -5,6 +5,7 @@ namespace ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor;
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
 use ILIAS\AssessmentQuestion\DomainModel\Question;
 use ILIAS\AssessmentQuestion\DomainModel\QuestionDto;
+use ILIAS\AssessmentQuestion\DomainModel\Answer\Option\AnswerOption;
 use ilCheckboxInputGUI;
 use ilNumberInputGUI;
 use ilSelectInputGUI;
@@ -110,7 +111,7 @@ class KprimChoiceEditor extends AbstractEditor {
         
         /** @var AnswerOption $answer_option */
         foreach ($this->answer_options as $answer_option) {
-            /** @var ChoiceEditorDisplayDefinition $display_definition */
+            /** @var ImageAndTextDisplayDefinition $display_definition */
             $display_definition = $answer_option->getDisplayDefinition();
             
             $tpl->setCurrentBlock('answer_row');

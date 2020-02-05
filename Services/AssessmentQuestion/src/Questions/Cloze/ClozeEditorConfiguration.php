@@ -2,8 +2,8 @@
 
 namespace ILIAS\AssessmentQuestion\Questions\Cloze;
 
-use ILIAS\AssessmentQuestion\CQRS\Aggregate\AbstractValueObject;
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
+use srag\CQRS\Aggregate\AbstractValueObject;
 
 /**
  * Class ClozeEditorConfiguration

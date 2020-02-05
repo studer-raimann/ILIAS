@@ -3,22 +3,22 @@
 namespace ILIAS\AssessmentQuestion\UserInterface\Web\Form;
 
 use ILIAS\AssessmentQuestion\ilAsqHtmlPurifier;
-use ILIAS\AssessmentQuestion\CQRS\Aggregate\AbstractValueObject;
 use ILIAS\AssessmentQuestion\DomainModel\QuestionData;
 use ILIAS\AssessmentQuestion\DomainModel\QuestionDto;
 use ILIAS\AssessmentQuestion\DomainModel\QuestionPlayConfiguration;
+use ILIAS\AssessmentQuestion\DomainModel\Answer\Option\AnswerOptions;
+use ILIAS\AssessmentQuestion\UserInterface\Web\AsqGUIElementFactory;
+use ILIAS\AssessmentQuestion\UserInterface\Web\Fields\AsqTableInputFieldDefinition;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Form\Config\AnswerOptionForm;
 use Exception;
 use ilDurationInputGUI;
 use ilHiddenInputGUI;
 use ilObjAdvancedEditing;
 use ilPropertyFormGUI;
+use ilSelectInputGUI;
 use ilTextAreaInputGUI;
 use ilTextInputGUI;
-use ilSelectInputGUI;
-use ILIAS\AssessmentQuestion\UserInterface\Web\AsqGUIElementFactory;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Fields\AsqTableInputFieldDefinition;
-use ILIAS\AssessmentQuestion\DomainModel\Answer\Option\AnswerOptions;
+use srag\CQRS\Aggregate\AbstractValueObject;
 
 /**
  * Class MultipleChoiceQuestionGUI

@@ -3,14 +3,11 @@
 namespace ILIAS\AssessmentQuestion\UserInterface\Web\Form\Questions;
 
 use ILIAS\AssessmentQuestion\DomainModel\QuestionPlayConfiguration;
-use ILIAS\AssessmentQuestion\DomainModel\Scoring\MultipleChoiceScoring;
-use ILIAS\AssessmentQuestion\DomainModel\Scoring\MultipleChoiceScoringConfiguration;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\MultipleChoiceEditor;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\MatchingEditorConfiguration;
+use ILIAS\AssessmentQuestion\DomainModel\Scoring\MatchingScoring;
 use ILIAS\AssessmentQuestion\DomainModel\Scoring\MatchingScoringConfiguration;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\MatchingEditor;
+use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\MatchingEditorConfiguration;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Form\QuestionFormGUI;
-use ILIAS\AssessmentQuestion\DomainModel\Scoring\MatchingScoring;
 
 /**
  * Class MatchingQuestionGUI

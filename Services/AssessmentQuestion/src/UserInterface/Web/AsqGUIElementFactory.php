@@ -15,12 +15,11 @@ use ILIAS\AssessmentQuestion\UserInterface\Web\Form\Questions\MatchingQuestionGU
 use ILIAS\AssessmentQuestion\UserInterface\Web\Form\Questions\MultipleChoiceQuestionGUI;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Form\Questions\NumericQuestionGUI;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Form\Questions\OrderingQuestionGUI;
+use ILIAS\AssessmentQuestion\UserInterface\Web\Form\Questions\OrderingTextQuestionGUI;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Form\Questions\SingleChoiceQuestionGUI;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Form\Questions\TextSubsetQuestionGUI;
 use Exception;
 use ilPropertyFormGUI;
-use ILIAS\AssessmentQuestion\DomainModel\QuestionData;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Form\Questions\OrderingTextQuestionGUI;
 
 const MSG_SUCCESS = "success";
 

@@ -3,9 +3,9 @@
 namespace ILIAS\AssessmentQuestion\DomainModel\Scoring;
 
 
-use ILIAS\AssessmentQuestion\CQRS\Aggregate\AbstractValueObject;
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Form\Config\AnswerOptionForm;
+use srag\CQRS\Aggregate\AbstractValueObject;
 
 /**
  * Class OrderingScoringConfiguration
@@ -39,10 +39,6 @@ class OrderingScoringConfiguration extends AbstractConfiguration {
         return $this->points;
     }
     
-    /**
-     * {@inheritDoc}
-     * @see \ILIAS\AssessmentQuestion\CQRS\Aggregate\AbstractValueObject::equals()
-     */
     public function equals(AbstractValueObject $other): bool
     {
         /** @var OrderingScoringConfiguration $other */

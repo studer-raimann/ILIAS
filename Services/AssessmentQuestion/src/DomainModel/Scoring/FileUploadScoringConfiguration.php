@@ -3,8 +3,8 @@
 namespace ILIAS\AssessmentQuestion\DomainModel\Scoring;
 
 
-use ILIAS\AssessmentQuestion\CQRS\Aggregate\AbstractValueObject;
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
+use srag\CQRS\Aggregate\AbstractValueObject;
 
 /**
  * Class FileUploadScoringConfiguration
@@ -54,10 +54,6 @@ class FileUploadScoringConfiguration extends AbstractConfiguration {
         return $this->completed_by_submition;
     }
     
-    /**
-     * {@inheritDoc}
-     * @see \ILIAS\AssessmentQuestion\CQRS\Aggregate\AbstractValueObject::equals()
-     */
     public function equals(AbstractValueObject $other): bool
     {
         /** @var FileUploadScoringConfiguration $other */

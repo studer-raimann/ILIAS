@@ -2,8 +2,8 @@
 
 namespace ILIAS\AssessmentQuestion\DomainModel\Answer;
 
-use ILIAS\AssessmentQuestion\CQRS\Aggregate\Entity;
 use JsonSerializable;
+use srag\CQRS\Aggregate\Entity;
 
 /**
  * Class Answer

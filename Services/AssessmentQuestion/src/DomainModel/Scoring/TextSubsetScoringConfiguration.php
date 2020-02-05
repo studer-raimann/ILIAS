@@ -3,8 +3,8 @@
 namespace ILIAS\AssessmentQuestion\DomainModel\Scoring;
 
 
-use ILIAS\AssessmentQuestion\CQRS\Aggregate\AbstractValueObject;
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
+use srag\CQRS\Aggregate\AbstractValueObject;
 
 /**
  * Class TextSubsetScoringConfiguration
@@ -37,10 +37,6 @@ class TextSubsetScoringConfiguration extends AbstractConfiguration {
         return $this->text_matching;
     }
     
-    /**
-     * {@inheritDoc}
-     * @see \ILIAS\AssessmentQuestion\CQRS\Aggregate\AbstractValueObject::equals()
-     */
     public function equals(AbstractValueObject $other): bool
     {
         /** @var TextSubsetScoringConfiguration $other */

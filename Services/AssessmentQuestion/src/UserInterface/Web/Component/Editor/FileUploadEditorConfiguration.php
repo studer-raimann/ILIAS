@@ -2,8 +2,8 @@
 
 namespace ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor;
 
-use ILIAS\AssessmentQuestion\CQRS\Aggregate\AbstractValueObject;
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
+use srag\CQRS\Aggregate\AbstractValueObject;
 
 /**
  * Class KprimChoiceEditorConfiguration
@@ -53,11 +53,7 @@ class FileUploadEditorConfiguration extends AbstractConfiguration {
     public function getAllowedExtensions() : ?string {
         return $this->allowed_extensions;
     }
-    
-    /**
-     * {@inheritDoc}
-     * @see \ILIAS\AssessmentQuestion\CQRS\Aggregate\AbstractValueObject::equals()
-     */
+
     public function equals(AbstractValueObject $other): bool
     {
         /** @var FileUploadEditorConfiguration $other */

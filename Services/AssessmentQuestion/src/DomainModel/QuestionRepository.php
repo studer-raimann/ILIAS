@@ -4,11 +4,11 @@ namespace ILIAS\AssessmentQuestion\DomainModel;
 
 
 
-use ILIAS\AssessmentQuestion\CQRS\Aggregate\AbstractEventSourcedAggregateRepository;
-use ILIAS\AssessmentQuestion\CQRS\Aggregate\AggregateRoot;
-use ILIAS\AssessmentQuestion\CQRS\Event\DomainEvents;
-use ILIAS\AssessmentQuestion\CQRS\Event\EventStore;
 use ILIAS\AssessmentQuestion\Infrastructure\Persistence\EventStore\QuestionEventStoreRepository;
+use srag\CQRS\Aggregate\AbstractEventSourcedAggregateRepository;
+use srag\CQRS\Aggregate\AggregateRoot;
+use srag\CQRS\Event\DomainEvents;
+use srag\CQRS\Event\EventStore;
 
 /**
  * Class QuestionRepository

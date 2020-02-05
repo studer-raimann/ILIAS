@@ -3,8 +3,8 @@
 namespace ILIAS\AssessmentQuestion\DomainModel\Scoring;
 
 
-use ILIAS\AssessmentQuestion\CQRS\Aggregate\AbstractValueObject;
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
+use srag\CQRS\Aggregate\AbstractValueObject;
 
 /**
  * Class KprimChoiceScoringConfiguration
@@ -55,10 +55,6 @@ class KprimChoiceScoringConfiguration extends AbstractConfiguration {
         return $this->half_points_at;
     }
     
-    /**
-     * {@inheritDoc}
-     * @see \ILIAS\AssessmentQuestion\CQRS\Aggregate\AbstractValueObject::equals()
-     */
     public function equals(AbstractValueObject $other): bool
     {
         /** @var KprimChoiceScoringConfiguration $other */

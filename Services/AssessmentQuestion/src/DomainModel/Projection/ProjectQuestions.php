@@ -4,9 +4,9 @@ namespace ILIAS\AssessmentQuestion\DomainModel\Projection;
 
 
 
-use ILIAS\AssessmentQuestion\CQRS\Aggregate\AggregateRoot;
-use ILIAS\AssessmentQuestion\CQRS\Event\Projection;
+use ILIAS\AssessmentQuestion\DomainModel\Question;
 use ILIAS\AssessmentQuestion\Infrastructure\Persistence\Projection\PublishedQuestionRepository;
+use srag\CQRS\Aggregate\AggregateRoot;
 
 /**
  * Class ProjectQuestions
@@ -18,7 +18,7 @@ use ILIAS\AssessmentQuestion\Infrastructure\Persistence\Projection\PublishedQues
  * @author  Martin Studer <ms@studer-raimann.ch>
  * @author  Theodor Truffer <tt@studer-raimann.ch>
  */
-class ProjectQuestions implements Projection {
+class ProjectQuestions {
 
     /**
      * @param AggregateRoot $projectee

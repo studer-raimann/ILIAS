@@ -2,10 +2,10 @@
 
 namespace ILIAS\AssessmentQuestion\DomainModel\Event;
 
-use ILIAS\AssessmentQuestion\CQRS\Aggregate\AbstractValueObject;
-use ILIAS\AssessmentQuestion\CQRS\Aggregate\DomainObjectId;
-use ILIAS\AssessmentQuestion\CQRS\Event\AbstractIliasObjectDomainEvent;
 use ILIAS\AssessmentQuestion\DomainModel\QuestionData;
+use srag\CQRS\Aggregate\AbstractValueObject;
+use srag\CQRS\Aggregate\DomainObjectId;
+use srag\CQRS\Event\AbstractIlContainerItemDomainEvent;
 
 /**
  * Class QuestionDataSetEvent
@@ -17,7 +17,7 @@ use ILIAS\AssessmentQuestion\DomainModel\QuestionData;
  * @author  Martin Studer <ms@studer-raimann.ch>
  * @author  Theodor Truffer <tt@studer-raimann.ch>
  */
-class QuestionDataSetEvent extends AbstractIliasObjectDomainEvent {
+class QuestionDataSetEvent extends AbstractIlContainerItemDomainEvent {
 
 	public const NAME = 'QuestionDataSetEvent';
 	/**

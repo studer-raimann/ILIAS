@@ -2,7 +2,7 @@
 
 namespace ILIAS\AssessmentQuestion\Questions\Cloze;
 
-use ILIAS\AssessmentQuestion\CQRS\Aggregate\AbstractValueObject;
+use srag\CQRS\Aggregate\AbstractValueObject;
 
 /**
  * Class ClozeGapItem

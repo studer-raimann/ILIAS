@@ -2,8 +2,8 @@
 
 namespace ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor;
 
-use ILIAS\AssessmentQuestion\CQRS\Aggregate\AbstractValueObject;
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
+use srag\CQRS\Aggregate\AbstractValueObject;
 
 /**
  * Class KprimChoiceEditorConfiguration
@@ -59,10 +59,6 @@ class ImageMapEditorConfiguration extends AbstractConfiguration {
         return $this->max_answers;
     }
     
-    /**
-     * {@inheritDoc}
-     * @see \ILIAS\AssessmentQuestion\CQRS\Aggregate\AbstractValueObject::equals()
-     */
     public function equals(AbstractValueObject $other): bool
     {
         /** @var ImageMapEditorConfiguration $other */

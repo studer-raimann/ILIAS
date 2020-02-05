@@ -3,8 +3,8 @@
 namespace ILIAS\AssessmentQuestion\DomainModel\Scoring;
 
 
-use ILIAS\AssessmentQuestion\CQRS\Aggregate\AbstractValueObject;
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
+use srag\CQRS\Aggregate\AbstractValueObject;
 
 /**
  * Class ErrorTextScoringConfiguration
@@ -37,10 +37,6 @@ class ErrorTextScoringConfiguration extends AbstractConfiguration {
         return $this->points_wrong;
     }
     
-    /**
-     * {@inheritDoc}
-     * @see \ILIAS\AssessmentQuestion\CQRS\Aggregate\AbstractValueObject::equals()
-     */
     public function equals(AbstractValueObject $other): bool
     {
         /** @var ErrorTextScoringConfiguration $other */

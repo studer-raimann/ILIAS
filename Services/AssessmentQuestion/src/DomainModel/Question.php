@@ -2,13 +2,6 @@
 
 namespace ILIAS\AssessmentQuestion\DomainModel;
 
-use ilDateTimeException;
-use ILIAS\AssessmentQuestion\CQRS\Aggregate\AbstractEventSourcedAggregateRoot;
-use ILIAS\AssessmentQuestion\CQRS\Aggregate\AggregateRoot;
-use ILIAS\AssessmentQuestion\CQRS\Aggregate\DomainObjectId;
-use ILIAS\AssessmentQuestion\CQRS\Aggregate\IsRevisable;
-use ILIAS\AssessmentQuestion\CQRS\Aggregate\RevisionId;
-use ILIAS\AssessmentQuestion\CQRS\Event\DomainEvents;
 use ILIAS\AssessmentQuestion\DomainModel\Answer\Answer;
 use ILIAS\AssessmentQuestion\DomainModel\Answer\Option\AnswerOptions;
 use ILIAS\AssessmentQuestion\DomainModel\Event\QuestionAnswerAddedEvent;
@@ -22,6 +15,12 @@ use ILIAS\AssessmentQuestion\DomainModel\Event\QuestionPlayConfigurationSetEvent
 use ILIAS\AssessmentQuestion\DomainModel\Event\QuestionRevisionCreatedEvent;
 use ILIAS\AssessmentQuestion\DomainModel\Hint\QuestionHints;
 use ILIAS\Services\AssessmentQuestion\DomainModel\Feedback;
+use srag\CQRS\Aggregate\AbstractEventSourcedAggregateRoot;
+use srag\CQRS\Aggregate\AggregateRoot;
+use srag\CQRS\Aggregate\DomainObjectId;
+use srag\CQRS\Aggregate\IsRevisable;
+use srag\CQRS\Aggregate\RevisionId;
+use srag\CQRS\Event\DomainEvents;
 
 /**
  * Class Question
@@ -124,7 +123,6 @@ class Question extends AbstractEventSourcedAggregateRoot implements IsRevisable
      * @param int            $initiating_user_id
      *
      * @return Question
-     * @throws ilDateTimeException
      */
     public static function createNewQuestion(
         DomainObjectId $question_uuid,
@@ -153,7 +151,7 @@ class Question extends AbstractEventSourcedAggregateRoot implements IsRevisable
         $this->id = $event->getAggregateId();
         $this->creator_id = $event->getInitiatingUserId();
         $this->container_obj_id = $event->getContainerObjId();
-        $this->question_int_id = $event->getObjectId();
+        $this->question_int_id = $event->getItemId();
     }
 
 
@@ -243,8 +241,6 @@ class Question extends AbstractEventSourcedAggregateRoot implements IsRevisable
      * @param QuestionData $data
      * @param int          $container_obj_id
      * @param int          $creator_id
-     *
-     * @throws ilDateTimeException
      */
     public function setData(QuestionData $data, int $container_obj_id, int $creator_id = self::SYSTEM_USER_ID) : void
     {
@@ -269,8 +265,6 @@ class Question extends AbstractEventSourcedAggregateRoot implements IsRevisable
     /**
      * @param QuestionPlayConfiguration $play_configuration
      * @param int                       $creator_id
-     *
-     * @throws ilDateTimeException
      */
     public function setPlayConfiguration(
         QuestionPlayConfiguration $play_configuration,
@@ -298,8 +292,6 @@ class Question extends AbstractEventSourcedAggregateRoot implements IsRevisable
     /**
      * @param QuestionLegacyData $legacy_data
      * @param int                $creator_id
-     *
-     * @throws ilDateTimeException
      */
     public function setLegacyData(
         QuestionLegacyData $legacy_data,
@@ -325,8 +317,6 @@ class Question extends AbstractEventSourcedAggregateRoot implements IsRevisable
     /**
      * @param AnswerOptions $options
      * @param int           $creator_id
-     *
-     * @throws ilDateTimeException
      */
     public function setAnswerOptions(AnswerOptions $options, int $container_obj_id, int $creator_id = self::SYSTEM_USER_ID)
     {
@@ -351,8 +341,6 @@ class Question extends AbstractEventSourcedAggregateRoot implements IsRevisable
     /**
      * @param QuestionHints $hints
      * @param int           $creator_id
-     *
-     * @throws ilDateTimeException
      */
     public function setHints(QuestionHints $hints, int $container_obj_id, int $creator_id = self::SYSTEM_USER_ID)
     {
@@ -367,8 +355,6 @@ class Question extends AbstractEventSourcedAggregateRoot implements IsRevisable
 
     /**
      * @param Answer $answer
-     *
-     * @throws ilDateTimeException
      */
     function addAnswer(Answer $answer, $container_obj_id)
     {
@@ -415,8 +401,6 @@ class Question extends AbstractEventSourcedAggregateRoot implements IsRevisable
     /**
      * @param Feedback $feedback
      * @param int $creator_id
-     *
-     * @throws ilDateTimeException
      */
     public function setFeedback(
         Feedback $feedback,
@@ -499,7 +483,6 @@ class Question extends AbstractEventSourcedAggregateRoot implements IsRevisable
      * @param RevisionId $id
      *
      * @return mixed|void
-     * @throws ilDateTimeException
      */
     public function setRevisionId(RevisionId $id)
     {
@@ -556,7 +539,7 @@ class Question extends AbstractEventSourcedAggregateRoot implements IsRevisable
         return $question;
     }
 
-    public function getAggregateId() : ?DomainObjectId
+    public function getAggregateId() : DomainObjectId
     {
         return $this->id;
     }

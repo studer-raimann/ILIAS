@@ -2,7 +2,6 @@
 
 namespace ILIAS\AssessmentQuestion\DomainModel\Hint;
 
-use ILIAS\AssessmentQuestion\CQRS\Aggregate\IsValueOfOrderedList;
 use JsonSerializable;
 use ilAsqException;
 use stdClass;
@@ -16,7 +15,7 @@ use stdClass;
  * @author  Martin Studer <ms@studer-raimann.ch>
  * @author  Theodor Truffer <tt@studer-raimann.ch>
  */
-class Hint implements JsonSerializable, IsValueOfOrderedList
+class Hint implements JsonSerializable
 {
     const ORDER_GAP = 10;
 
@@ -58,21 +57,6 @@ class Hint implements JsonSerializable, IsValueOfOrderedList
 
         $this->validate();
     }
-
-
-    /**
-     * @param IsValueOfOrderedList $hint
-     * @param                      $order_number
-     *
-     * @return Hint
-     * @throws ilAsqException
-     */
-    public static function createWithNewOrderNumber(IsValueOfOrderedList $hint, $order_number) {
-        /** @var Hint $hint */
-        return new Hint($order_number, $hint->getContent(), $hint->getPointDeduction());
-    }
-
-
 
     /**
      * @return int

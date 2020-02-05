@@ -3,9 +3,9 @@
 namespace ILIAS\AssessmentQuestion\UserInterface\Web;
 
 
-use ILIAS\AssessmentQuestion\CQRS\Aggregate\Guid;
 use ILIAS\FileUpload\Location;
 use ILIAS\FileUpload\DTO\ProcessingStatus;
+use srag\CQRS\Aggregate\Guid;
 
 /**
  * Class ImageUploader

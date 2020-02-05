@@ -10,6 +10,7 @@ use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Presenter\AbstractPrese
 use ILIAS\Services\AssessmentQuestion\PublicApi\Common\QuestionCommands;
 use ILIAS\Services\AssessmentQuestion\PublicApi\Common\QuestionConfig;
 use ilTemplate;
+use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Presenter\DefaultPresenter;
 
 /**
  * Class QuestionComponent
@@ -53,10 +54,10 @@ class QuestionComponent
         $this->question_config = $question_config;
         $this->question_commands = $question_commands;
 
-        $presenter_class = QuestionPlayConfiguration::getPresenterClass($question_dto->getPlayConfiguration());
+        $presenter_class = DefaultPresenter::class;
         $presenter = new $presenter_class($question_dto);
 
-        $editor_class = QuestionPlayConfiguration::getEditorClass($question_dto->getPlayConfiguration());
+        $editor_class = $question_dto->getPlayConfiguration()->getEditorConfiguration()->configurationFor();
         $editor = new $editor_class($question_dto);
 
         $this->presenter = $presenter;

@@ -3,9 +3,8 @@
 namespace ILIAS\AssessmentQuestion\DomainModel\Event;
 
 
-use ILIAS\AssessmentQuestion\CQRS\Aggregate\DomainObjectId;
-use ILIAS\AssessmentQuestion\CQRS\Event\AbstractIliasObjectDomainEvent;
-use ilDateTimeException;
+use srag\CQRS\Aggregate\DomainObjectId;
+use srag\CQRS\Event\AbstractIlContainerItemDomainEvent;
 
 /**
  * Class QuestionRevisionCreatedEvent
@@ -17,7 +16,7 @@ use ilDateTimeException;
  * @author  Martin Studer <ms@studer-raimann.ch>
  * @author  Theodor Truffer <tt@studer-raimann.ch>
  */
-class QuestionRevisionCreatedEvent extends AbstractIliasObjectDomainEvent {
+class QuestionRevisionCreatedEvent extends AbstractIlContainerItemDomainEvent {
 	public const NAME = 'QuestionRevisionCreatedEvent';
 	/**
 	 * @var string
@@ -32,8 +31,6 @@ class QuestionRevisionCreatedEvent extends AbstractIliasObjectDomainEvent {
      * @param int            $container_obj_id
      * @param int            $initating_user_id
      * @param string         $revision_key
-     *
-     * @throws ilDateTimeException
      */
 	public function __construct(DomainObjectId $id, 
 	                            int $container_obj_id, 

@@ -2,8 +2,8 @@
 
 namespace ILIAS\AssessmentQuestion\Questions\Cloze;
 
-use ILIAS\AssessmentQuestion\CQRS\Aggregate\AbstractValueObject;
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
+use srag\CQRS\Aggregate\AbstractValueObject;
 
 /**
  * Class ClozeScoringConfiguration
@@ -16,6 +16,10 @@ use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
  * @author  Theodor Truffer <tt@studer-raimann.ch>
  */
 class ClozeScoringConfiguration extends AbstractConfiguration {
+    public static function create() : ClozeScoringConfiguration {
+        return new ClozeScoringConfiguration();
+    }
+    
     public function equals(AbstractValueObject $other): bool
     {
         return get_class($this) === get_class($other);

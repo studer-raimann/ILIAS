@@ -41,7 +41,7 @@ class ScoringComponent
         $this->question_dto = $question_dto;
         $this->answer = $answer;
 
-        $scoring_class = QuestionPlayConfiguration::getScoringClass($question_dto->getPlayConfiguration());
+        $scoring_class = $question_dto->getPlayConfiguration()->getScoringConfiguration()->configurationFor();
         $this->scoring = new $scoring_class($question_dto);
     }
 

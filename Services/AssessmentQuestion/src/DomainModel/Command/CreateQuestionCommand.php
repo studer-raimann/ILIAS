@@ -4,9 +4,9 @@ namespace ILIAS\AssessmentQuestion\DomainModel\Command;
 
 
 
-use ILIAS\AssessmentQuestion\CQRS\Aggregate\DomainObjectId;
-use ILIAS\AssessmentQuestion\CQRS\Command\AbstractCommand;
-use ILIAS\AssessmentQuestion\CQRS\Command\CommandContract;
+use srag\CQRS\Aggregate\DomainObjectId;
+use srag\CQRS\Command\AbstractCommand;
+use srag\CQRS\Command\CommandContract;
 
 /**
  * Class CreateQuestionCommand

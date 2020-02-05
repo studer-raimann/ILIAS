@@ -2,8 +2,8 @@
 
 namespace ILIAS\AssessmentQuestion\DomainModel\Scoring;
 
-use ILIAS\AssessmentQuestion\CQRS\Aggregate\AbstractValueObject;
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
+use srag\CQRS\Aggregate\AbstractValueObject;
 
 /**
  * Class EssayScoringConfiguration

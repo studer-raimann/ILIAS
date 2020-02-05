@@ -6,7 +6,6 @@ use ILIAS\AssessmentQuestion\ilAsqHtmlPurifier;
 use ILIAS\AssessmentQuestion\DomainModel\Question;
 use ILIAS\AssessmentQuestion\DomainModel\QuestionDto;
 use ILIAS\AssessmentQuestion\DomainModel\Scoring\FormulaScoringConfiguration;
-use ILIAS\AssessmentQuestion\DomainModel\Scoring\FormulaScoringDefinition;
 use ILIAS\AssessmentQuestion\DomainModel\Scoring\FormulaScoringVariable;
 
 /**

@@ -2,14 +2,13 @@
 
 namespace ILIAS\AssessmentQuestion\UserInterface\Web\Form\Questions;
 
-use ILIAS\AssessmentQuestion\DomainModel\QuestionDto;
 use ILIAS\AssessmentQuestion\DomainModel\QuestionPlayConfiguration;
+use ILIAS\AssessmentQuestion\DomainModel\Scoring\FormulaScoring;
+use ILIAS\AssessmentQuestion\DomainModel\Scoring\FormulaScoringConfiguration;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\FormulaEditor;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\FormulaEditorConfiguration;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Fields\AsqTableInput;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Form\QuestionFormGUI;
-use ILIAS\AssessmentQuestion\DomainModel\Scoring\FormulaScoring;
-use ILIAS\AssessmentQuestion\DomainModel\Scoring\FormulaScoringConfiguration;
 /**
  * Class FormulaQuestionGUI
  *

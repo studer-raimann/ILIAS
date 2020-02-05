@@ -2,7 +2,7 @@
 
 namespace ILIAS\AssessmentQuestion\DomainModel;
 
-use ILIAS\AssessmentQuestion\CQRS\Aggregate\AbstractValueObject;
+use srag\CQRS\Aggregate\AbstractValueObject;
 
 /**
  * Class QuestionLegacyData

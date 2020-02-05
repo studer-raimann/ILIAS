@@ -2,7 +2,7 @@
 
 namespace ILIAS\AssessmentQuestion\DomainModel\Scoring;
 
-use ILIAS\AssessmentQuestion\CQRS\Aggregate\AbstractValueObject;
+use srag\CQRS\Aggregate\AbstractValueObject;
 
 /**
  * Class FormulaScoring

@@ -3,9 +3,9 @@
 
 namespace ILIAS\AssessmentQuestion\DomainModel\Answer\Option;
 
-use ILIAS\AssessmentQuestion\CQRS\Aggregate\AbstractValueObject;
 use JsonSerializable;
 use stdClass;
+use srag\CQRS\Aggregate\AbstractValueObject;
 
 /**
  * Class AnswerOptionFeedback

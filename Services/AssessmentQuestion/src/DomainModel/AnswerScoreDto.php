@@ -2,9 +2,6 @@
 
 namespace ILIAS\AssessmentQuestion\DomainModel;
 
-
-use ilDateTime;
-
 /**
  * Class ScoreDto
  *

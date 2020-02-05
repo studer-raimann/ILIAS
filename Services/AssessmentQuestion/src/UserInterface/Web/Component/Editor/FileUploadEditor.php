@@ -5,16 +5,12 @@ namespace ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor;
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
 use ILIAS\AssessmentQuestion\DomainModel\Question;
 use ILIAS\AssessmentQuestion\DomainModel\QuestionDto;
-use ilNumberInputGUI;
-use ilTextInputGUI;
-use ilRadioGroupInputGUI;
-use ilRadioOption;
-use ilTemplate;
-use ILIAS\AssessmentQuestion\UserInterface\Web\ImageUploader;
 use ILIAS\FileUpload\Location;
 use ILIAS\FileUpload\DTO\ProcessingStatus;
-use ilHiddenInputGUI;
-use ILIAS\AssessmentQuestion\CQRS\Aggregate\Guid;
+use ilNumberInputGUI;
+use ilTemplate;
+use ilTextInputGUI;
+use srag\CQRS\Aggregate\Guid;
 
 /**
  * Class FileUploadEditor

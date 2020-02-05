@@ -4,9 +4,9 @@ namespace ILIAS\AssessmentQuestion\DomainModel\Event;
 
 
 
-use ILIAS\AssessmentQuestion\CQRS\Aggregate\DomainObjectId;
-use ILIAS\AssessmentQuestion\CQRS\Event\AbstractIliasObjectDomainEvent;
 use ILIAS\AssessmentQuestion\DomainModel\Answer\Answer;
+use srag\CQRS\Aggregate\DomainObjectId;
+use srag\CQRS\Event\AbstractIlContainerItemDomainEvent;
 
 /**
  * Class QuestionAnswerAddedEvent
@@ -18,13 +18,10 @@ use ILIAS\AssessmentQuestion\DomainModel\Answer\Answer;
  * @author  Martin Studer <ms@studer-raimann.ch>
  * @author  Theodor Truffer <tt@studer-raimann.ch>
  */
-class QuestionAnswerAddedEvent extends AbstractIliasObjectDomainEvent {
+class QuestionAnswerAddedEvent extends AbstractIlContainerItemDomainEvent {
 
 	public const NAME = 'QuestionAnswerAddedEvent';
-    /**
-     * @var Answer
-     */
-    private $revision_key;
+
 	/**
 	 * @var Answer
 	 */
@@ -45,7 +42,7 @@ class QuestionAnswerAddedEvent extends AbstractIliasObjectDomainEvent {
 	                            int $container_obj_id, 
 	                            int $initating_user_id, 
 	                            int $question_int_id,
-	                            Answer $answer = null) 
+	                            Answer $answer = null)
 	{
 	    parent::__construct($aggregate_id, $container_obj_id, $initating_user_id, $question_int_id);
 

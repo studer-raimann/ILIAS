@@ -2,8 +2,8 @@
 
 namespace ILIAS\AssessmentQuestion\DomainModel\Answer;
 
-use ILIAS\AssessmentQuestion\CQRS\Aggregate\AbstractValueObject;
 use JsonSerializable;
+use srag\CQRS\Aggregate\AbstractValueObject;
 
 /**
  * Abstract Class FeedbackDefinition

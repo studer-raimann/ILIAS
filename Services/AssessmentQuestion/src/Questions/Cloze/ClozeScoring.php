@@ -101,7 +101,7 @@ class ClozeScoring extends AbstractScoring {
 
     public static function readConfig()
     {
-        return new ClozeScoringConfiguration();
+        return ClozeScoringConfiguration::create();
     }
 
     public static function isComplete(Question $question): bool

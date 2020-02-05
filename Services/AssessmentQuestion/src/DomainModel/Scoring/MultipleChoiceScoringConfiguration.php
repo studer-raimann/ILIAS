@@ -3,8 +3,8 @@
 namespace ILIAS\AssessmentQuestion\DomainModel\Scoring;
 
 
-use ILIAS\AssessmentQuestion\CQRS\Aggregate\AbstractValueObject;
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
+use srag\CQRS\Aggregate\AbstractValueObject;
 
 /**
  * Class MultipleChoiceScoringConfiguration
@@ -17,10 +17,6 @@ use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
  * @author  Theodor Truffer <tt@studer-raimann.ch>
  */
 class MultipleChoiceScoringConfiguration extends AbstractConfiguration {
-    /**
-     * {@inheritDoc}
-     * @see \ILIAS\AssessmentQuestion\CQRS\Aggregate\AbstractValueObject::equals()
-     */
     public function equals(AbstractValueObject $other): bool
     {
         return get_class($this) === get_class($other);

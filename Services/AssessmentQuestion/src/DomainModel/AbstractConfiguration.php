@@ -2,7 +2,7 @@
 
 namespace ILIAS\AssessmentQuestion\DomainModel;
 
-use ILIAS\AssessmentQuestion\CQRS\Aggregate\AbstractValueObject;
+use srag\CQRS\Aggregate\AbstractValueObject;
 
 /**
  * Class AbstractConfiguration
@@ -20,7 +20,7 @@ abstract class AbstractConfiguration extends AbstractValueObject {
 	 * Default assumes the configuration class is named ClassConfiguration, so it
 	 * returns Class
 	 *
-	 * @return bool|string
+	 * @return string
 	 */
 	public function configurationFor() {
 		$class = get_called_class();

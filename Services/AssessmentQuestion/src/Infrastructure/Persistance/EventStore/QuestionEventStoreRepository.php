@@ -2,13 +2,15 @@
 
 namespace ILIAS\AssessmentQuestion\Infrastructure\Persistence\EventStore;
 
+use srag\CQRS\Aggregate\DomainObjectId;
+use srag\CQRS\Event\AbstractDomainEvent;
+use srag\CQRS\Event\AbstractIlContainerItemDomainEvent;
+use srag\CQRS\Event\DomainEvents;
+use srag\CQRS\Event\EventID;
+use srag\CQRS\Event\EventStore;
+use srag\CQRS\Event\AbstractIlContainerDomainEvent;
+use ILIAS\UI\NotImplementedException;
 
-
-use ILIAS\AssessmentQuestion\CQRS\Aggregate\DomainObjectId;
-use ILIAS\AssessmentQuestion\CQRS\Event\AbstractDomainEvent;
-use ILIAS\AssessmentQuestion\CQRS\Event\DomainEvents;
-use ILIAS\AssessmentQuestion\CQRS\Event\EventStore;
-use ILIAS\AssessmentQuestion\CQRS\Event\AbstractIliasObjectDomainEvent;
 
 /**
  * Class QuestionEventStoreRepository
@@ -30,7 +32,7 @@ class QuestionEventStoreRepository implements EventStore {
 	 * @return void
 	 */
 	public function commit(DomainEvents $events) : void {
-		/** @var AbstractIliasObjectDomainEvent $event */
+		/** @var AbstractIlContainerItemDomainEvent $event */
 		foreach ($events->getEvents() as $event) {
 			$stored_event = new QuestionEventStoreAr();
 			$stored_event->setEventData(
@@ -39,7 +41,7 @@ class QuestionEventStoreRepository implements EventStore {
 				$event->getOccurredOn(),
 				$event->getContainerObjId(),
 				$event->getInitiatingUserId(),
-			    $event->getObjectId(),
+			    $event->getItemId(),
 				$event->getEventBody());
 
 			$stored_event->create();
@@ -102,4 +104,9 @@ class QuestionEventStoreRepository implements EventStore {
 	    $values = $DIC->database()->fetchAssoc($res);
 	    return (intval($values['id']) + 1) ?? 1;
 	}
+	
+    public function getEventStream(?EventID $from_position): DomainEvents
+    {
+        throw new NotImplementedException("Implement evenstream when needed");
+    }
 }

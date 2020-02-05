@@ -2,7 +2,6 @@
 
 namespace ILIAS\AssessmentQuestion\UserInterface\Web\Form\Questions;
 
-use ILIAS\AssessmentQuestion\DomainModel\QuestionDto;
 use ILIAS\AssessmentQuestion\DomainModel\QuestionPlayConfiguration;
 use ILIAS\AssessmentQuestion\DomainModel\Scoring\ErrorTextScoring;
 use ILIAS\AssessmentQuestion\DomainModel\Scoring\ErrorTextScoringConfiguration;

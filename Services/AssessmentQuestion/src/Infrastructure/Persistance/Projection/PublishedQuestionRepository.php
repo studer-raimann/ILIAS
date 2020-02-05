@@ -2,12 +2,12 @@
 
 namespace ILIAS\AssessmentQuestion\Infrastructure\Persistence\Projection;
 
-use ILIAS\AssessmentQuestion\CQRS\Aggregate\AbstractValueObject;
 use ILIAS\AssessmentQuestion\DomainModel\Question;
 use ILIAS\AssessmentQuestion\DomainModel\QuestionDto;
 use ILIAS\AssessmentQuestion\DomainModel\QuestionLegacyData;
 use ILIAS\AssessmentQuestion\DomainModel\Answer\Option\AnswerOptions;
 use ILIAS\Services\AssessmentQuestion\DomainModel\Feedback;
+use srag\CQRS\Aggregate\AbstractValueObject;
 
 class PublishedQuestionRepository
 {

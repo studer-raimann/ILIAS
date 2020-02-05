@@ -4,9 +4,9 @@ namespace ILIAS\AssessmentQuestion\DomainModel\Event;
 
 
 
-use ILIAS\AssessmentQuestion\CQRS\Aggregate\DomainObjectId;
-use ILIAS\AssessmentQuestion\CQRS\Event\AbstractIliasObjectDomainEvent;
 use ILIAS\AssessmentQuestion\DomainModel\Answer\Option\AnswerOptions;
+use srag\CQRS\Aggregate\DomainObjectId;
+use srag\CQRS\Event\AbstractIlContainerItemDomainEvent;
 
 /**
  * Class QuestionAnswerOptionsSetEvent
@@ -18,7 +18,7 @@ use ILIAS\AssessmentQuestion\DomainModel\Answer\Option\AnswerOptions;
  * @author  Martin Studer <ms@studer-raimann.ch>
  * @author  Theodor Truffer <tt@studer-raimann.ch>
  */
-class QuestionAnswerOptionsSetEvent extends AbstractIliasObjectDomainEvent {
+class QuestionAnswerOptionsSetEvent extends AbstractIlContainerItemDomainEvent {
 
 	public const NAME = 'QuestionAnswerOptionsSetEvent';
 	/**
