@@ -2,12 +2,12 @@
 
 /* Copyright (c) 1998-2019 ILIAS open source, Extended GPL, see docs/LICENSE */
 
-use ILIAS\AssessmentQuestion\CQRS\Aggregate\DomainObjectId;
-use ILIAS\Services\AssessmentQuestion\PublicApi\Common\AuthoringContextContainer;
-use ILIAS\Services\AssessmentQuestion\PublicApi\Common\AssessmentEntityId;
-use ILIAS\Services\AssessmentQuestion\PublicApi\Authoring\AuthoringService;
 use ILIAS\AssessmentQuestion\Application\AuthoringApplicationService;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Form\QuestionTypeSelectForm;
+use ILIAS\Services\AssessmentQuestion\PublicApi\Authoring\AuthoringService;
+use ILIAS\Services\AssessmentQuestion\PublicApi\Common\AssessmentEntityId;
+use ILIAS\Services\AssessmentQuestion\PublicApi\Common\AuthoringContextContainer;
+use srag\CQRS\Aggregate\DomainObjectId;
 
 /**
  * Class ilAsqQuestionCreationGUI

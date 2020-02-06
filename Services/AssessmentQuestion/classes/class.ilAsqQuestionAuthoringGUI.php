@@ -8,12 +8,10 @@ use ILIAS\AssessmentQuestion\Application\AuthoringApplicationService;
 use ILIAS\AssessmentQuestion\Application\ProcessingApplicationService;
 use ILIAS\AssessmentQuestion\DomainModel\Answer\Answer;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Component\QuestionComponent;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\AvailableEditors;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Presenter\AvailablePresenters;
 use ILIAS\Services\AssessmentQuestion\PublicApi\Authoring\AuthoringService;
-use ILIAS\Services\AssessmentQuestion\PublicApi\Common\AssessmentEntityId;
 use ILIAS\Services\AssessmentQuestion\PublicApi\Common\AuthoringContextContainer;
 use ILIAS\Services\AssessmentQuestion\PublicApi\Common\QuestionConfig;
+use srag\CQRS\Aggregate\DomainObjectId;
 
 /**
  * Class ilAsqQuestionAuthoringGUI
@@ -68,7 +66,7 @@ class ilAsqQuestionAuthoringGUI
     protected $authoring_service;
 
     /**
-     * @var AssessmentEntityId
+     * @var DomainObjectId
      */
     protected $question_id;
     /**
@@ -364,29 +362,6 @@ class ilAsqQuestionAuthoringGUI
     const CMD_DISPLAY_QUESTION = "displayQuestion";
     const CMD_GET_FORM_SNIPPET = "getFormSnippet";
     const DEBUG_TEST_ID = 23;
-
-    public function getFormSnippet()
-    {
-        $name = $_GET['class'];
-
-        $class = array_search($name, AvailableEditors::getAvailableEditors());
-        if($class === false) {
-            $class = array_search($name, AvailablePresenters::getAvailablePresenters());
-        }
-        if ($class === false) {
-            return;
-        }
-
-        $form = new ilPropertyFormGUI();
-
-        $fields = $class::generateFields(null);
-
-        foreach ($fields as $field) {
-            $form->addItem($field);
-        }
-
-        exit($form->getHTML());
-    }
 
     // TODO move to player
     public function displayQuestion()

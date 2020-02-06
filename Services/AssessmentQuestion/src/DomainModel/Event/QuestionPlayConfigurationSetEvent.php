@@ -75,7 +75,7 @@ class QuestionPlayConfigurationSetEvent extends AbstractIlContainerItemDomainEve
 	/**
 	 * @param string $json_data
 	 */
-	public function restoreEventBody(string $json_data) {
+	public function restoreEventBody(string $json_data) : void {
 		$this->play_configuration = AbstractValueObject::deserialize($json_data);
 	}
 }

@@ -55,9 +55,8 @@ class QuestionRevisionCreatedEvent extends AbstractIlContainerItemDomainEvent {
     /**
      * @param string $json_data
      */
-	public function restoreEventBody(string $json_data) {
-		$data = json_decode($json_data);
-		$this->revision_key = $data->revision_key;
+	public function restoreEventBody(string $json_data) : void {
+		$this->revision_key = $json_data;
 	}
 
 	/**
@@ -66,4 +65,8 @@ class QuestionRevisionCreatedEvent extends AbstractIlContainerItemDomainEvent {
 	public function getRevisionKey(): string {
 		return $this->revision_key;
 	}
+    public function getEventBody(): string
+    {
+        return $this->revision_key;
+    }
 }

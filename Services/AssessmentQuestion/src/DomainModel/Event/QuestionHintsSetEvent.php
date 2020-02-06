@@ -71,7 +71,7 @@ class QuestionHintsSetEvent extends AbstractIlContainerItemDomainEvent {
     /**
      * @param string $json_data
      */
-    public function restoreEventBody(string $json_data) {
+    public function restoreEventBody(string $json_data) : void {
         $this->hints = QuestionHints::deserialize($json_data);
     }
 }

@@ -22,11 +22,7 @@ use ILIAS\AssessmentQuestion\UserInterface\Web\Form\QuestionFormGUI;
 class FileUploadQuestionGUI extends QuestionFormGUI {
     protected function createDefaultPlayConfiguration(): QuestionPlayConfiguration
     {
-        return QuestionPlayConfiguration::create
-        (
-            new FileUploadEditorConfiguration(),
-            new FileUploadScoringConfiguration()
-            );
+        return QuestionPlayConfiguration::create();
     }
     
     protected function readPlayConfiguration(): QuestionPlayConfiguration

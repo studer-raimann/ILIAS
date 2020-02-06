@@ -72,7 +72,7 @@ class QuestionDataSetEvent extends AbstractIlContainerItemDomainEvent {
 	/**
 	 * @param string $json_data
 	 */
-	public function restoreEventBody(string $json_data) {
+	public function restoreEventBody(string $json_data) : void {
 		$this->data = AbstractValueObject::deserialize($json_data);
 	}
 }

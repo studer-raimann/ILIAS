@@ -26,10 +26,7 @@ use ILIAS\AssessmentQuestion\DomainModel\Answer\Option\AnswerOption;
 class EssayQuestionGUI extends QuestionFormGUI {
     protected function createDefaultPlayConfiguration(): QuestionPlayConfiguration
     {
-        return QuestionPlayConfiguration::create
-        (
-            new EssayEditorConfiguration(),
-            new EssayScoringConfiguration());
+        return QuestionPlayConfiguration::create();
     }
     
     protected function readPlayConfiguration(): QuestionPlayConfiguration

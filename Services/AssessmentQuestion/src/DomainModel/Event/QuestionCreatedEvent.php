@@ -43,9 +43,14 @@ class QuestionCreatedEvent extends AbstractIlContainerItemDomainEvent {
 		return self::NAME;
 	}
 
-    public function restoreEventBody(string $json_data)
+    public function restoreEventBody(string $json_data) : void
     {
         //no additional fields
     }
-
+    
+    public function getEventBody(): string
+    {
+        //no additional fields
+        return '';
+    }
 }

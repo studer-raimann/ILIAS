@@ -78,7 +78,7 @@ class QuestionLegacyDataSetEvent extends AbstractIlContainerItemDomainEvent {
 	/**
 	 * @param string $json_data
 	 */
-	public function restoreEventBody(string $json_data) {
+	public function restoreEventBody(string $json_data) : void {
 		$this->legacy_data = AbstractValueObject::deserialize($json_data);
 	}
 }

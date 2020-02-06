@@ -73,7 +73,7 @@ class QuestionAnswerAddedEvent extends AbstractIlContainerItemDomainEvent {
 	}
 
 
-	public function restoreEventBody(string $json_data) {
+	public function restoreEventBody(string $json_data) : void {
 		$data = json_decode($json_data);
 		$this->answer = new Answer($data->answerer_id,
 		                           $data->question_id,

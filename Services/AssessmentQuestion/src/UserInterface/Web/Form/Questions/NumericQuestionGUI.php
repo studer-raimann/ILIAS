@@ -22,11 +22,7 @@ use ILIAS\AssessmentQuestion\UserInterface\Web\Form\QuestionFormGUI;
 class NumericQuestionGUI extends QuestionFormGUI {
     protected function createDefaultPlayConfiguration(): QuestionPlayConfiguration
     {
-        return QuestionPlayConfiguration::create
-        (
-            new NumericEditorConfiguration(),
-            new NumericScoringConfiguration()
-            );
+        return QuestionPlayConfiguration::create();
     }
     
     protected function readPlayConfiguration(): QuestionPlayConfiguration

@@ -35,14 +35,18 @@ class QuestionEventStoreRepository implements EventStore {
 		/** @var AbstractIlContainerItemDomainEvent $event */
 		foreach ($events->getEvents() as $event) {
 			$stored_event = new QuestionEventStoreAr();
-			$stored_event->setEventData(
-				$event->getAggregateId()->getId(),
-				$event->getEventName(),
-				$event->getOccurredOn(),
-				$event->getContainerObjId(),
-				$event->getInitiatingUserId(),
-			    $event->getItemId(),
-				$event->getEventBody());
+			
+			$stored_event->setCIEventData(
+			    new EventID(), 
+			    $event->getAggregateId(), 
+			    $event->getItemId(), 
+			    $event->getContainerId(), 
+			    $event->getEventName(), 
+			    $event->getOccurredOn(), 
+			    $event->getInitiatingUserId(), 
+			    $event->getEventBody(), 
+			    get_class($event)
+			);
 
 			$stored_event->create();
 		}
@@ -64,7 +68,7 @@ class QuestionEventStoreRepository implements EventStore {
 		while ($row = $DIC->database()->fetchAssoc($res)) {
 			/**@var AbstractDomainEvent $event */
 			$event_name = "ILIAS\\AssessmentQuestion\\DomainModel\\Event\\".utf8_encode(trim($row['event_name']));
-			$event = new $event_name(new DomainObjectId($row['aggregate_id']), $row['container_obj_id'], $row['initiating_user_id'], $row['question_int_id']);
+			$event = new $event_name(new DomainObjectId($row['aggregate_id']), $row['container_id'], $row['initiating_user_id'], $row['item_id']);
 			$event->restoreEventBody($row['event_body']);
 			$event_stream->addEvent($event);
 		}
@@ -82,7 +86,7 @@ class QuestionEventStoreRepository implements EventStore {
 	   global $DIC;
 
 	   // TODO join with not in select QuestionDeletedEvent
-	   $sql = "SELECT aggregate_id FROM " . QuestionEventStoreAr::STORAGE_NAME . " where event_name = 'QuestionCreatedEvent' and container_obj_id = " . $DIC->database()->quote($container_obj_id,'integer');
+	   $sql = "SELECT aggregate_id FROM " . QuestionEventStoreAr::STORAGE_NAME . " where event_name = 'QuestionCreatedEvent' and container_id = " . $DIC->database()->quote($container_obj_id,'integer');
 	   $res = $DIC->database()->query($sql);
 
 	   $arr_data = [];
@@ -99,7 +103,7 @@ class QuestionEventStoreRepository implements EventStore {
 	public function getNextId() : int {
 	    global $DIC;
 
-	    $sql = "SELECT MAX(question_int_id) as id FROM " . QuestionEventStoreAr::STORAGE_NAME;
+	    $sql = "SELECT MAX(item_id) as id FROM " . QuestionEventStoreAr::STORAGE_NAME;
 	    $res = $DIC->database()->query($sql);
 	    $values = $DIC->database()->fetchAssoc($res);
 	    return (intval($values['id']) + 1) ?? 1;

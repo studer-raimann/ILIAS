@@ -70,8 +70,8 @@ class AnswerOptionForm extends AsqTableInput {
 	public function checkInput() : bool {    
 	    $count = intval($_POST[Answeroptionform::VAR_POST]);
 	    
-	    $sd_class = QuestionPlayConfiguration::getScoringClass($this->configuration)::getScoringDefinitionClass();
-	    $dd_class = QuestionPlayConfiguration::getEditorClass($this->configuration)::getDisplayDefinitionClass();
+	    $sd_class = $this->configuration->getScoringConfiguration()->configurationFor()::getScoringDefinitionClass();
+	    $dd_class = $this->configuration->getEditorConfiguration()->configurationFor()::getDisplayDefinitionClass();
 	    
         if(!$dd_class::checkInput($count)) {
             $this->setAlert($dd_class::getErrorMessage());
@@ -94,8 +94,8 @@ class AnswerOptionForm extends AsqTableInput {
 	public function readAnswerOptions() {
 	    $this->readValues();
 	    
-	    $sd_class = QuestionPlayConfiguration::getScoringClass($this->configuration)::getScoringDefinitionClass();
-	    $dd_class = QuestionPlayConfiguration::getEditorClass($this->configuration)::getDisplayDefinitionClass();
+	    $sd_class = $this->configuration->getScoringConfiguration()->configurationFor()::getScoringDefinitionClass();
+	    $dd_class = $this->configuration->getEditorConfiguration()->configurationFor()::getDisplayDefinitionClass();
 	    
 	    $count = intval($_POST[Answeroptionform::VAR_POST]);
 
@@ -119,8 +119,8 @@ class AnswerOptionForm extends AsqTableInput {
 	 * @return array
 	 */
 	private function collectFields(?QuestionPlayConfiguration $play) : array {
-	    $sd_class = QuestionPlayConfiguration::getScoringClass($play)::getScoringDefinitionClass();
-	    $dd_class = QuestionPlayConfiguration::getEditorClass($play)::getDisplayDefinitionClass();
+	    $sd_class = $play->getScoringConfiguration()->configurationFor()::getScoringDefinitionClass();
+	    $dd_class = $play->getEditorConfiguration()->configurationFor()::getDisplayDefinitionClass();
 	    
 	    
 	    return array_merge($dd_class::getFields($play), $sd_class::getFields($play));

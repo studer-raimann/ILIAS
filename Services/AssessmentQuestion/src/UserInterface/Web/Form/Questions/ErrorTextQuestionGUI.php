@@ -26,7 +26,7 @@ class ErrorTextQuestionGUI extends QuestionFormGUI {
         return QuestionPlayConfiguration::create
         (
             ErrorTextEditorConfiguration::create('', ErrorTextEditor::DEFAULT_TEXTSIZE_PERCENT),
-            new ErrorTextScoringConfiguration()
+            ErrorTextScoringConfiguration::create(null)
             );
     }
     

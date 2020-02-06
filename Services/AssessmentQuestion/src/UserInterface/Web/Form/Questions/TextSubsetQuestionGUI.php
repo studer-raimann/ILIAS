@@ -23,11 +23,7 @@ use ilNumberInputGUI;
 class TextSubsetQuestionGUI extends QuestionFormGUI {
     protected function createDefaultPlayConfiguration(): QuestionPlayConfiguration
     {
-        return QuestionPlayConfiguration::create
-        (
-            new TextSubsetEditorConfiguration(),
-            new TextSubsetScoringConfiguration()
-            );
+        return QuestionPlayConfiguration::create();
     }
     
     protected function readPlayConfiguration(): QuestionPlayConfiguration

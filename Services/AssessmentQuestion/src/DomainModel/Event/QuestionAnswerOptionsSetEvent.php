@@ -71,7 +71,7 @@ class QuestionAnswerOptionsSetEvent extends AbstractIlContainerItemDomainEvent {
 	/**
 	 * @param string $json_data
 	 */
-	public function restoreEventBody(string $json_data) {
+	public function restoreEventBody(string $json_data) : void {
         $this->answer_options = AnswerOptions::deserialize($json_data);
 	}
 }

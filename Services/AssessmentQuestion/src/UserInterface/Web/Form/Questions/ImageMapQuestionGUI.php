@@ -22,11 +22,7 @@ use ILIAS\AssessmentQuestion\UserInterface\Web\Form\QuestionFormGUI;
 class ImageMapQuestionGUI extends QuestionFormGUI {
     protected function createDefaultPlayConfiguration(): QuestionPlayConfiguration
     {
-        return QuestionPlayConfiguration::create
-        (
-            new ImageMapEditorConfiguration(),
-            new MultipleChoiceScoringConfiguration()
-            );
+        return QuestionPlayConfiguration::create();
     }
     
     protected function canDisplayAnswerOptions() {

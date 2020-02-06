@@ -43,11 +43,7 @@ class KprimChoiceQuestionGUI extends QuestionFormGUI {
 
     protected function createDefaultPlayConfiguration(): QuestionPlayConfiguration
     {
-        return QuestionPlayConfiguration::create
-        (
-            new KprimChoiceEditorConfiguration(),
-            new KprimChoiceScoringConfiguration()
-            );
+        return QuestionPlayConfiguration::create();
     }
     
     protected function readPlayConfiguration(): QuestionPlayConfiguration

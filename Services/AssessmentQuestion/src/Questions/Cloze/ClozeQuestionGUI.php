@@ -26,8 +26,8 @@ class ClozeQuestionGUI extends QuestionFormGUI {
     protected function createDefaultPlayConfiguration(): QuestionPlayConfiguration
     {
         return QuestionPlayConfiguration::create(
-            new ClozeEditorConfiguration(),
-            new ClozeScoringConfiguration());
+            ClozeEditorConfiguration::create('', []),
+            ClozeScoringConfiguration::create());
     }
 
     protected function initiatePlayConfiguration(?QuestionPlayConfiguration $play): void

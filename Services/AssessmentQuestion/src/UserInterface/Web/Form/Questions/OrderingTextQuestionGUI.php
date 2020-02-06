@@ -35,11 +35,7 @@ class OrderingTextQuestionGUI extends QuestionFormGUI {
     
     protected function createDefaultPlayConfiguration(): QuestionPlayConfiguration
     {
-        return QuestionPlayConfiguration::create
-        (
-            new OrderingEditorConfiguration(),
-            new OrderingScoringConfiguration()
-            );
+        return QuestionPlayConfiguration::create();
     }
     
     protected function readPlayConfiguration(): QuestionPlayConfiguration

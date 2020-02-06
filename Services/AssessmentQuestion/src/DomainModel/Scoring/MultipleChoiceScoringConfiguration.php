@@ -17,6 +17,10 @@ use srag\CQRS\Aggregate\AbstractValueObject;
  * @author  Theodor Truffer <tt@studer-raimann.ch>
  */
 class MultipleChoiceScoringConfiguration extends AbstractConfiguration {
+    public static function create() : MultipleChoiceScoringConfiguration {
+        return new MultipleChoiceScoringConfiguration();
+    }
+    
     public function equals(AbstractValueObject $other): bool
     {
         return get_class($this) === get_class($other);

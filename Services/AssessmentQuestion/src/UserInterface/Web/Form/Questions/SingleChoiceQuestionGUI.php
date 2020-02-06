@@ -26,15 +26,14 @@ class SingleChoiceQuestionGUI extends QuestionFormGUI {
 	{
 	    return QuestionPlayConfiguration::create
 	    (
-	        MultipleChoiceEditorConfiguration::create(false, 1),
-	        new MultipleChoiceScoringConfiguration());
+	        MultipleChoiceEditorConfiguration::create(false, 1));
 	}
 	
 	protected function readPlayConfiguration(): QuestionPlayConfiguration
 	{
 	    return QuestionPlayConfiguration::create(
 	        MultipleChoiceEditor::readConfig(),
-	        new MultipleChoiceScoringConfiguration());
+	        MultipleChoiceScoringConfiguration::create());
 	}
 	
 	protected function initiatePlayConfiguration(?QuestionPlayConfiguration $play): void
