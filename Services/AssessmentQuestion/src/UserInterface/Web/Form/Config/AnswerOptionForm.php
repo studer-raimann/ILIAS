@@ -48,13 +48,17 @@ class AnswerOptionForm extends AsqTableInput {
 	    
 		parent::__construct($title, 
 		                    self::VAR_POST,
-                		    array_map(function($option) {
-                		        return !is_null($option) ? $option->rawValues() : null;
-                		    }, $options->getOptions()),
+                		    $this->getRawOptionValue($options->getOptions()),
 		                    $definitions,
 		                    $form_configuration);
 		
 		$this->options = $options;
+	}
+	
+	private function getRawOptionValue(array $options) {
+	    return array_map(function($option) {
+	       return !is_null($option) ? $option->rawValues() : null;
+	    }, $options);
 	}
 	
 	/**
@@ -107,6 +111,8 @@ class AnswerOptionForm extends AsqTableInput {
 	                $dd_class::getValueFromPost($i),
 	                $sd_class::getValueFromPost($i)));
 	    }
+	    
+	    $this->values = $this->getRawOptionValue($this->options->getOptions());
 	}
 
 	public function getAnswerOptions() : AnswerOptions {

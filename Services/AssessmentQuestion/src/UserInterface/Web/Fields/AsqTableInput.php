@@ -34,7 +34,7 @@ class AsqTableInput extends ilTextInputGUI {
     /**
      * @var array
      */
-    private $values;    
+    protected $values;    
     /**
      * @var array
      */

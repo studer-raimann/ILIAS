@@ -7,6 +7,7 @@ use ILIAS\Services\AssessmentQuestion\PublicApi\Common\AssessmentEntityId;
 use ILIAS\AssessmentQuestion\UserInterface\Web\AsqGUIElementFactory;
 use ILIAS\AssessmentQuestion\Application\AuthoringApplicationService;
 use ILIAS\AssessmentQuestion\DomainModel\QuestionDto;
+use ILIAS\AssessmentQuestion\UserInterface\Web\Form\QuestionFormGUI;
 
 /**
  * Class ilAsqQuestionConfigEditorGUI
@@ -37,7 +38,6 @@ class ilAsqQuestionConfigEditorGUI
      * @var AuthoringApplicationService
      */
     protected $authoringApplicationService;
-
 
     /**
      * @param AuthoringContextContainer $contextContainer
@@ -106,7 +106,7 @@ class ilAsqQuestionConfigEditorGUI
         ilutil::sendInfo("Question Saved", true);
         
         $form->checkInput();
-        $this->showForm();
+        $this->showForm($form);
     }
 
     /**
