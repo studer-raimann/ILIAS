@@ -40,14 +40,15 @@ class QuestionLegacyDataSetEvent extends AbstractIlContainerItemDomainEvent {
      */
 	public function __construct
 	(
-		DomainObjectId $question_uuid,
+	    DomainObjectId $aggregate_id,
 		int $container_obj_id,
 		int $initiating_user_id,
 	    int $question_int_id,
 		QuestionLegacyData $legacy_data = null
 	)
 	{
-	    parent::__construct($question_uuid, $container_obj_id, $initiating_user_id, $question_int_id);
+	    parent::__construct($aggregate_id, $question_int_id, $container_obj_id, $initiating_user_id);
+	    
 		$this->legacy_data = $legacy_data;
 	}
 

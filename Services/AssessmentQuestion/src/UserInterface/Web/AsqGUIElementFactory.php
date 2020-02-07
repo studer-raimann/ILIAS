@@ -4,6 +4,8 @@ namespace ILIAS\AssessmentQuestion\UserInterface\Web;
 
 use ILIAS\AssessmentQuestion\DomainModel\QuestionDto;
 use ILIAS\AssessmentQuestion\Questions\Cloze\ClozeQuestionGUI;
+use ILIAS\AssessmentQuestion\Questions\MultipleChoice\MultipleChoiceQuestionGUI;
+use ILIAS\AssessmentQuestion\Questions\MultipleChoice\SingleChoiceQuestionGUI;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Form\QuestionFeedbackFormGUI;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Form\Questions\ErrorTextQuestionGUI;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Form\Questions\EssayQuestionGUI;
@@ -12,11 +14,9 @@ use ILIAS\AssessmentQuestion\UserInterface\Web\Form\Questions\FormulaQuestionGUI
 use ILIAS\AssessmentQuestion\UserInterface\Web\Form\Questions\ImageMapQuestionGUI;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Form\Questions\KprimChoiceQuestionGUI;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Form\Questions\MatchingQuestionGUI;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Form\Questions\MultipleChoiceQuestionGUI;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Form\Questions\NumericQuestionGUI;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Form\Questions\OrderingQuestionGUI;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Form\Questions\OrderingTextQuestionGUI;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Form\Questions\SingleChoiceQuestionGUI;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Form\Questions\TextSubsetQuestionGUI;
 use Exception;
 use ilPropertyFormGUI;

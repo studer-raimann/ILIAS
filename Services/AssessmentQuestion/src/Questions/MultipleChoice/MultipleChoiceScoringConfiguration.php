@@ -1,6 +1,6 @@
 <?php
 
-namespace ILIAS\AssessmentQuestion\DomainModel\Scoring;
+namespace ILIAS\AssessmentQuestion\Questions\MultipleChoice;
 
 
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;

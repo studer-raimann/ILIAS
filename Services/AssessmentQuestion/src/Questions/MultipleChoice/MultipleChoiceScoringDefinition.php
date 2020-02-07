@@ -1,6 +1,6 @@
 <?php
 
-namespace ILIAS\AssessmentQuestion\DomainModel\Scoring;
+namespace ILIAS\AssessmentQuestion\Questions\MultipleChoice;
 
 use ILIAS\AssessmentQuestion\DomainModel\QuestionPlayConfiguration;
 use ILIAS\AssessmentQuestion\DomainModel\Answer\Option\AnswerDefinition;
@@ -63,13 +63,13 @@ class MultipleChoiceScoringDefinition extends AnswerDefinition {
 	    global $DIC;
 	    
 	    $fields = [];
-	    $fields[] = new AsqTableInputFieldDefinition(
+	    $fields[self::VAR_MCSD_SELECTED] = new AsqTableInputFieldDefinition(
 		    $DIC->language()->txt('asq_label_checked'),
 	        AsqTableInputFieldDefinition::TYPE_NUMBER,
 			self::VAR_MCSD_SELECTED
 		);
 
-	    $fields[] = new AsqTableInputFieldDefinition(
+	    $fields[self::VAR_MCSD_UNSELECTED] = new AsqTableInputFieldDefinition(
 		    $DIC->language()->txt('asq_label_unchecked'),
 	        AsqTableInputFieldDefinition::TYPE_NUMBER,
 			self::VAR_MCSD_UNSELECTED

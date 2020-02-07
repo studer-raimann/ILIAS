@@ -1,11 +1,13 @@
 <?php
 declare(strict_types=1);
-namespace ILIAS\AssessmentQuestion\DomainModel\Scoring;
+
+namespace ILIAS\AssessmentQuestion\Questions\MultipleChoice;
 
 use ILIAS\AssessmentQuestion\DomainModel\AnswerScoreDto;
 use ILIAS\AssessmentQuestion\DomainModel\Question;
 use ILIAS\AssessmentQuestion\DomainModel\Answer\Answer;
 use ILIAS\AssessmentQuestion\DomainModel\Answer\Option\AnswerOption;
+use ILIAS\AssessmentQuestion\DomainModel\Scoring\AbstractScoring;
 
 /**
  * Class MultipleChoiceScoring

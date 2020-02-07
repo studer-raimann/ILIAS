@@ -32,13 +32,14 @@ class QuestionRevisionCreatedEvent extends AbstractIlContainerItemDomainEvent {
      * @param int            $initating_user_id
      * @param string         $revision_key
      */
-	public function __construct(DomainObjectId $id, 
+	public function __construct(DomainObjectId $aggregate_id, 
 	                            int $container_obj_id, 
-	                            int $initating_user_id, 
+	                            int $initiating_user_id, 
 	                            int $question_int_id, 
 	                            string $revision_key = "")
 	{
-	    parent::__construct($id, $container_obj_id, $initating_user_id, $question_int_id);
+	    parent::__construct($aggregate_id, $question_int_id, $container_obj_id, $initiating_user_id);
+	    
 		$this->revision_key = $revision_key;
 	}
 

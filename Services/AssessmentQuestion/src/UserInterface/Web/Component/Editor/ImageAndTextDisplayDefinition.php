@@ -55,13 +55,13 @@ class ImageAndTextDisplayDefinition extends AnswerDefinition {
 	    
 	    $fields = [];
 	    
-        $fields[] = new AsqTableInputFieldDefinition(
+	    $fields[self::VAR_MCDD_TEXT] = new AsqTableInputFieldDefinition(
             $DIC->language()->txt('asq_label_answer_text'),
             AsqTableInputFieldDefinition::TYPE_TEXT,
             self::VAR_MCDD_TEXT
             );
         
-        $fields[] = new AsqTableInputFieldDefinition(
+	    $fields[self::VAR_MCDD_IMAGE] = new AsqTableInputFieldDefinition(
             $DIC->language()->txt('asq_label_answer_image'),
             AsqTableInputFieldDefinition::TYPE_IMAGE,
             self::VAR_MCDD_IMAGE

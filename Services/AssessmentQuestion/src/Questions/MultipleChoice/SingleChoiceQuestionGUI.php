@@ -1,13 +1,10 @@
 <?php
 
-namespace ILIAS\AssessmentQuestion\UserInterface\Web\Form\Questions;
+namespace ILIAS\AssessmentQuestion\Questions\MultipleChoice;
 
 use ILIAS\AssessmentQuestion\DomainModel\QuestionPlayConfiguration;
-use ILIAS\AssessmentQuestion\DomainModel\Scoring\MultipleChoiceScoringConfiguration;
-use ILIAS\AssessmentQuestion\DomainModel\Scoring\MultipleChoiceScoringDefinition;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\ImageAndTextDisplayDefinition;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\MultipleChoiceEditor;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\MultipleChoiceEditorConfiguration;
+use ILIAS\AssessmentQuestion\UserInterface\Web\Fields\AsqTableInputFieldDefinition;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Form\QuestionFormGUI;
 use ilHiddenInputGUI;
 
@@ -26,7 +23,8 @@ class SingleChoiceQuestionGUI extends QuestionFormGUI {
 	{
 	    return QuestionPlayConfiguration::create
 	    (
-	        MultipleChoiceEditorConfiguration::create(false, 1));
+	        MultipleChoiceEditorConfiguration::create(false, 1),
+	        MultipleChoiceScoringConfiguration::create());
 	}
 	
 	protected function readPlayConfiguration(): QuestionPlayConfiguration
@@ -50,14 +48,14 @@ class SingleChoiceQuestionGUI extends QuestionFormGUI {
 	}
 	
 	protected function getAnswerOptionDefinitions(?QuestionPlayConfiguration $play) : array { 
+	    global $DIC;
+	    
 	    $definitions = array_merge(ImageAndTextDisplayDefinition::getFields($play),
 	                               MultipleChoiceScoringDefinition::getFields($play));
 	    
-	    $definitions = $this->renameColumn($definitions, 
-	                                       MultipleChoiceScoringDefinition::VAR_MCSD_SELECTED, 
-	                                       $this->lang->txt('asq_label_points'));
+	    $definitions[MultipleChoiceScoringDefinition::VAR_MCSD_SELECTED]->setHeader($DIC->language()->txt('asq_label_points'));
 	    
-	    $definitions = $this->hideColumn($definitions, MultipleChoiceScoringDefinition::VAR_MCSD_UNSELECTED, 0);
+	    unset($definitions[MultipleChoiceScoringDefinition::VAR_MCSD_UNSELECTED]);
 	    
 	    return $definitions;
 	}

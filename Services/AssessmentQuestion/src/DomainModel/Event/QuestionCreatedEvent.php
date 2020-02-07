@@ -25,12 +25,12 @@ class QuestionCreatedEvent extends AbstractIlContainerItemDomainEvent {
 	 * @param int $initiating_user_id
 	 * @param int $object_id
 	 */
-	public function __construct(DomainObjectId $question_uuid,
+	public function __construct(DomainObjectId $aggregate_id,
 	                            int $container_obj_id,
 	                            int $initiating_user_id,
 	                            int $question_int_id) 
 	{
-	    parent::__construct($question_uuid, $container_obj_id, $initiating_user_id, $question_int_id);
+	    parent::__construct($aggregate_id, $question_int_id, $container_obj_id, $initiating_user_id);
 	}
 	
 	/**

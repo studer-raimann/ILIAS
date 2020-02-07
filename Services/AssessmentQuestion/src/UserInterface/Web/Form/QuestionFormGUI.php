@@ -266,59 +266,7 @@ abstract class QuestionFormGUI extends ilPropertyFormGUI {
      * @param QuestionPlayConfiguration $play
      */
     protected abstract function initiatePlayConfiguration(?QuestionPlayConfiguration $play): void ;
-    
-    /**
-     * @param array $definitions
-     * @param string $post_var
-     * @param $value
-     * @return array
-     */
-    protected function hideColumn(array $definitions, string $post_var, $value) : array {
-        $new_definitions = [];
         
-        /** @var $definition AsqTableInputFieldDefinition */
-        foreach ($definitions as $definition) {
-            if ($definition->getPostVar() === $post_var) {
-                $new_definitions[] = new AsqTableInputFieldDefinition(
-                    '',
-                    AsqTableInputFieldDefinition::TYPE_HIDDEN,
-                    $post_var,
-                    [$value]);
-            }
-            else {
-                $new_definitions[] = $definition;
-            }
-        }
-        
-        return $new_definitions;
-    }
-    
-    /**
-     * @param array $definitions
-     * @param string $post_var
-     * @param $value
-     * @return array
-     */
-    protected function renameColumn(array $definitions, string $post_var, string $new_name) : array {
-        $new_definitions = [];
-        
-        /** @var $definition AsqTableInputFieldDefinition */
-        foreach ($definitions as $definition) {
-            if ($definition->getPostVar() === $post_var) {
-                $new_definitions[] = new AsqTableInputFieldDefinition(
-                    $new_name,
-                    $definition->getType(),
-                    $post_var,
-                    $definition->getOptions());
-            }
-            else {
-                $new_definitions[] = $definition;
-            }
-        }
-        
-        return $new_definitions;
-    }
-    
     /**
      * @return QuestionData
      * @throws Exception

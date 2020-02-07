@@ -83,4 +83,35 @@ class AsqTableInputFieldDefinition {
 	public function getOptions(): ?array {
 		return $this->options;
 	}
+    /**
+     * @param string $header
+     */
+    public function setHeader($header)
+    {
+        $this->header = $header;
+    }
+
+    /**
+     * @param int $type
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+    }
+
+    /**
+     * @param string $post_var
+     */
+    public function setPostVar($post_var)
+    {
+        $this->post_var = $post_var;
+    }
+
+    /**
+     * @param ?array $options
+     */
+    public function setOptions($options)
+    {
+        $this->options = $options;
+    }
 }
