@@ -78,7 +78,7 @@ class MultipleChoiceScoring extends AbstractScoring
 
     public static function readConfig()
     {
-        return new MultipleChoiceScoringConfiguration();
+        return MultipleChoiceScoringConfiguration::create();
     }
     
     public static function isComplete(Question $question): bool

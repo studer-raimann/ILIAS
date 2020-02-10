@@ -4,6 +4,7 @@ namespace ILIAS\AssessmentQuestion\UserInterface\Web;
 
 use ILIAS\AssessmentQuestion\DomainModel\QuestionDto;
 use ILIAS\AssessmentQuestion\Questions\Cloze\ClozeQuestionGUI;
+use ILIAS\AssessmentQuestion\Questions\Kprim\KprimChoiceQuestionGUI;
 use ILIAS\AssessmentQuestion\Questions\MultipleChoice\MultipleChoiceQuestionGUI;
 use ILIAS\AssessmentQuestion\Questions\MultipleChoice\SingleChoiceQuestionGUI;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Form\QuestionFeedbackFormGUI;
@@ -12,7 +13,6 @@ use ILIAS\AssessmentQuestion\UserInterface\Web\Form\Questions\EssayQuestionGUI;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Form\Questions\FileUploadQuestionGUI;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Form\Questions\FormulaQuestionGUI;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Form\Questions\ImageMapQuestionGUI;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Form\Questions\KprimChoiceQuestionGUI;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Form\Questions\MatchingQuestionGUI;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Form\Questions\NumericQuestionGUI;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Form\Questions\OrderingQuestionGUI;

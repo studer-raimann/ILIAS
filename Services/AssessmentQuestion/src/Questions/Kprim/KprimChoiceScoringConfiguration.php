@@ -1,6 +1,6 @@
 <?php
 
-namespace ILIAS\AssessmentQuestion\DomainModel\Scoring;
+namespace ILIAS\AssessmentQuestion\Questions\Kprim;
 
 
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
@@ -31,7 +31,7 @@ class KprimChoiceScoringConfiguration extends AbstractConfiguration {
      * @param int $half_points_at
      * @return KprimChoiceScoringConfiguration
      */
-    static function create(int $points, int $half_points_at) : KprimChoiceScoringConfiguration
+    static function create(int $points = null, int $half_points_at = null) : KprimChoiceScoringConfiguration
         {
             $object = new KprimChoiceScoringConfiguration();
             $object->points = $points;

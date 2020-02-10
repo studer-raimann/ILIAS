@@ -1,13 +1,9 @@
 <?php
 
-namespace ILIAS\AssessmentQuestion\UserInterface\Web\Form\Questions;
+namespace ILIAS\AssessmentQuestion\Questions\Kprim;
 
 use ILIAS\AssessmentQuestion\DomainModel\QuestionDto;
 use ILIAS\AssessmentQuestion\DomainModel\QuestionPlayConfiguration;
-use ILIAS\AssessmentQuestion\DomainModel\Scoring\KprimChoiceScoring;
-use ILIAS\AssessmentQuestion\DomainModel\Scoring\KprimChoiceScoringConfiguration;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\KprimChoiceEditor;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\KprimChoiceEditorConfiguration;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Form\QuestionFormGUI;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Form\Config\AnswerOptionForm;
 use ilCheckboxInputGUI;
@@ -43,7 +39,9 @@ class KprimChoiceQuestionGUI extends QuestionFormGUI {
 
     protected function createDefaultPlayConfiguration(): QuestionPlayConfiguration
     {
-        return QuestionPlayConfiguration::create();
+        return QuestionPlayConfiguration::create(
+            KprimChoiceEditorConfiguration::create(),
+            KprimChoiceScoringConfiguration::create());
     }
     
     protected function readPlayConfiguration(): QuestionPlayConfiguration
@@ -63,7 +61,9 @@ class KprimChoiceQuestionGUI extends QuestionFormGUI {
         $new = new ilCheckboxInputGUI($old->getTitle(), KprimChoiceScoring::VAR_HALF_POINTS);
         $new->setValue(self::HALFPOINTS_AT);
         $new->setInfo($old->getInfo());
-        $new->setChecked($play->getScoringConfiguration()->getHalfPointsAt() === self::HALFPOINTS_AT);
+        if (!is_null($play->getScoringConfiguration())) {
+            $new->setChecked($play->getScoringConfiguration()->getHalfPointsAt() === self::HALFPOINTS_AT);
+        }
         $fields[KprimChoiceScoring::VAR_HALF_POINTS] = $new;
         
         foreach ($fields as $field) {

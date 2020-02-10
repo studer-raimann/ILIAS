@@ -1,11 +1,13 @@
 <?php
 
-namespace ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor;
+namespace ILIAS\AssessmentQuestion\Questions\Kprim;
 
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
 use ILIAS\AssessmentQuestion\DomainModel\Question;
 use ILIAS\AssessmentQuestion\DomainModel\QuestionDto;
 use ILIAS\AssessmentQuestion\DomainModel\Answer\Option\AnswerOption;
+use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\AbstractEditor;
+use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\ImageAndTextDisplayDefinition;
 use ilCheckboxInputGUI;
 use ilNumberInputGUI;
 use ilSelectInputGUI;
@@ -253,7 +255,7 @@ class KprimChoiceEditor extends AbstractEditor {
             }
             else if ($config->getLabelTrue() === self::STR_ADEQUATE && $config->getLabelFalse() === self::STR_NOT_ADEQUATE) {
                 $optionLabel->setValue(self::LABEL_ADEQUATE);
-            } else if (is_null($config->getLabelTrue())) {
+            } else if (empty($config->getLabelTrue())) {
                 $optionLabel->setValue(self::LABEL_RIGHT_WRONG);
             }
             else {

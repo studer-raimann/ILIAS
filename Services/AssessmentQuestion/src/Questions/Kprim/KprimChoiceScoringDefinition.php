@@ -1,10 +1,9 @@
 <?php
 
-namespace ILIAS\AssessmentQuestion\DomainModel\Scoring;
+namespace ILIAS\AssessmentQuestion\Questions\Kprim;
 
 use ILIAS\AssessmentQuestion\DomainModel\QuestionPlayConfiguration;
 use ILIAS\AssessmentQuestion\DomainModel\Answer\Option\AnswerDefinition;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\KprimChoiceEditorConfiguration;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Fields\AsqTableInputFieldDefinition;
 use stdClass;
 
@@ -58,8 +57,8 @@ class KprimChoiceScoringDefinition extends AnswerDefinition {
             AsqTableInputFieldDefinition::TYPE_RADIO,
             self::VAR_KPSD_CORRECT,
             [
-                $conf->getLabelTrue() ?? $DIC->language()->txt('asq_label_right') => self::STR_TRUE, 
-                $conf->getLabelFalse() ?? $DIC->language()->txt('asq_label_wrong') => self::STR_FALSE
+                empty($conf->getLabelTrue()) ? $DIC->language()->txt('asq_label_right') : $conf->getLabelTrue() => self::STR_TRUE, 
+                empty($conf->getLabelFalse()) ? $DIC->language()->txt('asq_label_wrong') : $conf->getLabelFalse() => self::STR_FALSE
             ]);
         
         return $fields;
