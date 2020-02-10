@@ -1,6 +1,6 @@
 <?php
 
-namespace ILIAS\AssessmentQuestion\DomainModel\Scoring;
+namespace ILIAS\AssessmentQuestion\Questions\Essay;
 
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
 use srag\CQRS\Aggregate\AbstractValueObject;
@@ -27,13 +27,13 @@ class EssayScoringConfiguration extends AbstractConfiguration {
     protected $scoring_mode;
     
     /**
-     * @var int
+     * @var ?int
      */
     protected $points;
     
-    public static function create(int $matching_mode,
-                                  int $scoring_mode,
-                                  int $points) : EssayScoringConfiguration {
+    public static function create(int $matching_mode = EssayScoring::TM_CASE_INSENSITIVE,
+                                  int $scoring_mode = EssayScoring::SCORING_MANUAL,
+                                  ?int $points = null) : EssayScoringConfiguration {
         
         $object = new EssayScoringConfiguration();
         

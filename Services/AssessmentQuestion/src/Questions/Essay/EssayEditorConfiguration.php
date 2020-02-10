@@ -1,6 +1,6 @@
 <?php
 
-namespace ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor;
+namespace ILIAS\AssessmentQuestion\Questions\Essay;
 
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
 use srag\CQRS\Aggregate\AbstractValueObject;
@@ -18,11 +18,11 @@ use srag\CQRS\Aggregate\AbstractValueObject;
 class EssayEditorConfiguration extends AbstractConfiguration
 {
     /**
-     * @var int
+     * @var ?int
      */
     protected $max_length;
     
-    public static function create(int $max_length) {
+    public static function create(?int $max_length = null) {
         $object = new EssayEditorConfiguration();
         $object->max_length = $max_length;
         return $object;
@@ -31,7 +31,7 @@ class EssayEditorConfiguration extends AbstractConfiguration
     /**
      * @return int
      */
-    public function getMaxLength()
+    public function getMaxLength() : ?int
     {
         return $this->max_length;
     }
@@ -45,7 +45,7 @@ class EssayEditorConfiguration extends AbstractConfiguration
      */
     function equals(AbstractValueObject $other) : bool
     {
-        /** @var TextSubsetEditorConfiguration $other */
+        /** @var EssayEditorConfiguration $other */
         return get_class($this) === get_class($other) &&
                $this->max_length === $other->max_length;
     }

@@ -1,18 +1,13 @@
 <?php
 
-namespace ILIAS\AssessmentQuestion\UserInterface\Web\Form\Questions;
+namespace ILIAS\AssessmentQuestion\Questions\Essay;
 
 use ILIAS\AssessmentQuestion\DomainModel\QuestionDto;
 use ILIAS\AssessmentQuestion\DomainModel\QuestionPlayConfiguration;
+use ILIAS\AssessmentQuestion\DomainModel\Answer\Option\AnswerOption;
 use ILIAS\AssessmentQuestion\DomainModel\Answer\Option\AnswerOptions;
-use ILIAS\AssessmentQuestion\DomainModel\Scoring\EssayScoring;
-use ILIAS\AssessmentQuestion\DomainModel\Scoring\EssayScoringConfiguration;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\EssayEditor;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\EssayEditorConfiguration;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\EmptyDisplayDefinition;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Form\QuestionFormGUI;
-use ILIAS\AssessmentQuestion\DomainModel\Scoring\EssayScoringDefinition;
-use ILIAS\AssessmentQuestion\DomainModel\Answer\Option\AnswerOption;
 /**
  * Class EssayQuestionGUI
  *
@@ -26,7 +21,9 @@ use ILIAS\AssessmentQuestion\DomainModel\Answer\Option\AnswerOption;
 class EssayQuestionGUI extends QuestionFormGUI {
     protected function createDefaultPlayConfiguration(): QuestionPlayConfiguration
     {
-        return QuestionPlayConfiguration::create();
+        return QuestionPlayConfiguration::create(
+            EssayEditorConfiguration::create(),
+            EssayScoringConfiguration::create());
     }
     
     protected function readPlayConfiguration(): QuestionPlayConfiguration

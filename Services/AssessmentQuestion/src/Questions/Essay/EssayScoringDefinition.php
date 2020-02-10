@@ -1,6 +1,6 @@
 <?php
 
-namespace ILIAS\AssessmentQuestion\DomainModel\Scoring;
+namespace ILIAS\AssessmentQuestion\Questions\Essay;
 
 use ILIAS\AssessmentQuestion\ilAsqHtmlPurifier;
 use ILIAS\AssessmentQuestion\DomainModel\QuestionPlayConfiguration;
