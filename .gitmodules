@@ -1,3 +1,3 @@
 [submodule "libs/ilias/CQRS"]
 	path = libs/ilias/CQRS
-	url = https://git.studer-raimann.ch/ILIAS/Libraries/CQRS.git
+	url = git@git.studer-raimann.ch:ILIAS/Libraries/CQRS.git
