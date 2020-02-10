@@ -1,7 +1,6 @@
 <?php
 
-namespace ILIAS\AssessmentQuestion\DomainModel\Scoring;
-
+namespace ILIAS\AssessmentQuestion\Questions\Matching;
 
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
 use srag\CQRS\Aggregate\AbstractValueObject;
@@ -17,6 +16,10 @@ use srag\CQRS\Aggregate\AbstractValueObject;
  * @author  Theodor Truffer <tt@studer-raimann.ch>
  */
 class MatchingScoringConfiguration extends AbstractConfiguration {
+    public static function create() : MatchingScoringConfiguration {
+        return new MatchingScoringConfiguration();
+    }
+    
     public function equals(AbstractValueObject $other): bool
     {
         return get_class($this) === get_class($other);

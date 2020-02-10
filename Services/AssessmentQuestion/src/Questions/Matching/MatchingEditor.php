@@ -1,5 +1,6 @@
 <?php
-namespace ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor;
+
+namespace ILIAS\AssessmentQuestion\Questions\Matching;
 
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
 use ILIAS\AssessmentQuestion\DomainModel\Question;
@@ -7,6 +8,8 @@ use ilSelectInputGUI;
 use ilNumberInputGUI;
 use ilRadioGroupInputGUI;
 use ilRadioOption;
+use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\AbstractEditor;
+use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\EmptyDisplayDefinition;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Fields\AsqTableInput;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Fields\AsqTableInputFieldDefinition;
 use ilTemplate;
@@ -101,7 +104,7 @@ class MatchingEditor extends AbstractEditor
                 $tpl->parseCurrentBlock();
             }
             $tpl->setCurrentBlock('droparea');
-            $tpl->setVariable('ID_DROPAREA', $id);
+            $tpl->setVariable('ID_DROPAREA', $id + 1);
             $tpl->parseCurrentBlock();
         }
         
@@ -118,7 +121,7 @@ class MatchingEditor extends AbstractEditor
                 $tpl->parseCurrentBlock();
             }
             $tpl->setCurrentBlock('draggable');
-            $tpl->setVariable('ID_DRAGGABLE', $id);
+            $tpl->setVariable('ID_DRAGGABLE', $id + 1);
             $tpl->parseCurrentBlock();
         }
         

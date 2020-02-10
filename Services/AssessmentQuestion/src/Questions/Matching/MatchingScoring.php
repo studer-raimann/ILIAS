@@ -1,11 +1,12 @@
 <?php
-namespace ILIAS\AssessmentQuestion\DomainModel\Scoring;
 
-use ILIAS\AssessmentQuestion\DomainModel\Answer\Answer;
+namespace ILIAS\AssessmentQuestion\Questions\Matching;
+
 use ILIAS\AssessmentQuestion\DomainModel\AnswerScoreDto;
 use ILIAS\AssessmentQuestion\DomainModel\Question;
+use ILIAS\AssessmentQuestion\DomainModel\Answer\Answer;
+use ILIAS\AssessmentQuestion\DomainModel\Scoring\AbstractScoring;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\EmptyScoringDefinition;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\MatchingEditor;
 
 /**
  * Class MultipleChoiceScoring
@@ -47,7 +48,7 @@ class MatchingScoring extends AbstractScoring
 
     public static function readConfig()
     {
-        return new MatchingScoringConfiguration();
+        return MatchingScoringConfiguration::create();
     }  
     
     /**
