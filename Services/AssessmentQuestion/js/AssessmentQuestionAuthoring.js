@@ -264,8 +264,8 @@ let display_errors = function(errors, text) {
         label = label.replace('((', '').replace('))', '').replace('#', '');
 
         row.find('.etsd_wrong_text').text(label);
-        row.find('#' + (i + 1) + 'etsd_word_index').val(error.start);
-        row.find('#' + (i + 1) + 'etsd_word_length').val(error.length);
+        row.find('#' + (i + 1) + '_answer_options_etsd_word_index').val(error.start);
+        row.find('#' + (i + 1) + '_answer_options_etsd_word_length').val(error.length);
     });
 };
 

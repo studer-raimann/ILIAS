@@ -1,12 +1,8 @@
 <?php
 
-namespace ILIAS\AssessmentQuestion\UserInterface\Web\Form\Questions;
+namespace ILIAS\AssessmentQuestion\Questions\ErrorText;
 
 use ILIAS\AssessmentQuestion\DomainModel\QuestionPlayConfiguration;
-use ILIAS\AssessmentQuestion\DomainModel\Scoring\ErrorTextScoring;
-use ILIAS\AssessmentQuestion\DomainModel\Scoring\ErrorTextScoringConfiguration;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\ErrorTextEditor;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\ErrorTextEditorConfiguration;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Form\QuestionFormGUI;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Form\Config\AnswerOptionForm;
 
@@ -26,7 +22,7 @@ class ErrorTextQuestionGUI extends QuestionFormGUI {
         return QuestionPlayConfiguration::create
         (
             ErrorTextEditorConfiguration::create('', ErrorTextEditor::DEFAULT_TEXTSIZE_PERCENT),
-            ErrorTextScoringConfiguration::create(null)
+            ErrorTextScoringConfiguration::create()
             );
     }
     

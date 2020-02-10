@@ -161,9 +161,14 @@ class AsqTableInput extends ilTextInputGUI {
             $new_value = [];
             
             foreach ($definitions as $definition) {
-                $new_value[$definition->getPostVar()] =
-                ilAsqHtmlPurifier::getInstance()->purify(
-                    $_POST[self::getTableItemPostVar($i, $post_var, $definition->getPostVar())]);
+                $item_post_var = self::getTableItemPostVar($i, $post_var, $definition->getPostVar());
+                
+                if (array_key_exists($item_post_var, $_POST)) {
+                    $new_value[$definition->getPostVar()] =
+                    ilAsqHtmlPurifier::getInstance()->purify(
+                        $_POST[$item_post_var]);                    
+                }
+
             }
             
             $values[] = $new_value;

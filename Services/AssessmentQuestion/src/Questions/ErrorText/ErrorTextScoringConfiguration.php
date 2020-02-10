@@ -1,7 +1,6 @@
 <?php
 
-namespace ILIAS\AssessmentQuestion\DomainModel\Scoring;
-
+namespace ILIAS\AssessmentQuestion\Questions\ErrorText;
 
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
 use srag\CQRS\Aggregate\AbstractValueObject;
@@ -22,7 +21,7 @@ class ErrorTextScoringConfiguration extends AbstractConfiguration {
      */
     protected $points_wrong;    
     
-    static function create(?int $points_wrong) : ErrorTextScoringConfiguration
+    static function create(?int $points_wrong = null) : ErrorTextScoringConfiguration
     {
         $object = new ErrorTextScoringConfiguration();
         $object->points_wrong = $points_wrong;
