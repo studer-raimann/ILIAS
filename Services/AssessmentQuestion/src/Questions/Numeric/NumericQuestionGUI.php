@@ -1,12 +1,8 @@
 <?php
 
-namespace ILIAS\AssessmentQuestion\UserInterface\Web\Form\Questions;
+namespace ILIAS\AssessmentQuestion\Questions\Numeric;
 
 use ILIAS\AssessmentQuestion\DomainModel\QuestionPlayConfiguration;
-use ILIAS\AssessmentQuestion\DomainModel\Scoring\NumericScoring;
-use ILIAS\AssessmentQuestion\DomainModel\Scoring\NumericScoringConfiguration;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\NumericEditor;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\NumericEditorConfiguration;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Form\QuestionFormGUI;
 
 /**
@@ -22,7 +18,9 @@ use ILIAS\AssessmentQuestion\UserInterface\Web\Form\QuestionFormGUI;
 class NumericQuestionGUI extends QuestionFormGUI {
     protected function createDefaultPlayConfiguration(): QuestionPlayConfiguration
     {
-        return QuestionPlayConfiguration::create();
+        return QuestionPlayConfiguration::create(
+            NumericEditorConfiguration::create(),
+            NumericScoringConfiguration::create());
     }
     
     protected function readPlayConfiguration(): QuestionPlayConfiguration

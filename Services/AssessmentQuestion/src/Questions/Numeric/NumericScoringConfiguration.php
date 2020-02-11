@@ -1,7 +1,6 @@
 <?php
 
-namespace ILIAS\AssessmentQuestion\DomainModel\Scoring;
-
+namespace ILIAS\AssessmentQuestion\Questions\Numeric;
 
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
 use srag\CQRS\Aggregate\AbstractValueObject;
@@ -18,20 +17,20 @@ use srag\CQRS\Aggregate\AbstractValueObject;
  */
 class NumericScoringConfiguration extends AbstractConfiguration {
     /**
-     * @var int
+     * @var ?int
      */
     protected $points;
     /**
-     * @var float
+     * @var ?float
      */
     protected $lower_bound;
     /**
-     * @var float
+     * @var ?float
      */
     protected $upper_bound;
 
 
-    static function create(int $points, float $lower_bound , float $upper_bound) : NumericScoringConfiguration
+    static function create(?int $points = null, ?float $lower_bound = null, ?float $upper_bound = null) : NumericScoringConfiguration
     {
         $object = new NumericScoringConfiguration();
         $object->points = $points;

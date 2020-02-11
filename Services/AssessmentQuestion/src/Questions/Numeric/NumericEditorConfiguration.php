@@ -1,6 +1,6 @@
 <?php
 
-namespace ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor;
+namespace ILIAS\AssessmentQuestion\Questions\Numeric;
 
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
 use srag\CQRS\Aggregate\AbstractValueObject;
@@ -18,7 +18,7 @@ use srag\CQRS\Aggregate\AbstractValueObject;
 class NumericEditorConfiguration extends AbstractConfiguration
 {
     /**
-     * @var int
+     * @var ?int
      */
     protected $max_num_of_chars;
 
@@ -28,7 +28,7 @@ class NumericEditorConfiguration extends AbstractConfiguration
      *
      * @return NumericEditorConfiguration
      */
-    public static function create(int $max_num_of_chars) {
+    public static function create(?int $max_num_of_chars = null) {
         $object = new NumericEditorConfiguration();
         $object->max_num_of_chars = $max_num_of_chars;
         return $object;
