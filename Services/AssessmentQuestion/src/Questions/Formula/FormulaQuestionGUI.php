@@ -1,12 +1,8 @@
 <?php
 
-namespace ILIAS\AssessmentQuestion\UserInterface\Web\Form\Questions;
+namespace ILIAS\AssessmentQuestion\Questions\Formula;
 
 use ILIAS\AssessmentQuestion\DomainModel\QuestionPlayConfiguration;
-use ILIAS\AssessmentQuestion\DomainModel\Scoring\FormulaScoring;
-use ILIAS\AssessmentQuestion\DomainModel\Scoring\FormulaScoringConfiguration;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\FormulaEditor;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\FormulaEditorConfiguration;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Fields\AsqTableInput;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Form\QuestionFormGUI;
 /**
@@ -22,7 +18,9 @@ use ILIAS\AssessmentQuestion\UserInterface\Web\Form\QuestionFormGUI;
 class FormulaQuestionGUI extends QuestionFormGUI {
     protected function createDefaultPlayConfiguration(): QuestionPlayConfiguration
     {
-        return QuestionPlayConfiguration::create();
+        return QuestionPlayConfiguration::create(
+            FormulaEditorConfiguration::create(),
+            FormulaScoringConfiguration::create());
     }
     
     protected function readPlayConfiguration(): QuestionPlayConfiguration

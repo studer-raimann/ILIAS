@@ -1,6 +1,6 @@
 <?php
 
-namespace ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor;
+namespace ILIAS\AssessmentQuestion\Questions\Formula;
 
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
 use srag\CQRS\Aggregate\AbstractValueObject;
@@ -17,6 +17,10 @@ use srag\CQRS\Aggregate\AbstractValueObject;
  */
 class FormulaEditorConfiguration extends AbstractConfiguration {
 
+    public static function create() : FormulaEditorConfiguration {
+        return new FormulaEditorConfiguration();
+    }
+    
     // Empty class as Formulaquestion has no clear divide between editor and display
     // So all data is stored in Scoring
     

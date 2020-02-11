@@ -1,6 +1,6 @@
 <?php
 
-namespace ILIAS\AssessmentQuestion\DomainModel\Scoring;
+namespace ILIAS\AssessmentQuestion\Questions\Formula;
 
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
 use srag\CQRS\Aggregate\AbstractValueObject;
@@ -46,11 +46,11 @@ class FormulaScoringConfiguration extends AbstractConfiguration {
     const TYPE_FRACTION = 3;
     const TYPE_COPRIME_FRACTION = 4;
     
-    public static function create(string $units,
-                                  int $precision,
-                                  float $tolerance,
-                                  int $result_type,
-                                  array $variables) : FormulaScoringConfiguration {
+    public static function create(string $units = null,
+                                  int $precision = null,
+                                  float $tolerance = null,
+                                  int $result_type = null,
+                                  array $variables = []) : FormulaScoringConfiguration {
         
         $object = new FormulaScoringConfiguration();
         

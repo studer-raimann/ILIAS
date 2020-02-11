@@ -1,6 +1,6 @@
 <?php
 
-namespace ILIAS\AssessmentQuestion\DomainModel\Scoring;
+namespace ILIAS\AssessmentQuestion\Questions\Formula;
 
 use ILIAS\AssessmentQuestion\ilAsqHtmlPurifier;
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
@@ -9,15 +9,14 @@ use ILIAS\AssessmentQuestion\DomainModel\Question;
 use ILIAS\AssessmentQuestion\DomainModel\QuestionDto;
 use ILIAS\AssessmentQuestion\DomainModel\Answer\Answer;
 use ILIAS\AssessmentQuestion\DomainModel\Answer\Option\AnswerOptions;
+use ILIAS\AssessmentQuestion\DomainModel\Scoring\AbstractScoring;
+use ILIAS\AssessmentQuestion\UserInterface\Web\Fields\AsqTableInput;
+use ILIAS\AssessmentQuestion\UserInterface\Web\Fields\AsqTableInputFieldDefinition;
 use EvalMath;
-use ilButton;
 use ilNumberInputGUI;
 use ilRadioGroupInputGUI;
 use ilRadioOption;
 use ilTextInputGUI;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Fields\AsqTableInput;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Fields\AsqTableInputFieldDefinition;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\FormulaEditor;
 
 /**
  * Class FormulaScoring

@@ -1,12 +1,12 @@
 <?php
 
-namespace ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor;
+namespace ILIAS\AssessmentQuestion\Questions\Formula;
 
 use ILIAS\AssessmentQuestion\ilAsqHtmlPurifier;
 use ILIAS\AssessmentQuestion\DomainModel\Question;
 use ILIAS\AssessmentQuestion\DomainModel\QuestionDto;
-use ILIAS\AssessmentQuestion\DomainModel\Scoring\FormulaScoringConfiguration;
-use ILIAS\AssessmentQuestion\DomainModel\Scoring\FormulaScoringVariable;
+use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\AbstractEditor;
+use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\EmptyDisplayDefinition;
 
 /**
  * Class FormulaEditor
@@ -73,7 +73,7 @@ class FormulaEditor extends AbstractEditor {
 
     public static function readConfig()
     {
-        return new FormulaEditorConfiguration();
+        return FormulaEditorConfiguration::create();
     }
 
     public function setAnswer(string $answer): void
