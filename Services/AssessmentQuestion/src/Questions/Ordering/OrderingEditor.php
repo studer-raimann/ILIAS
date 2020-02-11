@@ -1,10 +1,12 @@
 <?php
 
-namespace ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor;
+namespace ILIAS\AssessmentQuestion\Questions\Ordering;
 
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
 use ILIAS\AssessmentQuestion\DomainModel\Question;
 use ILIAS\AssessmentQuestion\DomainModel\QuestionDto;
+use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\AbstractEditor;
+use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\ImageAndTextDisplayDefinition;
 use ilNumberInputGUI;
 use ilSelectInputGUI;
 use ilTemplate;

@@ -1,12 +1,13 @@
 <?php
 
-namespace ILIAS\AssessmentQuestion\DomainModel\Scoring;
+namespace ILIAS\AssessmentQuestion\Questions\Ordering;
 
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
 use ILIAS\AssessmentQuestion\DomainModel\AnswerScoreDto;
 use ILIAS\AssessmentQuestion\DomainModel\Question;
 use ILIAS\AssessmentQuestion\DomainModel\Answer\Answer;
 use ILIAS\AssessmentQuestion\DomainModel\Answer\Option\AnswerOptions;
+use ILIAS\AssessmentQuestion\DomainModel\Scoring\AbstractScoring;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\EmptyScoringDefinition;
 use ilNumberInputGUI;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor;
+namespace ILIAS\AssessmentQuestion\Questions\Ordering;
 
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
 use srag\CQRS\Aggregate\AbstractValueObject;
@@ -18,7 +18,7 @@ use srag\CQRS\Aggregate\AbstractValueObject;
 class OrderingEditorConfiguration extends AbstractConfiguration
 {
     /**
-     * @var bool
+     * @var ?bool
      */
     protected $vertical;
     /**
@@ -27,8 +27,8 @@ class OrderingEditorConfiguration extends AbstractConfiguration
     protected $minimum_size;
     
     public static function create(
-        bool $vertical, 
-        ?int $minimum_size) : OrderingEditorConfiguration
+        ?bool $vertical = null, 
+        ?int $minimum_size = null) : OrderingEditorConfiguration
     {
         $object = new OrderingEditorConfiguration();
         $object->vertical = $vertical;
@@ -39,7 +39,7 @@ class OrderingEditorConfiguration extends AbstractConfiguration
     /**
      * @return boolean
      */
-    public function isVertical()
+    public function isVertical() : ?bool
     {
         return $this->vertical;
     }
@@ -47,7 +47,7 @@ class OrderingEditorConfiguration extends AbstractConfiguration
     /**
      * @return int
      */
-    public function getMinimumSize()
+    public function getMinimumSize() : ?int
     {
         return $this->minimum_size;
     }

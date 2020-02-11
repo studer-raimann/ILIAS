@@ -1,7 +1,6 @@
 <?php
 
-namespace ILIAS\AssessmentQuestion\DomainModel\Scoring;
-
+namespace ILIAS\AssessmentQuestion\Questions\Ordering;
 
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Form\Config\AnswerOptionForm;
@@ -19,12 +18,12 @@ use srag\CQRS\Aggregate\AbstractValueObject;
  */
 class OrderingScoringConfiguration extends AbstractConfiguration {
     /**
-     * @var int
+     * @var ?int
      */
     protected $points;
     
     
-    static function create(int $points) : OrderingScoringConfiguration
+    static function create(?int $points = null) : OrderingScoringConfiguration
     {
         $object = new OrderingScoringConfiguration();
         $object->points = $points;
@@ -34,7 +33,7 @@ class OrderingScoringConfiguration extends AbstractConfiguration {
     /**
      * @return int
      */
-    public function getPoints()
+    public function getPoints(): ?int
     {
         return $this->points;
     }

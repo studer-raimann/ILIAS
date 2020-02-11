@@ -1,20 +1,16 @@
 <?php
 
-namespace ILIAS\AssessmentQuestion\UserInterface\Web\Form\Questions;
+namespace ILIAS\AssessmentQuestion\Questions\Ordering;
 
 use ILIAS\AssessmentQuestion\DomainModel\QuestionDto;
 use ILIAS\AssessmentQuestion\DomainModel\QuestionPlayConfiguration;
+use ILIAS\AssessmentQuestion\DomainModel\Answer\Option\AnswerOption;
 use ILIAS\AssessmentQuestion\DomainModel\Answer\Option\AnswerOptions;
-use ILIAS\AssessmentQuestion\DomainModel\Scoring\OrderingScoring;
-use ILIAS\AssessmentQuestion\DomainModel\Scoring\OrderingScoringConfiguration;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\OrderingEditor;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\OrderingEditorConfiguration;
+use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\EmptyScoringDefinition;
+use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\ImageAndTextDisplayDefinition;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Form\QuestionFormGUI;
 use ilNumberInputGUI;
 use ilTextAreaInputGUI;
-use ILIAS\AssessmentQuestion\DomainModel\Answer\Option\AnswerOption;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\ImageAndTextDisplayDefinition;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\EmptyScoringDefinition;
 
 /**
  * Class OrderingQuestionGUI

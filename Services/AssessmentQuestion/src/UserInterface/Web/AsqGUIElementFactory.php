@@ -13,11 +13,11 @@ use ILIAS\AssessmentQuestion\Questions\Matching\MatchingQuestionGUI;
 use ILIAS\AssessmentQuestion\Questions\MultipleChoice\MultipleChoiceQuestionGUI;
 use ILIAS\AssessmentQuestion\Questions\MultipleChoice\SingleChoiceQuestionGUI;
 use ILIAS\AssessmentQuestion\Questions\Numeric\NumericQuestionGUI;
+use ILIAS\AssessmentQuestion\Questions\Ordering\OrderingQuestionGUI;
+use ILIAS\AssessmentQuestion\Questions\Ordering\OrderingTextQuestionGUI;
 use ILIAS\AssessmentQuestion\Questions\TextSubset\TextSubsetQuestionGUI;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Form\QuestionFeedbackFormGUI;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Form\Questions\FileUploadQuestionGUI;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Form\Questions\OrderingQuestionGUI;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Form\Questions\OrderingTextQuestionGUI;
 use Exception;
 use ilPropertyFormGUI;
 

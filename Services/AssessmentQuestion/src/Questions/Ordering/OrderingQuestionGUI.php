@@ -1,12 +1,8 @@
 <?php
 
-namespace ILIAS\AssessmentQuestion\UserInterface\Web\Form\Questions;
+namespace ILIAS\AssessmentQuestion\Questions\Ordering;
 
 use ILIAS\AssessmentQuestion\DomainModel\QuestionPlayConfiguration;
-use ILIAS\AssessmentQuestion\DomainModel\Scoring\OrderingScoring;
-use ILIAS\AssessmentQuestion\DomainModel\Scoring\OrderingScoringConfiguration;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\OrderingEditor;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\OrderingEditorConfiguration;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Form\QuestionFormGUI;
 
 /**
@@ -22,7 +18,9 @@ use ILIAS\AssessmentQuestion\UserInterface\Web\Form\QuestionFormGUI;
 class OrderingQuestionGUI extends QuestionFormGUI {
     protected function createDefaultPlayConfiguration(): QuestionPlayConfiguration
     {
-        return QuestionPlayConfiguration::create();
+        return QuestionPlayConfiguration::create(
+            OrderingEditorConfiguration::create(),
+            OrderingScoringConfiguration::create());
     }
     
     protected function readPlayConfiguration(): QuestionPlayConfiguration
