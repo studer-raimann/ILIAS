@@ -1,6 +1,6 @@
 <?php
 
-namespace ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor;
+namespace ILIAS\AssessmentQuestion\Questions\ImageMap;
 
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
 use srag\CQRS\Aggregate\AbstractValueObject;
@@ -18,7 +18,7 @@ use srag\CQRS\Aggregate\AbstractValueObject;
 class ImageMapEditorConfiguration extends AbstractConfiguration {
 
     /**
-     * @var string
+     * @var ?string
      */
     protected $image;
     
@@ -28,7 +28,7 @@ class ImageMapEditorConfiguration extends AbstractConfiguration {
     protected $multiple_choice;
     
     /**
-     * @var int
+     * @var ?int
      */
     protected $max_answers;
     
@@ -36,7 +36,7 @@ class ImageMapEditorConfiguration extends AbstractConfiguration {
      * @param string $image
      * @return ImageMapEditorConfiguration
      */
-    static function create(string $image, bool $multiple_choice, int $max_answers) : ImageMapEditorConfiguration {
+    static function create(?string $image = null, bool $multiple_choice = true, ?int $max_answers = null) : ImageMapEditorConfiguration {
         $object = new ImageMapEditorConfiguration();
         $object->image = $image;
         $object->multiple_choice = $multiple_choice;

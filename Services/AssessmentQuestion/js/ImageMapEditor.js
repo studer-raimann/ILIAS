@@ -7,7 +7,7 @@ let shape_click = function (e) {
         let max = $("#max_answers").val();
         let current = shape.parent().find(".selected").length;
         
-        if (current > max) {
+        if (max > 0 && current > max) {
             shape.removeClass('selected');
         }
         

@@ -1,6 +1,6 @@
 <?php
 
-namespace ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor;
+namespace ILIAS\AssessmentQuestion\Questions\ImageMap;
 
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
 use ILIAS\AssessmentQuestion\DomainModel\Question;
@@ -9,8 +9,9 @@ use ILIAS\AssessmentQuestion\DomainModel\Answer\Option\AnswerOption;
 use ILIAS\AssessmentQuestion\DomainModel\QuestionDto;
 use ilRadioGroupInputGUI;
 use ilRadioOption;
-use ilNumberInputGUI;
+use ilTextInputGUI;
 use ILIAS\AssessmentQuestion\UserInterface\Web\ImageUploader;
+use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\AbstractEditor;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Fields\AsqImageUpload;
 use ilTemplate;
 use Exception;
@@ -220,7 +221,7 @@ class ImageMapEditor extends AbstractEditor {
         $mode = new ilRadioGroupInputGUI($DIC->language()->txt('asq_label_mode'), self::VAR_MULTIPLE_CHOICE);
         $mode->addOption(new ilRadioOption($DIC->language()->txt('asq_label_single_choice'), self::STR_SINGLECHOICE));
         $multi = new ilRadioOption($DIC->language()->txt('asq_label_multiple_choice'), self::STR_MULTICHOICE);
-        $max_answers = new ilNumberInputGUI($DIC->language()->txt('asq_label_answering_limitation'), self::VAR_MAX_ANSWERS);
+        $max_answers = new ilTextInputGUI($DIC->language()->txt('asq_label_answering_limitation'), self::VAR_MAX_ANSWERS);
         $max_answers->setInfo($DIC->language()->txt('asq_info_answering_limitation'));
         $multi->addSubItem($max_answers);
         $mode->addOption($multi);
@@ -255,7 +256,7 @@ class ImageMapEditor extends AbstractEditor {
             ImageUploader::getInstance()->processImage(self::VAR_IMAGE),
             $_POST[self::VAR_MULTIPLE_CHOICE] === self::STR_MULTICHOICE,
             $_POST[self::VAR_MULTIPLE_CHOICE] === self::STR_MULTICHOICE ? 
-                intval($_POST[self::VAR_MAX_ANSWERS]) : 
+                empty($_POST[self::VAR_MAX_ANSWERS]) ? null : intval($_POST[self::VAR_MAX_ANSWERS]) : 
                 1);
     }
     
