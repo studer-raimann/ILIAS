@@ -1,7 +1,6 @@
 <?php
 
-namespace ILIAS\AssessmentQuestion\DomainModel\Scoring;
-
+namespace ILIAS\AssessmentQuestion\Questions\FileUpload;
 
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
 use srag\CQRS\Aggregate\AbstractValueObject;
@@ -18,12 +17,12 @@ use srag\CQRS\Aggregate\AbstractValueObject;
  */
 class FileUploadScoringConfiguration extends AbstractConfiguration {
     /**
-     * @var int
+     * @var ?int
      */
     protected $points;
     
     /**
-     * @var bool
+     * @var ?bool
      */
     protected $completed_by_submition;
     
@@ -32,7 +31,7 @@ class FileUploadScoringConfiguration extends AbstractConfiguration {
      * @param bool $completed_by_submition
      * @return FileUploadScoringConfiguration
      */
-    static function create(int $points, bool $completed_by_submition) : FileUploadScoringConfiguration
+    static function create(?int $points = null, ?bool $completed_by_submition = null) : FileUploadScoringConfiguration
     {
         $object = new FileUploadScoringConfiguration();
         $object->points = $points;
@@ -50,7 +49,7 @@ class FileUploadScoringConfiguration extends AbstractConfiguration {
     /**
      * @return boolean
      */
-    public function isCompletedBySubmition() {
+    public function isCompletedBySubmition() : ?bool {
         return $this->completed_by_submition;
     }
     

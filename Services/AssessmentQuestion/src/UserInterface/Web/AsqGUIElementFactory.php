@@ -6,6 +6,7 @@ use ILIAS\AssessmentQuestion\DomainModel\QuestionDto;
 use ILIAS\AssessmentQuestion\Questions\Cloze\ClozeQuestionGUI;
 use ILIAS\AssessmentQuestion\Questions\ErrorText\ErrorTextQuestionGUI;
 use ILIAS\AssessmentQuestion\Questions\Essay\EssayQuestionGUI;
+use ILIAS\AssessmentQuestion\Questions\FileUpload\FileUploadQuestionGUI;
 use ILIAS\AssessmentQuestion\Questions\Formula\FormulaQuestionGUI;
 use ILIAS\AssessmentQuestion\Questions\ImageMap\ImageMapQuestionGUI;
 use ILIAS\AssessmentQuestion\Questions\Kprim\KprimChoiceQuestionGUI;
@@ -17,7 +18,6 @@ use ILIAS\AssessmentQuestion\Questions\Ordering\OrderingQuestionGUI;
 use ILIAS\AssessmentQuestion\Questions\Ordering\OrderingTextQuestionGUI;
 use ILIAS\AssessmentQuestion\Questions\TextSubset\TextSubsetQuestionGUI;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Form\QuestionFeedbackFormGUI;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Form\Questions\FileUploadQuestionGUI;
 use Exception;
 use ilPropertyFormGUI;
 

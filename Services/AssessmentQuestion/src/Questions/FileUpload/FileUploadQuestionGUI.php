@@ -1,12 +1,8 @@
 <?php
 
-namespace ILIAS\AssessmentQuestion\UserInterface\Web\Form\Questions;
+namespace ILIAS\AssessmentQuestion\Questions\FileUpload;
 
 use ILIAS\AssessmentQuestion\DomainModel\QuestionPlayConfiguration;
-use ILIAS\AssessmentQuestion\DomainModel\Scoring\FileUploadScoring;
-use ILIAS\AssessmentQuestion\DomainModel\Scoring\FileUploadScoringConfiguration;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\FileUploadEditor;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\FileUploadEditorConfiguration;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Form\QuestionFormGUI;
 
 /**
@@ -22,7 +18,9 @@ use ILIAS\AssessmentQuestion\UserInterface\Web\Form\QuestionFormGUI;
 class FileUploadQuestionGUI extends QuestionFormGUI {
     protected function createDefaultPlayConfiguration(): QuestionPlayConfiguration
     {
-        return QuestionPlayConfiguration::create();
+        return QuestionPlayConfiguration::create(
+            FileUploadEditorConfiguration::create(),
+            FileUploadScoringConfiguration::create());
     }
     
     protected function readPlayConfiguration(): QuestionPlayConfiguration

@@ -1,10 +1,12 @@
 <?php
 
-namespace ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor;
+namespace ILIAS\AssessmentQuestion\Questions\FileUpload;
 
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
 use ILIAS\AssessmentQuestion\DomainModel\Question;
 use ILIAS\AssessmentQuestion\DomainModel\QuestionDto;
+use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\AbstractEditor;
+use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\EmptyDisplayDefinition;
 use ILIAS\FileUpload\Location;
 use ILIAS\FileUpload\DTO\ProcessingStatus;
 use ilNumberInputGUI;

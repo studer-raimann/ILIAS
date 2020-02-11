@@ -1,6 +1,6 @@
 <?php
 
-namespace ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor;
+namespace ILIAS\AssessmentQuestion\Questions\FileUpload;
 
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
 use srag\CQRS\Aggregate\AbstractValueObject;
@@ -33,7 +33,7 @@ class FileUploadEditorConfiguration extends AbstractConfiguration {
      * @param int $upload_type
      * @return FileUploadEditorConfiguration
      */
-    public static function create(?int $maximum_size, ?string $allowed_extensions) : FileUploadEditorConfiguration {
+    public static function create(?int $maximum_size = null, ?string $allowed_extensions = null) : FileUploadEditorConfiguration {
         $object = new FileUploadEditorConfiguration();
         $object->maximum_size = $maximum_size;
         $object->allowed_extensions = $allowed_extensions;
