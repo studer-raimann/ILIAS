@@ -1,7 +1,6 @@
 <?php
 
-namespace ILIAS\AssessmentQuestion\DomainModel\Scoring;
-
+namespace ILIAS\AssessmentQuestion\Questions\TextSubset;
 
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
 use srag\CQRS\Aggregate\AbstractValueObject;
@@ -18,11 +17,11 @@ use srag\CQRS\Aggregate\AbstractValueObject;
  */
 class TextSubsetScoringConfiguration extends AbstractConfiguration {
     /**
-     * @var int
+     * @var ?int
      */
     protected $text_matching;
     
-    static function create(int $text_matching) : TextSubsetScoringConfiguration
+    static function create(?int $text_matching = null) : TextSubsetScoringConfiguration
     {
         $object = new TextSubsetScoringConfiguration();
         $object->text_matching = $text_matching;
@@ -30,9 +29,9 @@ class TextSubsetScoringConfiguration extends AbstractConfiguration {
     }
     
     /**
-     * @return int
+     * @return ?int
      */
-    public function getTextMatching()
+    public function getTextMatching() : ?int
     {
         return $this->text_matching;
     }

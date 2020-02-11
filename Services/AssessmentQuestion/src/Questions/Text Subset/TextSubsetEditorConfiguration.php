@@ -1,6 +1,6 @@
 <?php
 
-namespace ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor;
+namespace ILIAS\AssessmentQuestion\Questions\TextSubset;
 
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
 use srag\CQRS\Aggregate\AbstractValueObject;
@@ -18,7 +18,7 @@ use srag\CQRS\Aggregate\AbstractValueObject;
 class TextSubsetEditorConfiguration extends AbstractConfiguration
 {
     /**
-     * @var int
+     * @var ?int
      */
     protected $number_of_requested_answers;
     
@@ -28,7 +28,7 @@ class TextSubsetEditorConfiguration extends AbstractConfiguration
      *
      * @return TextSubsetEditorConfiguration
      */
-    public static function create(int $number_of_requested_answers) {
+    public static function create(?int $number_of_requested_answers = null) {
         $object = new TextSubsetEditorConfiguration();
         $object->number_of_requested_answers = $number_of_requested_answers;
         return $object;
@@ -37,7 +37,7 @@ class TextSubsetEditorConfiguration extends AbstractConfiguration
     /**
      * @return int
      */
-    public function getNumberOfRequestedAnswers()
+    public function getNumberOfRequestedAnswers() : ?int
     {
         return $this->number_of_requested_answers;
     }
