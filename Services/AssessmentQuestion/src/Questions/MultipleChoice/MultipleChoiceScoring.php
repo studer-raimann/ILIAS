@@ -40,7 +40,7 @@ class MultipleChoiceScoring extends AbstractScoring
     {
         $reached_points = 0;
 
-        $selected_options = json_decode($answer->getValue(), true);
+        $selected_options = $answer->getValue()->getSelectedIds();
 
         /** @var AnswerOption $answer_option */
         foreach ($this->question->getAnswerOptions()->getOptions() as $answer_option) {
@@ -73,7 +73,7 @@ class MultipleChoiceScoring extends AbstractScoring
             ->getMaxAnswers();
         $answers = array_slice($answers, 0, $length);
 
-        return new Answer(0, $this->question->getId(), '',0,0, json_encode($answers));
+        return new Answer(0, $this->question->getId(), '',0,0, MultipleChoiceAnswer::create($answers));
     }
 
     public static function readConfig()

@@ -2,12 +2,10 @@
 
 namespace ILIAS\AssessmentQuestion\Questions\MultipleChoice;
 
-
-use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
 use srag\CQRS\Aggregate\AbstractValueObject;
 
 /**
- * Class MultipleChoiceScoringConfiguration
+ * Class MultipleChoiceAnswer
  *
  * @package ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Answer\Option;
  * @author  studer + raimann ag - Team Custom 1 <support-custom1@studer-raimann.ch>
@@ -16,8 +14,19 @@ use srag\CQRS\Aggregate\AbstractValueObject;
  * @author  Martin Studer <ms@studer-raimann.ch>
  * @author  Theodor Truffer <tt@studer-raimann.ch>
  */
-class MultipleChoiceScoringConfiguration extends AbstractConfiguration {
-    public static function create() : MultipleChoiceScoringConfiguration {
-        return new MultipleChoiceScoringConfiguration();
+class MultipleChoiceAnswer extends AbstractValueObject {
+    /**
+     * @var int[]
+     */
+    protected $selected_ids;
+    
+    public static function create(array $selected_ids) : MultipleChoiceAnswer {
+        $object = new MultipleChoiceAnswer();
+        $object->selected_ids = $selected_ids;
+        return $object;
+    }
+    
+    public function getSelectedIds() : array {
+        return $this->selected_ids;
     }
 }

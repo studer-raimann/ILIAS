@@ -2,9 +2,11 @@
 
 namespace ILIAS\AssessmentQuestion\Questions\MultipleChoice;
 
+use ILIAS\AssessmentQuestion\DomainModel\QuestionDto;
 use ILIAS\AssessmentQuestion\DomainModel\QuestionPlayConfiguration;
+use ILIAS\AssessmentQuestion\DomainModel\Answer\Option\AnswerOption;
+use ILIAS\AssessmentQuestion\DomainModel\Answer\Option\AnswerOptions;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\ImageAndTextDisplayDefinition;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Fields\AsqTableInputFieldDefinition;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Form\QuestionFormGUI;
 use ilHiddenInputGUI;
 
@@ -18,19 +20,12 @@ use ilHiddenInputGUI;
  * @author  Martin Studer <ms@studer-raimann.ch>
  * @author  Theodor Truffer <tt@studer-raimann.ch>
  */
-class SingleChoiceQuestionGUI extends QuestionFormGUI {
+class SingleChoiceQuestionGUI extends ChoiceQuestionGUI {
 	protected function createDefaultPlayConfiguration(): QuestionPlayConfiguration
 	{
 	    return QuestionPlayConfiguration::create
 	    (
 	        MultipleChoiceEditorConfiguration::create(false, 1),
-	        MultipleChoiceScoringConfiguration::create());
-	}
-	
-	protected function readPlayConfiguration(): QuestionPlayConfiguration
-	{
-	    return QuestionPlayConfiguration::create(
-	        MultipleChoiceEditor::readConfig(),
 	        MultipleChoiceScoringConfiguration::create());
 	}
 	

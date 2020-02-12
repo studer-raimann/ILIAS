@@ -84,19 +84,4 @@ class MultipleChoiceEditorConfiguration extends AbstractConfiguration {
 	public function isSingleLine() {
 	    return $this->single_line;
 	}
-
-    /**
-     * @param AbstractValueObject $other
-     *
-     * @return bool
-     */
-    public function equals(AbstractValueObject $other): bool
-    {
-        /** @var MultipleChoiceEditorConfiguration $other */
-        return get_class($this) === get_class($other) &&
-               $this->isShuffleAnswers() === $other->isShuffleAnswers() &&
-               $this->getMaxAnswers() === $other->getMaxAnswers() &&
-               $this->getThumbnailSize() === $other->getThumbnailSize() &&
-               $this->isSingleLine() === $other->isSingleLine();
-    }
 }

@@ -14,6 +14,7 @@ use ilCheckboxInputGUI;
 use ilNumberInputGUI;
 use ilTemplate;
 use stdClass;
+use srag\CQRS\Aggregate\AbstractValueObject;
 
 /**
  * Class MultipleChoiceEditor
@@ -36,9 +37,9 @@ class MultipleChoiceEditor extends AbstractEditor {
 	 */
 	private $configuration;
 	/**
-	 * @var array
+	 * @var MultipleChoiceAnswer
 	 */
-	private $selected_answers;
+	private $selected_answer;
 
 	const VAR_MCE_SHUFFLE = 'shuffle';
 	const VAR_MCE_MAX_ANSWERS = 'max_answers';
@@ -129,7 +130,7 @@ class MultipleChoiceEditor extends AbstractEditor {
 	}
 
 
-	public function readAnswer(): string {
+	public function readAnswer() : AbstractValueObject {
 		if ($this->isMultipleChoice()) {
 			$result = [];
 			/** @var AnswerOption $answer_option */
@@ -139,18 +140,20 @@ class MultipleChoiceEditor extends AbstractEditor {
 					$result[] = $_POST[$poststring];
 				}
 			}
-			return json_encode($result);
+			$this->selected_answer = MultipleChoiceAnswer::create($result);
 		} else {
-			return json_encode([$_POST[$this->getPostName()]]);
+		    $this->selected_answer = MultipleChoiceAnswer::create([$_POST[$this->getPostName()]]);
 		}
+		
+		return $this->selected_answer;
 	}
 
 
 	/**
-	 * @param string $answer
+	 * @param AbstractValueObject $answer
 	 */
-	public function setAnswer(string $answer) : void {
-			$this->selected_answers = json_decode($answer, true);
+	public function setAnswer(AbstractValueObject $answer) : void {
+			$this->selected_answer = $answer;
 	}
 
 	public static function generateFields(?AbstractConfiguration $config): ?array {

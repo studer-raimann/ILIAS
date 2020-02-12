@@ -4,7 +4,6 @@ namespace ILIAS\AssessmentQuestion\UserInterface\Web\Fields;
 
 use ILIAS\AssessmentQuestion\ilAsqHtmlPurifier;
 use ILIAS\AssessmentQuestion\DomainModel\QuestionPlayConfiguration;
-use ILIAS\AssessmentQuestion\DomainModel\Answer\Option\AnswerOptions;
 use Exception;
 use ilNumberInputGUI;
 use ilRadioGroupInputGUI;
@@ -190,6 +189,13 @@ class AsqTableInput extends ilTextInputGUI {
     public function readValues() {
         $this->values = self::readValuesFromPost($this->getPostVar(), $this->definitions);
         return $this->values;
+    }
+    
+    /**
+     * @param array $values
+     */
+    public function setValues(array $values) {
+        $this->values = $values;
     }
     
     /**

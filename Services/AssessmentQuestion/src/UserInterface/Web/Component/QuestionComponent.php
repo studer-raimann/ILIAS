@@ -93,7 +93,7 @@ class QuestionComponent
     }
 
 
-    public function readAnswer() : string
+    public function readAnswer()
     {
         return $this->editor->readAnswer();
     }

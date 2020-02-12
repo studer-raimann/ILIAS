@@ -19,19 +19,12 @@ use ILIAS\AssessmentQuestion\UserInterface\Web\Form\QuestionFormGUI;
  * @author  Martin Studer <ms@studer-raimann.ch>
  * @author  Theodor Truffer <tt@studer-raimann.ch>
  */
-class MultipleChoiceQuestionGUI extends QuestionFormGUI {
+class MultipleChoiceQuestionGUI extends ChoiceQuestionGUI {
     protected function createDefaultPlayConfiguration(): QuestionPlayConfiguration
     {
         return QuestionPlayConfiguration::create(
             MultipleChoiceEditorConfiguration::create(),
             MultipleChoiceScoringConfiguration::create());
-    }
-    
-    protected function readPlayConfiguration(): QuestionPlayConfiguration
-    {
-        return QuestionPlayConfiguration::create(
-            MultipleChoiceEditor::readConfig(),
-            MultipleChoiceScoring::readConfig());
     }
     
     protected function initiatePlayConfiguration(?QuestionPlayConfiguration $play): void
@@ -43,29 +36,5 @@ class MultipleChoiceQuestionGUI extends QuestionFormGUI {
         foreach (MultipleChoiceScoring::generateFields($play->getScoringConfiguration()) as $field) {
             $this->addItem($field);
         }
-    }
-    
-    /**
-     * @param QuestionDto $question
-     * @return QuestionDto
-     */
-    protected function processPostQuestion(QuestionDto $question) : QuestionDto
-    {
-        // remove image for multilines
-        if (!$question->getPlayConfiguration()->getEditorConfiguration()->isSingleLine()) {
-            $processed_options = new AnswerOptions();
-            
-            foreach ($question->getAnswerOptions()->getOptions() as $option) {
-                $processed_options->addOption(
-                    new AnswerOption(
-                        $option->getOptionId(),
-                        new ImageAndTextDisplayDefinition($option->getDisplayDefinition()->getText(), ''), 
-                        $option->getScoringDefinition()));
-            }
-            
-            $question->setAnswerOptions($processed_options);
-        }
-        
-        return $question;
     }
 }

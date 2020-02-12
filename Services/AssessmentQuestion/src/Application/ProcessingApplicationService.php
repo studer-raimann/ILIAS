@@ -23,6 +23,7 @@ use ilAsqQuestionPageGUI;
 use ilAsqQuestionProcessingGUI;
 use srag\CQRS\Aggregate\DomainObjectId;
 use srag\CQRS\Command\CommandBusBuilder;
+use srag\CQRS\Aggregate\AbstractValueObject;
 const MSG_SUCCESS = "success";
 
 /**
@@ -189,7 +190,7 @@ class ProcessingApplicationService
      * @param string $value
      * @return Answer
      */
-    public function createNewAnswer(QuestionDto $question_dto, string $value) : Answer {
+    public function createNewAnswer(QuestionDto $question_dto, AbstractValueObject $value) : Answer {
         return new Answer($this->actor_user_id, $question_dto->getId(), $question_dto->getRevisionId(), $question_dto->getContainerObjId(), $this->attempt_number, $value);
     }
     

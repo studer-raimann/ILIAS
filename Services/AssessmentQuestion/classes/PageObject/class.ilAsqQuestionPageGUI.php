@@ -4,6 +4,7 @@
 
 
 use ILIAS\AssessmentQuestion\UserInterface\Web\Component\QuestionComponent;
+use srag\CQRS\Aggregate\AbstractValueObject;
 
 /**
  * Class ilAsqQuestionPageGUI
@@ -143,7 +144,7 @@ class ilAsqQuestionPageGUI extends ilPageObjectGUI
         return $this->component;
     }
 
-    function getEnteredAnswer() : string {
+    function getEnteredAnswer() : AbstractValueObject {
         return $this->component->readAnswer();
     }
 }

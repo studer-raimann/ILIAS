@@ -6,6 +6,7 @@ use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
 use ILIAS\AssessmentQuestion\DomainModel\Question;
 use ILIAS\AssessmentQuestion\DomainModel\Answer\Answer;
 use ILIAS\AssessmentQuestion\DomainModel\QuestionDto;
+use srag\CQRS\Aggregate\AbstractValueObject;
 
 /**
  * Abstract Class AbstractEditor
@@ -44,15 +45,16 @@ abstract class AbstractEditor {
 	 */
 	abstract public function generateHtml(): string;
 
+	//TODO uncomment abstract methods after change is complete
 	/**
 	 * @return Answer
 	 */
-	abstract public function readAnswer(): string;
+	//abstract public function readAnswer() : AbstractValueObject;
 
 	/**
-	 * @param string $answer
+	 * @param AbstractValueObject $answer
 	 */
-	abstract public function setAnswer(string $answer) : void;
+	//abstract public function setAnswer(AbstractValueObject $answer) : void;
 
     /**
      * @param AbstractConfiguration|null $config

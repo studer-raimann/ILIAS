@@ -4,6 +4,7 @@ namespace ILIAS\AssessmentQuestion\DomainModel\Answer;
 
 use JsonSerializable;
 use srag\CQRS\Aggregate\Entity;
+use srag\CQRS\Aggregate\AbstractValueObject;
 
 /**
  * Class Answer
@@ -30,7 +31,7 @@ class Answer implements Entity, JsonSerializable {
      */
     protected $revision_key;
 	/**
-	 * @var string
+	 * @var AbstractValueObject
 	 */
 	protected $value;
 	/**
@@ -42,7 +43,7 @@ class Answer implements Entity, JsonSerializable {
      */
     protected $attempt_number;
 
-	public function __construct(int $anwerer_id, string $question_id,  string $revision_key, int $test_id, int $attempt_number, string $value) {
+	public function __construct(int $anwerer_id, string $question_id,  string $revision_key, int $test_id, int $attempt_number, AbstractValueObject $value) {
 		$this->answerer_id = $anwerer_id;
 		$this->question_id = $question_id;
         $this->revision_key = $revision_key;
@@ -80,7 +81,7 @@ class Answer implements Entity, JsonSerializable {
 	/**
 	 * @return string
 	 */
-	public function getValue(): string {
+	public function getValue(): AbstractValueObject {
 		return $this->value;
 	}
 

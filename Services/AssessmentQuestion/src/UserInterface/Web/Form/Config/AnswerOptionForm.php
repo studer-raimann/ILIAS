@@ -55,6 +55,10 @@ class AnswerOptionForm extends AsqTableInput {
 		$this->options = $options;
 	}
 	
+	public function setAnswerOptions(Answeroptions $options) {
+	    $this->setValues($this->getRawOptionValue($options->getOptions()));
+	}
+	
 	private function getRawOptionValue(array $options) {
 	    return array_map(function($option) {
 	       return !is_null($option) ? $option->rawValues() : null;
