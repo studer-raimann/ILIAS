@@ -3,7 +3,6 @@
 namespace ILIAS\AssessmentQuestion\Questions\Matching;
 
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
-use srag\CQRS\Aggregate\AbstractValueObject;
 
 /**
  * Class MultipleChoiceEditorConfiguration
@@ -121,17 +120,5 @@ class MatchingEditorConfiguration extends AbstractConfiguration {
     public function getMatches()
     {
         return $this->matches;
-    }
-
-    public function equals(AbstractValueObject $other): bool
-    {
-        /** @var MatchingEditorConfiguration $other */
-        return get_class($this) === get_class($other) &&
-               $this->getDefinitions() == $other->getDefinitions() &&
-               $this->getMatches() == $other->getMatches() &&
-               $this->getMatchingMode() === $other->getMatchingMode() &&
-               $this->getShuffle() == $other->getShuffle() &&
-               $this->getTerms() == $other->getTerms() &&
-               $this->getThumbnailSize() === $other->getThumbnailSize();
     }
 }

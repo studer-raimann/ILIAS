@@ -3,7 +3,6 @@
 namespace ILIAS\AssessmentQuestion\Questions\Matching;
 
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
-use srag\CQRS\Aggregate\AbstractValueObject;
 
 /**
  * Class MatchingScoringConfiguration
@@ -16,12 +15,18 @@ use srag\CQRS\Aggregate\AbstractValueObject;
  * @author  Theodor Truffer <tt@studer-raimann.ch>
  */
 class MatchingScoringConfiguration extends AbstractConfiguration {
-    public static function create() : MatchingScoringConfiguration {
-        return new MatchingScoringConfiguration();
-    }
+    /**
+     * @var ?int
+     */
+    protected $wrong_deduction;
     
-    public function equals(AbstractValueObject $other): bool
-    {
-        return get_class($this) === get_class($other);
+    public static function create(?int $wrong_deduction = null) : MatchingScoringConfiguration {
+        $object = new MatchingScoringConfiguration();
+        $object->wrong_deduction = $wrong_deduction;
+        return $object;
+    }
+        
+    public function getWrongDeduction(): ?int {
+        return $this->wrong_deduction;
     }
 }

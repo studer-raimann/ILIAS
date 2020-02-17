@@ -32,11 +32,11 @@ class MatchingQuestionGUI extends QuestionFormGUI {
     
     protected function initiatePlayConfiguration(?QuestionPlayConfiguration $play): void
     {
-        foreach (MatchingEditor::generateFields($play->getEditorConfiguration()) as $field) {
+        foreach (MatchingScoring::generateFields($play->getScoringConfiguration()) as $field) {
             $this->addItem($field);
         }
         
-        foreach (MatchingScoring::generateFields($play->getScoringConfiguration()) as $field) {
+        foreach (MatchingEditor::generateFields($play->getEditorConfiguration()) as $field) {
             $this->addItem($field);
         }
     }

@@ -13,9 +13,10 @@ use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\EmptyDisplayDefi
 use ILIAS\AssessmentQuestion\UserInterface\Web\Fields\AsqTableInput;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Fields\AsqTableInputFieldDefinition;
 use ilTemplate;
+use srag\CQRS\Aggregate\AbstractValueObject;
 
 /**
- * Class KprimChoiceEditor
+ * Class MatchingEditor
  *
  * @package ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Answer\Option;
  * @author studer + raimann ag - Team Custom 1 <support-custom1@studer-raimann.ch>
@@ -54,7 +55,7 @@ class MatchingEditor extends AbstractEditor
     const VAR_MATCH_POINTS = 'me_match_points';
     
     /**
-     * @var string
+     * @var MatchingAnswer
      */
     private $answer;
     
@@ -71,12 +72,16 @@ class MatchingEditor extends AbstractEditor
      */
     private static $matches;
     
-    public function readAnswer(): string
+    public function readAnswer(): MatchingAnswer
     {
-        return $_POST[$this->question->getId()];
+        $matches = explode(';', $_POST[$this->question->getId()]);
+        
+        $matches = array_diff($matches, ['']);
+        
+        return MatchingAnswer::create($matches);
     }
 
-    public function setAnswer(string $answer): void
+    public function setAnswer(MatchingAnswer $answer): void
     {
         $this->answer = $answer;
     }
@@ -88,7 +93,7 @@ class MatchingEditor extends AbstractEditor
         
         $tpl = new ilTemplate("tpl.MatchingEditor.html", true, true, "Services/AssessmentQuestion");
         $tpl->setVariable('QUESTION_ID', $this->question->getId());
-        $tpl->setVariable('ANSWER', $this->answer);
+        $tpl->setVariable('ANSWER', is_null($this->answer) ? '' :$this->answer->getAnswerString());
         $tpl->setVariable('MATCHING_TYPE', $config->getMatchingMode());
         
         foreach ($config->getDefinitions() as $id=>$definition) {

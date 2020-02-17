@@ -92,15 +92,4 @@ class KprimChoiceEditorConfiguration extends AbstractConfiguration {
     {
         return $this->label_false;
     }
-
-    public function equals(AbstractValueObject $other): bool
-    {
-        /** @var KprimChoiceEditorConfiguration $other */
-        return get_class($this) === get_class($other) &&
-               $this->label_false === $other->label_false &&
-               $this->label_true === $other->label_true &&
-               $this->shuffle_answers === $other->shuffle_answers &&
-               $this->single_line === $other->single_line &&
-               $this->thumbnail_size === $other->thumbnail_size;
-    }
 }

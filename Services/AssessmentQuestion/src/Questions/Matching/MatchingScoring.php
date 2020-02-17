@@ -2,11 +2,14 @@
 
 namespace ILIAS\AssessmentQuestion\Questions\Matching;
 
+use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
 use ILIAS\AssessmentQuestion\DomainModel\AnswerScoreDto;
 use ILIAS\AssessmentQuestion\DomainModel\Question;
 use ILIAS\AssessmentQuestion\DomainModel\Answer\Answer;
+use ILIAS\AssessmentQuestion\DomainModel\Answer\Option\AnswerOptions;
 use ILIAS\AssessmentQuestion\DomainModel\Scoring\AbstractScoring;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\EmptyScoringDefinition;
+use ilNumberInputGUI;
 
 /**
  * Class MultipleChoiceScoring
@@ -20,12 +23,13 @@ use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\EmptyScoringDefi
  */
 class MatchingScoring extends AbstractScoring
 {
+    const VAR_WRONG_DEDUCTION = 'ms_wrong_deduction';
+    
     public function score(Answer $answer): AnswerScoreDto
     {
-        $given_matches = explode(";" ,$answer->getValue());
-        
         $matches = [];
         $max_score = 0;
+        $wrong_deduction = $this->question->getPlayConfiguration()->getScoringConfiguration()->getWrongDeduction();
         
         foreach ($this->question->getPlayConfiguration()->getEditorConfiguration()->getMatches() as $match) {
             $key = $match[MatchingEditor::VAR_MATCH_DEFINITION] . '-' . $match[MatchingEditor::VAR_MATCH_TERM];
@@ -36,19 +40,46 @@ class MatchingScoring extends AbstractScoring
         
         $score = 0;
         
-        foreach ($given_matches as $given_match) {
+        foreach ($answer->getValue()->getMatches() as $given_match) {
             if(array_key_exists($given_match, $matches)) {
                 $score += $matches[$given_match];
             }
+            else if (!is_null($wrong_deduction)) {
+                $score -= $wrong_deduction;
+            }
         }
         
+        if ($score < 0) {
+            $score = 0;
+        }
         
         return $this->createScoreDto($answer, $max_score, $score, $this->getAnswerFeedbackType($score,$max_score));
     }
 
+    
+    /**
+     * @return array|null
+     */
+    public static function generateFields(?AbstractConfiguration $config, AnswerOptions $options = null): ?array {
+        global $DIC;
+        
+        $fields = [];
+        
+        $wrong_deduction = new ilNumberInputGUI($DIC->language()->txt('asq_label_wrong_deduction'), self::VAR_WRONG_DEDUCTION);
+        $wrong_deduction->setSize(2);
+        $fields[self::VAR_WRONG_DEDUCTION] = $wrong_deduction;
+        
+        if (!is_null($config)) {
+            $wrong_deduction->setValue($config->getWrongDeduction());
+        }
+        
+        return $fields;
+    }
+    
     public static function readConfig()
     {
-        return MatchingScoringConfiguration::create();
+        return MatchingScoringConfiguration::create(
+            intval($_POST[self::VAR_WRONG_DEDUCTION]));
     }  
     
     /**
@@ -61,7 +92,6 @@ class MatchingScoring extends AbstractScoring
     
     public static function isComplete(Question $question): bool
     {
-        // matching question definition is solely done in the editor
         return true;
     }
 }
