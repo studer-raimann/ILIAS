@@ -24,23 +24,21 @@ class KprimChoiceScoring extends AbstractScoring {
     const VAR_POINTS = 'kcs_points';
     const VAR_HALF_POINTS = 'kcs_half_points_at';
     
-    const STR_TRUE = "True";
-    const STR_FALSE = "False";
-    
     function score(Answer $answer) : AnswerScoreDto {
         $reached_points = 0;
         $max_points = 0;
 
-        $answers = json_decode($answer->getValue(), true);
+        /** @var $answers KprimChoiceAnswer */
+        $answers = $answer->getValue();
         $count = 0;
         
         foreach ($this->question->getAnswerOptions()->getOptions() as $option) {
             /** @var KprimChoiceScoringDefinition $scoring_definition */
             $scoring_definition = $option->getScoringDefinition();
-            $current_answer = $answers[$option->getOptionId()];
+            $current_answer = $answers->getAnswerForId($option->getOptionId());
             if (!is_null($current_answer)) {
-                if ($current_answer == self::STR_TRUE && $scoring_definition->isCorrect_value() ||
-                    $current_answer == self::STR_FALSE && !$scoring_definition->isCorrect_value()) {
+                if ($current_answer == true && $scoring_definition->isCorrectValue() ||
+                    $current_answer == false && !$scoring_definition->isCorrectValue()) {
                     $count += 1;
                 }
             }
@@ -48,10 +46,11 @@ class KprimChoiceScoring extends AbstractScoring {
         /** @var KprimChoiceScoringConfiguration $scoring_conf */
         $scoring_conf = $this->question->getPlayConfiguration()->getScoringConfiguration();
         $max_points += $scoring_conf->getPoints();
-        if ($count === count($answers)) {
+        if ($count === count($this->question->getAnswerOptions()->getOptions())) {
             $reached_points = $scoring_conf->getPoints();
         } 
-        else if ($count >= $scoring_conf->getHalfPointsAt()) {
+        else if (!is_null($scoring_conf->getHalfPointsAt()) &&
+                 $count >= $scoring_conf->getHalfPointsAt()) {
             $reached_points = floor($scoring_conf->getPoints() / 2);
         }
 
@@ -66,15 +65,15 @@ class KprimChoiceScoring extends AbstractScoring {
             /** @var KprimChoiceScoringDefinition $scoring_definition */
             $scoring_definition = $option->getScoringDefinition();
             
-            if ($scoring_definition->isCorrect_value()) {
-                $answers[$option->getOptionId()] = self::STR_TRUE;
+            if ($scoring_definition->isCorrectValue()) {
+                $answers[$option->getOptionId()] = true;
             }
             else {
-                $answers[$option->getOptionId()] = self::STR_FALSE;
+                $answers[$option->getOptionId()] = false;
             }
         }
         
-        return new Answer(0, $this->question->getId(), '','',0, json_encode($answers));
+        return new Answer(0, $this->question->getId(), '','',0, KprimChoiceAnswer::create($answers));
     }
     
     /**
@@ -109,7 +108,7 @@ class KprimChoiceScoring extends AbstractScoring {
     public static function readConfig() : ?AbstractConfiguration {        
         return KprimChoiceScoringConfiguration::create(
             intval($_POST[self::VAR_POINTS]),
-            intval($_POST[self::VAR_HALF_POINTS]));
+            array_key_exists(self::VAR_HALF_POINTS, $_POST) ? intval($_POST[self::VAR_HALF_POINTS]) : null);
     }
     
     public static function isComplete(Question $question): bool
@@ -129,7 +128,7 @@ class KprimChoiceScoring extends AbstractScoring {
             /** @var KprimChoiceScoringDefinition $option_config */
             $option_config = $option->getScoringDefinition();
             
-            if (empty($option_config->isCorrect_value()))
+            if (empty($option_config->isCorrectValue()))
             {
                 return false;
             }

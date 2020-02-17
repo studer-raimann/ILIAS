@@ -36,7 +36,7 @@ class KprimChoiceScoringDefinition extends AnswerDefinition {
     /**
      * @return boolean
      */
-    public function isCorrect_value()
+    public function isCorrectValue()
     {
         return $this->correct_value;
     }

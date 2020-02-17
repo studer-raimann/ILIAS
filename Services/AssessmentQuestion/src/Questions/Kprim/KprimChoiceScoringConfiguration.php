@@ -22,7 +22,7 @@ class KprimChoiceScoringConfiguration extends AbstractConfiguration {
      */
     protected $points;
     /**
-     * @var int
+     * @var ?int
      */
     protected $half_points_at;
     
@@ -31,7 +31,7 @@ class KprimChoiceScoringConfiguration extends AbstractConfiguration {
      * @param int $half_points_at
      * @return KprimChoiceScoringConfiguration
      */
-    static function create(int $points = null, int $half_points_at = null) : KprimChoiceScoringConfiguration
+    static function create(?int $points = null, ?int $half_points_at = null) : KprimChoiceScoringConfiguration
         {
             $object = new KprimChoiceScoringConfiguration();
             $object->points = $points;
@@ -40,17 +40,17 @@ class KprimChoiceScoringConfiguration extends AbstractConfiguration {
     }
     
     /**
-     * @return number
+     * @return ?int
      */
-    public function getPoints()
+    public function getPoints() : ?int
     {
         return $this->points;
     }
     
     /**
-     * @return number
+     * @return ?int
      */
-    public function getHalfPointsAt()
+    public function getHalfPointsAt() : ?int
     {
         return $this->half_points_at;
     }

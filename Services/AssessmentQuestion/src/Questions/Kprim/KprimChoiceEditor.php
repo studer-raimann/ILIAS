@@ -15,6 +15,7 @@ use ilRadioGroupInputGUI;
 use ilTextInputGUI;
 use ilRadioOption;
 use ilTemplate;
+use srag\CQRS\Aggregate\AbstractValueObject;
 
 /**
  * Class KprimChoiceEditor
@@ -53,7 +54,7 @@ class KprimChoiceEditor extends AbstractEditor {
     const STR_NOT_ADEQUATE = 'not adequate';
     
     /**
-     * @var array
+     * @var KprimChoiceAnswer
      */
     private $answer;
     /**
@@ -76,25 +77,36 @@ class KprimChoiceEditor extends AbstractEditor {
         parent::__construct($question);
     }
     
-    public function readAnswer(): string
+    public function readAnswer(): AbstractValueObject
     {
         $answers = [];
         
         /** @var AnswerOption $answer_option */
         foreach ($this->answer_options as $answer_option) {
-            $answers[$answer_option->getOptionId()] = $_POST[$this->getPostName($answer_option->getOptionId())];
+            $answer = $_POST[$this->getPostName($answer_option->getOptionId())];
+            
+            
+            if ($answer === self::STR_TRUE) {
+                $answers[$answer_option->getOptionId()] = true;
+            }
+            else if ($answer === self::STR_FALSE) {
+                $answers[$answer_option->getOptionId()] = false;
+            }
+            else {
+                $answers[$answer_option->getOptionId()] = null;
+            }
         }
         
-        return json_encode($answers);
+        return KprimChoiceAnswer::create($answers);
     }
 
     /**
      * {@inheritDoc}
      * @see \ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\AbstractEditor::setAnswer()
      */
-    public function setAnswer(string $answer): void
+    public function setAnswer(AbstractValueObject $answer): void
     {
-        $this->answer = json_decode($answer, true);
+        $this->answer = $answer;
     }
 
     /**
@@ -123,10 +135,11 @@ class KprimChoiceEditor extends AbstractEditor {
             $tpl->setVariable('VALUE_FALSE', self::STR_FALSE);
             
             if (!is_null($this->answer)) {
-                if($this->answer[$answer_option->getOptionId()] == self::STR_TRUE) {
+                $answer = $this->answer->getAnswerForId($answer_option->getOptionId());
+                if($answer === true) {
                     $tpl->setVariable('CHECKED_ANSWER_TRUE', 'checked="checked"');
                 } 
-                else if ($this->answer[$answer_option->getOptionId()] == self::STR_FALSE) {
+                else if ($answer === false) {
                     $tpl->setVariable('CHECKED_ANSWER_FALSE', 'checked="checked"');
                 }
             }
@@ -159,14 +172,7 @@ class KprimChoiceEditor extends AbstractEditor {
         $shuffle = new ilCheckboxInputGUI($DIC->language()->txt('asq_label_shuffle'), self::VAR_SHUFFLE_ANSWERS);
         $shuffle->setValue(1);
         $fields[self::VAR_SHUFFLE_ANSWERS] = $shuffle;
-   
-        $singleline = new ilSelectInputGUI($DIC->language()->txt('asq_label_editor'), self::VAR_SINGLE_LINE);
-        $singleline->setOptions([
-            self::STR_TRUE => $DIC->language()->txt('asq_option_single_line'),
-            self::STR_FALSE => $DIC->language()->txt('asq_option_multi_line')]);
-        
-        $fields[self::VAR_SINGLE_LINE] = $singleline;
-        
+
         $thumb_size = new ilNumberInputGUI(
             $DIC->language()->txt('asq_label_thumb_size'),
             self::VAR_THUMBNAIL_SIZE);
@@ -183,7 +189,6 @@ class KprimChoiceEditor extends AbstractEditor {
         if ($config !== null) {
             $shuffle->setChecked($config->isShuffleAnswers());
             $thumb_size->setValue($config->getThumbnailSize());
-            $singleline->setValue($config->isSingleLine() ? self::STR_TRUE : self::STR_FALSE);
         }
         else {
             $shuffle->setChecked(true);
