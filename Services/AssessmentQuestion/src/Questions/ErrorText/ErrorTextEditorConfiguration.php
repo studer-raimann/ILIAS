@@ -3,7 +3,6 @@
 namespace ILIAS\AssessmentQuestion\Questions\ErrorText;
 
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
-use srag\CQRS\Aggregate\AbstractValueObject;
 
 /**
  * Class ErrorTextEditorConfiguration
@@ -65,20 +64,5 @@ class ErrorTextEditorConfiguration extends AbstractConfiguration
         $error_text = str_replace('((', '', $error_text);
         $error_text = str_replace('))', '', $error_text);
         return $error_text;
-    }
-    
-    /**
-     * Compares ValueObjects to each other returns true if they are the same
-     *
-     * @param AbstractValueObject $other
-     *
-     * @return bool
-     */
-    function equals(AbstractValueObject $other) : bool
-    {
-        /** @var ErrorTextEditorConfiguration $other */
-        return get_class($this) === get_class($other) &&
-        $this->error_text === $other->error_text &&
-        $this->text_size === $other->text_size;
     }
 }

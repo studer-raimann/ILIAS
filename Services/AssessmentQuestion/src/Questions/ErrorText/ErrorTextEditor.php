@@ -12,6 +12,7 @@ use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\EmptyDisplayDefi
 use ilNumberInputGUI;
 use ilTemplate;
 use ilTextAreaInputGUI;
+use srag\CQRS\Aggregate\AbstractValueObject;
 
 /**
  * Class ErrorTextEditor
@@ -34,14 +35,13 @@ class ErrorTextEditor extends AbstractEditor {
      */
     private $configuration;
     /**
-     * @var ?array
+     * @var ErrorTextAnswer
      */
     private $answer;
     
     public function __construct(QuestionDto $question) {
         $this->configuration = $question->getPlayConfiguration()->getEditorConfiguration();
-        $this->answer = [];
-        
+
         parent::__construct($question);
     }
     
@@ -54,7 +54,12 @@ class ErrorTextEditor extends AbstractEditor {
         
         $tpl->setCurrentBlock('editor');
         $tpl->setVariable('ERRORTEXT_ID', $this->getPostKey());
-        $tpl->setVariable('ERRORTEXT_VALUE', implode(',', $this->answer));
+        
+        if ($this->configuration->getTextSize() !== 100) {
+            $tpl->setVariable('STYLE', sprintf('style="font-size: %fem"', $this->configuration->getTextSize() / 100));
+        }
+        
+        $tpl->setVariable('ERRORTEXT_VALUE', is_null($this->answer) ? '' : $this->answer->getPostString());
         $tpl->setVariable('ERRORTEXT', $this->generateErrorText());
         $tpl->parseCurrentBlock();
         
@@ -80,7 +85,7 @@ class ErrorTextEditor extends AbstractEditor {
         
         for ($i = 0; $i < count($words); $i++) {
             $css = 'errortext_word';
-            if (in_array($i, $this->answer)) {
+            if (!is_null($this->answer) && in_array($i, $this->answer->getSelectedWordIndexes())) {
                 $css .= ' selected';
             }
             $text .= '<span class="' . $css . '" data-index="' . $i . '">' . $words[$i] . '</span> ';
@@ -92,7 +97,7 @@ class ErrorTextEditor extends AbstractEditor {
     /**
      * @return Answer
      */
-    public function readAnswer() : string
+    public function readAnswer() : AbstractValueObject
     {       
         $answers = $_POST[$this->getPostKey()];
         
@@ -103,20 +108,19 @@ class ErrorTextEditor extends AbstractEditor {
                 return intval($answer);
             }, $answers);
             
-            return json_encode($answers);
+            return ErrorTextAnswer::create($answers);
         }
         else {
-            return json_encode([]);
+            return ErrorTextAnswer::create();
         }
-        
     }
     
     /**
-     * @param string $answer
+     * @param AbstractValueObject $answer
      */
-    public function setAnswer(string $answer) : void
+    public function setAnswer(AbstractValueObject $answer) : void
     {
-        $this->answer = json_decode($answer, true);
+        $this->answer = $answer;
     }
     
     public static function generateFields(?AbstractConfiguration $config): ?array {

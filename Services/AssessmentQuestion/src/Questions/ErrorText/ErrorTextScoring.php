@@ -27,7 +27,7 @@ class ErrorTextScoring extends AbstractScoring {
         $reached_points = 0;
         $max_points = 0;
         
-        $selected_words = json_decode($answer->getValue(), true);
+        $selected_words = $answer->getValue()->getSelectedWordIndexes();
         $correct_words = [];
         
         foreach ($this->question->getAnswerOptions()->getOptions() as $option) {
