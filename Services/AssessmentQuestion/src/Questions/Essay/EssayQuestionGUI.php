@@ -2,6 +2,7 @@
 
 namespace ILIAS\AssessmentQuestion\Questions\Essay;
 
+use ILIAS\AssessmentQuestion\ilAsqHtmlPurifier;
 use ILIAS\AssessmentQuestion\DomainModel\QuestionDto;
 use ILIAS\AssessmentQuestion\DomainModel\QuestionPlayConfiguration;
 use ILIAS\AssessmentQuestion\DomainModel\Answer\Option\AnswerOption;
@@ -50,16 +51,23 @@ class EssayQuestionGUI extends QuestionFormGUI {
             
             $i = 1; 
             
-            while (array_key_exists($i . $prefix . EssayScoringDefinition::VAR_TEXT, $_POST)) {
+            while (array_key_exists($this->getPostKey($i, $prefix, EssayScoringDefinition::VAR_TEXT), $_POST)) {
                 $options->addOption(new AnswerOption(
                         $i,
                         new EmptyDisplayDefinition(),
-                        EssayScoringDefinition::getValueFromPost($i . $prefix)));
+                        new EssayScoringDefinition(
+                            ilAsqHtmlPurifier::getInstance()->purify($_POST[$this->getPostKey($i, $prefix, EssayScoringDefinition::VAR_TEXT)]),
+                            array_key_exists($this->getPostKey($i, $prefix, EssayScoringDefinition::VAR_POINTS), $_POST) ? 
+                                intval($_POST[$this->getPostKey($i, $prefix, EssayScoringDefinition::VAR_POINTS)]) : null)));
                 $i += 1;
             }
         }
     
         return $options;
+    }
+    
+    private function getPostKey($i, $prefix, $suffix) {
+        return sprintf('%s_%s_%s', $i, $prefix, $suffix);
     }
     
     protected function initiatePlayConfiguration(?QuestionPlayConfiguration $play): void

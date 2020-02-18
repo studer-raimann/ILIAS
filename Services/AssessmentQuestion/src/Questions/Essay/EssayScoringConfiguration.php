@@ -3,7 +3,6 @@
 namespace ILIAS\AssessmentQuestion\Questions\Essay;
 
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
-use srag\CQRS\Aggregate\AbstractValueObject;
 
 /**
  * Class EssayScoringConfiguration
@@ -54,14 +53,5 @@ class EssayScoringConfiguration extends AbstractConfiguration {
     
     public function getPoints() {
         return $this->points;
-    }
-    
-    public function equals(AbstractValueObject $other): bool
-    {
-        /** @var EssayScoringConfiguration $other */
-        return get_class($this) === get_class($other) &&
-               $this->matching_mode === $other->matching_mode &&
-               $this->scoring_mode === $other->scoring_mode &&
-               $this->points === $other->points;
     }
 }

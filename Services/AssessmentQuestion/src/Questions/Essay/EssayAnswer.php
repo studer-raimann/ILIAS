@@ -2,10 +2,10 @@
 
 namespace ILIAS\AssessmentQuestion\Questions\Essay;
 
-use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
+use srag\CQRS\Aggregate\AbstractValueObject;
 
 /**
- * Class EssayEditorConfiguration
+ * Class EssayAnswer
  *
  * @package ILIAS\AssessmentQuestion\Authoring\DomainModel\Question\Answer\Option;
  * @author  studer + raimann ag - Team Custom 1 <support-custom1@studer-raimann.ch>
@@ -14,24 +14,19 @@ use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
  * @author  Martin Studer <ms@studer-raimann.ch>
  * @author  Theodor Truffer <tt@studer-raimann.ch>
  */
-class EssayEditorConfiguration extends AbstractConfiguration
-{
+class EssayAnswer extends AbstractValueObject {
     /**
-     * @var ?int
+     * @var string
      */
-    protected $max_length;
+    protected $text;
     
-    public static function create(?int $max_length = null) {
-        $object = new EssayEditorConfiguration();
-        $object->max_length = $max_length;
+    public static function create(?string $text = null) : EssayAnswer {
+        $object = new EssayAnswer();
+        $object->text = $text;
         return $object;
     }
     
-    /**
-     * @return int
-     */
-    public function getMaxLength() : ?int
-    {
-        return $this->max_length;
+    public function getText() : ?string {
+        return $this->text;
     }
 }

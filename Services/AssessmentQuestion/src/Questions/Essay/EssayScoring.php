@@ -80,7 +80,7 @@ class EssayScoring extends AbstractScoring {
             throw new Exception("Dont run score on manual scoring");
         }
         else {
-            $reached_points = $this->generateScore($answer->getValue());
+            $reached_points = $this->generateScore($answer->getValue()->getText());
             $max_points = $this->getMaxPoints();
             
             return $this->createScoreDto($answer, $max_points, $reached_points, $this->getAnswerFeedbackType($reached_points, $max_points));
@@ -118,7 +118,7 @@ class EssayScoring extends AbstractScoring {
             }
             
             // match found
-            if ($found) {
+            if ($found && $this->configuration->getScoringMode() === self::SCORING_AUTOMATIC_ANY) {
                 $points += $answer_option->getPoints();
             }
             
@@ -234,14 +234,14 @@ class EssayScoring extends AbstractScoring {
         $any->setInfo($DIC->language()->txt('asq_info_automatic_any'));
         $any_options = new AsqTableInput($DIC->language()->txt('asq_label_answers'), 
              self::VAR_ANSWERS_ANY, 
-             self::readAnswerOptionValues($options, self::VAR_ANSWERS_ANY), 
+             self::readAnswerOptionValues($options), 
              [
                  new AsqTableInputFieldDefinition($DIC->language()->txt('asq_label_answer_text'), 
                                                   AsqTableInputFieldDefinition::TYPE_TEXT, 
-                                                  self::VAR_ANSWERS_ANY . EssayScoringDefinition::VAR_TEXT),
+                                                  EssayScoringDefinition::VAR_TEXT),
                  new AsqTableInputFieldDefinition($DIC->language()->txt('asq_label_points'),
                                                   AsqTableInputFieldDefinition::TYPE_NUMBER,
-                                                  self::VAR_ANSWERS_ANY . EssayScoringDefinition::VAR_POINTS)
+                                                  EssayScoringDefinition::VAR_POINTS)
                                          ]);
         $any->addSubItem($any_options);
         $scoring_mode->addOption($any);
@@ -250,11 +250,11 @@ class EssayScoring extends AbstractScoring {
         $all->setInfo($DIC->language()->txt('asq_info_automatic_all'));
         $all_options = new AsqTableInput($DIC->language()->txt('asq_label_answers'),
             self::VAR_ANSWERS_ALL,
-            self::readAnswerOptionValues($options, self::VAR_ANSWERS_ALL),
+            self::readAnswerOptionValues($options),
             [
                 new AsqTableInputFieldDefinition($DIC->language()->txt('asq_label_answer_text'),
                     AsqTableInputFieldDefinition::TYPE_TEXT,
-                    self::VAR_ANSWERS_ALL . EssayScoringDefinition::VAR_TEXT)
+                    EssayScoringDefinition::VAR_TEXT)
             ]);
         
         $all_points = new ilNumberInputGUI($DIC->language()->txt('asq_label_points'), self::VAR_ANSWERS_ALL . self::VAR_POINTS);
@@ -270,11 +270,11 @@ class EssayScoring extends AbstractScoring {
         
         $one_options = new AsqTableInput($DIC->language()->txt('asq_label_answers'),
             self::VAR_ANSWERS_ONE,
-            self::readAnswerOptionValues($options, self::VAR_ANSWERS_ONE),
+            self::readAnswerOptionValues($options),
             [
                 new AsqTableInputFieldDefinition($DIC->language()->txt('asq_label_answer_text'),
                     AsqTableInputFieldDefinition::TYPE_TEXT,
-                    self::VAR_ANSWERS_ONE . EssayScoringDefinition::VAR_TEXT)
+                    EssayScoringDefinition::VAR_TEXT)
             ]);
         
         $one_points = new ilNumberInputGUI($DIC->language()->txt('asq_label_points'), self::VAR_ANSWERS_ONE . self::VAR_POINTS);
@@ -297,7 +297,7 @@ class EssayScoring extends AbstractScoring {
         return $fields;
     }
     
-    private static function readAnswerOptionValues(?Answeroptions $options, string $prefix) : array {
+    private static function readAnswerOptionValues(?Answeroptions $options) : array {
         if (is_null($options) || count($options->getOptions()) === 0) {
             return [];
         }
@@ -309,8 +309,8 @@ class EssayScoring extends AbstractScoring {
             $definition = $option->getScoringDefinition();
             
             $new_item = [];
-            $new_item[$prefix . EssayScoringDefinition::VAR_TEXT] = $definition->getText();
-            $new_item[$prefix . EssayScoringDefinition::VAR_POINTS] = $definition->getPoints();
+            $new_item[EssayScoringDefinition::VAR_TEXT] = $definition->getText();
+            $new_item[EssayScoringDefinition::VAR_POINTS] = $definition->getPoints();
             $values[] = $new_item;     
         }
         

@@ -11,6 +11,7 @@ use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\EmptyDisplayDefi
 use ilNumberInputGUI;
 use ilTemplate;
 use ILIAS\AssessmentQuestion\ilAsqHtmlPurifier;
+use srag\CQRS\Aggregate\AbstractValueObject;
 
 /**
  * Class EssayEditor
@@ -31,7 +32,7 @@ class EssayEditor extends AbstractEditor {
      */
     private $configuration;
     /**
-     * @var string
+     * @var EssayAnswer
      */
     private $answer;
     
@@ -50,7 +51,7 @@ class EssayEditor extends AbstractEditor {
         
         $tpl = new ilTemplate("tpl.EssayEditor.html", true, true, "Services/AssessmentQuestion");
         
-        $tpl->setVariable('ESSAY', $this->answer);
+        $tpl->setVariable('ESSAY', is_null($this->answer) ? '' : $this->answer->getText());
         $tpl->setVariable('POST_VAR', $this->question->getId());
         
         if (!empty($this->configuration->getMaxLength())) {
@@ -78,15 +79,15 @@ class EssayEditor extends AbstractEditor {
     /**
      * @return Answer
      */
-    public function readAnswer() : string
+    public function readAnswer() : AbstractValueObject
     {
-        return ilAsqHtmlPurifier::getInstance()->purify($_POST[$this->question->getId()]);
+        return EssayAnswer::create(ilAsqHtmlPurifier::getInstance()->purify($_POST[$this->question->getId()]));
     }
     
     /**
-     * @param string $answer
+     * @param AbstractValueObject $answer
      */
-    public function setAnswer(string $answer) : void
+    public function setAnswer(AbstractValueObject $answer) : void
     {
         $this->answer = $answer;
     }
