@@ -50,4 +50,10 @@ class ErrorTextQuestionGUI extends QuestionFormGUI {
             AnswerOptionForm::OPTION_HIDE_EMPTY => true
         ];
     }
+    
+    protected function postInit() {
+        global $DIC;
+        
+        $DIC->ui()->mainTemplate()->addJavaScript("./Services/AssessmentQuestion/src/Questions/ErrorText/ErrorTextAuthoring.js");
+    }
 }

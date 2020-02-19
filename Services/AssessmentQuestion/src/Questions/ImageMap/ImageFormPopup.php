@@ -1,6 +1,6 @@
 <?php
 
-namespace ILIAS\AssessmentQuestion\UserInterface\Web\Fields;
+namespace ILIAS\AssessmentQuestion\Questions\ImageMap;
 
 use ilTemplate;
 use ilTextInputGUI;

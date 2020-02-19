@@ -15,7 +15,8 @@ use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\AbstractEditor;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Fields\AsqImageUpload;
 use ilTemplate;
 use Exception;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Fields\ImageFormPopup;
+use ILIAS\AssessmentQuestion\Questions\MultipleChoice\MultipleChoiceAnswer;
+use srag\CQRS\Aggregate\AbstractValueObject;
 
 /**
  * Class ImageMapEditor
@@ -42,12 +43,11 @@ class ImageMapEditor extends AbstractEditor {
      */
     private $configuration;
     /**
-     * @var array
+     * @var MultipleChoiceAnswer
      */
     private $selected_answers;
     
     public function __construct(QuestionDto $question) {
-        $this->selected_answers = [];
         $this->configuration = $question->getPlayConfiguration()->getEditorConfiguration();
         
         parent::__construct($question);
@@ -63,7 +63,7 @@ class ImageMapEditor extends AbstractEditor {
         $tpl->setCurrentBlock('generic');
         $tpl->setVariable('POST_NAME', $this->getPostName());
         $tpl->setVariable('IMAGE_URL', $this->configuration->getImage());
-        $tpl->setVariable('VALUE', $this->selected_answers);
+        $tpl->setVariable('VALUE', is_null($this->selected_answers) ? '' : implode(',', $this->selected_answers->getSelectedIds()));
         $tpl->setVariable('MAX_ANSWERS', $this->configuration->getMaxAnswers());
         $tpl->parseCurrentBlock();
         
@@ -184,7 +184,7 @@ class ImageMapEditor extends AbstractEditor {
     private function getClass(int $id) : string {
         $class = '';
         
-        if (in_array($id, $this->selected_answers)) {
+        if (!is_null($this->selected_answers) && in_array($id, $this->selected_answers->getSelectedIds())) {
             $class .= ' selected';
         }
         
@@ -198,18 +198,21 @@ class ImageMapEditor extends AbstractEditor {
     /**
      * @return Answer
      */
-    public function readAnswer() : string
+    public function readAnswer() : AbstractValueObject
     {
-        return json_encode(explode(',', $_POST[$this->getPostName()]));
+        return MultipleChoiceAnswer::create(
+            array_map(function($item) {
+                return intval($item);
+            }, explode(',', $_POST[$this->getPostName()]))
+        );
     }
-    
     
     /**
      * @param string $answer
      */
-    public function setAnswer(string $answer) : void
+    public function setAnswer(AbstractValueObject $answer) : void
     {
-        $this->selected_answers = json_decode($answer, true);
+        $this->selected_answers = $answer;
     }
     
     public static function generateFields(?AbstractConfiguration $config): ?array {
