@@ -36,7 +36,7 @@ class NumericScoring extends AbstractScoring
         /** @var NumericScoringConfiguration $scoring_conf */
         $scoring_conf = $this->question->getPlayConfiguration()->getScoringConfiguration();
 
-        $float_answer = floatval($answer->getValue());
+        $float_answer = $answer->getValue()->getValue();
 
         $max_points = $scoring_conf->getPoints();
         if ($float_answer !== null &&

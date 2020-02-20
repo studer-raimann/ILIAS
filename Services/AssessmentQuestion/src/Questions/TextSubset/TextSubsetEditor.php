@@ -10,6 +10,7 @@ use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\AbstractEditor;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\EmptyDisplayDefinition;
 use ilNumberInputGUI;
 use ilTemplate;
+use srag\CQRS\Aggregate\AbstractValueObject;
 
 /**
  * Class TextSubsetEditor
@@ -30,7 +31,7 @@ class TextSubsetEditor extends AbstractEditor {
      */
     private $configuration;
     /**
-     * @var ?array
+     * @var AbstractValueObject
      */
     private $answer;
     
@@ -53,8 +54,8 @@ class TextSubsetEditor extends AbstractEditor {
             $tpl->setVariable('TEXTFIELD_ID', $this->getPostValue($i));
             $tpl->setVariable('TEXTFIELD_SIZE', $this->calculateSize());
             
-            if (!is_null($this->answer[$i])) {
-                $tpl->setVariable('TEXTFIELD_VALUE', 'value="' . $this->answer[$i] . '"');
+            if (!is_null($this->answer) && !is_null($this->answer->getAnswers()[$i])) {
+                $tpl->setVariable('TEXTFIELD_VALUE', 'value="' . $this->answer->getAnswers()[$i] . '"');
             }
             
             $tpl->parseCurrentBlock();
@@ -84,9 +85,9 @@ class TextSubsetEditor extends AbstractEditor {
     }
     
     /**
-     * @return Answer
+     * @return AbstractValueObject
      */
-    public function readAnswer() : string
+    public function readAnswer() : AbstractValueObject
     {
         $answer = [];
         
@@ -94,15 +95,15 @@ class TextSubsetEditor extends AbstractEditor {
             $answer[$i] = $_POST[$this->getPostValue($i)];
         }
         
-        return json_encode($answer);
+        return TextSubsetAnswer::create($answer);
     }
     
     /**
-     * @param string $answer
+     * @param AbstractValueObject $answer
      */
-    public function setAnswer(string $answer) : void
+    public function setAnswer(AbstractValueObject $answer) : void
     {
-        $this->answer = json_decode($answer, true);
+        $this->answer = $answer;
     }
     
     public static function generateFields(?AbstractConfiguration $config): ?array {

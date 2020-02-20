@@ -40,4 +40,10 @@ class ClozeQuestionGUI extends QuestionFormGUI {
             $this->addItem($field);
         }
     }
+    
+    protected function postInit() {
+        global $DIC;
+        
+        $DIC->ui()->mainTemplate()->addJavaScript("./Services/AssessmentQuestion/src/Questions/Cloze/ClozeAuthoring.js");
+    }
 }

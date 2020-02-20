@@ -7,6 +7,7 @@ use ILIAS\AssessmentQuestion\DomainModel\Question;
 use ILIAS\AssessmentQuestion\DomainModel\QuestionDto;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\AbstractEditor;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\EmptyDisplayDefinition;
+use srag\CQRS\Aggregate\AbstractValueObject;
 
 /**
  * Class FormulaEditor
@@ -26,21 +27,19 @@ class FormulaEditor extends AbstractEditor {
      */
     private $configuration;
     /**
-     * @var array
+     * @var AbstractValueObject
      */
     private $answers;
     
     public function __construct(QuestionDto $question) {      
-        $this->answers = [];
         $this->configuration = $question->getPlayConfiguration()->getScoringConfiguration();
         
         parent::__construct($question);
     }
     
-    public function readAnswer(): string
+    public function readAnswer(): AbstractValueObject
     {
         $answers = [];
-        
         $index = 1;
         $continue = true;
         while ($continue) {
@@ -51,7 +50,7 @@ class FormulaEditor extends AbstractEditor {
             $index += 1;
         }
         
-        return json_encode($answers);
+        return FormulaAnswer::create($answers);
     }
     
     private function processVar($name, &$answers) : bool {
@@ -76,9 +75,9 @@ class FormulaEditor extends AbstractEditor {
         return FormulaEditorConfiguration::create();
     }
 
-    public function setAnswer(string $answer): void
+    public function setAnswer(AbstractValueObject $answer): void
     {
-        $this->answers = json_decode($answer, true);
+        $this->answers = $answer;
     }
 
     public function generateHtml(): string
@@ -103,7 +102,7 @@ class FormulaEditor extends AbstractEditor {
     private function createResult(int $index, string $output, string $units) :string {
         $name = '$r' . $index;
 
-        $html = sprintf('<input type="text" length="20" name="%s" value="%s" />%s', $this->getPostVariable($name), $this->answers[$name] ?? '', ! empty($units) ? $this->createUnitSelection($units, $name) : '');
+        $html = sprintf('<input type="text" length="20" name="%s" value="%s" />%s', $this->getPostVariable($name), !is_null($this->answers) ? $this->answers->getValues()[$name] : '', ! empty($units) ? $this->createUnitSelection($units, $name) : '');
 
         return str_replace($name, $html, $output);
     }
@@ -114,7 +113,7 @@ class FormulaEditor extends AbstractEditor {
                        implode(array_map(function($unit) use ($name) {
                            return sprintf('<option value="%1$s" %2$s>%1$s</option>', 
                                $unit,
-                               $this->answers[$name . self::VAR_UNIT] === $unit ? 'selected="selected"': '');
+                               $this->answers->getValues()[$name . self::VAR_UNIT] === $unit ? 'selected="selected"': '');
                        }, explode(',', $units))));
     }
     
@@ -123,7 +122,7 @@ class FormulaEditor extends AbstractEditor {
         
         $html = sprintf('<input type="hidden" name="%1$s" value="%2$s" />%2$s %3$s',
             $this->getPostVariable($name),
-            $this->answers[$name] ?? $this->generateVariableValue($def),
+            !is_null($this->answers) ? $this->answers->getValues()[$name] : $this->generateVariableValue($def),
             $def->getUnit());
         
         return str_replace($name, $html, $output);

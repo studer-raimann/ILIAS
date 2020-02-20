@@ -49,24 +49,22 @@ class TextSubsetScoring extends AbstractScoring
 
         /** @var TextSubsetScoringConfiguration $scoring_conf */
         $scoring_conf = $this->question->getPlayConfiguration()->getScoringConfiguration();
-
-        $answer_arr = json_decode($answer->getValue(), true);
         
         switch ($scoring_conf->getTextMatching()) {
             case self::TM_CASE_INSENSITIVE:
-                return $this->caseInsensitiveScoring($answer_arr);
+                return $this->caseInsensitiveScoring();
             case self::TM_CASE_SENSITIVE:
-                return $this->caseSensitiveScoring($answer_arr);
+                return $this->caseSensitiveScoring();
             case self::TM_LEVENSHTEIN_1:
-                return $this->levenshteinScoring($answer_arr, 1);
+                return $this->levenshteinScoring(1);
             case self::TM_LEVENSHTEIN_2:
-                return $this->levenshteinScoring($answer_arr, 2);
+                return $this->levenshteinScoring(2);
             case self::TM_LEVENSHTEIN_3:
-                return $this->levenshteinScoring($answer_arr, 3);
+                return $this->levenshteinScoring(3);
             case self::TM_LEVENSHTEIN_4:
-                return $this->levenshteinScoring($answer_arr, 4);
+                return $this->levenshteinScoring(4);
             case self::TM_LEVENSHTEIN_5:
-                return $this->levenshteinScoring($answer_arr, 5);
+                return $this->levenshteinScoring(5);
         }
         
         throw new Exception("Unknown Test Subset Scoring Method found");
@@ -89,11 +87,11 @@ class TextSubsetScoring extends AbstractScoring
      * @param array $answer_arr
      * @return int
      */
-    private function caseInsensitiveScoring(array $answer_arr) : AnswerScoreDto {
+    private function caseInsensitiveScoring() : AnswerScoreDto {
         $reached_points = 0;
         $max_points = self::calculateMaxPoints($this->question);
         
-        foreach ($answer_arr as $result) {
+        foreach ($this->answer->getValue()->getAnswers() as $result) {
             foreach ($this->question->getAnswerOptions()->getOptions() as $correct) {
                 if (strtoupper($correct->getScoringDefinition()->getText()) === strtoupper($result)) {
                     $reached_points += $correct->getScoringDefinition()->getPoints();
@@ -109,11 +107,11 @@ class TextSubsetScoring extends AbstractScoring
      * @param array $answer_arr
      * @return int
      */
-    private function caseSensitiveScoring(array $answer_arr) : AnswerScoreDto {
+    private function caseSensitiveScoring() : AnswerScoreDto {
         $reached_points = 0;
         $max_points = self::calculateMaxPoints($this->question);
  
-        foreach ($answer_arr as $result) {
+        foreach ($this->answer->getValue()->getAnswers() as $result) {
             foreach ($this->question->getAnswerOptions()->getOptions() as $correct) {
                 if ($correct->getScoringDefinition()->getText() === $result) {
                     $reached_points += $correct->getScoringDefinition()->getPoints();
@@ -130,11 +128,11 @@ class TextSubsetScoring extends AbstractScoring
      * @param int $distance
      * @return int
      */
-    private function levenshteinScoring(array $answer_arr, int $distance) : AnswerScoreDto {
+    private function levenshteinScoring(int $distance) : AnswerScoreDto {
         $reached_points = 0;
         $max_points = $max_points = self::calculateMaxPoints($this->question);
         
-        foreach ($answer_arr as $result) {
+        foreach ($this->answer->getValue()->getAnswers() as $result) {
             foreach ($this->question->getAnswerOptions()->getOptions() as $correct) {
                 if (levenshtein($correct->getScoringDefinition()->getText(), $result) <= $distance) {
                     $reached_points += $correct->getScoringDefinition()->getPoints();

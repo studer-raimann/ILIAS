@@ -10,6 +10,7 @@ use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\ImageAndTextDisp
 use ilNumberInputGUI;
 use ilSelectInputGUI;
 use ilTemplate;
+use srag\CQRS\Aggregate\AbstractValueObject;
 
 /**
  * Class OrderingEditor
@@ -32,14 +33,29 @@ class OrderingEditor extends AbstractEditor {
      */
     private $configuration;
     /**
-     * @var string
+     * @var OrderingAnswer
      */
     private $answer;
     
-    public function __construct(QuestionDto $question) {
+    /**
+     * @var array
+     */
+    private $display_ids;
+    
+    public function __construct(QuestionDto $question) {      
         $this->configuration = $question->getPlayConfiguration()->getEditorConfiguration();
         
+        $this->calculateDisplayIds($question->getAnswerOptions()->getOptions());
+        
         parent::__construct($question);
+    }
+    
+    private function calculateDisplayIds($options) {
+        $this->display_ids = array_map(function($item) {
+            return $item->getDisplayDefinition()->getText();
+        }, $options);
+        
+        sort($this->display_ids);
     }
 
     /**
@@ -52,14 +68,6 @@ class OrderingEditor extends AbstractEditor {
         if (empty($this->answer)) {
             $items = $this->question->getAnswerOptions()->getOptions();
             shuffle($items);
-
-            $this->answer = implode(',',
-                array_map(
-                    function($answer_option)
-                    {
-                        return $answer_option->getOptionId();
-                    },
-                    $items));
         }
         else {
             $items = $this->orderItemsByAnswer();
@@ -67,7 +75,7 @@ class OrderingEditor extends AbstractEditor {
 
         foreach ($items as $item) {
             $tpl->setCurrentBlock('item');
-            $tpl->setVariable('OPTION_ID', $item->getOptionId());
+            $tpl->setVariable('OPTION_ID', array_search($item->getDisplayDefinition()->getText(), $this->display_ids));
             $tpl->setVariable('ITEM_TEXT', $item->getDisplayDefinition()->getText());
             
             if (!empty($this->configuration->getMinimumSize())) {
@@ -84,31 +92,42 @@ class OrderingEditor extends AbstractEditor {
         }
         
         $tpl->setVariable('POST_NAME', $this->question->getId());
-        $tpl->setVariable('ANSWER', $this->answer);
+        $tpl->setVariable('ANSWER', $this->getAnswerString($items));
         $tpl->parseCurrentBlock();
 
         return $tpl->get();
     }
+    
+    private function getAnswerString($items) {
+        return implode(',', array_map(function($item) {
+            return array_search($item->getDisplayDefinition()->getText(), $this->display_ids);
+        }, $items));
+    }
 
     private function orderItemsByAnswer() : array {
-        $ordering = array_map('intval',explode(',', $this->answer));
         $answers = $this->question->getAnswerOptions()->getOptions();
 
         $items = [];
 
-        foreach ($ordering as $index) {
+        foreach ($this->answer->getSelectedOrder() as $index) {
             $items[] = $answers[$index - 1];
         }
 
         return $items;
     }
 
-    public function readAnswer(): string
+    public function readAnswer(): AbstractValueObject
     {
-        return $_POST[$this->question->getId()];
+        return OrderingAnswer::create(array_map(function($display_id) {
+            foreach($this->question->getAnswerOptions()->getOptions() as $option) {
+                if ($this->display_ids[$display_id] === $option->getDisplayDefinition()->getText()) {
+                    return $option->getOptionId();
+                }
+            }
+        }, explode(',', $_POST[$this->question->getId()])));
     }
     
-    public function setAnswer(string $answer): void
+    public function setAnswer(AbstractValueObject $answer): void
     {
         $this->answer = $answer;
     }

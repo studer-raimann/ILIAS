@@ -15,6 +15,7 @@ use ilSelectInputGUI;
 use ilTextAreaInputGUI;
 use ilNumberInputGUI;
 use ilPropertyFormGUI;
+use srag\CQRS\Aggregate\AbstractValueObject;
 
 /**
  * Class ClozeEditor
@@ -40,9 +41,9 @@ class ClozeEditor extends AbstractEditor {
      */
     private $configuration;
     /**
-     * @var array
+     * @var ClozeAnswer
      */
-    private $answers;
+    private $answer;
     
     /**
      * @var AsqTableInput[]
@@ -50,21 +51,22 @@ class ClozeEditor extends AbstractEditor {
     private static $gap_tables;
     
     public function __construct(QuestionDto $question) {
-        $this->answers = [];
         $this->configuration = $question->getPlayConfiguration()->getEditorConfiguration();
         
         parent::__construct($question);
     }
     
-    public function readAnswer(): string
+    public function readAnswer(): AbstractValueObject
     {
-        $this->answers = [];
+        $answers = [];
         
         for ($i = 1; $i <= count($this->configuration->getGaps()); $i += 1) {
-            $this->answers[$i] = ilAsqHtmlPurifier::getInstance()->purify($_POST[$this->getPostVariable($i)]);
+            $answers[$i] = ilAsqHtmlPurifier::getInstance()->purify($_POST[$this->getPostVariable($i)]);
         }
         
-        return json_encode($this->answers);
+        $this->answer = ClozeAnswer::create($answers);
+        
+        return $this->answer;
     }
 
     public static function readConfig()
@@ -109,9 +111,9 @@ class ClozeEditor extends AbstractEditor {
         return $gap_configs;
     }
     
-    public function setAnswer(string $answer): void
+    public function setAnswer(AbstractValueObject $answer): void
     {
-        $this->answers = json_decode($answer, true);
+        $this->answer = $answer;
     }
 
     public function generateHtml(): string
@@ -160,7 +162,7 @@ class ClozeEditor extends AbstractEditor {
             function(ClozeGapItem $gap_item) use ($index) {
                 return sprintf('<option value="%1$s" %2$s>%1$s</option>', 
                                $gap_item->getText(),
-                               $gap_item->getText() === $this->answers[$index] ? 'selected="selected"' : '');
+                               $gap_item->getText() === $this->getAnswer($index) ? 'selected="selected"' : '');
             }, 
             $gap_items
         ));
@@ -177,11 +179,19 @@ class ClozeEditor extends AbstractEditor {
         
         $html = sprintf('<input type="text" length="20" name="%s" value="%s" />',
             $this->getPostVariable($index),
-            $this->answers[$index] ?? '');
+            $this->getAnswer($index) ?? '');
         
         return str_replace($name, $html, $output);
     }
 
+    private function getAnswer(int $key) {
+        if (is_null($this->answer)) {
+            return null;
+        }
+        
+        return $this->answer->getAnswers()[$key];
+    }
+    
     /**
      * @param int $index
      * @return string

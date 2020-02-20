@@ -10,6 +10,7 @@ use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\AbstractEditor;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\EmptyDisplayDefinition;
 use ilNumberInputGUI;
 use ilTemplate;
+use srag\CQRS\Aggregate\AbstractValueObject;
 
 /**
  * Class NumericEditor
@@ -30,7 +31,7 @@ class NumericEditor extends AbstractEditor {
      */
     private $configuration;
     /**
-     * @var ?float
+     * @var ?AbstractValueObject
      */
     private $answer;
 
@@ -52,7 +53,7 @@ class NumericEditor extends AbstractEditor {
         $tpl->setVariable('NUMERIC_SIZE', $this->configuration->getMaxNumOfChars());
 
         if ($this->answer !== null) {
-            $tpl->setVariable('CURRENT_VALUE', 'value="' . $this->answer . '"');
+            $tpl->setVariable('CURRENT_VALUE', 'value="' . $this->answer->getValue() . '"');
         }
 
         $tpl->parseCurrentBlock();
@@ -63,18 +64,18 @@ class NumericEditor extends AbstractEditor {
     /**
      * @return Answer
      */
-    public function readAnswer() : string
+    public function readAnswer() : AbstractValueObject
     {
-        return $_POST[$this->question->getId()];
+        return NumericAnswer::create(floatval($_POST[$this->question->getId()]));
     }
 
 
     /**
-     * @param string $answer
+     * @param AbstractValueObject $answer
      */
-    public function setAnswer(string $answer) : void
+    public function setAnswer(AbstractValueObject $answer)
     {
-        $this->answer = floatval($answer);
+        $this->answer = $answer;
     }
 
     public static function generateFields(?AbstractConfiguration $config): ?array {

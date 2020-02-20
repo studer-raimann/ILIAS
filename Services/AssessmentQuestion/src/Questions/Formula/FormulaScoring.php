@@ -63,7 +63,7 @@ class FormulaScoring extends AbstractScoring {
             /** @var $result FormulaScoringDefinition */
             $result = $option->getScoringDefinition();
             
-            $answers = json_decode($answer->getValue(), true);
+            $answers = $answer->getValue()->getValues();
             $formula = $result->getFormula();
             
             foreach($answers as $key => $value) {

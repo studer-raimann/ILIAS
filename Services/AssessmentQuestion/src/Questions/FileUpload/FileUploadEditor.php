@@ -13,6 +13,7 @@ use ilNumberInputGUI;
 use ilTemplate;
 use ilTextInputGUI;
 use srag\CQRS\Aggregate\Guid;
+use srag\CQRS\Aggregate\AbstractValueObject;
 
 /**
  * Class FileUploadEditor
@@ -38,9 +39,9 @@ class FileUploadEditor extends AbstractEditor {
      */
     private $configuration;
     /**
-     * @var array
+     * @var FileUploadAnswer
      */
-    private $selected_answers;
+    private $answer;
     
     public function __construct(QuestionDto $question) {
         $this->selected_answers = [];
@@ -72,11 +73,11 @@ class FileUploadEditor extends AbstractEditor {
         return $fields;
     }
     
-    public function readAnswer(): string
+    public function readAnswer(): AbstractValueObject
     {
         global $DIC;
         
-        $this->selected_answers = json_decode(html_entity_decode($_POST[$this->getPostVar() . self::VAR_CURRENT_ANSWER]), true);
+        $this->answer = FileUploadAnswer::create(json_decode(html_entity_decode($_POST[$this->getPostVar() . self::VAR_CURRENT_ANSWER]), true));
         
         if ($DIC->upload()->hasUploads() && !$DIC->upload()->hasBeenProcessed()) {
             $this->UploadNewFile();
@@ -84,7 +85,7 @@ class FileUploadEditor extends AbstractEditor {
         
         $this->deleteOldFiles();
         
-        return json_encode($this->selected_answers);
+        return $this->answer;
     }
     
     private function UploadNewFile() {
@@ -149,9 +150,9 @@ class FileUploadEditor extends AbstractEditor {
                                                      str_replace(' ', '', $_POST[self::VAR_ALLOWED_EXTENSIONS]));
     }
 
-    public function setAnswer(string $answer): void
+    public function setAnswer(AbstractValueObject $answer): void
     {
-        $this->selected_answers = json_decode($answer, true);
+        $this->answer = $answer;
     }
 
     public function generateHtml(): string
@@ -176,10 +177,10 @@ class FileUploadEditor extends AbstractEditor {
             
         }
         
-        if (count($this->selected_answers) > 0) {
+        if (count($this->answer->getFiles()) > 0) {
             $tpl->setCurrentBlock('files');
 
-            foreach ($this->selected_answers as $key => $value) {
+            foreach ($this->answer->getFiles() as $key => $value) {
                 $tpl->setCurrentBlock('file');
                 $tpl->setVariable('FILE_ID', $this->getFileKey($key));
                 $tpl->setVariable('FILE_NAME', $key);

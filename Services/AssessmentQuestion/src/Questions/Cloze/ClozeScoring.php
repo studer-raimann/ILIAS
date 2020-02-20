@@ -39,7 +39,7 @@ class ClozeScoring extends AbstractScoring {
     
     public function score(Answer $answer): AnswerScoreDto
     {
-        $given_answer = json_decode($answer->getValue(), true);
+        $given_answer = $answer->getValue()->getAnswers();
         
         $this->reached_points = 0;
         $this->max_points = 0;

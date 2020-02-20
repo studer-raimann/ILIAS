@@ -35,7 +35,7 @@ class OrderingScoring extends AbstractScoring
         /** @var OrderingScoringConfiguration $scoring_conf */
         $scoring_conf = $this->question->getPlayConfiguration()->getScoringConfiguration();
 
-        $answers = explode(',', $answer->getValue());
+        $answers = $answer->getValue()->getSelectedOrder();
 
         $reached_points = $scoring_conf->getPoints();
         $max_points = $scoring_conf->getPoints();
