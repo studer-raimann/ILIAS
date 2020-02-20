@@ -34,10 +34,6 @@ class ErrorTextEditor extends AbstractEditor {
      * @var ErrorTextEditorConfiguration
      */
     private $configuration;
-    /**
-     * @var ErrorTextAnswer
-     */
-    private $answer;
     
     public function __construct(QuestionDto $question) {
         $this->configuration = $question->getPlayConfiguration()->getEditorConfiguration();
@@ -113,14 +109,6 @@ class ErrorTextEditor extends AbstractEditor {
         else {
             return ErrorTextAnswer::create();
         }
-    }
-    
-    /**
-     * @param AbstractValueObject $answer
-     */
-    public function setAnswer(AbstractValueObject $answer) : void
-    {
-        $this->answer = $answer;
     }
     
     public static function generateFields(?AbstractConfiguration $config): ?array {

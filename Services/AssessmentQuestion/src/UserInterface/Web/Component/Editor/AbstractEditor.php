@@ -25,7 +25,11 @@ abstract class AbstractEditor {
 	 * @var QuestionDto
 	 */
 	protected $question;
-
+	/**
+	 * @var AbstractValueObject
+	 */
+	protected $answer;
+	
 	/**
 	 * AbstractEditor constructor.
 	 *
@@ -45,16 +49,17 @@ abstract class AbstractEditor {
 	 */
 	abstract public function generateHtml(): string;
 
-	//TODO uncomment abstract methods after change is complete
 	/**
 	 * @return Answer
 	 */
-	//abstract public function readAnswer() : AbstractValueObject;
+	abstract public function readAnswer() : AbstractValueObject;
 
 	/**
 	 * @param AbstractValueObject $answer
 	 */
-	//abstract public function setAnswer(AbstractValueObject $answer) : void;
+	public function setAnswer(AbstractValueObject $answer) : void {
+	    $this->answer = $answer;
+	}
 
     /**
      * @param AbstractConfiguration|null $config

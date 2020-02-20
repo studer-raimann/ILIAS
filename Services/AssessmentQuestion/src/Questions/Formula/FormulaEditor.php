@@ -26,10 +26,6 @@ class FormulaEditor extends AbstractEditor {
      * @var FormulaScoringConfiguration
      */
     private $configuration;
-    /**
-     * @var AbstractValueObject
-     */
-    private $answers;
     
     public function __construct(QuestionDto $question) {      
         $this->configuration = $question->getPlayConfiguration()->getScoringConfiguration();
@@ -75,11 +71,6 @@ class FormulaEditor extends AbstractEditor {
         return FormulaEditorConfiguration::create();
     }
 
-    public function setAnswer(AbstractValueObject $answer): void
-    {
-        $this->answers = $answer;
-    }
-
     public function generateHtml(): string
     {
         $output = $this->question->getData()->getQuestionText();
@@ -102,7 +93,7 @@ class FormulaEditor extends AbstractEditor {
     private function createResult(int $index, string $output, string $units) :string {
         $name = '$r' . $index;
 
-        $html = sprintf('<input type="text" length="20" name="%s" value="%s" />%s', $this->getPostVariable($name), !is_null($this->answers) ? $this->answers->getValues()[$name] : '', ! empty($units) ? $this->createUnitSelection($units, $name) : '');
+        $html = sprintf('<input type="text" length="20" name="%s" value="%s" />%s', $this->getPostVariable($name), !is_null($this->answer) ? $this->answer->getValues()[$name] : '', ! empty($units) ? $this->createUnitSelection($units, $name) : '');
 
         return str_replace($name, $html, $output);
     }
@@ -113,7 +104,7 @@ class FormulaEditor extends AbstractEditor {
                        implode(array_map(function($unit) use ($name) {
                            return sprintf('<option value="%1$s" %2$s>%1$s</option>', 
                                $unit,
-                               $this->answers->getValues()[$name . self::VAR_UNIT] === $unit ? 'selected="selected"': '');
+                               $this->answer->getValues()[$name . self::VAR_UNIT] === $unit ? 'selected="selected"': '');
                        }, explode(',', $units))));
     }
     
@@ -122,7 +113,7 @@ class FormulaEditor extends AbstractEditor {
         
         $html = sprintf('<input type="hidden" name="%1$s" value="%2$s" />%2$s %3$s',
             $this->getPostVariable($name),
-            !is_null($this->answers) ? $this->answers->getValues()[$name] : $this->generateVariableValue($def),
+            !is_null($this->answer) ? $this->answer->getValues()[$name] : $this->generateVariableValue($def),
             $def->getUnit());
         
         return str_replace($name, $html, $output);

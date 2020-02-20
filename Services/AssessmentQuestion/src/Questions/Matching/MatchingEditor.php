@@ -55,11 +55,6 @@ class MatchingEditor extends AbstractEditor
     const VAR_MATCH_POINTS = 'me_match_points';
     
     /**
-     * @var MatchingAnswer
-     */
-    private $answer;
-    
-    /**
      * @var AsqTableInput
      */
     private static $definitions;
@@ -79,11 +74,6 @@ class MatchingEditor extends AbstractEditor
         $matches = array_diff($matches, ['']);
         
         return MatchingAnswer::create($matches);
-    }
-
-    public function setAnswer(MatchingAnswer $answer): void
-    {
-        $this->answer = $answer;
     }
 
     public function generateHtml(): string

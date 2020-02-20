@@ -52,11 +52,7 @@ class KprimChoiceEditor extends AbstractEditor {
     const STR_NOT_APPLICABLE = 'not applicable';
     const STR_ADEQUATE = 'adequate';
     const STR_NOT_ADEQUATE = 'not adequate';
-    
-    /**
-     * @var KprimChoiceAnswer
-     */
-    private $answer;
+
     /**
      * @var array
      */
@@ -98,15 +94,6 @@ class KprimChoiceEditor extends AbstractEditor {
         }
         
         return KprimChoiceAnswer::create($answers);
-    }
-
-    /**
-     * {@inheritDoc}
-     * @see \ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\AbstractEditor::setAnswer()
-     */
-    public function setAnswer(AbstractValueObject $answer): void
-    {
-        $this->answer = $answer;
     }
 
     /**

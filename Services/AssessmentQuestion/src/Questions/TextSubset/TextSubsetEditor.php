@@ -30,10 +30,6 @@ class TextSubsetEditor extends AbstractEditor {
      * @var TextSubsetEditorConfiguration
      */
     private $configuration;
-    /**
-     * @var AbstractValueObject
-     */
-    private $answer;
     
     public function __construct(QuestionDto $question) {
         $this->configuration = $question->getPlayConfiguration()->getEditorConfiguration();
@@ -97,15 +93,7 @@ class TextSubsetEditor extends AbstractEditor {
         
         return TextSubsetAnswer::create($answer);
     }
-    
-    /**
-     * @param AbstractValueObject $answer
-     */
-    public function setAnswer(AbstractValueObject $answer) : void
-    {
-        $this->answer = $answer;
-    }
-    
+
     public static function generateFields(?AbstractConfiguration $config): ?array {
         /** @var TextSubsetEditorConfiguration $config */
         global $DIC;

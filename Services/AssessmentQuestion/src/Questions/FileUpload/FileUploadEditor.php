@@ -38,10 +38,6 @@ class FileUploadEditor extends AbstractEditor {
      * @var FileUploadEditorConfiguration
      */
     private $configuration;
-    /**
-     * @var FileUploadAnswer
-     */
-    private $answer;
     
     public function __construct(QuestionDto $question) {
         $this->selected_answers = [];
@@ -148,11 +144,6 @@ class FileUploadEditor extends AbstractEditor {
         
         return FileUploadEditorConfiguration::create($max_upload, 
                                                      str_replace(' ', '', $_POST[self::VAR_ALLOWED_EXTENSIONS]));
-    }
-
-    public function setAnswer(AbstractValueObject $answer): void
-    {
-        $this->answer = $answer;
     }
 
     public function generateHtml(): string

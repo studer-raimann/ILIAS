@@ -42,10 +42,6 @@ class ImageMapEditor extends AbstractEditor {
      * @var ImageMapEditorConfiguration
      */
     private $configuration;
-    /**
-     * @var MultipleChoiceAnswer
-     */
-    private $selected_answers;
     
     public function __construct(QuestionDto $question) {
         $this->configuration = $question->getPlayConfiguration()->getEditorConfiguration();
@@ -63,7 +59,7 @@ class ImageMapEditor extends AbstractEditor {
         $tpl->setCurrentBlock('generic');
         $tpl->setVariable('POST_NAME', $this->getPostName());
         $tpl->setVariable('IMAGE_URL', $this->configuration->getImage());
-        $tpl->setVariable('VALUE', is_null($this->selected_answers) ? '' : implode(',', $this->selected_answers->getSelectedIds()));
+        $tpl->setVariable('VALUE', is_null($this->answer) ? '' : implode(',', $this->answer->getSelectedIds()));
         $tpl->setVariable('MAX_ANSWERS', $this->configuration->getMaxAnswers());
         $tpl->parseCurrentBlock();
         
@@ -184,7 +180,7 @@ class ImageMapEditor extends AbstractEditor {
     private function getClass(int $id) : string {
         $class = '';
         
-        if (!is_null($this->selected_answers) && in_array($id, $this->selected_answers->getSelectedIds())) {
+        if (!is_null($this->answer) && in_array($id, $this->answer->getSelectedIds())) {
             $class .= ' selected';
         }
         
@@ -205,14 +201,6 @@ class ImageMapEditor extends AbstractEditor {
                 return intval($item);
             }, explode(',', $_POST[$this->getPostName()]))
         );
-    }
-    
-    /**
-     * @param string $answer
-     */
-    public function setAnswer(AbstractValueObject $answer) : void
-    {
-        $this->selected_answers = $answer;
     }
     
     public static function generateFields(?AbstractConfiguration $config): ?array {

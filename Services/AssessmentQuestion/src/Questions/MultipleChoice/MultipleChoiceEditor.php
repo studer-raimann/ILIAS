@@ -36,10 +36,6 @@ class MultipleChoiceEditor extends AbstractEditor {
 	 * @var MultipleChoiceEditorConfiguration
 	 */
 	private $configuration;
-	/**
-	 * @var MultipleChoiceAnswer
-	 */
-	private $selected_answer;
 
 	const VAR_MCE_SHUFFLE = 'shuffle';
 	const VAR_MCE_MAX_ANSWERS = 'max_answers';
@@ -103,8 +99,8 @@ class MultipleChoiceEditor extends AbstractEditor {
 			$tpl->setVariable('ANSWER_ID', $answer_option->getOptionId());
 			$tpl->setVariable('POST_NAME', $this->getPostName($answer_option->getOptionId()));
 
-			if (!is_null($this->selected_answers) &&
-				in_array($answer_option->getOptionId(), $this->selected_answers)
+			if (!is_null($this->answer) &&
+				in_array($answer_option->getOptionId(), $this->answer)
 			) {
 				$tpl->setVariable('CHECKED', 'checked="checked"');
 			}
@@ -140,20 +136,12 @@ class MultipleChoiceEditor extends AbstractEditor {
 					$result[] = $_POST[$poststring];
 				}
 			}
-			$this->selected_answer = MultipleChoiceAnswer::create($result);
+			$this->answer = MultipleChoiceAnswer::create($result);
 		} else {
-		    $this->selected_answer = MultipleChoiceAnswer::create([$_POST[$this->getPostName()]]);
+		    $this->answer = MultipleChoiceAnswer::create([$_POST[$this->getPostName()]]);
 		}
 		
-		return $this->selected_answer;
-	}
-
-
-	/**
-	 * @param AbstractValueObject $answer
-	 */
-	public function setAnswer(AbstractValueObject $answer) : void {
-			$this->selected_answer = $answer;
+		return $this->answer;
 	}
 
 	public static function generateFields(?AbstractConfiguration $config): ?array {

@@ -31,10 +31,6 @@ class EssayEditor extends AbstractEditor {
      * @var EssayEditorConfiguration
      */
     private $configuration;
-    /**
-     * @var EssayAnswer
-     */
-    private $answer;
     
     public function __construct(QuestionDto $question) {
         $this->configuration = $question->getPlayConfiguration()->getEditorConfiguration();
@@ -82,14 +78,6 @@ class EssayEditor extends AbstractEditor {
     public function readAnswer() : AbstractValueObject
     {
         return EssayAnswer::create(ilAsqHtmlPurifier::getInstance()->purify($_POST[$this->question->getId()]));
-    }
-    
-    /**
-     * @param AbstractValueObject $answer
-     */
-    public function setAnswer(AbstractValueObject $answer) : void
-    {
-        $this->answer = $answer;
     }
     
     public static function generateFields(?AbstractConfiguration $config): ?array {

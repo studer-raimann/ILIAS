@@ -40,10 +40,6 @@ class ClozeEditor extends AbstractEditor {
      * @var ClozeEditorConfiguration
      */
     private $configuration;
-    /**
-     * @var ClozeAnswer
-     */
-    private $answer;
     
     /**
      * @var AsqTableInput[]
@@ -109,11 +105,6 @@ class ClozeEditor extends AbstractEditor {
         }
         
         return $gap_configs;
-    }
-    
-    public function setAnswer(AbstractValueObject $answer): void
-    {
-        $this->answer = $answer;
     }
 
     public function generateHtml(): string

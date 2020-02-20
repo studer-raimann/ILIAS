@@ -33,11 +33,6 @@ class OrderingEditor extends AbstractEditor {
      */
     private $configuration;
     /**
-     * @var OrderingAnswer
-     */
-    private $answer;
-    
-    /**
      * @var array
      */
     private $display_ids;
@@ -126,12 +121,7 @@ class OrderingEditor extends AbstractEditor {
             }
         }, explode(',', $_POST[$this->question->getId()])));
     }
-    
-    public function setAnswer(AbstractValueObject $answer): void
-    {
-        $this->answer = $answer;
-    }
-    
+
     public static function generateFields(?AbstractConfiguration $config): ?array {
         /** @var OrderingEditorConfiguration $config */
         global $DIC;

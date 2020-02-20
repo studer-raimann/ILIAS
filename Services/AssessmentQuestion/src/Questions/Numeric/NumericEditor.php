@@ -30,10 +30,6 @@ class NumericEditor extends AbstractEditor {
      * @var NumericEditorConfiguration
      */
     private $configuration;
-    /**
-     * @var ?AbstractValueObject
-     */
-    private $answer;
 
     public function __construct(QuestionDto $question) {
         $this->configuration = $question->getPlayConfiguration()->getEditorConfiguration();
@@ -67,15 +63,6 @@ class NumericEditor extends AbstractEditor {
     public function readAnswer() : AbstractValueObject
     {
         return NumericAnswer::create(floatval($_POST[$this->question->getId()]));
-    }
-
-
-    /**
-     * @param AbstractValueObject $answer
-     */
-    public function setAnswer(AbstractValueObject $answer)
-    {
-        $this->answer = $answer;
     }
 
     public static function generateFields(?AbstractConfiguration $config): ?array {
