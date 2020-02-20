@@ -46,4 +46,10 @@ class ImageMapQuestionGUI extends QuestionFormGUI {
             $this->addItem($field);
         }
     }
+    
+    protected function postInit() {
+        global $DIC;
+        
+        $DIC->ui()->mainTemplate()->addJavaScript("./Services/AssessmentQuestion/src/Questions/ImageMap/ImageMapAuthoring.js");
+    }
 }

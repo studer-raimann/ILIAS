@@ -15,7 +15,7 @@
             prepare_table(errors.length);
         }
         else {
-            $('.aot_table').hide();
+            $('.aot_table_div').hide();
         }
 
         display_errors(errors, text);
@@ -35,7 +35,7 @@
     };
 
     let prepare_table = function(length) {
-        $('#answer_form').show();
+        $('.aot_table_div').show();
         let table = $('.aot_table tbody');
         let row = table.children().eq(0);
 

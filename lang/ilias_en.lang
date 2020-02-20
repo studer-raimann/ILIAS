@@ -14,6 +14,8 @@
 // to the corresponding mode!
 // Language file names refer to ISO 639, see: http://www.oasis-open.org/cover/iso639a.html
 <!-- language file start -->
+asq#:#asq_max_characters#:#Max characters:
+asq#:#asq_char_count#:#Character count:
 asq#:#asq_ordering_text#:#Ordering Text
 asq#:#asq_label_wrong_deduction#:#Wrong deduction
 asq#:#asq_question_essay#:#Essay Question

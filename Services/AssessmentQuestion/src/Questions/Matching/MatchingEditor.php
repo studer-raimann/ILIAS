@@ -67,7 +67,7 @@ class MatchingEditor extends AbstractEditor
      */
     private static $matches;
     
-    public function readAnswer(): MatchingAnswer
+    public function readAnswer(): AbstractValueObject
     {
         $matches = explode(';', $_POST[$this->question->getId()]);
         
