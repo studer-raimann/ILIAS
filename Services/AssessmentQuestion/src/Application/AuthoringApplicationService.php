@@ -11,7 +11,6 @@ use ILIAS\AssessmentQuestion\DomainModel\Command\CreateQuestionRevisionCommand;
 use ILIAS\AssessmentQuestion\DomainModel\Command\SaveQuestionCommand;
 use ILIAS\AssessmentQuestion\Infrastructure\Persistence\EventStore\QuestionEventStoreRepository;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Component\QuestionComponent;
-use ILIAS\Services\AssessmentQuestion\PublicApi\Common\AssessmentEntityId;
 use ILIAS\Services\AssessmentQuestion\PublicApi\Common\QuestionCommands;
 use ILIAS\Services\AssessmentQuestion\PublicApi\Common\QuestionConfig;
 use ilAsqQuestionPageGUI;
@@ -41,10 +40,6 @@ class AuthoringApplicationService
      * @var int
      */
     protected $actor_user_id;
-    /**
-     * @var string
-     */
-    protected $lng_key;
 
     const QTI_FIELD_LABEL_QUESTION_TYPE = "QUESTIONTYPE";
 
@@ -55,11 +50,10 @@ class AuthoringApplicationService
      * @param int $container_obj_id
      * @param int $actor_user_id
      */
-    public function __construct(int $container_obj_id, int $actor_user_id, string $lng_key)
+    public function __construct(int $container_obj_id, int $actor_user_id)
     {
         $this->container_obj_id = $container_obj_id;
         $this->actor_user_id = $actor_user_id;
-        $this->lng_key = $lng_key;
     }
 
 
@@ -165,29 +159,6 @@ class AuthoringApplicationService
         }
     }
 
-    /*public function importQtiQuestion(string $qti_item_xml) {
-        global $DIC;
-
-        $qti_application_service = new QtiImportService($this->container_obj_id);
-        $question_dto = $qti_application_service->getQuestionDtoFromXml($qti_item_xml);
-
-        if(is_object($question_dto)) {
-            $uid = new DomainObjectId();
-
-            $this->createQuestion($uid,
-                $this->container_obj_id,
-                $question_dto->getLegacyData()->getContainerObjType(),
-                NULL,
-                $question_dto->getLegacyData()->getAnswerTypeId(),
-                $question_dto->getLegacyData()->getContentEditingMode()
-            );
-
-            $question_dto->setId($uid->getId());
-            $this->saveQuestion($question_dto);
-        }
-    }*/
-
-
     public function projectQuestion(string $question_id)
     {
         CommandBusBuilder::getCommandBus()->handle(new CreateQuestionRevisionCommand($question_id, $this->actor_user_id));
@@ -201,11 +172,6 @@ class AuthoringApplicationService
         $question->delete();
         CommandBusBuilder::getCommandBus()->handle(new SaveQuestionCommand($question, $this->actor_user_id));
     }
-
-    /* Ich würde die Answers immer als Ganzes behandeln
-    public function RemoveAnswerFromQuestion(string $question_id, $answer) {
-        // remove answer from question
-    }*/
 
     /**
      * @return QuestionDto[]
@@ -231,11 +197,11 @@ class AuthoringApplicationService
 
 
     /**
-     * @param AssessmentEntityId $question_uuid
+     * @param DomainObjectId $question_uuid
      *
      * @return QuestionComponent
      */
-    public function getQuestionComponent(AssessmentEntityId $question_uuid) : QuestionComponent
+    public function getQuestionComponent(DomainObjectId $question_uuid) : QuestionComponent
     {
 
         $question_config = new QuestionConfig([]);

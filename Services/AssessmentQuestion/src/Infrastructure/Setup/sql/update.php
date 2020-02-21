@@ -62,7 +62,7 @@ $questions = [];
 $uuids = [];
 while($rec = $ilDB->fetchAssoc($res)) {
     //uuid anlegen
-    $id = new ILIAS\AssessmentQuestion\CQRS\Aggregate\DomainObjectId();
+    $id = new srag\CQRS\Aggregate\DomainObjectId();
     $questions[] = $rec;
     $uuids[$rec['question_id']] = $id;
 }
@@ -88,7 +88,7 @@ foreach($questions as $question) {
     $asq_appliction_service = new ILIAS\AssessmentQuestion\Application\AuthoringApplicationService($question['obj_fi'], $question['owner'], 'de');
 
     //create question
-    $id = new ILIAS\AssessmentQuestion\CQRS\Aggregate\DomainObjectId();
+    $id = new srag\CQRS\Aggregate\DomainObjectId();
     $asq_appliction_service->CreateQuestion($uuids[$question['question_id']],
         $question['obj_fi'],
         $question['type'],
@@ -113,7 +113,7 @@ foreach($questions as $question) {
     foreach ($questions_answer_options[$question['question_id']] as $question_answer) {
         $display_definition = new ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\ImageAndTextDisplayDefinition(strval($question_answer['answertext']), '');
 
-        $scoring_definition = new ILIAS\AssessmentQuestion\DomainModel\Scoring\MultipleChoiceScoringDefinition();
+        $scoring_definition = new ILIAS\AssessmentQuestion\Questions\MultipleChoice\MultipleChoiceScoringDefinition();
 
         $question_answer_option_dto = new \ILIAS\AssessmentQuestion\DomainModel\Answer\Option\AnswerOption($question_answer['answer_id'], $display_definition, $scoring_definition);
         $anser_options_dto->addOption($question_answer_option_dto);

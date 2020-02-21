@@ -2,17 +2,12 @@
 
 /* Copyright (c) 1998-2019 ILIAS open source, Extended GPL, see docs/LICENSE */
 
+use ILIAS\AssessmentQuestion\Application\AuthoringApplicationService;
 use ILIAS\AssessmentQuestion\Application\ProcessingApplicationService;
 use ILIAS\Services\AssessmentQuestion\PublicApi\Common\AuthoringContextContainer;
-use ILIAS\Services\AssessmentQuestion\PublicApi\Common\AssessmentEntityId;
-use ILIAS\Services\AssessmentQuestion\PublicApi\Authoring\AuthoringService;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Component\QuestionComponent;
-use ILIAS\AssessmentQuestion\Application\AuthoringApplicationService;
-use ILIAS\AssessmentQuestion\DomainModel\QuestionDto;
-use ILIAS\AssessmentQuestion\DomainModel\QuestionPlayConfiguration;
-use ILIAS\AssessmentQuestion\DomainModel\Answer\Answer;
 use ILIAS\Services\AssessmentQuestion\PublicApi\Common\QuestionCommands;
 use ILIAS\Services\AssessmentQuestion\PublicApi\Common\QuestionConfig;
+use srag\CQRS\Aggregate\DomainObjectId;
 
 /**
  * Class ilAsqQuestionPreviewGUI
@@ -38,7 +33,7 @@ class ilAsqQuestionPreviewGUI
      */
      protected  $question_config;
     /**
-     * @var AssessmentEntityId
+     * @var DomainObjectId
      */
     protected $question_id;
     /**
@@ -62,7 +57,7 @@ class ilAsqQuestionPreviewGUI
     public function __construct(
         AuthoringApplicationService $authoring_application_service,
         ProcessingApplicationService $processing_application_service,
-        AssessmentEntityId $question_id,
+        DomainObjectId $question_id,
         QuestionConfig $question_config
     ) {
         $this->authoring_application_service = $authoring_application_service;

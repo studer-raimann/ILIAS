@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace ILIAS\Services\AssessmentQuestion\PublicApi\Factory;
 
 use ILIAS\Services\AssessmentQuestion\PublicApi\Authoring\AuthoringService;
-use ILIAS\Services\AssessmentQuestion\PublicApi\Common\entityIdBuilder;
 use ILIAS\Services\AssessmentQuestion\PublicApi\Processing\ProcessingService;
 
 /**
@@ -53,16 +52,5 @@ class AssessmentFactory
     public function questionProcessing(int $container_obj_id, int $actor_user_id, int $attempt_number)
     {
         return new ProcessingService($container_obj_id,$actor_user_id, $attempt_number);
-    }
-
-    /**
-     * As consumer you are responsible for creating the uuids
-     * This factory helps you!
-     *
-     * @return entityIdBuilder
-     */
-    public function entityIdBuilder() : entityIdBuilder
-    {
-        return new entityIdBuilder();
     }
 }

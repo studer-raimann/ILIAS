@@ -1,4 +1,6 @@
 <?php
+use srag\CQRS\Aggregate\DomainObjectId;
+
 /* Copyright (c) 1998-2013 ILIAS open source, Extended GPL, see docs/LICENSE */
 include_once ('./Services/Table/classes/class.ilTable2GUI.php');
 require_once 'Services/UIComponent/Glyph/classes/class.ilGlyphGUI.php';
@@ -316,7 +318,7 @@ class ilTestQuestionsTableGUI extends ilTable2GUI
         $authoringService = $DIC->assessment()->questionAuthoring($this->parent_obj->object->getId(), $DIC->user()
             ->getId());
 
-        $questionService = $authoringService->question(new \ILIAS\Services\AssessmentQuestion\PublicApi\Common\AssessmentEntityId($rowData['id']));
+        $questionService = $authoringService->question(new DomainObjectId($rowData['id']));
 
         $questionHref = $questionService->getEditLink([])->getAction();
 

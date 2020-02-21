@@ -3,20 +3,15 @@ declare(strict_types=1);
 
 namespace ILIAS\Services\AssessmentQuestion\PublicApi\Processing;
 
+use ILIAS\AssessmentQuestion\Application\ProcessingApplicationService;
+use ILIAS\AssessmentQuestion\DomainModel\QuestionDto;
+use ILIAS\AssessmentQuestion\Infrastructure\Persistence\Projection\PublishedQuestionRepository;
+use ILIAS\Services\AssessmentQuestion\PublicApi\Common\QuestionCommands;
+use ILIAS\Services\AssessmentQuestion\PublicApi\Common\QuestionConfig;
+use ILIAS\UI\Component\Link\Standard as UiStandardLink;
 use ilAsqQuestionAuthoringGUI;
 use ilAsqQuestionPageGUI;
 use ilAsqQuestionProcessingGUI;
-use ILIAS\AssessmentQuestion\Application\ProcessingApplicationService;
-use ILIAS\AssessmentQuestion\DomainModel\AnswerScoreDto;
-use ILIAS\AssessmentQuestion\DomainModel\QuestionPlayConfiguration;
-use ILIAS\AssessmentQuestion\DomainModel\Scoring\AbstractScoring;
-use ILIAS\AssessmentQuestion\Infrastructure\Persistence\Projection\PublishedQuestionRepository;
-use ILIAS\Services\AssessmentQuestion\PublicApi\Common\ProcessingContextContainer;
-use ILIAS\Services\AssessmentQuestion\PublicApi\Common\QuestionCommands;
-use ILIAS\Services\AssessmentQuestion\PublicApi\Common\QuestionConfig;
-use \ILIAS\AssessmentQuestion\DomainModel\QuestionDto;
-use ILIAS\UI\Component\Component;
-use ILIAS\UI\Component\Link\Standard as UiStandardLink;
 
 /**
  * Class QuestionProcessing
@@ -105,20 +100,6 @@ class ProcessingQuestion
             $DIC->language()->txt('asq_authoring_tab_config'),
             $DIC->ctrl()->getLinkTargetByClass($ctrl_stack));
     }
-
-
-    /**
-     * @param QuestionResourcesDto       $collector
-     * @param                            $image_path
-     * @param                            $a_mode
-     * @param                            $a_no_interaction
-     */
-    //TODO
-    public function getStandaloneQuestionExportPresentation(QuestionResourcesDto $collector, $image_path, $a_mode, $a_no_interaction)
-    {
-        // TODO: Implement GetStandaloneQuestionExportPresentation() method.
-    }
-
 
     /**
      * @return QuestionDto

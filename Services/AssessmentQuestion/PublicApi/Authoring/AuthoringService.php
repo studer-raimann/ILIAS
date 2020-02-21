@@ -3,16 +3,10 @@ declare(strict_types=1);
 
 namespace ILIAS\Services\AssessmentQuestion\PublicApi\Authoring;
 
-use ilAsqQuestionProcessingGUI;
-use ILIAS\AssessmentQuestion\CQRS\Aggregate\DomainObjectId;
-use ILIAS\AssessmentQuestion\CQRS\Aggregate\RevisionFactory;
-use ILIAS\AssessmentQuestion\DomainModel\QuestionDto;
-use ILIAS\AssessmentQuestion\DomainModel\QuestionRepository;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Component\QuestionComponent;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Page\Page;
-use ILIAS\Services\AssessmentQuestion\PublicApi\Common\AssessmentEntityId;
-use ILIAS\Services\AssessmentQuestion\PublicApi\Common\QuestionList;
 use ILIAS\AssessmentQuestion\Application\AuthoringApplicationService;
+use ILIAS\AssessmentQuestion\UserInterface\Web\Component\QuestionComponent;
+use ILIAS\UI\Component\Layout\Page\Page;
+use srag\CQRS\Aggregate\DomainObjectId;
 
 /**
  * Class AuthoringService
@@ -63,74 +57,60 @@ class AuthoringService
 
 
     /**
-     * @param AssessmentEntityId                            $question_uuid
+     * @param DomainObjectId                            $question_uuid
      *
      * @return AuthoringQuestion
      */
-    public function question(AssessmentEntityId $question_uuid) : AuthoringQuestion
+    public function question(DomainObjectId $question_uuid) : AuthoringQuestion
     {
         return new AuthoringQuestion($this->container_obj_id, $question_uuid->getId(), $this->actor_user_id);
     }
 
 
     /**
-     * @param AssessmentEntityId $question_uuid
+     * @param DomainObjectId $question_uuid
      *
      * @return QuestionComponent
      */
-    public function questionComponent(AssessmentEntityId $question_uuid) : QuestionComponent
+    public function questionComponent(DomainObjectId $question_uuid) : QuestionComponent
     {
         return $this->authoring_application_service->getQuestionComponent($question_uuid);
     }
 
 
     /**
-     * @return QuestionList
+     * @return AuthoringQuestionList
      */
     public function questionList() : AuthoringQuestionList
     {
         return new AuthoringQuestionList($this->container_obj_id, $this->actor_user_id);
     }
 
-
-    /**
-     * @return QuestionImport
-     */
-    public function questionImport() : QuestionImport
-    {
-        return new QuestionImport();
-    }
-
-
     /**
      * Returns the current question_uuid or a new one if no current exists
      *
-     * @return AssessmentEntityId
+     * @return DomainObjectId
      */
-    public function currentOrNewQuestionId() : AssessmentEntityId
+    public function currentOrNewQuestionId() : DomainObjectId
     {
         global $DIC;
 
         if ($DIC->http()->request()->getAttribute(\ilAsqQuestionAuthoringGUI::VAR_QUESTION_ID, false) !== false) {
-            return $DIC->assessment()->entityIdBuilder()->fromString(
-                $DIC->http()->request()->getAttribute(\ilAsqQuestionAuthoringGUI::VAR_QUESTION_ID, false)
-            );
+            return new DomainObjectId($DIC->http()->request()->getAttribute(\ilAsqQuestionAuthoringGUI::VAR_QUESTION_ID, false));
         }
 
         // NOTE: $DIC->http()->request() seems to always comes with EMPTY attributes member ^^
         // lets wait for fixes and use the super global meanwhile
 
         if (isset($_GET[\ilAsqQuestionAuthoringGUI::VAR_QUESTION_ID])) {
-            return $DIC->assessment()->entityIdBuilder()->fromString(
-                $_GET[\ilAsqQuestionAuthoringGUI::VAR_QUESTION_ID]
-            );
+            return new DomainObjectId($_GET[\ilAsqQuestionAuthoringGUI::VAR_QUESTION_ID]);
         }
 
-        return $DIC->assessment()->entityIdBuilder()->new();
+        return new DomainObjectId();
     }
 
 
-    public function getQuestionPageEditor(AssessmentEntityId $questionUid) : \ilAsqQuestionPageGUI
+    public function getQuestionPageEditor(DomainObjectId $questionUid) : \ilAsqQuestionPageGUI
     {
         $questionDto = $this->authoring_application_service->getQuestion(
             $questionUid->getId()
@@ -148,9 +128,6 @@ class AuthoringService
 
         $pageGUI->setHeader($questionDto->getData()->getTitle());
         $pageGUI->setPresentationTitle($questionDto->getData()->getTitle());
-
-        // TODO: The update TS of the question needs an update on page changes
-        //$gui->obj->addUpdateListener() // update timestamp of question
 
         return $pageGUI;
     }

@@ -1,6 +1,5 @@
 <?php
 
-use ILIAS\Services\AssessmentQuestion\PublicApi\Common\entityIdBuilder;
 use ILIAS\Services\AssessmentQuestion\PublicApi\Common\ilCtrlCallBackCmd;
 use ILIAS\Services\AssessmentQuestion\PublicApi\Common\QuestionConfig;
 use ILIAS\Services\AssessmentQuestion\PublicApi\Processing\ProcessingService;
@@ -30,10 +29,6 @@ class exAsqPlayerGUI
      * @var ProcessingService
      */
     protected $processing_service;
-    /**
-     * @var entityIdBuilder
-     */
-    protected $entity_id_builder;
     /**
      * @var Link
      */

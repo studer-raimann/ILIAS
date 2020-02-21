@@ -1,7 +1,6 @@
 <?php
 
 use ILIAS\Services\AssessmentQuestion\PublicApi\Authoring\AuthoringService;
-use ILIAS\Services\AssessmentQuestion\PublicApi\Common\entityIdBuilder;
 use ILIAS\Services\AssessmentQuestion\PublicApi\Common\QuestionConfig;
 use ILIAS\Services\AssessmentQuestion\PublicApi\Processing\ProcessingService;
 use ILIAS\UI\Component\Link\Link;
@@ -33,10 +32,6 @@ class exAsqAuthoringGUI
      * @var AuthoringService
      */
     protected $authoring_service;
-    /**
-     * @var entityIdBuilder
-     */
-    protected $entity_id_builder;
     /**
      * @var Link
      */

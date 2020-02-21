@@ -57,7 +57,7 @@ class AuthoringQuestion
     public function __construct(int $container_obj_id, string $question_uuid, int $actor_user_id)
     {
         global $DIC; /* @var \ILIAS\DI\Container $DIC */
-
+        
         $this->actor_user_id = $actor_user_id;
         $this->container_obj_id = $container_obj_id;
         $this->question_id = $question_uuid;
@@ -70,13 +70,6 @@ class AuthoringQuestion
 
         $DIC->language()->loadLanguageModule('asq');
     }
-
-
-    public function widthAdditionalConfigSection(AdditionalConfigSection $additional_config_section) : AuthoringQuestion
-    {
-
-    }
-
 
     public function getCreationLink(array $ctrl_stack) :UiStandardLink
     {

@@ -3,15 +3,10 @@
 /* Copyright (c) 1998-2019 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 use ILIAS\AssessmentQuestion\Application\ProcessingApplicationService;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Toolbar\QuestionProcessingToolbarGUI;
-use ILIAS\Services\AssessmentQuestion\PublicApi\Common\AuthoringContextContainer;
-use ILIAS\Services\AssessmentQuestion\PublicApi\Common\AssessmentEntityId;
-use ILIAS\Services\AssessmentQuestion\PublicApi\Authoring\AuthoringService;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Component\QuestionComponent;
-use ILIAS\AssessmentQuestion\Application\AuthoringApplicationService;
-use ILIAS\AssessmentQuestion\DomainModel\QuestionDto;
 use ILIAS\AssessmentQuestion\DomainModel\QuestionPlayConfiguration;
 use ILIAS\AssessmentQuestion\DomainModel\Answer\Answer;
+use ILIAS\AssessmentQuestion\UserInterface\Web\Toolbar\QuestionProcessingToolbarGUI;
+use ILIAS\Services\AssessmentQuestion\PublicApi\Common\AuthoringContextContainer;
 use ILIAS\Services\AssessmentQuestion\PublicApi\Common\ProcessingContextContainer;
 use ILIAS\Services\AssessmentQuestion\PublicApi\Common\QuestionCommands;
 use ILIAS\Services\AssessmentQuestion\PublicApi\Common\QuestionConfig;
@@ -73,7 +68,8 @@ class ilAsqQuestionProcessingGUI
     public function __construct(
         string $question_revision_key,
         int $attempt_number,
-        ProcessingContextContainer $processing_context_container,
+        int $obj_id,
+        int $user_id,
         QuestionConfig $question_config
     ) {
         global $DIC;
@@ -84,7 +80,7 @@ class ilAsqQuestionProcessingGUI
         //we could use this in future in constructer
         $lng_key = $DIC->language()->getDefaultLanguage();
 
-        $this->processing_application_service = new ProcessingApplicationService($processing_context_container->getObjId(), $processing_context_container->getActorId(), $attempt_number, $lng_key);
+        $this->processing_application_service = new ProcessingApplicationService($obj_id, $user_id, $attempt_number, $lng_key);
         $this->revision_key = $question_revision_key;
         $this->question_config = $question_config;
 

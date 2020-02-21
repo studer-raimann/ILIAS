@@ -2,12 +2,11 @@
 
 /* Copyright (c) 1998-2019 ILIAS open source, Extended GPL, see docs/LICENSE */
 
-use ILIAS\Services\AssessmentQuestion\PublicApi\Common\AuthoringContextContainer;
-use ILIAS\Services\AssessmentQuestion\PublicApi\Common\AssessmentEntityId;
-use ILIAS\AssessmentQuestion\UserInterface\Web\AsqGUIElementFactory;
 use ILIAS\AssessmentQuestion\Application\AuthoringApplicationService;
 use ILIAS\AssessmentQuestion\DomainModel\QuestionDto;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Form\QuestionFormGUI;
+use ILIAS\AssessmentQuestion\UserInterface\Web\AsqGUIElementFactory;
+use ILIAS\Services\AssessmentQuestion\PublicApi\Common\AuthoringContextContainer;
+use srag\CQRS\Aggregate\DomainObjectId;
 
 /**
  * Class ilAsqQuestionConfigEditorGUI
@@ -30,7 +29,7 @@ class ilAsqQuestionConfigEditorGUI
     protected $contextContainer;
 
     /**
-     * @var AssessmentEntityId
+     * @var DomainObjectId
      */
     protected $questionId;
 
@@ -44,7 +43,7 @@ class ilAsqQuestionConfigEditorGUI
      */
     public function __construct(
         AuthoringContextContainer $contextContainer,
-        AssessmentEntityId $questionId,
+        DomainObjectId $questionId,
         AuthoringApplicationService $authoringApplicationService
     )
     {

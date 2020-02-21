@@ -5,7 +5,6 @@
 use ILIAS\AssessmentQuestion\Application\AuthoringApplicationService;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Form\QuestionTypeSelectForm;
 use ILIAS\Services\AssessmentQuestion\PublicApi\Authoring\AuthoringService;
-use ILIAS\Services\AssessmentQuestion\PublicApi\Common\AssessmentEntityId;
 use ILIAS\Services\AssessmentQuestion\PublicApi\Common\AuthoringContextContainer;
 use srag\CQRS\Aggregate\DomainObjectId;
 
@@ -31,7 +30,7 @@ class ilAsqQuestionCreationGUI
     protected $contextContainer;
 
     /**
-     * @var AssessmentEntityId
+     * @var DomainObjectId
      */
     protected $questionId;
 
@@ -52,7 +51,7 @@ class ilAsqQuestionCreationGUI
      */
     public function __construct(
         AuthoringContextContainer $contextContainer,
-        AssessmentEntityId $questionId,
+        DomainObjectId $questionId,
         AuthoringService $publicAuthoringService,
         AuthoringApplicationService $authoringApplicationService
 

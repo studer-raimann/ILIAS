@@ -15,15 +15,15 @@ use ILIAS\AssessmentQuestion\UserInterface\Web\Component\QuestionComponent;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Feedback\AnswerFeedbackComponent;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Feedback\FeedbackComponent;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Feedback\ScoringComponent;
-use ILIAS\Services\AssessmentQuestion\PublicApi\Common\AssessmentEntityId;
 use ILIAS\Services\AssessmentQuestion\PublicApi\Common\ProcessingContextContainer;
 use ILIAS\Services\AssessmentQuestion\PublicApi\Common\QuestionCommands;
 use ILIAS\Services\AssessmentQuestion\PublicApi\Common\QuestionConfig;
 use ilAsqQuestionPageGUI;
 use ilAsqQuestionProcessingGUI;
+use srag\CQRS\Aggregate\AbstractValueObject;
 use srag\CQRS\Aggregate\DomainObjectId;
 use srag\CQRS\Command\CommandBusBuilder;
-use srag\CQRS\Aggregate\AbstractValueObject;
+use ILIAS\Services\AssessmentQuestion\PublicApi\Common\AuthoringContextContainer;
 const MSG_SUCCESS = "success";
 
 /**
@@ -74,12 +74,11 @@ class ProcessingApplicationService
 
     public function getProcessingQuestionGUI(string $revision_key, QuestionConfig $question_config) : ilAsqQuestionProcessingGUI
     {
-        $processing_context_container = new ProcessingContextContainer($this->processing_obj_id, $this->actor_user_id);
-
         return new ilAsqQuestionProcessingGUI(
             $revision_key,
             $this->attempt_number,
-            $processing_context_container,
+            $this->processing_obj_id, 
+            $this->actor_user_id,
             $question_config
         );
     }
@@ -153,33 +152,16 @@ class ProcessingApplicationService
         return $question_component;
     }
 
-
-    /**
-     * @param AssessmentEntityId $question_uuid
-     *
-     * @return QuestionComponent
-     */
     public function getFeedbackComponent(QuestionDto $question_dto, Answer $answer) : FeedbackComponent
     {
         return new FeedbackComponent($this->getScoringComponent($question_dto, $answer), $this->getAnswerFeedbackComponent($question_dto, $answer));
     }
 
-
-    /**
-     * @param AssessmentEntityId $question_uuid
-     *
-     * @return QuestionComponent
-     */
     public function getScoringComponent(QuestionDto $question_dto, Answer $answer) : ScoringComponent
     {
         return new ScoringComponent($question_dto, $answer);
     }
 
-    /**
-     * @param AssessmentEntityId $question_uuid
-     *
-     * @return QuestionComponent
-     */
     public function getAnswerFeedbackComponent(QuestionDto $question_dto, Answer $answer) : AnswerFeedbackComponent
     {
         return new AnswerFeedbackComponent($question_dto, $answer);
@@ -251,39 +233,4 @@ class ProcessingApplicationService
 
         return $repository->getQuestionsByContainer($this->processing_obj_id);
     }
-
-
-    /**
-     * @return Answer[]
-     */
-    /*public function getAnswersFromAnsweredQuestions() : array
-    {
-        $repository = new PublishedQuestionRepository();
-
-        $answered_quetsion_answera = [];
-        foreach ($repository->getQuestionsByContainer($this->container_obj_id) as $question) {
-
-            $answer = $this->getUserAnswer($question->getId(), $question->getRevisionId(), $this->container_obj_id);
-
-            if (is_object($answer)) {
-                $answered_quetsion_answera[] = $answer;
-            }
-        }
-
-        return $answered_quetsion_answera;
-    }*/
-
-    /*public function getUnansweredQuestions() : array
-    {
-        $repository = new PublishedQuestionRepository();
-
-        $unanswered_quetsions = [];
-        foreach ($repository->getQuestionsByContainer($this->container_obj_id) as $question) {
-            if (is_null($this->getUserAnswer($question->getId(), $question->getRevisionId(), $this->container_obj_id))) {
-                $unanswered_quetsions[] = $question;
-            }
-        }
-
-        return $unanswered_quetsions;
-    }*/
 }

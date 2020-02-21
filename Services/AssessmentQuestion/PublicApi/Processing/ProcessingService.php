@@ -5,6 +5,7 @@ namespace ILIAS\Services\AssessmentQuestion\PublicApi\Processing;
 
 use ILIAS\Services\AssessmentQuestion\PublicApi\Common\QuestionConfig;
 use ILIAS\Services\AssessmentQuestion\PublicApi\Processing\ProcessingUserAnswer;
+use ILIAS\Services\AssessmentQuestion\PublicApi\Authoring\AuthoringQuestionList;
 
 /**
  * Class ServiceFactory
@@ -82,10 +83,10 @@ class ProcessingService
     }
 
     /**
-     * @return ProcessingQuestionList
+     * @return AuthoringQuestionList
      */
-    public function questionList() : ProcessingQuestionList
+    public function questionList() : AuthoringQuestionList
     {
-        return new ProcessingQuestionList($this->processing_obj_id, $this->actor_user_id,  $this->attempt_number, $this->lng_key);
+        return new AuthoringQuestionList($this->processing_obj_id, $this->actor_user_id,  $this->attempt_number, $this->lng_key);
     }
 }

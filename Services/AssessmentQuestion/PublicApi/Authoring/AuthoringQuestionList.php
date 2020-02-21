@@ -3,11 +3,10 @@ declare(strict_types=1);
 
 namespace ILIAS\Services\AssessmentQuestion\PublicApi\Authoring;
 
-use ILIAS\AssessmentQuestion\DomainModel\QuestionDto;
-use ILIAS\Services\AssessmentQuestion\PublicApi\Common\QuestionList;
 use ILIAS\AssessmentQuestion\Application\AuthoringApplicationService;
+use ILIAS\AssessmentQuestion\DomainModel\QuestionDto;
 
-class AuthoringQuestionList implements QuestionList
+class AuthoringQuestionList
 {
 
     /**
