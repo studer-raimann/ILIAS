@@ -2,9 +2,7 @@
 
 /* Copyright (c) 1998-2019 ILIAS open source, Extended GPL, see docs/LICENSE */
 
-use ILIAS\AssessmentQuestion\Application\AuthoringApplicationService;
 use ILIAS\AssessmentQuestion\DomainModel\QuestionDto;
-use ILIAS\AssessmentQuestion\UserInterface\Web\AsqGUIElementFactory;
 use ILIAS\Services\AssessmentQuestion\PublicApi\Common\AuthoringContextContainer;
 use srag\CQRS\Aggregate\DomainObjectId;
 
@@ -34,22 +32,13 @@ class ilAsqQuestionConfigEditorGUI
     protected $questionId;
 
     /**
-     * @var AuthoringApplicationService
-     */
-    protected $authoringApplicationService;
-
-    /**
+     *
      * @param AuthoringContextContainer $contextContainer
      */
-    public function __construct(
-        AuthoringContextContainer $contextContainer,
-        DomainObjectId $questionId,
-        AuthoringApplicationService $authoringApplicationService
-    )
+    public function __construct(AuthoringContextContainer $contextContainer, DomainObjectId $questionId)
     {
         $this->contextContainer = $contextContainer;
         $this->questionId = $questionId;
-        $this->authoringApplicationService = $authoringApplicationService;
     }
 
 
@@ -100,7 +89,7 @@ class ilAsqQuestionConfigEditorGUI
         $form = $this->buildForm();
 
         $question = $form->getQuestion();
-        $this->authoringApplicationService->saveQuestion($question);
+        $DIC->assessment()->question()->saveQuestion($question);
         
         ilutil::sendInfo("Question Saved", true);
         
@@ -118,7 +107,7 @@ class ilAsqQuestionConfigEditorGUI
         $form = $this->buildForm();
         
         $question = $form->getQuestion();
-        $this->authoringApplicationService->saveQuestion($question);
+        $DIC->assessment()->question()->saveQuestion($question);
         
         if( !$form->checkInput() )
         {
@@ -141,7 +130,7 @@ class ilAsqQuestionConfigEditorGUI
 
         $question = $this->buildQuestion();
 
-        $form = AsqGUIElementFactory::CreateQuestionForm($question);
+        $form = $DIC->assessment()->question()->getQuestionEditForm($question);
         $form->setFormAction($DIC->ctrl()->getFormAction($this, self::CMD_SHOW_FORM));
         $form->addCommandButton(self::CMD_SAVE_AND_RETURN, $DIC->language()->txt('save_return'));
         $form->addCommandButton(self::CMD_SAVE_FORM, $DIC->language()->txt('save'));
@@ -155,8 +144,10 @@ class ilAsqQuestionConfigEditorGUI
      */
     protected function buildQuestion() : QuestionDto
     {
+        global $DIC;
+        
         $question_id = $this->questionId->getId();
-        $question = $this->authoringApplicationService->getQuestion($question_id);
+        $question = $DIC->assessment()->question()->getQuestionByQuestionId($question_id);
 
         return $question;
     }

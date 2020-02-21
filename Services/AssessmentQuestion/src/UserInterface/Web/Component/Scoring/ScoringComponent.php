@@ -7,6 +7,7 @@ use ILIAS\AssessmentQuestion\DomainModel\QuestionDto;
 use ILIAS\AssessmentQuestion\DomainModel\QuestionPlayConfiguration;
 use ILIAS\AssessmentQuestion\DomainModel\Scoring\AbstractScoring;
 use ilTemplate;
+use srag\CQRS\Aggregate\AbstractValueObject;
 
 /**
  * Class ScoringComponent
@@ -26,7 +27,7 @@ class ScoringComponent
      */
     private $question_dto;
     /**
-     * @var Answer
+     * @var AbstractValueObject
      */
     private $answer;
     /**
@@ -36,10 +37,10 @@ class ScoringComponent
 
 
     //QuestionDto $question_dto, QuestionConfig $question_config, QuestionCommands $question_commands
-    public function __construct(QuestionDto $question_dto, Answer $answer)
+    public function __construct(QuestionDto $question_dto, AbstractValueObject $answer)
     {
         $this->question_dto = $question_dto;
-        $this->answer = $answer;
+        $this->answer = new Answer(0, '', '', 0, 0, $answer);
 
         $scoring_class = $question_dto->getPlayConfiguration()->getScoringConfiguration()->configurationFor();
         $this->scoring = new $scoring_class($question_dto);

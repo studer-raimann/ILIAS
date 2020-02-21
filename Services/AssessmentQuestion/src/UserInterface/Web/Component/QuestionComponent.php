@@ -37,22 +37,10 @@ class QuestionComponent
      * @var AbstractEditor
      */
     private $editor;
-    /**
-     * @var QuestionConfig
-     */
-    private $question_config;
 
-    /**
-     * @var QuestionCommands
-     */
-    private $question_commands;
-
-
-    public function __construct(QuestionDto $question_dto, QuestionConfig $question_config, QuestionCommands $question_commands)
+    public function __construct(QuestionDto $question_dto)
     {
         $this->question_dto = $question_dto;
-        $this->question_config = $question_config;
-        $this->question_commands = $question_commands;
 
         $presenter_class = DefaultPresenter::class;
         $presenter = new $presenter_class($question_dto);
@@ -71,20 +59,22 @@ class QuestionComponent
 
         $tpl = new ilTemplate("tpl.question_view.html", true, true, "Services/AssessmentQuestion");
 
-        if ($this->question_config->isFeedbackOnDemand()) {
-            $tpl->setCurrentBlock('feedback_button');
-            $tpl->setVariable('FEEDBACK_BUTTON_TITLE', $DIC->language()->txt('asq_feedback_button_title'));
-            $tpl->setVariable('FEEDBACK_COMMAND', $this->question_commands->getShowFeedbackCommand());
-            $tpl->parseCurrentBlock();
-        }
-        if ($this->question_config->isHintsActivated() && is_object($this->question_dto->getQuestionHints()) && count($this->question_dto->getQuestionHints()->getHints())) {
+        $tpl->setCurrentBlock('feedback_button');
+        $tpl->setVariable('FEEDBACK_BUTTON_TITLE', $DIC->language()->txt('asq_feedback_button_title'));
+        $tpl->setVariable('FEEDBACK_COMMAND',QuestionCommands::DEFAULT_SHOW_FEEDBACK_CMD);
+        $tpl->parseCurrentBlock();
+        
+        if (is_object($this->question_dto->getQuestionHints()) && 
+            count($this->question_dto->getQuestionHints()->getHints())) 
+        {
             $tpl->setCurrentBlock('hint_button');
             $tpl->setVariable('HINT_BUTTON_TITLE', $DIC->language()->txt('asq_hint_button_title'));
-            $tpl->setVariable('HINT_COMMAND', $this->question_commands->getGetHintCommand());
+            $tpl->setVariable('HINT_COMMAND', QuestionCommands::DEFAULT_GET_HINT_CMD);
             $tpl->parseCurrentBlock();
         }
+        
         $tpl->setCurrentBlock('question');
-        $tpl->setVariable('SCORE_COMMAND', $this->question_commands->getSubmitCommand());
+        $tpl->setVariable('SCORE_COMMAND', QuestionCommands::DEFAULT_SUBMIT_CMD);
         $tpl->setVariable('QUESTION_OUTPUT', $this->presenter->generateHtml($this->editor));
         $tpl->setVariable('BUTTON_TITLE', $DIC->language()->txt('check'));
         $tpl->parseCurrentBlock();

@@ -78,10 +78,6 @@ class Question extends AbstractEventSourcedAggregateRoot implements IsRevisable
      */
     private $hints;
     /**
-     * @var array
-     */
-    private $answers;
-    /**
      * @var QuestionLegacyData
      */
     private $legacy_data;
@@ -242,21 +238,16 @@ class Question extends AbstractEventSourcedAggregateRoot implements IsRevisable
      * @param int          $container_obj_id
      * @param int          $creator_id
      */
-    public function setData(QuestionData $data, int $container_obj_id, int $creator_id = self::SYSTEM_USER_ID) : void
+    public function setData(QuestionData $data, int $creator_id = self::SYSTEM_USER_ID): void
     {
-        $this->ExecuteEvent(new QuestionDataSetEvent(
-            $this->getAggregateId(),
-            $container_obj_id,
-            $creator_id,
-            $this->getQuestionIntId(),
-            $data));
+        $this->ExecuteEvent(new QuestionDataSetEvent($this->getAggregateId(), $this->getContainerObjId(), $creator_id, $this->getQuestionIntId(), $data));
     }
 
-
     /**
+     *
      * @return QuestionPlayConfiguration
      */
-    public function getPlayConfiguration() : ?QuestionPlayConfiguration
+    public function getPlayConfiguration(): ?QuestionPlayConfiguration
     {
         return $this->play_configuration;
     }
@@ -268,12 +259,11 @@ class Question extends AbstractEventSourcedAggregateRoot implements IsRevisable
      */
     public function setPlayConfiguration(
         QuestionPlayConfiguration $play_configuration,
-        int $container_obj_id,
         int $creator_id = self::SYSTEM_USER_ID
     ) : void {
         $this->ExecuteEvent(new QuestionPlayConfigurationSetEvent(
             $this->getAggregateId(),
-            $container_obj_id,
+            $this->getContainerObjId(),
             $creator_id,
             $this->getQuestionIntId(),
             $play_configuration));
@@ -295,11 +285,11 @@ class Question extends AbstractEventSourcedAggregateRoot implements IsRevisable
      */
     public function setLegacyData(
         QuestionLegacyData $legacy_data,
-        int $container_obj_id,
         int $creator_id = self::SYSTEM_USER_ID
     ) : void {
-        $this->ExecuteEvent(new QuestionLegacyDataSetEvent($this->getAggregateId(),
-            $container_obj_id,
+        $this->ExecuteEvent(new QuestionLegacyDataSetEvent(
+            $this->getAggregateId(),
+            $this->getContainerObjId(),
             $creator_id,
             $this->getQuestionIntId(),
             $legacy_data));
@@ -315,17 +305,13 @@ class Question extends AbstractEventSourcedAggregateRoot implements IsRevisable
     }
 
     /**
+     *
      * @param AnswerOptions $options
-     * @param int           $creator_id
+     * @param int $creator_id
      */
-    public function setAnswerOptions(AnswerOptions $options, int $container_obj_id, int $creator_id = self::SYSTEM_USER_ID)
+    public function setAnswerOptions(AnswerOptions $options, int $creator_id = self::SYSTEM_USER_ID)
     {
-        $this->ExecuteEvent(new QuestionAnswerOptionsSetEvent(
-            $this->getAggregateId(),
-            $container_obj_id,
-            $creator_id,
-            $this->getQuestionIntId(),
-            $options));
+        $this->ExecuteEvent(new QuestionAnswerOptionsSetEvent($this->getAggregateId(), $this->getContainerObjId(), $creator_id, $this->getQuestionIntId(), $options));
     }
 
 
@@ -342,51 +328,14 @@ class Question extends AbstractEventSourcedAggregateRoot implements IsRevisable
      * @param QuestionHints $hints
      * @param int           $creator_id
      */
-    public function setHints(QuestionHints $hints, int $container_obj_id, int $creator_id = self::SYSTEM_USER_ID)
+    public function setHints(QuestionHints $hints, int $creator_id = self::SYSTEM_USER_ID)
     {
         $this->ExecuteEvent(new QuestionHintsSetEvent(
             $this->getAggregateId(),
-            $container_obj_id,
+            $this->getContainerObjId(),
             $creator_id,
             $this->getQuestionIntId(),
             $hints));
-    }
-
-
-    /**
-     * @param Answer $answer
-     */
-    function addAnswer(Answer $answer, $container_obj_id)
-    {
-        $this->ExecuteEvent(new QuestionAnswerAddedEvent(
-            $this->getAggregateId(),
-            $container_obj_id,
-            $answer->getAnswererId(),
-            $this->getQuestionIntId(),
-            $answer));
-    }
-
-
-    /**
-     * @param int    $user_id
-     * @param string $test_id
-     * @param string $revision_key
-     *
-     * @return Answer|null
-     */
-    public function getAnswer(int $user_id, string $test_id, string $revision_key, int $attempt_number) : ?Answer
-    {
-        return $this->answers[$test_id][$revision_key][$user_id][$attempt_number];
-    }
-
-
-    /**
-     * @param int    $user_id
-     * @param string $test_id
-     */
-    function clearAnswer(int $user_id, string $test_id)
-    {
-
     }
 
     /**
@@ -404,12 +353,11 @@ class Question extends AbstractEventSourcedAggregateRoot implements IsRevisable
      */
     public function setFeedback(
         Feedback $feedback,
-        int $container_obj_id,
         int $creator_id = self::SYSTEM_USER_ID
     ) : void {
         $this->ExecuteEvent(new QuestionFeedbackSetEvent(
             $this->getAggregateId(),
-            $container_obj_id,
+            $this->getContainerObjId(),
             $creator_id,
             $this->getQuestionIntId(),
             $feedback));

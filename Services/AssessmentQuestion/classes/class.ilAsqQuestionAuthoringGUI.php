@@ -136,8 +136,6 @@ class ilAsqQuestionAuthoringGUI
                 $application_processing_service = new ProcessingApplicationService($this->authoring_context_container->getObjId(), $this->authoring_context_container->getActorId(), 1, $this->lng_key);
 
                 $gui = new ilAsqQuestionPreviewGUI(
-                    $this->authoring_application_service,
-                    $application_processing_service,
                     $this->question_id,
                     $this->question_config
                 );
@@ -152,7 +150,8 @@ class ilAsqQuestionAuthoringGUI
                 $this->initAuthoringTabs();
                 $DIC->tabs()->activateTab(self::TAB_ID_PAGEVIEW);
 
-                $gui = $this->authoring_service->getQuestionPageEditor($this->question_id);
+                $gui = $DIC->assessment()->question()->getQuestionPage(
+                    $DIC->assessment()->question()->getQuestionByQuestionId($this->question_id->getId()));
 
                 if (strlen($DIC->ctrl()->getCmd()) == 0 && !isset($_POST["editImagemapForward_x"]))
                 {
@@ -175,9 +174,7 @@ class ilAsqQuestionAuthoringGUI
 
                 $gui = new ilAsqQuestionConfigEditorGUI(
                     $this->authoring_context_container,
-                    $this->question_id,
-                    $this->authoring_application_service
-                );
+                    $this->question_id);
                 $DIC->ctrl()->forwardCommand($gui);
 
                 break;

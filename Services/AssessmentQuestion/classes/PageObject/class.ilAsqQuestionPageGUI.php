@@ -48,16 +48,16 @@ class ilAsqQuestionPageGUI extends ilPageObjectGUI
      *
      * @param AsqPageObject $page
      */
-    function __construct(int $parent_int_id, int $page_int_id, string $lng_key)
+    function __construct(int $parent_int_id, int $page_int_id)
     {
         /**
           * @var \ILIAS\DI\Container $DIC
         **/
         global $DIC;
 
-        $this->createPageIfNotExists(self::PAGE_TYPE, $parent_int_id, $page_int_id, $lng_key);
+        $this->createPageIfNotExists(self::PAGE_TYPE, $parent_int_id, $page_int_id);
         
-        parent::__construct(self::PAGE_TYPE, $page_int_id, 0, false, $lng_key);
+        parent::__construct(self::PAGE_TYPE, $page_int_id, 0, false);
 
         $this->page_back_title = $this->lng->txt("page");
 
@@ -70,15 +70,14 @@ class ilAsqQuestionPageGUI extends ilPageObjectGUI
         $DIC->ui()->mainTemplate()->parseCurrentBlock();
     }
 
-    private function createPageIfNotExists(string $page_type, int $parent_int_id, int $page_int_id, string $lng_key)
+    private function createPageIfNotExists(string $page_type, int $parent_int_id, int $page_int_id)
     {
-        if (ilPageObject::_exists($page_type, $page_int_id, $lng_key) === false) {
+        if (ilPageObject::_exists($page_type, $page_int_id) === false) {
             include_once("./Services/AssessmentQuestion/src/UserInterface/Web/Page/class.AsqPageObject.php");
             $page = new AsqPageObject();
             $page->setParentType($page_type);
             $page->setParentId($parent_int_id);
             $page->setId($page_int_id);
-            $page->setLanguage($lng_key);
             
             $page->create();
         }
@@ -142,9 +141,5 @@ class ilAsqQuestionPageGUI extends ilPageObjectGUI
     
     function getQuestionComponent() : QuestionComponent {
         return $this->component;
-    }
-
-    function getEnteredAnswer() : AbstractValueObject {
-        return $this->component->readAnswer();
     }
 }

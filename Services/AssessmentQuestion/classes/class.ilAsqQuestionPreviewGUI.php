@@ -8,6 +8,9 @@ use ILIAS\Services\AssessmentQuestion\PublicApi\Common\AuthoringContextContainer
 use ILIAS\Services\AssessmentQuestion\PublicApi\Common\QuestionCommands;
 use ILIAS\Services\AssessmentQuestion\PublicApi\Common\QuestionConfig;
 use srag\CQRS\Aggregate\DomainObjectId;
+use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Feedback\FeedbackComponent;
+use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Feedback\ScoringComponent;
+use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Feedback\AnswerFeedbackComponent;
 
 /**
  * Class ilAsqQuestionPreviewGUI
@@ -25,10 +28,6 @@ class ilAsqQuestionPreviewGUI
     const CMD_SHWOW_Feedback = 'showFeedback';
     //const CMD_SCORE_PREVIEW = 'scorePreview';
     /**
-     * @var ProcessingApplicationService
-     */
-    protected $processing_application_service;
-    /**
      * @var QuestionConfig
      */
      protected  $question_config;
@@ -36,18 +35,6 @@ class ilAsqQuestionPreviewGUI
      * @var DomainObjectId
      */
     protected $question_id;
-    /**
-     * @var AuthoringApplicationService
-     */
-    protected $authoring_application_service;
-    /**
-     * @var AuthoringService
-     */
-    //  protected $public_authoring_service;
-    /**
-     * @var QuestionComponent
-     */
-    // protected $questionComponent;
 
     /**
      * ilAsqQuestionCreationGUI constructor.
@@ -55,13 +42,9 @@ class ilAsqQuestionPreviewGUI
      * @param AuthoringContextContainer $contextContainer
      */
     public function __construct(
-        AuthoringApplicationService $authoring_application_service,
-        ProcessingApplicationService $processing_application_service,
         DomainObjectId $question_id,
         QuestionConfig $question_config
     ) {
-        $this->authoring_application_service = $authoring_application_service;
-        $this->processing_application_service = $processing_application_service;
         $this->question_id = $question_id;
         $this->question_config = $question_config;
     }
@@ -88,17 +71,21 @@ class ilAsqQuestionPreviewGUI
     {
         global $DIC;
 
-        $question_dto = $this->authoring_application_service->getQuestion($this->question_id->getId());
-        $question_page = $this->processing_application_service->getQuestionPageGUI($question_dto,  $this->question_config, new QuestionCommands());
+        $question_dto = $DIC->assessment()->question()->getQuestionByQuestionId($this->question_id->getId());
+        
+        $question_page = $DIC->assessment()->question()->getQuestionPage($question_dto);
+        $question_page->setRenderPageContainer(false);
+        $question_page->setEditPreview(true);
+        $question_page->setEnabledTabs(false);
         
         $question_tpl = new ilTemplate('tpl.question_preview_container.html', true, true, 'Services/AssessmentQuestion');
         $question_tpl->setVariable('FORMACTION', $DIC->ctrl()->getFormAction($this, self::CMD_SHOW_PREVIEW));
         $question_tpl->setVariable('QUESTION_OUTPUT', $question_page->showPage());
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $feedback_component = $this->processing_application_service->getFeedbackComponent(
-                $question_dto, 
-                $this->processing_application_service->createNewAnswer($question_dto, $question_page->getEnteredAnswer()));
+            $feedback_component = new FeedbackComponent(
+                new ScoringComponent($question_dto, $question_page->getQuestionComponent()->readAnswer()), 
+                new AnswerFeedbackComponent($question_dto, $question_page->getQuestionComponent()->readAnswer()));
             $question_tpl->setCurrentBlock('instant_feedback');
             $question_tpl->setVariable('INSTANT_FEEDBACK',$feedback_component->getHtml());
             $question_tpl->parseCurrentBlock();
