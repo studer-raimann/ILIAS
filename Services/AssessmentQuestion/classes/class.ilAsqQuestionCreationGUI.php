@@ -30,37 +30,13 @@ class ilAsqQuestionCreationGUI
     protected $contextContainer;
 
     /**
-     * @var DomainObjectId
-     */
-    protected $questionId;
-
-    /**
-     * @var AuthoringService
-     */
-    protected $publicAuthoringService;
-
-    /**
-     * @var AuthoringApplicationService
-     */
-    protected $authoringApplicationService;
-
-    /**
      * ilAsqQuestionCreationGUI constructor.
      *
      * @param AuthoringContextContainer $contextContainer
      */
-    public function __construct(
-        AuthoringContextContainer $contextContainer,
-        DomainObjectId $questionId,
-        AuthoringService $publicAuthoringService,
-        AuthoringApplicationService $authoringApplicationService
-
-    )
+    public function __construct(AuthoringContextContainer $contextContainer)
     {
         $this->contextContainer = $contextContainer;
-        $this->questionId = $questionId;
-        $this->publicAuthoringService = $publicAuthoringService;
-        $this->authoringApplicationService = $authoringApplicationService;
     }
 
 
@@ -122,39 +98,22 @@ class ilAsqQuestionCreationGUI
             $this->showCreationForm($form);
             return;
         }
-
-        $guid = $this->questionId->getId();
-
-        $this->authoringApplicationService->createQuestion(
-            new DomainObjectId($guid),
-            $this->contextContainer->getObjId(),
-            $this->contextContainer->getObjType(),
-            null, //new questions get dynamic ids
-            $form->getQuestionType(),
-            $form->getContentEditingMode()
-        );
+        
+        $new_question = $DIC->assessment()->question()->createQuestion(
+            $form->getQuestionType(), 
+            $this->contextContainer->getObjId(), 
+            $form->getContentEditingMode());
 
         $DIC->ctrl()->setParameterByClass(
             $this->contextContainer->getAfterQuestionCreationCtrlCmdClass(),
             ilAsqQuestionAuthoringGUI::VAR_QUESTION_ID,
-            $this->questionId->getId()
+            $new_question->getId()
         );
 
         $DIC->ctrl()->redirectByClass(
             $this->contextContainer->getAfterQuestionCreationCtrlClassPath(),
             $this->contextContainer->getAfterQuestionCreationCtrlCommand()
         );
-
-        /*$DIC->ctrl()->setReturnByClass(
-            $this->contextContainer->getAfterQuestionCreationCtrlClassPath(),
-            $this->contextContainer->getAfterQuestionCreationCtrlCommand()
-        );
-
-        $DIC->ctrl()->returnToParent($this);*/
-
-        #$DIC->ctrl()->redirectToURL(str_replace('&amp;', '&',
-        #    $this->publicAuthoringService->question($this->questionId)->getEditLink(array())->getAction()
-        #));
     }
 
 

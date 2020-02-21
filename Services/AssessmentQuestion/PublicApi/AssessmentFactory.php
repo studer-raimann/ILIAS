@@ -53,4 +53,36 @@ class AssessmentFactory
     {
         return new ProcessingService($container_obj_id,$actor_user_id, $attempt_number);
     }
+    
+    /**
+     * @var QuestionService
+     */
+    private $question_service;
+    
+    /**
+     * @return QuestionService
+     */
+    public function question() {
+        if (is_null($this->question_service)) {
+            $this->question_service = new QuestionService();
+        }
+        
+        return $this->question_service;
+    }
+    
+    /**
+     * @var AnswerService
+     */
+    private $answer_service;
+    
+    /**
+     * @return AnswerService
+     */
+    public function answer() {
+        if (is_null($this->answer_service)) {
+            $this->answer_service = new AnswerService();
+        }
+        
+        return $this->answer_service;
+    }
 }
