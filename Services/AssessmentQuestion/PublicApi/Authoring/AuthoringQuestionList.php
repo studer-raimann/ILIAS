@@ -3,9 +3,8 @@ declare(strict_types=1);
 
 namespace ILIAS\Services\AssessmentQuestion\PublicApi\Authoring;
 
-use ILIAS\AssessmentQuestion\Application\AuthoringApplicationService;
 use ILIAS\AssessmentQuestion\DomainModel\QuestionDto;
-
+use ILIAS\AssessmentQuestion\Infrastructure\Persistence\EventStore\QuestionEventStoreRepository;
 class AuthoringQuestionList
 {
 
@@ -17,10 +16,6 @@ class AuthoringQuestionList
      * @var int
      */
     protected $actor_user_id;
-    /**
-     * AuthoringApplicationService
-     */
-    protected $authoring_application_service;
 
     /**
      * ProcessingQuestionList constructor.
@@ -36,21 +31,12 @@ class AuthoringQuestionList
         $this->actor_user_id = $actor_user_id;
         //The lng_key could be used in future as parameter in the constructor
         $lng_key = $DIC->language()->getDefaultLanguage();
-
-        $this->authoring_application_service = new AuthoringApplicationService($container_obj_id, $actor_user_id,$lng_key);
-    }
-
-    public function publishNewRevisions() {
-        //TODO
-        foreach($this->authoring_application_service->getQuestions(true) as $question_dto)  {
-            $this->authoring_application_service->projectQuestion($question_dto->getId());
-        }
     }
 
     public function getQuestionsOfContainerAsAssocArray() : array
     {
         $assoc_array = [];
-        foreach($this->authoring_application_service->getQuestions() as $question_dto) {
+        foreach($this->getQuestions() as $question_dto) {
             $question_array = $this->getArrayFromDto($question_dto);
             
             // TODO look for a less smelly way to set title if no title is set yet as it needs something for the link to be clickable
@@ -66,6 +52,32 @@ class AuthoringQuestionList
         return $assoc_array;
     }
 
+    /**
+     *
+     * @return QuestionDto[]
+     */
+    public function getQuestions(?bool $is_complete = null): array
+    {
+        global $DIC;
+        
+        $questions = [];
+        $event_store = new QuestionEventStoreRepository();
+        foreach ($event_store->allStoredQuestionIdsForContainerObjId($this->container_obj_id) as $aggregate_id) {
+            $question = $DIC->assessment()->question()->getQuestionByQuestionId($aggregate_id);
+
+            if (! is_null($is_complete)) {
+                if ($question->isComplete() !== $is_complete) {
+                    continue;
+                }
+            }
+
+            $questions[] = $question;
+        }
+
+        return $questions;
+    }
+                    
+    
     //TODO move and cleanup this method
     protected function getArrayFromDto($dto) {
         $name = get_class ($dto);
@@ -88,14 +100,5 @@ class AuthoringQuestionList
             }
         }
        return $attributes;
-    }
-
-
-    /**
-     * @return QuestionDto[]
-     */
-    public function getQuestionsOfContainerAsDtoList(?bool $is_complete = null) : array
-    {
-        return $this->authoring_application_service->getQuestions($is_complete);
     }
 }

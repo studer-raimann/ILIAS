@@ -23,26 +23,19 @@ class ilAsqQuestionFeedbackEditorGUI
 
     const CMD_SHOW_FEEDBACK_FORM = 'showFeedbackForm';
     const CMD_SAVE_FEEDBACK = 'saveFeedback';
+    
     /**
      * @var QuestionDto
      */
     protected $question_dto;
-    /**
-     * @var AuthoringApplicationService
-     */
-    protected $authoring_application_service;
-
 
     /**
      * @param QuestionDto $question_dto
-     * @param AuthoringApplicationService $authoring_application_service
      */
     public function __construct(
-        QuestionDto $question_dto,
-        AuthoringApplicationService $authoring_application_service
+        QuestionDto $question_dto
     ) {
         $this->question_dto = $question_dto;
-        $this->authoring_application_service = $authoring_application_service;
     }
 
 

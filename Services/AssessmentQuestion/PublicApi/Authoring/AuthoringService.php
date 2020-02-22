@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace ILIAS\Services\AssessmentQuestion\PublicApi\Authoring;
 
-use ILIAS\AssessmentQuestion\Application\AuthoringApplicationService;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Component\QuestionComponent;
 use ILIAS\UI\Component\Layout\Page\Page;
 use srag\CQRS\Aggregate\DomainObjectId;
@@ -33,11 +32,6 @@ class AuthoringService
      * @var string
      */
     protected $lng_key;
-    /**
-     * AuthoringApplicationService
-     */
-    protected $authoring_application_service;
-
 
     /**
      * @param int $container_obj_id
@@ -49,10 +43,6 @@ class AuthoringService
 
         $this->container_obj_id = $container_obj_id;
         $this->actor_user_id = $actor_user_id;
-        //The lng_key could be used in future as parameter in the constructor
-        $lng_key = $DIC->language()->getDefaultLanguage();
-
-        $this->authoring_application_service = new AuthoringApplicationService($container_obj_id, $actor_user_id, $lng_key);
     }
 
 
@@ -65,18 +55,6 @@ class AuthoringService
     {
         return new AuthoringQuestion($this->container_obj_id, $question_uuid->getId(), $this->actor_user_id);
     }
-
-
-    /**
-     * @param DomainObjectId $question_uuid
-     *
-     * @return QuestionComponent
-     */
-    public function questionComponent(DomainObjectId $question_uuid) : QuestionComponent
-    {
-        return $this->authoring_application_service->getQuestionComponent($question_uuid);
-    }
-
 
     /**
      * @return AuthoringQuestionList
@@ -108,30 +86,6 @@ class AuthoringService
 
         return new DomainObjectId();
     }
-
-
-    public function getQuestionPageEditor(DomainObjectId $questionUid) : \ilAsqQuestionPageGUI
-    {
-        $questionDto = $this->authoring_application_service->getQuestion(
-            $questionUid->getId()
-        );
-
-        $qstComponent = $this->questionComponent($questionUid);
-
-        $pageGUI = $this->authoring_application_service->getQuestionPageEditor(
-            $questionDto->getQuestionIntId()
-        );
-
-        $pageGUI->setQuestionHTML([
-            $questionDto->getQuestionIntId() => $qstComponent->renderHtml('')
-        ]);
-
-        $pageGUI->setHeader($questionDto->getData()->getTitle());
-        $pageGUI->setPresentationTitle($questionDto->getData()->getTitle());
-
-        return $pageGUI;
-    }
-
 
     public function getGenericFeedbackPageGUI(Page $page) : \ilAsqGenericFeedbackPageGUI
     {

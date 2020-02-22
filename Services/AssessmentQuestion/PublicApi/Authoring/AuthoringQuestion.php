@@ -4,12 +4,10 @@ declare(strict_types=1);
 namespace ILIAS\Services\AssessmentQuestion\PublicApi\Authoring;
 
 use ILIAS\AssessmentQuestion\Application\AuthoringApplicationService;
-use ILIAS\AssessmentQuestion\DomainModel\QuestionDto;
 use ILIAS\Services\AssessmentQuestion\PublicApi\Common\AuthoringContextContainer;
 use ILIAS\Services\AssessmentQuestion\PublicApi\Common\QuestionConfig;
 use ILIAS\UI\Component\Link\Standard as UiStandardLink;
 use ilAsqQuestionAuthoringGUI;
-use ilQTIItem;
 
 /**
  * Class QuestionAuthoring
@@ -60,14 +58,6 @@ class AuthoringQuestion
         $this->actor_user_id = $actor_user_id;
         $this->container_obj_id = $container_obj_id;
         $this->question_id = $question_uuid;
-
-        //The lng_key could be used in future as parameter in the constructor
-        $this->lng_key = $DIC->language()->getDefaultLanguage();
-
-
-        $this->authoring_application_service = new AuthoringApplicationService($container_obj_id, $actor_user_id, $this->lng_key);
-
-        $DIC->language()->loadLanguageModule('asq');
     }
 
     public function getCreationLink(array $ctrl_stack) :UiStandardLink
@@ -82,14 +72,6 @@ class AuthoringQuestion
             $DIC->ctrl()->getLinkTargetByClass($ctrl_stack)
         );
     }
-
-    public function getQuestionDto() : QuestionDto
-    {
-        return $this->authoring_application_service->getQuestion(
-            $this->question_id
-        );
-    }
-
 
     public function getAuthoringGUI(
         UiStandardLink $container_back_link,
@@ -114,15 +96,6 @@ class AuthoringQuestion
 
         return new ilAsqQuestionAuthoringGUI($authoringContextContainer, $question_config, $this->authoring_question_after_save_command_handler);
     }
-
-
-    /**
-     */
-    public function deleteQuestion() : void
-    {
-        // TODO: Implement deleteQuestion() method.
-    }
-
 
     /**
      * @return UiStandardLink
@@ -226,43 +199,6 @@ class AuthoringQuestion
         );
     }
 
-
-    /**
-     * @return UiStandardLink
-     */
-    public function getRecapitulationLink() : UiStandardLink
-    {
-        global $DIC; /* @var \ILIAS\DI\Container $DIC */
-
-        $this->setQuestionUidParameter();
-
-        return $DIC->ui()->factory()->link()->standard(
-            $DIC->language()->txt('asq_authoring_tab_recapitulation'),
-            $DIC->ctrl()->getLinkTargetByClass([
-                ilAsqQuestionAuthoringGUI::class, \ilAsqQuestionRecapitulationEditorGUI::class
-            ])
-        );
-    }
-
-
-    /**
-     * @return UiStandardLink
-     */
-    public function getStatisticLink() : UiStandardLink
-    {
-        global $DIC; /* @var \ILIAS\DI\Container $DIC */
-
-        $this->setQuestionUidParameter();
-
-        return $DIC->ui()->factory()->link()->standard(
-            $DIC->language()->txt('asq_authoring_tab_statistics'),
-            $DIC->ctrl()->getLinkTargetByClass([
-                ilAsqQuestionAuthoringGUI::class, \ilAsqQuestionStatisticsGUI::class
-            ])
-        );
-    }
-
-
     /**
      * sets the question uid parameter for the ctrl hub gui ilAsqQuestionAuthoringGUI
      */
@@ -275,21 +211,5 @@ class AuthoringQuestion
             ilAsqQuestionAuthoringGUI::VAR_QUESTION_ID,
             $this->question_id
         );
-    }
-
-
-    public function publishNewRevision() : void
-    {
-        $this->authoring_application_service->projectQuestion($this->question_id);
-    }
-
-
-    public function changeQuestionContainer(int $container_obj_id) : void
-    {
-        // TODO: Implement changeQuestionContainer() method.
-    }
-
-    public function importIlQtiQuestion(ilQTIItem $il_qti_item) {
-        $this->authoring_application_service->importIlQtiQuestion($this->question_id, $il_qti_item);
     }
 }

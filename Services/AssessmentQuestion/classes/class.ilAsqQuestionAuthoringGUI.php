@@ -53,12 +53,6 @@ class ilAsqQuestionAuthoringGUI
      * @var QuestionConfig
      */
 	protected $question_config;
-
-	/**
-	 * @var AuthoringApplicationService
-	 */
-	private $authoring_application_service;
-
 	/**
 	 * @var AuthoringService
 	 */
@@ -88,15 +82,12 @@ class ilAsqQuestionAuthoringGUI
 	    //we could use this in future in constructer
 	    $this->lng_key = $DIC->language()->getDefaultLanguage();
 
-        $this->authoring_application_service = new AuthoringApplicationService(
-            $this->authoring_context_container->getObjId(), $this->authoring_context_container->getActorId(), $this->lng_key
-        );
-
         $this->authoring_service = $DIC->assessment()->questionAuthoring(
             $this->authoring_context_container->getObjId(), $this->authoring_context_container->getActorId()
         );
 
         $this->question_id = $this->authoring_service->currentOrNewQuestionId();
+        $DIC->language()->loadLanguageModule('asq');
     }
 
 
@@ -183,8 +174,7 @@ class ilAsqQuestionAuthoringGUI
                 $DIC->tabs()->activateTab(self::TAB_ID_FEEDBACK);
 
                 $gui = new ilAsqQuestionFeedbackEditorGUI(
-                    $this->authoring_application_service->getQuestion($this->question_id->getId()),
-                    $this->authoring_application_service
+                    $DIC->assessment()->question()->getQuestionByQuestionId($this->question_id->getId())
                 );
                 $DIC->ctrl()->forwardCommand($gui);
 
@@ -198,28 +188,6 @@ class ilAsqQuestionAuthoringGUI
 
                 $gui = new AsqQuestionHintEditorGUI($this->authoring_application_service->getQuestion($this->question_id->getId()),
                                                         $this->authoring_application_service);
-                $DIC->ctrl()->forwardCommand($gui);
-
-                break;
-
-            case strtolower(ilAsqQuestionRecapitulationEditorGUI::class):
-
-                $this->initHeaderAction();
-                $this->initAuthoringTabs();
-                $DIC->tabs()->activateTab(self::TAB_ID_RECAPITULATION);
-
-                $gui = new ilAsqQuestionRecapitulationEditorGUI();
-                $DIC->ctrl()->forwardCommand($gui);
-
-                break;
-
-            case strtolower(ilAsqQuestionStatisticsGUI::class):
-
-                $this->initHeaderAction();
-                $this->initAuthoringTabs();
-                $DIC->tabs()->activateTab(self::TAB_ID_STATISTIC);
-
-                $gui = new ilAsqQuestionStatisticsGUI();
                 $DIC->ctrl()->forwardCommand($gui);
 
                 break;
@@ -306,7 +274,8 @@ class ilAsqQuestionAuthoringGUI
         global $DIC; /* @var ILIAS\DI\Container $DIC */
 
         $question = $this->authoring_service->question($this->question_id);
-
+        $question_dto = $DIC->assessment()->question()->getQuestionByQuestionId($this->question_id->getId());
+        
         $DIC->tabs()->clearTargets();
 
         $DIC->tabs()->setBackTarget(
@@ -314,12 +283,12 @@ class ilAsqQuestionAuthoringGUI
             $this->authoring_context_container->getBackLink()->getAction()
         );
 
-        if(is_object($question->getQuestionDto()->getData()) > 0 && $this->authoring_context_container->hasWriteAccess() )
+        if(is_object($question_dto->getData()) > 0 && $this->authoring_context_container->hasWriteAccess() )
         {
             $link = $question->getEditPageLink();
             $DIC->tabs()->addTab(self::TAB_ID_PAGEVIEW, $link->getLabel(), $link->getAction());
         }
-        if(is_object($question->getQuestionDto()->getData()) > 0) {
+        if(is_object($question_dto->getData()) > 0) {
             $link = $question->getPreviewLink(array());
             $DIC->tabs()->addTab(self::TAB_ID_PREVIEW, $link->getLabel(), $link->getAction());
         }
@@ -328,21 +297,13 @@ class ilAsqQuestionAuthoringGUI
             $link = $question->getEditLink(array());
             $DIC->tabs()->addTab(self::TAB_ID_CONFIG, $link->getLabel(), $link->getAction());
         }
-        if(is_object($question->getQuestionDto()->getData()) > 0) {
+        if(is_object($question_dto->getData()) > 0) {
             $link = $question->getEditFeedbacksLink();
             $DIC->tabs()->addTab(self::TAB_ID_FEEDBACK, $link->getLabel(), $link->getAction());
         }
-        if(is_object($question->getQuestionDto()->getData()) > 0) {
+        if(is_object($question_dto->getData()) > 0) {
             $link = $question->getEditHintsLink();
             $DIC->tabs()->addTab(self::TAB_ID_HINTS, $link->getLabel(), $link->getAction());
-        }
-        if(is_object($question->getQuestionDto()->getData()) > 0) {
-            $link = $question->getRecapitulationLink();
-            $DIC->tabs()->addTab(self::TAB_ID_RECAPITULATION, $link->getLabel(), $link->getAction());
-        }
-        if(is_object($question->getQuestionDto()->getData()) > 0) {
-            $link = $question->getStatisticLink();
-            $DIC->tabs()->addTab(self::TAB_ID_STATISTIC, $link->getLabel(), $link->getAction());
         }
     }
 }
