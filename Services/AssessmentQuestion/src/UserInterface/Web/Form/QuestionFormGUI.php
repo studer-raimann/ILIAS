@@ -97,11 +97,7 @@ abstract class QuestionFormGUI extends ilPropertyFormGUI {
         $id = new ilHiddenInputGUI(self::VAR_AGGREGATE_ID);
         $id->setValue($question->getId());
         $this->addItem($id);
-        
-        $form_part_link = new \ilHiddenInputGUI(self::FORM_PART_LINK);
-        $form_part_link->setValue($DIC->ctrl()->getLinkTargetByClass('ilAsqQuestionAuthoringGUI', \ilAsqQuestionAuthoringGUI::CMD_GET_FORM_SNIPPET));
-        $this->addItem($form_part_link);
-        
+
         $legacy = new ilHiddenInputGUI(self::VAR_LEGACY);
         $legacy->setValue(json_encode($question->getLegacyData()));
         $this->addItem($legacy);

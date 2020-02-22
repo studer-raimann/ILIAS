@@ -2,15 +2,11 @@
 
 /* Copyright (c) 1998-2019 ILIAS open source, Extended GPL, see docs/LICENSE */
 
-use ILIAS\AssessmentQuestion\Application\AuthoringApplicationService;
-use ILIAS\AssessmentQuestion\Application\ProcessingApplicationService;
-use ILIAS\Services\AssessmentQuestion\PublicApi\Common\AuthoringContextContainer;
-use ILIAS\Services\AssessmentQuestion\PublicApi\Common\QuestionCommands;
-use ILIAS\Services\AssessmentQuestion\PublicApi\Common\QuestionConfig;
-use srag\CQRS\Aggregate\DomainObjectId;
+use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Feedback\AnswerFeedbackComponent;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Feedback\FeedbackComponent;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Feedback\ScoringComponent;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Feedback\AnswerFeedbackComponent;
+use ILIAS\Services\AssessmentQuestion\PublicApi\Common\QuestionConfig;
+use srag\CQRS\Aggregate\DomainObjectId;
 
 /**
  * Class ilAsqQuestionPreviewGUI
@@ -36,11 +32,6 @@ class ilAsqQuestionPreviewGUI
      */
     protected $question_id;
 
-    /**
-     * ilAsqQuestionCreationGUI constructor.
-     *
-     * @param AuthoringContextContainer $contextContainer
-     */
     public function __construct(
         DomainObjectId $question_id,
         QuestionConfig $question_config

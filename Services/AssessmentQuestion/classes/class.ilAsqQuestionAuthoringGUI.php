@@ -5,7 +5,6 @@ declare(strict_types=1);
 
 
 use ILIAS\AssessmentQuestion\Application\AuthoringApplicationService;
-use ILIAS\AssessmentQuestion\Application\ProcessingApplicationService;
 use ILIAS\AssessmentQuestion\DomainModel\Answer\Answer;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Component\QuestionComponent;
 use ILIAS\Services\AssessmentQuestion\PublicApi\Authoring\AuthoringService;
@@ -345,64 +344,5 @@ class ilAsqQuestionAuthoringGUI
             $link = $question->getStatisticLink();
             $DIC->tabs()->addTab(self::TAB_ID_STATISTIC, $link->getLabel(), $link->getAction());
         }
-    }
-
-
-    /**
-     * below is obsolete code that needs to be (re-)moved
-     * for the moment it keeps alive here
-     */
-
-    const CMD_SCORE_QUESTION = "scoreQuestion";
-    const CMD_DISPLAY_QUESTION = "displayQuestion";
-    const CMD_GET_FORM_SNIPPET = "getFormSnippet";
-    const DEBUG_TEST_ID = 23;
-
-    // TODO move to player
-    public function displayQuestion()
-    {
-        global $DIC;
-        
-        $revision_id = $_GET[self::VAR_QUESTION_ID];
-
-        $player = new ProcessingApplicationService(
-            $this->authoring_context_container->getObjId(), $this->authoring_context_container->getActorId(),  $this->question_config,$this->lng_key
-        );
-
-        $question = $player->GetQuestion($revision_id);
-        
-        $question_component = new QuestionComponent($question,$this->question_config,new \ILIAS\Services\AssessmentQuestion\PublicApi\Common\QuestionCommands());
-        switch($_SERVER['REQUEST_METHOD'])
-        {
-            case "GET":
-                $answer = $player->getUserAnswer($question->getRevisionId());
-                if (!is_null($answer)) {
-                    $question_component->setAnswer($answer);
-                }
-                break;
-            case "POST":
-                $answer = new Answer($this->authoring_context_container->getActorId(), $question->getId(),'', $this->authoring_context_container->getObjId(),0, $question_component->readAnswer());
-                $player->answerQuestion($answer);
-                $question_component->setAnswer($answer);
-                break;
-        }
-        
-        
-        $DIC->ui()->mainTemplate()->setContent($question_component->renderHtml());
-    }
-    
-    public function scoreQuestion()
-    {
-        global $DIC;
-        
-        $player = new ProcessingApplicationService(
-            $this->authoring_context_container->getObjId(), $this->authoring_context_container->getActorId(),
-        $this->question_config, $this->lng_key);
-        
-        $question_id = $_GET[self::VAR_QUESTION_ID];
-        
-        $DIC->ui()->mainTemplate()->setContent($player->GetPointsByUser($question_id,
-        $this->authoring_context_container->getActorId(), $this->authoring_context_container->getObjId()));
-
     }
 }
