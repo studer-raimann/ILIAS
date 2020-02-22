@@ -3,13 +3,12 @@ declare(strict_types=1);
 
 namespace ILIAS\Services\AssessmentQuestion\PublicApi\Authoring;
 
-use ilAsqQuestionAuthoringGUI;
 use ILIAS\AssessmentQuestion\Application\AuthoringApplicationService;
-use ILIAS\AssessmentQuestion\Application\ProcessingApplicationService;
 use ILIAS\AssessmentQuestion\DomainModel\QuestionDto;
 use ILIAS\Services\AssessmentQuestion\PublicApi\Common\AuthoringContextContainer;
 use ILIAS\Services\AssessmentQuestion\PublicApi\Common\QuestionConfig;
 use ILIAS\UI\Component\Link\Standard as UiStandardLink;
+use ilAsqQuestionAuthoringGUI;
 use ilQTIItem;
 
 /**
@@ -161,17 +160,6 @@ class AuthoringQuestion
             $DIC->ctrl()->getLinkTargetByClass($ctrl_stack)
         );
     }
-
-    //TODO this will not be the way - see above
-    public function getScoringOfPreviewedQuestion():float {
-        global $DIC;
-        $DIC->ctrl()->setParameterByClass(ilAsqQuestionAuthoringGUI::class,ilAsqQuestionAuthoringGUI::VAR_QUESTION_ID,$this->question_id);
-
-        $player = new ProcessingApplicationService($this->container_obj_id,$this->actor_user_id);
-        return $player->GetPointsByUser($this->question_id,$this->actor_user_id, $this->container_obj_id);
-
-    }
-
     /**
      * @return UiStandardLink
      */
