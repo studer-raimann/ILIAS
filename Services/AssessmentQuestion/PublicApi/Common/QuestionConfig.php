@@ -18,27 +18,6 @@ use ilAdvancedSelectionListGUI;
 class QuestionConfig
 {
     /**
-     * @var null|ilCtrlCallBackCmd
-     *
-     * The ilAsqQuestionProcessingGUI will redirect to this action for getting the next question
-     * If don't set this action no Next Button will not be displayed
-     */
-    protected $show_next_question_action = null;
-    /**
-     * @var null|ilCtrlCallBackCmd
-     *
-     * The ilAsqQuestionProcessingGUI will redirect to this action for getting the previous question.
-     * If don't set this action no Previous Button will not be displayed
-     */
-    protected $show_previous_question_action = null;
-    /**
-     * @var null|ilCtrlCallBackCmd
-     *
-     * The ilAsqQuestionProcessingGUI will redirect to this action after finish test session
-     * If don't set this action the Finish Button will not be displayed
-     */
-    protected $show_finish_test_session_action = null;
-    /**
      * @var null|string
      *
      * The ilAsqQuestionProcessingGUI will show this subline direct under the question title. E.g. Question 4 of 4 (2 Points)
@@ -81,61 +60,6 @@ class QuestionConfig
      * @var bool
      */
     protected $feedback_on_demand = false;
-
-
-    /**
-     * @return ilCtrlCallBackCmd|null
-     */
-    public function getShowNextQuestionAction() : ?ilCtrlCallBackCmd
-    {
-        return $this->show_next_question_action;
-    }
-
-
-    /**
-     * @param ilCtrlCallBackCmd|null $show_next_question_action
-     */
-    public function setShowNextQuestionAction(?ilCtrlCallBackCmd $show_next_question_action) : void
-    {
-        $this->show_next_question_action = $show_next_question_action;
-    }
-
-
-
-    /**
-     * @return ilCtrlCallBackCmd|null
-     */
-    public function getShowPreviousQuestionAction() : ?ilCtrlCallBackCmd
-    {
-        return $this->show_previous_question_action;
-    }
-
-    /**
-     * @param ilCtrlCallBackCmd|null $show_previous_question_action
-     */
-    public function setShowPreviousQuestionAction(?ilCtrlCallBackCmd $show_previous_question_action) : void
-    {
-        $this->show_previous_question_action = $show_previous_question_action;
-    }
-
-
-    /**
-     * @return ilCtrlCallBackCmd|null
-     */
-    public function getShowFinishTestSessionAction() : ?ilCtrlCallBackCmd
-    {
-        return $this->show_finish_test_session_action;
-    }
-
-
-    /**
-     * @param ilCtrlCallBackCmd|null $show_finish_test_session_action
-     */
-    public function setShowFinishTestSessionAction(?ilCtrlCallBackCmd $show_finish_test_session_action) : void
-    {
-        $this->show_finish_test_session_action = $show_finish_test_session_action;
-    }
-
 
     /**
      * @return string|null
