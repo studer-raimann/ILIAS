@@ -1,5 +1,6 @@
 <?php
 use srag\CQRS\Aggregate\DomainObjectId;
+use ILIAS\Services\AssessmentQuestion\PublicApi\Authoring\AuthoringQuestion;
 
 /* Copyright (c) 1998-2013 ILIAS open source, Extended GPL, see docs/LICENSE */
 include_once ('./Services/Table/classes/class.ilTable2GUI.php');
@@ -318,9 +319,9 @@ class ilTestQuestionsTableGUI extends ilTable2GUI
         $authoringService = $DIC->assessment()->questionAuthoring($this->parent_obj->object->getId(), $DIC->user()
             ->getId());
 
-        $questionService = $authoringService->question(new DomainObjectId($rowData['id']));
+        $questionService = new AuthoringQuestion();
 
-        $questionHref = $questionService->getEditLink([])->getAction();
+        $questionHref = $questionService->getEditLink($rowData['id'])->getAction();
 
         return '<a href="' . $questionHref . '">' . $rowData["data_title"] . '</a>';
     }

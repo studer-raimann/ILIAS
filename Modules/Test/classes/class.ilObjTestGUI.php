@@ -2,6 +2,7 @@
 /* Copyright (c) 1998-2013 ILIAS open source, Extended GPL, see docs/LICENSE */
 use ILIAS\Services\AssessmentQuestion\PublicApi\Authoring\AuthoringService as AsqAuthoringService;
 use ILIAS\Services\AssessmentQuestion\PublicApi\Common\QuestionConfig;
+use ILIAS\Services\AssessmentQuestion\PublicApi\Authoring\AuthoringQuestion;
 
 require_once './Modules/Test/exceptions/class.ilTestException.php';
 require_once './Services/Object/classes/class.ilObjectGUI.php';
@@ -209,7 +210,7 @@ class ilObjTestGUI extends ilObjectGUI
                     ->standard('', '#');
         }
 
-        $asqQuestionService = $this->asqAuthoringService->question($this->asqAuthoringService->currentOrNewQuestionId());
+        $asqQuestionService = $this->asqAuthoringService->question();
 
         $question_config = new QuestionConfig();
         // TODO BH - set the settings of test
@@ -2247,8 +2248,8 @@ class ilObjTestGUI extends ilObjectGUI
                 $this->asqAuthoringService = $DIC->assessment()->questionAuthoring($this->object->getId(), $DIC->user()
                     ->getId());
 
-                $newQstId = $this->asqAuthoringService->currentOrNewQuestionId();
-                $creationLink = $this->asqAuthoringService->question($newQstId)->getCreationLink([]);
+                $q = new AuthoringQuestion();
+                $creationLink = $q->getCreationLink([]);
                 $ilToolbar->addButton($creationLink->getLabel(), $creationLink->getAction());
 
                 if ($this->object->getPoolUsage()) {

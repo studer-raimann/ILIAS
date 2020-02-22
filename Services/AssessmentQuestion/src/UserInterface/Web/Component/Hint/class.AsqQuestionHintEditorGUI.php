@@ -35,22 +35,15 @@ class AsqQuestionHintEditorGUI
      * @var QuestionDto
      */
     protected $question_dto;
-    /**
-     * @var AuthoringApplicationService
-     */
-    protected $authoring_application_service;
-
-
 
     /**
      * ilAsqQuestionPageGUI constructor.
      *
      * @param QuestionDto $question
      */
-    function __construct(QuestionDto $question_dto, AuthoringApplicationService $authoring_application_service)
+    function __construct(QuestionDto $question_dto)
     {
         $this->question_dto = $question_dto;
-        $this->authoring_application_service = $authoring_application_service;
     }
 
 

@@ -9,16 +9,14 @@ use ILIAS\AssessmentQuestion\DomainModel\QuestionDto;
 use ILIAS\AssessmentQuestion\DomainModel\QuestionRepository;
 use ILIAS\AssessmentQuestion\DomainModel\Command\CreateQuestionCommand;
 use ILIAS\AssessmentQuestion\DomainModel\Command\SaveQuestionCommand;
+use ILIAS\AssessmentQuestion\UserInterface\Web\AsqGUIElementFactory;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Component\QuestionComponent;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Form\QuestionFormGUI;
-use srag\CQRS\Command\CommandBusBuilder;
-use srag\CQRS\Aggregate\AbstractValueObject;
-use srag\CQRS\Aggregate\DomainObjectId;
 use ilAsqException;
 use ilAsqQuestionPageGUI;
-use ILIAS\AssessmentQuestion\UserInterface\Web\AsqGUIElementFactory;
-use ILIAS\Services\AssessmentQuestion\PublicApi\Common\QuestionConfig;
-use ILIAS\Services\AssessmentQuestion\PublicApi\Common\QuestionCommands;
+use srag\CQRS\Aggregate\AbstractValueObject;
+use srag\CQRS\Aggregate\DomainObjectId;
+use srag\CQRS\Command\CommandBusBuilder;
 
 /**
  * Class QuestionService
@@ -58,8 +56,6 @@ class QuestionService extends ASQService
     }
     
     public function getQuestionPage(QuestionDto $question_dto) : ilAsqQuestionPageGUI {
-        global $DIC;
-        
         $page_gui = new ilAsqQuestionPageGUI($question_dto->getContainerObjId(), $question_dto->getQuestionIntId(), $this->lng_key);
         $page_gui->setRenderPageContainer(false);
         $page_gui->setEditPreview(true);

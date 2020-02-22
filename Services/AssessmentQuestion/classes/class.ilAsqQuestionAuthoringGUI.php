@@ -4,9 +4,6 @@ declare(strict_types=1);
 /* Copyright (c) 1998-2013 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 
-use ILIAS\AssessmentQuestion\Application\AuthoringApplicationService;
-use ILIAS\AssessmentQuestion\DomainModel\Answer\Answer;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Component\QuestionComponent;
 use ILIAS\Services\AssessmentQuestion\PublicApi\Authoring\AuthoringService;
 use ILIAS\Services\AssessmentQuestion\PublicApi\Common\AuthoringContextContainer;
 use ILIAS\Services\AssessmentQuestion\PublicApi\Common\QuestionConfig;
@@ -86,10 +83,24 @@ class ilAsqQuestionAuthoringGUI
             $this->authoring_context_container->getObjId(), $this->authoring_context_container->getActorId()
         );
 
-        $this->question_id = $this->authoring_service->currentOrNewQuestionId();
+        $this->question_id = $this->currentOrNewQuestionId();
+        
         $DIC->language()->loadLanguageModule('asq');
     }
 
+    /**
+     * Returns the current question_uuid or a new one if no current exists
+     *
+     * @return DomainObjectId
+     */
+    private function currentOrNewQuestionId() : DomainObjectId
+    {
+        if (isset($_GET[\ilAsqQuestionAuthoringGUI::VAR_QUESTION_ID])) {
+            return new DomainObjectId($_GET[\ilAsqQuestionAuthoringGUI::VAR_QUESTION_ID]);
+        }
+        
+        return new DomainObjectId();
+    }
 
     /**
      * @throws ilCtrlException
@@ -186,8 +197,7 @@ class ilAsqQuestionAuthoringGUI
                 $this->initAuthoringTabs();
                 $DIC->tabs()->activateTab(self::TAB_ID_HINTS);
 
-                $gui = new AsqQuestionHintEditorGUI($this->authoring_application_service->getQuestion($this->question_id->getId()),
-                                                        $this->authoring_application_service);
+                $gui = new AsqQuestionHintEditorGUI($$DIC->assessment()->question()->getQuestionByQuestionId($this->question_id->getId()));
                 $DIC->ctrl()->forwardCommand($gui);
 
                 break;
@@ -285,24 +295,24 @@ class ilAsqQuestionAuthoringGUI
 
         if(is_object($question_dto->getData()) > 0 && $this->authoring_context_container->hasWriteAccess() )
         {
-            $link = $question->getEditPageLink();
+            $link = $question->getEditPageLink($this->question_id->getId());
             $DIC->tabs()->addTab(self::TAB_ID_PAGEVIEW, $link->getLabel(), $link->getAction());
         }
         if(is_object($question_dto->getData()) > 0) {
-            $link = $question->getPreviewLink(array());
+            $link = $question->getPreviewLink($this->question_id->getId());
             $DIC->tabs()->addTab(self::TAB_ID_PREVIEW, $link->getLabel(), $link->getAction());
         }
         if( $this->authoring_context_container->hasWriteAccess() )
         {
-            $link = $question->getEditLink(array());
+            $link = $question->getEditLink($this->question_id->getId());
             $DIC->tabs()->addTab(self::TAB_ID_CONFIG, $link->getLabel(), $link->getAction());
         }
         if(is_object($question_dto->getData()) > 0) {
-            $link = $question->getEditFeedbacksLink();
+            $link = $question->getEditFeedbacksLink($this->question_id->getId());
             $DIC->tabs()->addTab(self::TAB_ID_FEEDBACK, $link->getLabel(), $link->getAction());
         }
         if(is_object($question_dto->getData()) > 0) {
-            $link = $question->getEditHintsLink();
+            $link = $question->getEditHintsLink($this->question_id->getId());
             $DIC->tabs()->addTab(self::TAB_ID_HINTS, $link->getLabel(), $link->getAction());
         }
     }

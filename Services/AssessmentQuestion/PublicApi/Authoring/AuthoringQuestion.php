@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace ILIAS\Services\AssessmentQuestion\PublicApi\Authoring;
 
-use ILIAS\AssessmentQuestion\Application\AuthoringApplicationService;
 use ILIAS\Services\AssessmentQuestion\PublicApi\Common\AuthoringContextContainer;
 use ILIAS\Services\AssessmentQuestion\PublicApi\Common\QuestionConfig;
 use ILIAS\UI\Component\Link\Standard as UiStandardLink;
@@ -21,45 +20,6 @@ use ilAsqQuestionAuthoringGUI;
  */
 class AuthoringQuestion
 {
-
-    /**
-     * @var int
-     */
-    protected $container_obj_id;
-    /**
-     * @var int
-     */
-    protected $actor_user_id;
-    /**
-     * var string
-     */
-    protected $question_id;
-    /**
-     * @var string
-     */
-    protected $lng_key;
-    /**
-     * AuthoringApplicationService
-     */
-    protected $authoring_application_service;
-
-
-    /**
-     * AuthoringQuestion constructor.
-     *
-     * @param int                                           $container_obj_id
-     * @param string                                        $question_uuid
-     * @param int                                           $actor_user_id
-     */
-    public function __construct(int $container_obj_id, string $question_uuid, int $actor_user_id)
-    {
-        global $DIC; /* @var \ILIAS\DI\Container $DIC */
-        
-        $this->actor_user_id = $actor_user_id;
-        $this->container_obj_id = $container_obj_id;
-        $this->question_id = $question_uuid;
-    }
-
     public function getCreationLink(array $ctrl_stack) :UiStandardLink
     {
         global $DIC;
@@ -83,12 +43,14 @@ class AuthoringQuestion
         string $afterQuestionCreationCtrlCommand
     ) : ilAsqQuestionAuthoringGUI
     {
+        global $DIC;
+        
         $authoringContextContainer = new AuthoringContextContainer(
             $container_back_link,
             $container_ref_id,
-            $this->container_obj_id,
+            $container_ref_id,
             $container_obj_type,
-            $this->actor_user_id,
+            $DIC->user()->getId(),
             $actor_has_write_access,
             $afterQuestionCreationCtrlClassPath,
             $afterQuestionCreationCtrlCommand
@@ -100,13 +62,13 @@ class AuthoringQuestion
     /**
      * @return UiStandardLink
      */
-    public function getEditLink(array $ctrl_stack) :UiStandardLink
+    public function getEditLink(string $question_id, array $ctrl_stack = []) :UiStandardLink
     {
         global $DIC;
         array_push($ctrl_stack,ilAsqQuestionAuthoringGUI::class);
         array_push($ctrl_stack,\ilAsqQuestionConfigEditorGUI::class);
 
-        $this->setQuestionUidParameter();
+        $this->setQuestionUidParameter($question_id);
 
         return $DIC->ui()->factory()->link()->standard(
             $DIC->language()->txt('asq_authoring_tab_config'),
@@ -120,40 +82,28 @@ class AuthoringQuestion
     //TODO this will not be the way! Do not save questions,
     // only simulate and show the points directly after submitting
     // Therefore, to Save Command has to
-    public function getPreviewLink(array $ctrl_stack) : UiStandardLink
+    public function getPreviewLink(string $question_id, array $ctrl_stack = []) : UiStandardLink
     {
         global $DIC;
         array_push($ctrl_stack,ilAsqQuestionAuthoringGUI::class);
         array_push($ctrl_stack,\ilAsqQuestionPreviewGUI::class);
 
-        $this->setQuestionUidParameter();
+        $this->setQuestionUidParameter($question_id);
 
         return $DIC->ui()->factory()->link()->standard(
             $DIC->language()->txt('asq_authoring_tab_preview'),
             $DIC->ctrl()->getLinkTargetByClass($ctrl_stack)
         );
     }
-    /**
-     * @return UiStandardLink
-     */
-    public function getDisplayLink(array $ctrl_stack) : UiStandardLink
-    {
-        global $DIC;
-        array_push($ctrl_stack,ilAsqQuestionAuthoringGUI::class);
-        
-        $this->setQuestionUidParameter();
-        
-        return $DIC->ui()->factory()->link()->standard('play by asq',$DIC->ctrl()->getLinkTargetByClass($ctrl_stack,ilAsqQuestionAuthoringGUI::CMD_DISPLAY_QUESTION));
-    }
 
     /**
      * @return UiStandardLink
      */
-    public function getEditPageLink() : UiStandardLink
+    public function getEditPageLink(string $question_id) : UiStandardLink
     {
         global $DIC; /* @var \ILIAS\DI\Container $DIC */
 
-        $this->setQuestionUidParameter();
+        $this->setQuestionUidParameter($question_id);
 
         return $DIC->ui()->factory()->link()->standard(
             $DIC->language()->txt('asq_authoring_tab_pageview'),
@@ -167,11 +117,11 @@ class AuthoringQuestion
     /**
      * @return UiStandardLink
      */
-    public function getEditFeedbacksLink() : UiStandardLink
+    public function getEditFeedbacksLink(string $question_id) : UiStandardLink
     {
         global $DIC; /* @var \ILIAS\DI\Container $DIC */
 
-        $this->setQuestionUidParameter();
+        $this->setQuestionUidParameter($question_id);
 
         return $DIC->ui()->factory()->link()->standard(
             $DIC->language()->txt('asq_authoring_tab_feedback'),
@@ -185,11 +135,11 @@ class AuthoringQuestion
     /**
      * @return UiStandardLink
      */
-    public function getEditHintsLink() : UiStandardLink
+    public function getEditHintsLink(string $question_id) : UiStandardLink
     {
         global $DIC; /* @var \ILIAS\DI\Container $DIC */
 
-        $this->setQuestionUidParameter();
+        $this->setQuestionUidParameter($question_id);
 
         return $DIC->ui()->factory()->link()->standard(
             $DIC->language()->txt('asq_authoring_tab_hints'),
@@ -202,14 +152,14 @@ class AuthoringQuestion
     /**
      * sets the question uid parameter for the ctrl hub gui ilAsqQuestionAuthoringGUI
      */
-    protected function setQuestionUidParameter()
+    protected function setQuestionUidParameter(string $question_id)
     {
         global $DIC; /* @var \ILIAS\DI\Container $DIC */
 
         $DIC->ctrl()->setParameterByClass(
             ilAsqQuestionAuthoringGUI::class,
             ilAsqQuestionAuthoringGUI::VAR_QUESTION_ID,
-            $this->question_id
+            $question_id
         );
     }
 }

@@ -51,9 +51,9 @@ class AuthoringService
      *
      * @return AuthoringQuestion
      */
-    public function question(DomainObjectId $question_uuid) : AuthoringQuestion
+    public function question() : AuthoringQuestion
     {
-        return new AuthoringQuestion($this->container_obj_id, $question_uuid->getId(), $this->actor_user_id);
+        return new AuthoringQuestion();
     }
 
     /**
@@ -62,29 +62,6 @@ class AuthoringService
     public function questionList() : AuthoringQuestionList
     {
         return new AuthoringQuestionList($this->container_obj_id, $this->actor_user_id);
-    }
-
-    /**
-     * Returns the current question_uuid or a new one if no current exists
-     *
-     * @return DomainObjectId
-     */
-    public function currentOrNewQuestionId() : DomainObjectId
-    {
-        global $DIC;
-
-        if ($DIC->http()->request()->getAttribute(\ilAsqQuestionAuthoringGUI::VAR_QUESTION_ID, false) !== false) {
-            return new DomainObjectId($DIC->http()->request()->getAttribute(\ilAsqQuestionAuthoringGUI::VAR_QUESTION_ID, false));
-        }
-
-        // NOTE: $DIC->http()->request() seems to always comes with EMPTY attributes member ^^
-        // lets wait for fixes and use the super global meanwhile
-
-        if (isset($_GET[\ilAsqQuestionAuthoringGUI::VAR_QUESTION_ID])) {
-            return new DomainObjectId($_GET[\ilAsqQuestionAuthoringGUI::VAR_QUESTION_ID]);
-        }
-
-        return new DomainObjectId();
     }
 
     public function getGenericFeedbackPageGUI(Page $page) : \ilAsqGenericFeedbackPageGUI
