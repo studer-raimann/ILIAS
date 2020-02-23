@@ -17,6 +17,7 @@ use ilAsqQuestionPageGUI;
 use srag\CQRS\Aggregate\AbstractValueObject;
 use srag\CQRS\Aggregate\DomainObjectId;
 use srag\CQRS\Command\CommandBusBuilder;
+use ILIAS\AssessmentQuestion\Infrastructure\Persistence\EventStore\QuestionEventStoreRepository;
 
 /**
  * Class QuestionService
@@ -45,6 +46,18 @@ class QuestionService extends ASQService
     
     public function getQuestionByIliasObjectId(int $id) : QuestionDto {
         
+    }
+    
+    public function getQuestionsOfContainer(int $container_id) : array {
+        global $DIC;
+        
+        $questions = [];
+        $event_store = new QuestionEventStoreRepository();
+        foreach ($event_store->allStoredQuestionIdsForContainerObjId($container_id) as $aggregate_id) {        
+            $questions[] = $DIC->assessment()->question()->getQuestionByQuestionId($aggregate_id);;
+        }
+        
+        return $questions;
     }
     
     public function getQuestionComponent(QuestionDto $question) : QuestionComponent {

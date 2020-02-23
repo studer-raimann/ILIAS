@@ -162,9 +162,6 @@ class ilObjTestGUI extends ilObjectGUI
             $tabsManager->initSettingsTemplate();
             $this->setTabsManager($tabsManager);
         }
-
-        $this->asqAuthoringService = $DIC->assessment()->questionAuthoring($this->object->getId(), $DIC->user()
-            ->getId());
     }
 
     protected function forwardToAsqAuthoring()
@@ -210,8 +207,6 @@ class ilObjTestGUI extends ilObjectGUI
                     ->standard('', '#');
         }
 
-        $asqQuestionService = $this->asqAuthoringService->question();
-
         $question_config = new QuestionConfig();
         // TODO BH - set the settings of test
         $question_config->setFeedbackOnDemand(true);
@@ -221,6 +216,7 @@ class ilObjTestGUI extends ilObjectGUI
         $question_config->setFeedbackOnSubmit(true);
         $question_config->setFeedbackForAnswerOption(true);
 
+        $asqQuestionService = new AuthoringQuestion();
         $exAsqAuthoringGUI = $asqQuestionService->getAuthoringGUI($backLink, $this->object->getRefId(), $this->object->getType(), $question_config, $DIC->access()
             ->checkAccess('write', '', $this->object->getRefId()), [
             self::class
@@ -247,13 +243,12 @@ class ilObjTestGUI extends ilObjectGUI
 
         $DIC->ctrl()->saveParameter($this, self::AUTHORING_CONTEXT_PARAMETER);
 
-        $questionService = $this->asqAuthoringService->question($this->asqAuthoringService->currentOrNewQuestionId());
-
         /* @var ilTestFixedQuestionSetConfig $questionSetConfig */
         // $questionSetConfig = ilTestQuestionSetConfigFactory::getInstance($this->object)->getQuestionSetConfig();
         // $questionSetConfig->registerCreatedQuestion($questionService->getQuestionDto());
 
-        $DIC->ctrl()->redirectToURL(str_replace('&amp;', '&', $questionService->getEditLink([])
+        $questionService = new AuthoringQuestion();
+        $DIC->ctrl()->redirectToURL(str_replace('&amp;', '&', $questionService->getEditLink($_GET['question_id'], [])
             ->getAction()));
     }
 
@@ -2245,9 +2240,6 @@ class ilObjTestGUI extends ilObjectGUI
 
                 $ilToolbar = $DIC->toolbar();
 
-                $this->asqAuthoringService = $DIC->assessment()->questionAuthoring($this->object->getId(), $DIC->user()
-                    ->getId());
-
                 $q = new AuthoringQuestion();
                 $creationLink = $q->getCreationLink([]);
                 $ilToolbar->addButton($creationLink->getLabel(), $creationLink->getAction());
@@ -2329,11 +2321,7 @@ class ilObjTestGUI extends ilObjectGUI
 
         $table_gui->init();
 
-        $asqQuestionListAssocArray = $DIC->assessment()
-            ->questionAuthoring($this->object->getId(), $DIC->user()
-            ->getId())
-            ->questionList()
-            ->getQuestionsOfContainerAsAssocArray();
+        $asqQuestionListAssocArray = $this->getQuestionsOfContainerAsAssocArray($DIC->assessment()->question()->getQuestionsOfContainer($this->object->getId()));
 
         $table_gui->setData($asqQuestionListAssocArray);
 
@@ -2343,6 +2331,48 @@ class ilObjTestGUI extends ilObjectGUI
         $this->tpl->parseCurrentBlock();
     }
 
+    private function getQuestionsOfContainerAsAssocArray(array $questions) : array
+    {
+        $assoc_array = [];
+        foreach($questions as $question_dto) {
+            $question_array = $this->getArrayFromDto($question_dto);
+            
+            // TODO look for a less smelly way to set title if no title is set yet as it needs something for the link to be clickable
+            if (!array_key_exists('data_title', $question_array)) {
+                $question_array['data_title'] = '---';
+            }
+            
+            $assoc_array[] = $question_array;
+        }
+        
+        return $assoc_array;
+    }
+    
+    
+    //TODO move and cleanup this method
+    private function getArrayFromDto($dto) {
+        $name = get_class ($dto);
+        $name = str_replace('\\', "\\\\", $name);
+        $raw = (array)$dto;
+        $attributes = array();
+        foreach ($raw as $attr => $val) {
+            if(is_object($val)) {
+                $val_arr = $this->getArrayFromDto($val);
+                $prefix = preg_replace('('.$name.'|\*|)', '', $attr);
+                $prefixed_arr = [];
+                foreach($val_arr as $key => $value) {
+                    $attributes[preg_replace ( '/[^a-z0-9_ ]/i', '',$prefix."_".$key)] = $value;
+                }
+            } else {
+                $val_arr = $val;
+                
+                
+                $attributes[preg_replace ( '/[^a-z0-9 ]/i', '', preg_replace('('.$name.'|\*|)', '', $attr))] = $val_arr;
+            }
+        }
+        return $attributes;
+    }
+    
     /**
      *
      * @param

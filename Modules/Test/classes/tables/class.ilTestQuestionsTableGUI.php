@@ -316,9 +316,6 @@ class ilTestQuestionsTableGUI extends ilTable2GUI
     {
         global $DIC; /* @var \ILIAS\DI\Container $DIC */
 
-        $authoringService = $DIC->assessment()->questionAuthoring($this->parent_obj->object->getId(), $DIC->user()
-            ->getId());
-
         $questionService = new AuthoringQuestion();
 
         $questionHref = $questionService->getEditLink($rowData['id'])->getAction();

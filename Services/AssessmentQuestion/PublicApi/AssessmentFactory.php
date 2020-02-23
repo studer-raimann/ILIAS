@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace ILIAS\Services\AssessmentQuestion\PublicApi\Factory;
 
-use ILIAS\Services\AssessmentQuestion\PublicApi\Authoring\AuthoringService;
-
 /**
  * Class AssessmentServices
  *
@@ -18,23 +16,6 @@ use ILIAS\Services\AssessmentQuestion\PublicApi\Authoring\AuthoringService;
  */
 class AssessmentFactory
 {
-
-    /**
-     * This factory provides the following services
-     * * Authoring Question Service
-     * * Authoring Question List Service
-     * * Authoring Question Import Service
-     *
-     * @param int $container_obj_id
-     * @param int $actor_user_id
-     *
-     * @return AuthoringService
-     */
-    public function questionAuthoring(int $container_obj_id, int $actor_user_id) : AuthoringService
-    {
-        return new AuthoringService($container_obj_id, $actor_user_id);
-    }
-
     /**
      * @var QuestionService
      */

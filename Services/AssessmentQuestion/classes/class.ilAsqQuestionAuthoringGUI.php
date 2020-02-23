@@ -8,6 +8,7 @@ use ILIAS\Services\AssessmentQuestion\PublicApi\Authoring\AuthoringService;
 use ILIAS\Services\AssessmentQuestion\PublicApi\Common\AuthoringContextContainer;
 use ILIAS\Services\AssessmentQuestion\PublicApi\Common\QuestionConfig;
 use srag\CQRS\Aggregate\DomainObjectId;
+use ILIAS\Services\AssessmentQuestion\PublicApi\Authoring\AuthoringQuestion;
 
 /**
  * Class ilAsqQuestionAuthoringGUI
@@ -50,11 +51,6 @@ class ilAsqQuestionAuthoringGUI
      * @var QuestionConfig
      */
 	protected $question_config;
-	/**
-	 * @var AuthoringService
-	 */
-    protected $authoring_service;
-
     /**
      * @var DomainObjectId
      */
@@ -78,10 +74,6 @@ class ilAsqQuestionAuthoringGUI
 
 	    //we could use this in future in constructer
 	    $this->lng_key = $DIC->language()->getDefaultLanguage();
-
-        $this->authoring_service = $DIC->assessment()->questionAuthoring(
-            $this->authoring_context_container->getObjId(), $this->authoring_context_container->getActorId()
-        );
 
         $this->question_id = $this->currentOrNewQuestionId();
         
@@ -283,7 +275,7 @@ class ilAsqQuestionAuthoringGUI
     {
         global $DIC; /* @var ILIAS\DI\Container $DIC */
 
-        $question = $this->authoring_service->question($this->question_id);
+        $question = new AuthoringQuestion();
         $question_dto = $DIC->assessment()->question()->getQuestionByQuestionId($this->question_id->getId());
         
         $DIC->tabs()->clearTargets();
