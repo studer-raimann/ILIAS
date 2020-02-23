@@ -22,22 +22,16 @@ class ilAsqQuestionPreviewGUI
 
     const CMD_SHOW_PREVIEW = 'showPreview';
     const CMD_SHWOW_Feedback = 'showFeedback';
-    //const CMD_SCORE_PREVIEW = 'scorePreview';
-    /**
-     * @var QuestionConfig
-     */
-     protected  $question_config;
+
     /**
      * @var DomainObjectId
      */
     protected $question_id;
 
     public function __construct(
-        DomainObjectId $question_id,
-        QuestionConfig $question_config
+        DomainObjectId $question_id
     ) {
         $this->question_id = $question_id;
-        $this->question_config = $question_config;
     }
 
 

@@ -4,11 +4,9 @@ declare(strict_types=1);
 /* Copyright (c) 1998-2013 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 
-use ILIAS\Services\AssessmentQuestion\PublicApi\Authoring\AuthoringService;
-use ILIAS\Services\AssessmentQuestion\PublicApi\Common\AuthoringContextContainer;
-use ILIAS\Services\AssessmentQuestion\PublicApi\Common\QuestionConfig;
-use srag\CQRS\Aggregate\DomainObjectId;
 use ILIAS\Services\AssessmentQuestion\PublicApi\Authoring\AuthoringQuestion;
+use ILIAS\Services\AssessmentQuestion\PublicApi\Common\AuthoringContextContainer;
+use srag\CQRS\Aggregate\DomainObjectId;
 
 /**
  * Class ilAsqQuestionAuthoringGUI
@@ -48,10 +46,6 @@ class ilAsqQuestionAuthoringGUI
      */
 	protected $authoring_context_container;
     /**
-     * @var QuestionConfig
-     */
-	protected $question_config;
-    /**
      * @var DomainObjectId
      */
     protected $question_id;
@@ -65,12 +59,11 @@ class ilAsqQuestionAuthoringGUI
      *
      * @param AuthoringContextContainer $authoring_context_container
      */
-	function __construct(AuthoringContextContainer $authoring_context_container, QuestionConfig $question_config)
+	function __construct(AuthoringContextContainer $authoring_context_container)
 	{
 	    global $DIC; /* @var ILIAS\DI\Container $DIC */
 
 	    $this->authoring_context_container = $authoring_context_container;
-	    $this->question_config = $question_config;
 
 	    //we could use this in future in constructer
 	    $this->lng_key = $DIC->language()->getDefaultLanguage();
@@ -109,12 +102,7 @@ class ilAsqQuestionAuthoringGUI
         {
             case strtolower(ilAsqQuestionCreationGUI::class):
 
-                $gui = new ilAsqQuestionCreationGUI(
-                    $this->authoring_context_container,
-                    $this->question_id,
-                    $this->authoring_service,
-                    $this->authoring_application_service
-                );
+                $gui = new ilAsqQuestionCreationGUI($this->authoring_context_container);
 
                 $DIC->ctrl()->forwardCommand($gui);
 
@@ -126,10 +114,7 @@ class ilAsqQuestionAuthoringGUI
                 $this->initAuthoringTabs();
                 $DIC->tabs()->activateTab(self::TAB_ID_PREVIEW);
 
-                $gui = new ilAsqQuestionPreviewGUI(
-                    $this->question_id,
-                    $this->question_config
-                );
+                $gui = new ilAsqQuestionPreviewGUI($this->question_id);
 
                 $DIC->ctrl()->forwardCommand($gui);
 

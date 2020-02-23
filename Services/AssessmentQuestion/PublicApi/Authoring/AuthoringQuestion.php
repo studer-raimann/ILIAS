@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace ILIAS\Services\AssessmentQuestion\PublicApi\Authoring;
 
-use ILIAS\Services\AssessmentQuestion\PublicApi\Common\AuthoringContextContainer;
-use ILIAS\Services\AssessmentQuestion\PublicApi\Common\QuestionConfig;
 use ILIAS\UI\Component\Link\Standard as UiStandardLink;
 use ilAsqQuestionAuthoringGUI;
 
@@ -20,7 +18,7 @@ use ilAsqQuestionAuthoringGUI;
  */
 class AuthoringQuestion
 {
-    public function getCreationLink(array $ctrl_stack) :UiStandardLink
+    public static function getCreationLink(array $ctrl_stack) :UiStandardLink
     {
         global $DIC;
 
@@ -33,42 +31,16 @@ class AuthoringQuestion
         );
     }
 
-    public function getAuthoringGUI(
-        UiStandardLink $container_back_link,
-        int $container_ref_id,
-        string $container_obj_type,
-        QuestionConfig $question_config,
-        bool $actor_has_write_access,
-        array $afterQuestionCreationCtrlClassPath,
-        string $afterQuestionCreationCtrlCommand
-    ) : ilAsqQuestionAuthoringGUI
-    {
-        global $DIC;
-        
-        $authoringContextContainer = new AuthoringContextContainer(
-            $container_back_link,
-            $container_ref_id,
-            $container_ref_id,
-            $container_obj_type,
-            $DIC->user()->getId(),
-            $actor_has_write_access,
-            $afterQuestionCreationCtrlClassPath,
-            $afterQuestionCreationCtrlCommand
-        );
-
-        return new ilAsqQuestionAuthoringGUI($authoringContextContainer, $question_config, $this->authoring_question_after_save_command_handler);
-    }
-
     /**
      * @return UiStandardLink
      */
-    public function getEditLink(string $question_id, array $ctrl_stack = []) :UiStandardLink
+    public static function getEditLink(string $question_id, array $ctrl_stack = []) :UiStandardLink
     {
         global $DIC;
         array_push($ctrl_stack,ilAsqQuestionAuthoringGUI::class);
         array_push($ctrl_stack,\ilAsqQuestionConfigEditorGUI::class);
 
-        $this->setQuestionUidParameter($question_id);
+        self::setQuestionUidParameter($question_id);
 
         return $DIC->ui()->factory()->link()->standard(
             $DIC->language()->txt('asq_authoring_tab_config'),
@@ -79,16 +51,13 @@ class AuthoringQuestion
     /**
      * @return UiStandardLink
      */
-    //TODO this will not be the way! Do not save questions,
-    // only simulate and show the points directly after submitting
-    // Therefore, to Save Command has to
-    public function getPreviewLink(string $question_id, array $ctrl_stack = []) : UiStandardLink
+    public static function getPreviewLink(string $question_id, array $ctrl_stack = []) : UiStandardLink
     {
         global $DIC;
         array_push($ctrl_stack,ilAsqQuestionAuthoringGUI::class);
         array_push($ctrl_stack,\ilAsqQuestionPreviewGUI::class);
 
-        $this->setQuestionUidParameter($question_id);
+        self::setQuestionUidParameter($question_id);
 
         return $DIC->ui()->factory()->link()->standard(
             $DIC->language()->txt('asq_authoring_tab_preview'),
@@ -99,11 +68,11 @@ class AuthoringQuestion
     /**
      * @return UiStandardLink
      */
-    public function getEditPageLink(string $question_id) : UiStandardLink
+    public static function getEditPageLink(string $question_id) : UiStandardLink
     {
         global $DIC; /* @var \ILIAS\DI\Container $DIC */
 
-        $this->setQuestionUidParameter($question_id);
+        self::setQuestionUidParameter($question_id);
 
         return $DIC->ui()->factory()->link()->standard(
             $DIC->language()->txt('asq_authoring_tab_pageview'),
@@ -117,11 +86,11 @@ class AuthoringQuestion
     /**
      * @return UiStandardLink
      */
-    public function getEditFeedbacksLink(string $question_id) : UiStandardLink
+    public static function getEditFeedbacksLink(string $question_id) : UiStandardLink
     {
         global $DIC; /* @var \ILIAS\DI\Container $DIC */
 
-        $this->setQuestionUidParameter($question_id);
+        self::setQuestionUidParameter($question_id);
 
         return $DIC->ui()->factory()->link()->standard(
             $DIC->language()->txt('asq_authoring_tab_feedback'),
@@ -135,11 +104,11 @@ class AuthoringQuestion
     /**
      * @return UiStandardLink
      */
-    public function getEditHintsLink(string $question_id) : UiStandardLink
+    public static function getEditHintsLink(string $question_id) : UiStandardLink
     {
         global $DIC; /* @var \ILIAS\DI\Container $DIC */
 
-        $this->setQuestionUidParameter($question_id);
+        self::setQuestionUidParameter($question_id);
 
         return $DIC->ui()->factory()->link()->standard(
             $DIC->language()->txt('asq_authoring_tab_hints'),
@@ -152,7 +121,7 @@ class AuthoringQuestion
     /**
      * sets the question uid parameter for the ctrl hub gui ilAsqQuestionAuthoringGUI
      */
-    protected function setQuestionUidParameter(string $question_id)
+    protected static function setQuestionUidParameter(string $question_id)
     {
         global $DIC; /* @var \ILIAS\DI\Container $DIC */
 

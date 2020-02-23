@@ -3,6 +3,7 @@
 use ILIAS\Services\AssessmentQuestion\PublicApi\Authoring\AuthoringService as AsqAuthoringService;
 use ILIAS\Services\AssessmentQuestion\PublicApi\Common\QuestionConfig;
 use ILIAS\Services\AssessmentQuestion\PublicApi\Authoring\AuthoringQuestion;
+use ILIAS\Services\AssessmentQuestion\PublicApi\Common\AuthoringContextContainer;
 
 require_once './Modules/Test/exceptions/class.ilTestException.php';
 require_once './Services/Object/classes/class.ilObjectGUI.php';
@@ -207,20 +208,17 @@ class ilObjTestGUI extends ilObjectGUI
                     ->standard('', '#');
         }
 
-        $question_config = new QuestionConfig();
-        // TODO BH - set the settings of test
-        $question_config->setFeedbackOnDemand(true);
-        $question_config->setFeedbackShowScore(true);
-        $question_config->setHintsActivated(true);
-        $question_config->setFeedbackShowCorrectSolution(true);
-        $question_config->setFeedbackOnSubmit(true);
-        $question_config->setFeedbackForAnswerOption(true);
-
-        $asqQuestionService = new AuthoringQuestion();
-        $exAsqAuthoringGUI = $asqQuestionService->getAuthoringGUI($backLink, $this->object->getRefId(), $this->object->getType(), $question_config, $DIC->access()
-            ->checkAccess('write', '', $this->object->getRefId()), [
-            self::class
-        ], self::CMD_REGISTER_CREATED_QUESTION);
+        $authoring_context_container = new AuthoringContextContainer(
+            $backLink, 
+            $this->object->getRefId(), 
+            $this->object->getId(), 
+            $this->object->getType(), 
+            $DIC->user()->getId(), 
+            $DIC->access()->checkAccess('write', '', $this->object->getRefId()), 
+            [self::class], 
+            self::CMD_REGISTER_CREATED_QUESTION);
+        
+        $exAsqAuthoringGUI = new ilAsqQuestionAuthoringGUI($authoring_context_container);
 
         $DIC->ctrl()->forwardCommand($exAsqAuthoringGUI);
     }
