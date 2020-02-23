@@ -2,15 +2,12 @@
 
 namespace ILIAS\AssessmentQuestion\UserInterface\Web\Component;
 
-use ILIAS\AssessmentQuestion\DomainModel\Answer\Answer;
 use ILIAS\AssessmentQuestion\DomainModel\QuestionDto;
-use ILIAS\AssessmentQuestion\DomainModel\QuestionPlayConfiguration;
+use ILIAS\AssessmentQuestion\DomainModel\Answer\Answer;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\AbstractEditor;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Presenter\AbstractPresenter;
-use ILIAS\Services\AssessmentQuestion\PublicApi\Common\QuestionCommands;
-use ILIAS\Services\AssessmentQuestion\PublicApi\Common\QuestionConfig;
-use ilTemplate;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Presenter\DefaultPresenter;
+use ilTemplate;
 
 /**
  * Class QuestionComponent
@@ -24,7 +21,10 @@ use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Presenter\DefaultPresen
  */
 class QuestionComponent
 {
-
+    const DEFAULT_SUBMIT_CMD = "submitAnswer";
+    const DEFAULT_SHOW_FEEDBACK_CMD = "showFeedback";
+    const DEFAULT_GET_HINT_CMD = "getHint";
+    
     /**
      * @var QuestionDto
      */
@@ -59,22 +59,8 @@ class QuestionComponent
 
         $tpl = new ilTemplate("tpl.question_view.html", true, true, "Services/AssessmentQuestion");
 
-        $tpl->setCurrentBlock('feedback_button');
-        $tpl->setVariable('FEEDBACK_BUTTON_TITLE', $DIC->language()->txt('asq_feedback_button_title'));
-        $tpl->setVariable('FEEDBACK_COMMAND',QuestionCommands::DEFAULT_SHOW_FEEDBACK_CMD);
-        $tpl->parseCurrentBlock();
-        
-        if (is_object($this->question_dto->getQuestionHints()) && 
-            count($this->question_dto->getQuestionHints()->getHints())) 
-        {
-            $tpl->setCurrentBlock('hint_button');
-            $tpl->setVariable('HINT_BUTTON_TITLE', $DIC->language()->txt('asq_hint_button_title'));
-            $tpl->setVariable('HINT_COMMAND', QuestionCommands::DEFAULT_GET_HINT_CMD);
-            $tpl->parseCurrentBlock();
-        }
-        
         $tpl->setCurrentBlock('question');
-        $tpl->setVariable('SCORE_COMMAND', QuestionCommands::DEFAULT_SUBMIT_CMD);
+        $tpl->setVariable('SCORE_COMMAND', self::DEFAULT_SUBMIT_CMD);
         $tpl->setVariable('QUESTION_OUTPUT', $this->presenter->generateHtml($this->editor));
         $tpl->setVariable('BUTTON_TITLE', $DIC->language()->txt('check'));
         $tpl->parseCurrentBlock();
@@ -92,15 +78,5 @@ class QuestionComponent
     public function setAnswer(Answer $answer)
     {
         $this->editor->setAnswer($answer->getValue());
-    }
-
-
-    /**
-     * @deprecated
-     * to be removed, but neccessary for the moment
-     */
-    public function getQuestionDto()
-    {
-        return $this->question_dto;
     }
 }

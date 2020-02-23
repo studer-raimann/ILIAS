@@ -72,6 +72,7 @@ class ilAsqQuestionPreviewGUI
         $question_tpl = new ilTemplate('tpl.question_preview_container.html', true, true, 'Services/AssessmentQuestion');
         $question_tpl->setVariable('FORMACTION', $DIC->ctrl()->getFormAction($this, self::CMD_SHOW_PREVIEW));
         $question_tpl->setVariable('QUESTION_OUTPUT', $question_page->showPage());
+        $question_tpl->setVariable('FEEDBACK_BUTTON_TITLE', $DIC->language()->txt('asq_feedback_button_title'));
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $feedback_component = new FeedbackComponent(

@@ -109,7 +109,7 @@ class ilAsqQuestionFeedbackEditorGUI
         {
             $new_feedback = $form->getFeedbackFromPost();
             $this->question_dto->setFeedback($new_feedback);
-            $this->authoring_application_service->saveQuestion($this->question_dto);
+            $DIC->assessment()->question()->saveQuestion($this->question_dto);
             ilutil::sendSuccess("Question Saved", true);
         }
             

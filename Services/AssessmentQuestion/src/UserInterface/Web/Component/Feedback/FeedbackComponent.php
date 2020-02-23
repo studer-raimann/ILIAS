@@ -3,12 +3,6 @@
 namespace ILIAS\AssessmentQuestion\UserInterface\Web\Component\Feedback;
 
 use ILIAS\AssessmentQuestion\DomainModel\Answer\Answer;
-use ILIAS\AssessmentQuestion\DomainModel\QuestionDto;
-use ILIAS\AssessmentQuestion\DomainModel\QuestionPlayConfiguration;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\AbstractEditor;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Presenter\AbstractPresenter;
-use ILIAS\Services\AssessmentQuestion\PublicApi\Common\QuestionCommands;
-use ILIAS\Services\AssessmentQuestion\PublicApi\Common\QuestionConfig;
 use ilTemplate;
 
 /**
@@ -66,28 +60,6 @@ class FeedbackComponent
         $tpl->setVariable('ANSWER_SCORING', $this->scoring_component->getHtml());
         $tpl->parseCurrentBlock();
 
-
-
-
-/*
-        if ($this->question_config->isFeedbackOnDemand()) {
-            $tpl->setCurrentBlock('feedback_button');
-            $tpl->setVariable('FEEDBACK_BUTTON_TITLE', $DIC->language()->txt('asq_feedback_buttom_title'));
-            $tpl->setVariable('FEEDBACK_COMMAND', $this->question_commands->getShowFeedbackCommand());
-            $tpl->parseCurrentBlock();
-        }
-        if ($this->question_config->isHintsActivated() && count($this->question_dto->getQuestionHints()->getHints())) {
-            $tpl->setCurrentBlock('hint_button');
-            $tpl->setVariable('HINT_BUTTON_TITLE', $DIC->language()->txt('asq_hint_buttom_title'));
-            $tpl->setVariable('HINT_COMMAND', $this->question_commands->getGetHintCommand());
-            $tpl->parseCurrentBlock();
-        }
-        $tpl->setCurrentBlock('question');
-        $tpl->setVariable('SCORE_COMMAND', $this->question_commands->getSubmitCommand());
-        $tpl->setVariable('QUESTION_OUTPUT', $this->presenter->generateHtml($this->editor));
-        $tpl->setVariable('BUTTON_TITLE', $DIC->language()->txt('check'));
-        $tpl->parseCurrentBlock();*/
-
         return $tpl->get();
     }
 
@@ -101,15 +73,5 @@ class FeedbackComponent
     public function setAnswer(Answer $answer)
     {
         $this->editor->setAnswer($answer->getValue());
-    }
-
-
-    /**
-     * @deprecated
-     * to be removed, but neccessary for the moment
-     */
-    public function getQuestionDto()
-    {
-        return $this->question_dto;
     }
 }
