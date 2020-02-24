@@ -96,18 +96,19 @@ class AsqGUIElementFactory {
 	    $question_types = [];
 	    $question_types[self::TYPE_SINGLE_CHOICE] = $DIC->language()->txt('asq_question_single_answer');
 	    $question_types[self::TYPE_MULTIPLE_CHOICE] = $DIC->language()->txt('asq_question_multiple_answer');
-	    $question_types[self::TYPE_MATCHING] = $DIC->language()->txt('asq_question_matching');
 	    $question_types[self::TYPE_KPRIM_CHOICE] = $DIC->language()->txt('asq_question_kprim_answer');
 	    $question_types[self::TYPE_ERROR_TEXT] = $DIC->language()->txt('asq_question_error_text');
-	    $question_types[self::TYPE_ESSAY] = $DIC->language()->txt('asq_question_essay');
 	    $question_types[self::TYPE_IMAGE_MAP] = $DIC->language()->txt('asq_question_image_map');
+	    $question_types[self::TYPE_CLOZE] = $DIC->language()->txt('asq_question_cloze');
 	    $question_types[self::TYPE_NUMERIC] = $DIC->language()->txt('asq_question_numeric');
 	    $question_types[self::TYPE_FORMULA] = $DIC->language()->txt('asq_question_formula');
 	    $question_types[self::TYPE_TEXT_SUBSET] = $DIC->language()->txt('asq_question_text_subset');
 	    $question_types[self::TYPE_ORDERING] = $DIC->language()->txt('asq_question_ordering');
+	    $question_types[self::TYPE_MATCHING] = $DIC->language()->txt('asq_question_matching');
+	    $question_types[self::TYPE_ESSAY] = $DIC->language()->txt('asq_question_essay');
 	    $question_types[self::TYPE_FILE_UPLOAD] = $DIC->language()->txt('asq_question_file_upload');
 	    $question_types[self::TYPE_ORDER_TEXT] = $DIC->language()->txt('asq_question_ordering_text');
-	    $question_types[self::TYPE_CLOZE] = $DIC->language()->txt('asq_question_cloze');
+	    
 	    return $question_types;
 	}
 
