@@ -99,7 +99,7 @@ class MatchingEditor extends AbstractEditor
                 $tpl->parseCurrentBlock();
             }
             $tpl->setCurrentBlock('droparea');
-            $tpl->setVariable('ID_DROPAREA', $id + 1);
+            $tpl->setVariable('ID_DROPAREA', $id);
             $tpl->parseCurrentBlock();
         }
         
@@ -116,7 +116,7 @@ class MatchingEditor extends AbstractEditor
                 $tpl->parseCurrentBlock();
             }
             $tpl->setCurrentBlock('draggable');
-            $tpl->setVariable('ID_DRAGGABLE', $id + 1);
+            $tpl->setVariable('ID_DRAGGABLE', $id);
             $tpl->parseCurrentBlock();
         }
         

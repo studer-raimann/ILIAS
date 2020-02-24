@@ -25,6 +25,8 @@ class AuthoringQuestion
         array_push($ctrl_stack,ilAsqQuestionAuthoringGUI::class);
         array_push($ctrl_stack,\ilAsqQuestionCreationGUI::class);
 
+        $DIC->language()->loadLanguageModule('asq');
+        
         return $DIC->ui()->factory()->link()->standard(
             $DIC->language()->txt('asq_authoring_create_question_link'),
             $DIC->ctrl()->getLinkTargetByClass($ctrl_stack)

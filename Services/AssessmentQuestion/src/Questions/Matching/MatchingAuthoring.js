@@ -18,10 +18,9 @@
     let update_values = function(source, destination, useds) {
         let values = {};
 
-        let i = 1;
+        let i = 0;
         $('input[id$="' + source + '"]').each(function() {
             let val = $(this).val();
-
 
             if (!useds.includes(i.toString())) {
                 values[i] = val;
@@ -74,7 +73,7 @@
 
     let update_used_terms = function() {
         if (matching_mode === MATCHING_ONE_TO_ONE ||
-                matching_mode === MATCHING_MANY_TO_ONE)
+            matching_mode === MATCHING_MANY_TO_ONE)
         {
             update_used('me_match_term', used_terms);
         } else {
@@ -96,7 +95,7 @@
     };
 
     let clean_added_row = function() {
-        $(this).parents('.aot_table').find('tr').last().find('select').each(function() {
+        $('#il_prop_cont_me_matches').find('tr').last().find('select').each(function() {
             $(this).empty();
         });
 
@@ -119,10 +118,12 @@
     });
 
     $(document).on('change', 'input[id$="me_definition_text"]', update_definitions);
-    $(document).on('click', '#il_prop_cont_me_definitions .js_remove', update_definitions);
     $(document).on('change', 'input[id$="me_term_text"]', update_terms);
-    $(document).on('click', '#il_prop_cont_me_terms .js_remove', update_terms);
     $(document).on('change', 'select[id$=me_match_definition]', update_used_definitions);
     $(document).on('change', 'select[id$=me_match_term]', update_used_terms);
-    $(document).on("click", "#il_prop_cont_me_matches .js_add", clean_added_row);    
+    
+    //remove/add needs to trigger after remove event that actually removes the row
+    $(document).on("click", "#il_prop_cont_me_matches .js_add", function() { setTimeout(clean_added_row, 1); });
+    $(document).on('click', '#il_prop_cont_me_terms .js_remove', function() { setTimeout(update_terms, 1); });
+    $(document).on('click', '#il_prop_cont_me_definitions .js_remove', function() { setTimeout(update_definitions, 1); });    
 }(jQuery));
