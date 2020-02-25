@@ -81,7 +81,17 @@ class MatchingEditorConfiguration extends AbstractConfiguration {
     {
         return $this->shuffle;
     }
+    
+    public function isShuffleDefinitions() {
+        return $this->shuffle === self::SHUFFLE_DEFINITIONS ||
+               $this->shuffle === self::SHUFFLE_BOTH;
+    }
 
+    public function isShuffleTerms() {
+        return $this->shuffle === self::SHUFFLE_TERMS ||
+               $this->shuffle === self::SHUFFLE_BOTH;
+    }
+    
     /**
      * @return int
      */

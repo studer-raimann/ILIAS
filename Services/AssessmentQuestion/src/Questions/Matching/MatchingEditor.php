@@ -86,24 +86,25 @@ class MatchingEditor extends AbstractEditor
         $tpl->setVariable('ANSWER', is_null($this->answer) ? '' :$this->answer->getAnswerString());
         $tpl->setVariable('MATCHING_TYPE', $config->getMatchingMode());
         
-        foreach ($config->getDefinitions() as $id=>$definition) {
-            if (!empty($definition[self::VAR_DEFINITION_IMAGE])) {
-                $tpl->setCurrentBlock('definition_picture');
-                $tpl->setVariable('DEFINITION', $definition[self::VAR_DEFINITION_TEXT]);
-                $tpl->setVariable('IMAGE', $definition[self::VAR_DEFINITION_IMAGE]);
-                $tpl->parseCurrentBlock();
-            }
-            else {
-                $tpl->setCurrentBlock('definition_text');
-                $tpl->setVariable('DEFINITION', $definition[self::VAR_DEFINITION_TEXT]);
-                $tpl->parseCurrentBlock();
-            }
-            $tpl->setCurrentBlock('droparea');
-            $tpl->setVariable('ID_DROPAREA', $id);
-            $tpl->parseCurrentBlock();
-        }
+        $this->renderDefinitions($config, $tpl);
         
-        foreach ($config->getTerms() as $id=>$term) {
+        $this->renderTerms($config, $tpl);
+        
+        return $tpl->get();
+    }
+    /**
+     * @param config
+     * @param tpl
+     */
+    private function renderTerms($config, $tpl)
+    {
+        $term_order = $this->getOrder(
+            count($config->getTerms()),
+            $config->isShuffleTerms());
+        
+        foreach ($term_order as $id) {
+            $term = $config->getTerms()[$id];
+            
             if (!empty($term[self::VAR_DEFINITION_IMAGE])) {
                 $tpl->setCurrentBlock('term_picture');
                 $tpl->setVariable('TERM', $term[self::VAR_TERM_TEXT]);
@@ -119,10 +120,49 @@ class MatchingEditor extends AbstractEditor
             $tpl->setVariable('ID_DRAGGABLE', $id);
             $tpl->parseCurrentBlock();
         }
-        
-        return $tpl->get();
     }
 
+    /**
+     * @param config
+     * @param tpl
+     */
+    private function renderDefinitions($config, $tpl)
+    {
+        $definition_order = $this->getOrder(
+            count($config->getDefinitions()), 
+            $config->isShuffleDefinitions());
+        
+        foreach ($definition_order as $id) {
+            $definition = $config->getDefinitions()[$id];
+            
+            if (!empty($definition[self::VAR_DEFINITION_IMAGE])) {
+                $tpl->setCurrentBlock('definition_picture');
+                $tpl->setVariable('DEFINITION', $definition[self::VAR_DEFINITION_TEXT]);
+                $tpl->setVariable('IMAGE', $definition[self::VAR_DEFINITION_IMAGE]);
+                $tpl->parseCurrentBlock();
+            }
+            else {
+                $tpl->setCurrentBlock('definition_text');
+                $tpl->setVariable('DEFINITION', $definition[self::VAR_DEFINITION_TEXT]);
+                $tpl->parseCurrentBlock();
+            }
+            $tpl->setCurrentBlock('droparea');
+            $tpl->setVariable('ID_DROPAREA', $id);
+            $tpl->parseCurrentBlock();
+        }
+    }
+
+
+    private function getOrder(int $count, bool $shuffle) {
+        $range = range(0, $count - 1);
+        
+        if ($shuffle) {
+            shuffle($range);
+        }
+        
+        return $range;
+    }
+    
     /**
      *
      * @param AbstractConfiguration|null $config
