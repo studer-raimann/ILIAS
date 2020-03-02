@@ -7,7 +7,8 @@ use ILIAS\AssessmentQuestion\DomainModel\Question;
 use ILIAS\AssessmentQuestion\DomainModel\QuestionDto;
 use ILIAS\AssessmentQuestion\DomainModel\Answer\Answer;
 use ILIAS\AssessmentQuestion\DomainModel\Scoring\AbstractScoring;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\EmptyScoringDefinition;
+use ILIAS\AssessmentQuestion\DomainModel\Scoring\EmptyScoringDefinition;
+use ILIAS\AssessmentQuestion\DomainModel\Scoring\TextScoring;
 
 /**
  * Class ClozeScoring
@@ -48,11 +49,13 @@ class ClozeScoring extends AbstractScoring {
             
             $gap_configuration = $this->configuration->getGaps()[$i - 1];
             
-            if ($gap_configuration->getType() == ClozeGapConfiguration::TYPE_DROPDOWN ||
-                $gap_configuration->getType() == ClozeGapConfiguration::TYPE_TEXT) {
+            if (get_class($gap_configuration) === SelectGapConfiguration::class) {
+                $this->scoreSelectGap($given_answer[$i], $gap_configuration);
+            }
+            else if (get_class($gap_configuration) === TextGapConfiguration::class) {
                 $this->scoreTextGap($given_answer[$i], $gap_configuration);
             }
-            else if ($gap_configuration->getType() == ClozeGapConfiguration::TYPE_NUMBER) {
+            else if (get_class($gap_configuration) === NumericGapConfiguration::class) {
                 $this->scoreNumericGap(floatval($given_answer[$i]), $gap_configuration);
             }
         }
@@ -66,9 +69,9 @@ class ClozeScoring extends AbstractScoring {
     
     /**
      * @param string $answer
-     * @param ClozeGapConfiguration $gap_configuration
+     * @param SelectGapConfiguration $gap_configuration
      */
-    private function scoreTextGap(string $answer, ClozeGapConfiguration $gap_configuration)
+    private function scoreSelectGap(string $answer, SelectGapConfiguration $gap_configuration)
     {
         $gap_max = 0;
         
@@ -87,10 +90,32 @@ class ClozeScoring extends AbstractScoring {
     }
 
     /**
-     * @param float $answer
-     * @param ClozeGapConfiguration $gap_configuration
+     * @param string $answer
+     * @param TextGapConfiguration $gap_configuration
      */
-    private function scoreNumericGap(float $answer, ClozeGapConfiguration $gap_configuration) {
+    private function scoreTextGap(string $answer, TextGapConfiguration $gap_configuration)
+    {
+        $gap_max = 0;
+        
+        /** @var $gap ClozeGapItem */
+        foreach($gap_configuration->getItems() as $gap_item) {
+            if ($gap_item->getPoints() > $gap_max) {
+                $gap_max = $gap_item->getPoints();
+            }
+            
+            if (TextScoring::isMatch($answer, $gap_item->getText(), $gap_configuration->getMatchingMethod())) {
+                $this->reached_points += $gap_item->getPoints();
+            }
+        }
+        
+        $this->max_points += $gap_max;
+    }
+    
+    /**
+     * @param float $answer
+     * @param NumericGapConfiguration $gap_configuration
+     */
+    private function scoreNumericGap(float $answer, NumericGapConfiguration $gap_configuration) {
         if ($gap_configuration->getUpper() >= $answer &&
             $gap_configuration->getLower() <= $answer) {
             $this->reached_points += $gap_configuration->getPoints();

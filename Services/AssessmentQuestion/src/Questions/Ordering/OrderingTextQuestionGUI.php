@@ -6,9 +6,9 @@ use ILIAS\AssessmentQuestion\DomainModel\QuestionDto;
 use ILIAS\AssessmentQuestion\DomainModel\QuestionPlayConfiguration;
 use ILIAS\AssessmentQuestion\DomainModel\Answer\Option\AnswerOption;
 use ILIAS\AssessmentQuestion\DomainModel\Answer\Option\AnswerOptions;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\EmptyScoringDefinition;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\ImageAndTextDisplayDefinition;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Form\QuestionFormGUI;
+use ILIAS\AssessmentQuestion\DomainModel\Scoring\EmptyScoringDefinition;
 use ilNumberInputGUI;
 use ilTextAreaInputGUI;
 

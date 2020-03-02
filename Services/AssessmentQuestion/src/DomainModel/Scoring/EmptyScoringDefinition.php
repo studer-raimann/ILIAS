@@ -1,6 +1,6 @@
 <?php
 
-namespace ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor;
+namespace ILIAS\AssessmentQuestion\DomainModel\Scoring;
 
 use ILIAS\AssessmentQuestion\DomainModel\QuestionPlayConfiguration;
 use ILIAS\AssessmentQuestion\DomainModel\Answer\Option\AnswerDefinition;

@@ -11,6 +11,7 @@ use ILIAS\AssessmentQuestion\DomainModel\Answer\Option\AnswerOptions;
 use ILIAS\AssessmentQuestion\DomainModel\Scoring\AbstractScoring;
 use Exception;
 use ilSelectInputGUI;
+use ILIAS\AssessmentQuestion\DomainModel\Scoring\TextScoring;
 
 /**
  * Class TextSubsetScoring
@@ -31,13 +32,6 @@ class TextSubsetScoring extends AbstractScoring
     protected $answer;
     
     const VAR_TEXT_MATCHING = 'tss_text_matching';
-    const TM_CASE_INSENSITIVE = 1;
-    const TM_CASE_SENSITIVE = 2;
-    const TM_LEVENSHTEIN_1 = 3;
-    const TM_LEVENSHTEIN_2 = 4;
-    const TM_LEVENSHTEIN_3 = 5;
-    const TM_LEVENSHTEIN_4 = 6;
-    const TM_LEVENSHTEIN_5 = 7;
     
     /**
      * {@inheritDoc}
@@ -51,19 +45,19 @@ class TextSubsetScoring extends AbstractScoring
         $scoring_conf = $this->question->getPlayConfiguration()->getScoringConfiguration();
         
         switch ($scoring_conf->getTextMatching()) {
-            case self::TM_CASE_INSENSITIVE:
+            case TextScoring::TM_CASE_INSENSITIVE:
                 return $this->caseInsensitiveScoring();
-            case self::TM_CASE_SENSITIVE:
+            case TextScoring::TM_CASE_SENSITIVE:
                 return $this->caseSensitiveScoring();
-            case self::TM_LEVENSHTEIN_1:
+            case TextScoring::TM_LEVENSHTEIN_1:
                 return $this->levenshteinScoring(1);
-            case self::TM_LEVENSHTEIN_2:
+            case TextScoring::TM_LEVENSHTEIN_2:
                 return $this->levenshteinScoring(2);
-            case self::TM_LEVENSHTEIN_3:
+            case TextScoring::TM_LEVENSHTEIN_3:
                 return $this->levenshteinScoring(3);
-            case self::TM_LEVENSHTEIN_4:
+            case TextScoring::TM_LEVENSHTEIN_4:
                 return $this->levenshteinScoring(4);
-            case self::TM_LEVENSHTEIN_5:
+            case TextScoring::TM_LEVENSHTEIN_5:
                 return $this->levenshteinScoring(5);
         }
         
@@ -154,16 +148,8 @@ class TextSubsetScoring extends AbstractScoring
         global $DIC;
         
         $fields = [];
-        
-        $text_matching = new ilSelectInputGUI($DIC->language()->txt('asq_label_text_matching'), self::VAR_TEXT_MATCHING);
-        $text_matching->setOptions(
-            [self::TM_CASE_INSENSITIVE => $DIC->language()->txt('asq_option_case_insensitive'), 
-                self::TM_CASE_SENSITIVE => $DIC->language()->txt('asq_option_case_sensitive'),
-                self::TM_LEVENSHTEIN_1 => $DIC->language()->txt('asq_option_levenshtein_1'),
-                self::TM_LEVENSHTEIN_2 => $DIC->language()->txt('asq_option_levenshtein_2'),
-                self::TM_LEVENSHTEIN_3 => $DIC->language()->txt('asq_option_levenshtein_3'),
-                self::TM_LEVENSHTEIN_4 => $DIC->language()->txt('asq_option_levenshtein_4'),
-                self::TM_LEVENSHTEIN_5 => $DIC->language()->txt('asq_option_levenshtein_5')]);
+
+        $text_matching = TextScoring::getScoringTypeSelectionField(self::VAR_TEXT_MATCHING);
         $fields[self::VAR_TEXT_MATCHING] = $text_matching;
         
         if ($config !== null) {

@@ -16,6 +16,7 @@ use ilNumberInputGUI;
 use ilRadioGroupInputGUI;
 use ilRadioOption;
 use ilSelectInputGUI;
+use ILIAS\AssessmentQuestion\DomainModel\Scoring\TextScoring;
 
 /**
  * Class EssayScoring
@@ -36,14 +37,6 @@ class EssayScoring extends AbstractScoring {
     const VAR_ANSWERS_ALL = 'es_answers_all';
     const VAR_ANSWERS_ONE = 'es_answers_one';
     const VAR_ANSWERS_COUNT = 'es_answers_count';
-    
-    const TM_CASE_INSENSITIVE = 1;
-    const TM_CASE_SENSITIVE = 2;
-    const TM_LEVENSHTEIN_1 = 3;
-    const TM_LEVENSHTEIN_2 = 4;
-    const TM_LEVENSHTEIN_3 = 5;
-    const TM_LEVENSHTEIN_4 = 6;
-    const TM_LEVENSHTEIN_5 = 7;
     
     const SCORING_MANUAL = 1;
     const SCORING_AUTOMATIC_ANY = 2;
@@ -91,7 +84,7 @@ class EssayScoring extends AbstractScoring {
         
         $text = strip_tags($text);
         
-        if ($this->configuration->getMatchingMode() === self::TM_CASE_INSENSITIVE) {
+        if ($this->configuration->getMatchingMode() === TextScoring::TM_CASE_INSENSITIVE) {
             $text = strtoupper($text);
         }
         
@@ -99,7 +92,7 @@ class EssayScoring extends AbstractScoring {
         $this->words = explode(' ', preg_replace("#[[:punct:]]#", "", $text));
         
         $this->answer_options = array_map(function($answer_option) {
-            return new EssayScoringProcessedAnswerOption($answer_option->getScoringDefinition(), $this->configuration->getMatchingMode() === self::TM_CASE_INSENSITIVE);
+            return new EssayScoringProcessedAnswerOption($answer_option->getScoringDefinition(), $this->configuration->getMatchingMode() === TextScoring::TM_CASE_INSENSITIVE);
         }, $this->question->getAnswerOptions()->getOptions());
         
         $points = 0;
@@ -140,19 +133,19 @@ class EssayScoring extends AbstractScoring {
         $answer_words = $answer_option->getWords();
         
         switch($this->configuration->getMatchingMode()) {
-            case self::TM_LEVENSHTEIN_1:
+            case TextScoring::TM_LEVENSHTEIN_1:
                 $max_distance = 1;
                 break;
-            case self::TM_LEVENSHTEIN_2:
+            case TextScoring::TM_LEVENSHTEIN_2:
                 $max_distance = 2;
                 break;
-            case self::TM_LEVENSHTEIN_3:
+            case TextScoring::TM_LEVENSHTEIN_3:
                 $max_distance = 3;
                 break;
-            case self::TM_LEVENSHTEIN_4:
+            case TextScoring::TM_LEVENSHTEIN_4:
                 $max_distance = 4;
                 break;
-            case self::TM_LEVENSHTEIN_5:
+            case TextScoring::TM_LEVENSHTEIN_5:
                 $max_distance = 5;
                 break;
             default:
@@ -212,15 +205,7 @@ class EssayScoring extends AbstractScoring {
         
         $fields = [];
         
-        $text_matching = new ilSelectInputGUI($DIC->language()->txt('asq_label_text_matching'), self::VAR_TEXT_MATCHING);
-        $text_matching->setOptions(
-            [self::TM_CASE_INSENSITIVE => $DIC->language()->txt('asq_option_case_insensitive'),
-                self::TM_CASE_SENSITIVE => $DIC->language()->txt('asq_option_case_sensitive'),
-                self::TM_LEVENSHTEIN_1 => $DIC->language()->txt('asq_option_levenshtein_1'),
-                self::TM_LEVENSHTEIN_2 => $DIC->language()->txt('asq_option_levenshtein_2'),
-                self::TM_LEVENSHTEIN_3 => $DIC->language()->txt('asq_option_levenshtein_3'),
-                self::TM_LEVENSHTEIN_4 => $DIC->language()->txt('asq_option_levenshtein_4'),
-                self::TM_LEVENSHTEIN_5 => $DIC->language()->txt('asq_option_levenshtein_5')]);
+        $text_matching = TextScoring::getScoringTypeSelectionField(self::VAR_TEXT_MATCHING);
         $fields[self::VAR_TEXT_MATCHING] = $text_matching;
         
         $scoring_mode = new ilRadioGroupInputGUI($DIC->language()->txt('asq_label_text_matching'), self::VAR_SCORING_MODE);

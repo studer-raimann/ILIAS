@@ -9,7 +9,7 @@ use ILIAS\AssessmentQuestion\DomainModel\QuestionDto;
 use ILIAS\AssessmentQuestion\DomainModel\Answer\Answer;
 use ILIAS\AssessmentQuestion\DomainModel\Answer\Option\AnswerOptions;
 use ILIAS\AssessmentQuestion\DomainModel\Scoring\AbstractScoring;
-use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\EmptyScoringDefinition;
+use ILIAS\AssessmentQuestion\DomainModel\Scoring\EmptyScoringDefinition;
 use Exception;
 use ilCheckboxInputGUI;
 use ilNumberInputGUI;

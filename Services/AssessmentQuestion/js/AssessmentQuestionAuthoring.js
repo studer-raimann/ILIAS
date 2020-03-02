@@ -125,7 +125,7 @@
         });
     };
     
-    let process_row = function(row, current_row) {
+    process_row = function(row, current_row) {
         row.find("input[name],textarea[name],select").each(function() {
             process_item($(this), current_row);
     
