@@ -372,7 +372,7 @@ class ClozeEditor extends AbstractEditor {
         $lower->setValue($gap->getLower());
         $fields[$index . self::VAR_GAP_LOWER] = $lower;
         
-        $points = new ilNumberInputGUI($DIC->language()->txt('asq_correct_value'), $index . self::VAR_GAP_POINTS);
+        $points = new ilNumberInputGUI($DIC->language()->txt('asq_header_points'), $index . self::VAR_GAP_POINTS);
         $points->setRequired(true);
         $points->setValue($gap->getPoints());
         $fields[$index . self::VAR_GAP_POINTS] = $points;

@@ -2,14 +2,19 @@
     let cloze_regex = /{[^}]*}/g;
 
     let add_gap_items = function() {
+        let cloze_text = $('#cze_text');
+        let matches = $('#cze_text').val().match(cloze_regex);
+        let gap_count = matches ? matches.length : 0;
+
+        let cursor = cloze_text[0].selectionStart;
+        let text = cloze_text.val();
+        cloze_text.val(text.substring(0, cursor) + "{" + (gap_count + 1) + "}" + text.substring(cursor));
+        
         let last_non_gap = $('#il_prop_cont_cze_text');
         
         last_non_gap.nextUntil('.ilFormFooter').remove();
         
-        let matches = $('#cze_text').val().match(cloze_regex);
-        let gap_count = matches ? matches.length : 0;
-        
-        for (let i = 0; i < gap_count; i += 1) {
+        for (let i = 0; i <= gap_count; i += 1) {
             last_non_gap.siblings('.ilFormFooter').before(create_new_text_gap(i + 1));
         }
     }
