@@ -33,19 +33,25 @@ class NumericGapConfiguration extends ClozeGapConfiguration {
      */
     protected $points;
     
-    public static function Create(?float $value = null, ?float $upper = null, ?float $lower = null, ?float $points = null) {
+    /**
+     * @var int
+     */
+    protected $field_length;
+    
+    public static function Create(?float $value = null, ?float $upper = null, ?float $lower = null, ?float $points = null, int $field_length = 80) {
         $object = new NumericGapConfiguration();
         $object->value = $value;
         $object->upper = $upper;
         $object->lower = $lower;
         $object->points = $points;
+        $object->field_length = $field_length;
         return $object;
     }
     
     /**
      * @return ?float
      */
-    public function getValue()
+    public function getValue() : ?float
     {
         return $this->value;
     }
@@ -53,7 +59,7 @@ class NumericGapConfiguration extends ClozeGapConfiguration {
     /**
      * @return ?float
      */
-    public function getUpper()
+    public function getUpper() : ?float
     {
         return $this->upper;
     }
@@ -61,7 +67,7 @@ class NumericGapConfiguration extends ClozeGapConfiguration {
     /**
      * @return ?float
      */
-    public function getLower()
+    public function getLower() : ?float
     {
         return $this->lower;
     }
@@ -69,8 +75,16 @@ class NumericGapConfiguration extends ClozeGapConfiguration {
     /**
      * @return ?int
      */
-    public function getPoints()
+    public function getPoints() : ?int
     {
         return $this->points;
+    }
+    
+    /**
+     * @return int
+     */
+    public function getFieldLength() : int
+    {
+        return $this->field_length ?? 77;
     }
 }

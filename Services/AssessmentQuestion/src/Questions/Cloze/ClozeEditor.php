@@ -29,6 +29,7 @@ use ILIAS\AssessmentQuestion\DomainModel\Scoring\TextScoring;
  * @author  Theodor Truffer <tt@studer-raimann.ch>
  */
 class ClozeEditor extends AbstractEditor {
+    const DEFAULT_TEXT_SIZE = '80';
     const VAR_CLOZE_TEXT = 'cze_text';
     const VAR_GAP_SIZE = 'cze_gap_size';
     const VAR_TEXT_METHOD = 'cze_text_method';
@@ -105,7 +106,8 @@ class ClozeEditor extends AbstractEditor {
                     floatval($_POST[$i . self::VAR_GAP_VALUE]), 
                     floatval($_POST[$i . self::VAR_GAP_UPPER]), 
                     floatval($_POST[$i . self::VAR_GAP_LOWER]), 
-                    intval($_POST[$i . self::VAR_GAP_POINTS]));
+                    intval($_POST[$i . self::VAR_GAP_POINTS]),
+                    intval($_POST[$i . self::VAR_GAP_SIZE]));
             }
             $i += 1;
         }
@@ -174,9 +176,10 @@ class ClozeEditor extends AbstractEditor {
     private function createText(int $index, ClozeGapConfiguration $gap_config, string $output) : string {
         $name = '{' . $index . '}';
         
-        $html = sprintf('<input type="text" length="20" name="%s" value="%s" />',
+        $html = sprintf('<input type="text" length="20" name="%s" value="%s" style="width: %spx;" />',
             $this->getPostVariable($index),
-            $this->getAnswer($index) ?? '');
+            $this->getAnswer($index) ?? '',
+            $gap_config->getFieldLength());
         
         return str_replace($name, $html, $output);
     }
@@ -376,6 +379,12 @@ class ClozeEditor extends AbstractEditor {
         $points->setRequired(true);
         $points->setValue($gap->getPoints());
         $fields[$index . self::VAR_GAP_POINTS] = $points;
+        
+        $field_size = new ilNumberInputGUI(
+            $DIC->language()->txt('asq_textfield_size'),
+            $index . self::VAR_GAP_SIZE);
+        $field_size->setValue($gap->getFieldLength());
+        $fields[$index . self::VAR_GAP_SIZE] = $field_size;
         
         return $fields;
     }
