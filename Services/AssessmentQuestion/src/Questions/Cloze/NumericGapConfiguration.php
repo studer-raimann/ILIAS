@@ -85,6 +85,6 @@ class NumericGapConfiguration extends ClozeGapConfiguration {
      */
     public function getFieldLength() : int
     {
-        return $this->field_length ?? 77;
+        return $this->field_length;
     }
 }
