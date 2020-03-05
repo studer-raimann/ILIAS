@@ -5,6 +5,9 @@ namespace ILIAS\Services\AssessmentQuestion\PublicApi\Authoring;
 
 use ILIAS\UI\Component\Link\Standard as UiStandardLink;
 use ilAsqQuestionAuthoringGUI;
+use ilAsqQuestionCreationGUI;
+use ilAsqQuestionConfigEditorGUI;
+use ilAsqQuestionPreviewGUI;
 
 /**
  * Class QuestionAuthoring
@@ -22,10 +25,8 @@ class AuthoringQuestion
     {
         global $DIC;
 
-        array_push($ctrl_stack,ilAsqQuestionAuthoringGUI::class);
-        array_push($ctrl_stack,\ilAsqQuestionCreationGUI::class);
-
-        $DIC->language()->loadLanguageModule('asq');
+        array_push($ctrl_stack, ilAsqQuestionAuthoringGUI::class);
+        array_push($ctrl_stack, ilAsqQuestionCreationGUI::class);
         
         return $DIC->ui()->factory()->link()->standard(
             $DIC->language()->txt('asq_authoring_create_question_link'),
@@ -39,8 +40,9 @@ class AuthoringQuestion
     public static function getEditLink(string $question_id, array $ctrl_stack = []) :UiStandardLink
     {
         global $DIC;
-        array_push($ctrl_stack,ilAsqQuestionAuthoringGUI::class);
-        array_push($ctrl_stack,\ilAsqQuestionConfigEditorGUI::class);
+        
+        array_push($ctrl_stack, ilAsqQuestionAuthoringGUI::class);
+        array_push($ctrl_stack, ilAsqQuestionConfigEditorGUI::class);
 
         self::setQuestionUidParameter($question_id);
 
@@ -56,8 +58,8 @@ class AuthoringQuestion
     public static function getPreviewLink(string $question_id, array $ctrl_stack = []) : UiStandardLink
     {
         global $DIC;
-        array_push($ctrl_stack,ilAsqQuestionAuthoringGUI::class);
-        array_push($ctrl_stack,\ilAsqQuestionPreviewGUI::class);
+        array_push($ctrl_stack, ilAsqQuestionAuthoringGUI::class);
+        array_push($ctrl_stack, ilAsqQuestionPreviewGUI::class);
 
         self::setQuestionUidParameter($question_id);
 

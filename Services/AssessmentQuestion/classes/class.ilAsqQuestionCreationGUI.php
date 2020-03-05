@@ -97,19 +97,19 @@ class ilAsqQuestionCreationGUI
         }
         
         $new_question = $DIC->assessment()->question()->createQuestion(
-            $form->getQuestionType(), 
-            $this->contextContainer->getObjId(), 
+            $form->getQuestionType(),
+            $this->contextContainer->getObjId(),
             $form->getContentEditingMode());
 
         $DIC->ctrl()->setParameterByClass(
-            $this->contextContainer->getAfterQuestionCreationCtrlCmdClass(),
+            ilAsqQuestionConfigEditorGUI::class,
             ilAsqQuestionAuthoringGUI::VAR_QUESTION_ID,
             $new_question->getId()
         );
 
         $DIC->ctrl()->redirectByClass(
-            $this->contextContainer->getAfterQuestionCreationCtrlClassPath(),
-            $this->contextContainer->getAfterQuestionCreationCtrlCommand()
+            ilAsqQuestionConfigEditorGUI::class,
+            ilAsqQuestionConfigEditorGUI::CMD_SHOW_FORM
         );
     }
 

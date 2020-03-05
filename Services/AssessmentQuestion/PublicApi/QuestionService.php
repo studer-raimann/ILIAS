@@ -61,6 +61,10 @@ class QuestionService extends ASQService
     }
     
     public function getQuestionComponent(QuestionDto $question) : QuestionComponent {
+        global $DIC;
+        
+        $DIC->language()->loadLanguageModule('asq');
+        
         return new QuestionComponent($question);
     }
      

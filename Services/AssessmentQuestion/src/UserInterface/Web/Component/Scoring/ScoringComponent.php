@@ -50,7 +50,7 @@ class ScoringComponent
     public function getHtml() : string
     {
         global $DIC;
-
+        $DIC->language()->loadLanguageModule('assessment');
         $tpl = new ilTemplate("tpl.answer_scoring.html", true, true, "Services/AssessmentQuestion");
 
         $score_dto = $this->scoring->score($this->answer);

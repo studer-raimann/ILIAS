@@ -1,7 +1,5 @@
 <?php
 /* Copyright (c) 1998-2013 ILIAS open source, Extended GPL, see docs/LICENSE */
-use ILIAS\Services\AssessmentQuestion\PublicApi\Authoring\AuthoringService as AsqAuthoringService;
-use ILIAS\Services\AssessmentQuestion\PublicApi\Common\QuestionConfig;
 use ILIAS\Services\AssessmentQuestion\PublicApi\Authoring\AuthoringQuestion;
 use ILIAS\Services\AssessmentQuestion\PublicApi\Common\AuthoringContextContainer;
 
@@ -214,9 +212,7 @@ class ilObjTestGUI extends ilObjectGUI
             $this->object->getId(), 
             $this->object->getType(), 
             $DIC->user()->getId(), 
-            $DIC->access()->checkAccess('write', '', $this->object->getRefId()), 
-            [self::class], 
-            self::CMD_REGISTER_CREATED_QUESTION);
+            $DIC->access()->checkAccess('write', '', $this->object->getRefId()));
         
         $exAsqAuthoringGUI = new ilAsqQuestionAuthoringGUI($authoring_context_container);
 
@@ -241,12 +237,7 @@ class ilObjTestGUI extends ilObjectGUI
 
         $DIC->ctrl()->saveParameter($this, self::AUTHORING_CONTEXT_PARAMETER);
 
-        /* @var ilTestFixedQuestionSetConfig $questionSetConfig */
-        // $questionSetConfig = ilTestQuestionSetConfigFactory::getInstance($this->object)->getQuestionSetConfig();
-        // $questionSetConfig->registerCreatedQuestion($questionService->getQuestionDto());
-
-        $questionService = new AuthoringQuestion();
-        $DIC->ctrl()->redirectToURL(str_replace('&amp;', '&', $questionService->getEditLink($_GET['question_id'], [])
+        $DIC->ctrl()->redirectToURL(str_replace('&amp;', '&', AuthoringQuestion::getEditLink($_GET['question_id'], [])
             ->getAction()));
     }
 
@@ -2238,8 +2229,7 @@ class ilObjTestGUI extends ilObjectGUI
 
                 $ilToolbar = $DIC->toolbar();
 
-                $q = new AuthoringQuestion();
-                $creationLink = $q->getCreationLink([]);
+                $creationLink = AuthoringQuestion::getCreationLink([]);
                 $ilToolbar->addButton($creationLink->getLabel(), $creationLink->getAction());
 
                 if ($this->object->getPoolUsage()) {

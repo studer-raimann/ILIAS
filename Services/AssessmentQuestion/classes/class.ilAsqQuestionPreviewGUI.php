@@ -5,7 +5,6 @@
 use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Feedback\AnswerFeedbackComponent;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Feedback\FeedbackComponent;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Feedback\ScoringComponent;
-use ILIAS\Services\AssessmentQuestion\PublicApi\Common\QuestionConfig;
 use srag\CQRS\Aggregate\DomainObjectId;
 
 /**

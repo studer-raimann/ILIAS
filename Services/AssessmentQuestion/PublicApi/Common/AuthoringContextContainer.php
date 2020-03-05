@@ -76,9 +76,7 @@ class AuthoringContextContainer
         int $objId,
         string $objType,
         int $actorId,
-        bool $writeAccess,
-        array $afterQuestionCreationCtrlClassPath,
-        string $afterQuestionCreationCtrlCommand
+        bool $writeAccess
     )
     {
         $this->backLink = $backLink;
@@ -87,8 +85,6 @@ class AuthoringContextContainer
         $this->objType = $objType;
         $this->actorId = $actorId;
         $this->writeAccess = $writeAccess;
-        $this->afterQuestionCreationCtrlClassPath = $afterQuestionCreationCtrlClassPath;
-        $this->afterQuestionCreationCtrlCommand = $afterQuestionCreationCtrlCommand;
     }
 
 
@@ -143,32 +139,5 @@ class AuthoringContextContainer
     public function hasWriteAccess() : bool
     {
         return $this->writeAccess;
-    }
-
-
-    /**
-     * @return array
-     */
-    public function getAfterQuestionCreationCtrlClassPath() : array
-    {
-        return $this->afterQuestionCreationCtrlClassPath;
-    }
-
-
-    /**
-     * @return string
-     */
-    public function getAfterQuestionCreationCtrlCmdClass() : string
-    {
-        return end($this->afterQuestionCreationCtrlClassPath);
-    }
-
-
-    /**
-     * @return string
-     */
-    public function getAfterQuestionCreationCtrlCommand() : string
-    {
-        return $this->afterQuestionCreationCtrlCommand;
     }
 }
