@@ -3,7 +3,6 @@
 namespace ILIAS\AssessmentQuestion\Questions\Kprim;
 
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
-use srag\CQRS\Aggregate\AbstractValueObject;
 
 /**
  * Class KprimChoiceEditorConfiguration

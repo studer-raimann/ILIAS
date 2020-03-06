@@ -21,13 +21,8 @@ use srag\CQRS\Aggregate\AbstractValueObject;
  */
 class ScoringComponent
 {
-
     /**
-     * @var QuestionDto
-     */
-    private $question_dto;
-    /**
-     * @var AbstractValueObject
+     * @var Answer
      */
     private $answer;
     /**
@@ -37,13 +32,12 @@ class ScoringComponent
 
 
     //QuestionDto $question_dto, QuestionConfig $question_config, QuestionCommands $question_commands
-    public function __construct(QuestionDto $question_dto, AbstractValueObject $answer)
+    public function __construct(QuestionDto $question_dto, Answer $answer)
     {
-        $this->question_dto = $question_dto;
-        $this->answer = new Answer(0, '', '', 0, 0, $answer);
-
         $scoring_class = $question_dto->getPlayConfiguration()->getScoringConfiguration()->configurationFor();
         $this->scoring = new $scoring_class($question_dto);
+        
+        $this->answer = $answer;
     }
 
 
@@ -53,10 +47,11 @@ class ScoringComponent
         $DIC->language()->loadLanguageModule('assessment');
         $tpl = new ilTemplate("tpl.answer_scoring.html", true, true, "Services/AssessmentQuestion");
 
-        $score_dto = $this->scoring->score($this->answer);
-
         $tpl->setCurrentBlock('answer_scoring');
-        $tpl->setVariable('ANSWER_SCORE', sprintf($DIC->language()->txt("you_received_a_of_b_points"), $score_dto->getReachedPoints(), $score_dto->getMaxPoints()));
+        $tpl->setVariable('ANSWER_SCORE', 
+            sprintf($DIC->language()->txt("you_received_a_of_b_points"), 
+                                          $this->scoring->score($this->answer), 
+                                          $this->scoring->getMaxScore()));
         $tpl->parseCurrentBlock();
 
         return $tpl->get();

@@ -3,15 +3,12 @@
 namespace ILIAS\AssessmentQuestion\Questions\TextSubset;
 
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
-use ILIAS\AssessmentQuestion\DomainModel\AnswerScoreDto;
 use ILIAS\AssessmentQuestion\DomainModel\Question;
-use ILIAS\AssessmentQuestion\DomainModel\QuestionDto;
 use ILIAS\AssessmentQuestion\DomainModel\Answer\Answer;
 use ILIAS\AssessmentQuestion\DomainModel\Answer\Option\AnswerOptions;
 use ILIAS\AssessmentQuestion\DomainModel\Scoring\AbstractScoring;
-use Exception;
-use ilSelectInputGUI;
 use ILIAS\AssessmentQuestion\DomainModel\Scoring\TextScoring;
+use Exception;
 
 /**
  * Class TextSubsetScoring
@@ -37,7 +34,7 @@ class TextSubsetScoring extends AbstractScoring
      * {@inheritDoc}
      * @see \ILIAS\AssessmentQuestion\DomainModel\Scoring\AbstractScoring::score()
      */
-    public function score(Answer $answer) : AnswerScoreDto
+    public function score(Answer $answer) : float
     {
         $this->answer = $answer;
 
@@ -72,20 +69,34 @@ class TextSubsetScoring extends AbstractScoring
             $answers[] = $option->getScoringDefinition()->getText();
         }
         
-        return new Answer(0, $this->question->getId(), '',0,0, json_encode($answers));
+        return TextSubsetAnswer::create($answers);
     }
 
-
+    protected function calculateMaxScore()
+    {
+        $amount = $this->question->getPlayConfiguration()->getEditorConfiguration()->getNumberOfRequestedAnswers();
+        
+        if(empty($amount)) {
+            return 0;
+        }
+        
+        $points = array_map(function($option) {
+            return $option->getScoringDefinition()->getPoints();
+        }, $this->question->getAnswerOptions()->getOptions());
+            
+        rsort($points);
+        
+        $this->max_score = array_sum(array_slice($points, 0, $amount));
+    }
     
     /**
      * @param array $answer_arr
      * @return int
      */
-    private function caseInsensitiveScoring() : AnswerScoreDto {
+    private function caseInsensitiveScoring() : float {
         $reached_points = 0;
-        $max_points = self::calculateMaxPoints($this->question);
         
-        foreach ($this->answer->getValue()->getAnswers() as $result) {
+        foreach ($this->answer->getAnswers() as $result) {
             foreach ($this->question->getAnswerOptions()->getOptions() as $correct) {
                 if (strtoupper($correct->getScoringDefinition()->getText()) === strtoupper($result)) {
                     $reached_points += $correct->getScoringDefinition()->getPoints();
@@ -94,18 +105,17 @@ class TextSubsetScoring extends AbstractScoring
             }
         }
 
-        return $this->createScoreDto($this->answer, $max_points, $reached_points, $this->getAnswerFeedbackType($reached_points,$max_points));
+        return $reached_points;
     }
     
     /**
      * @param array $answer_arr
      * @return int
      */
-    private function caseSensitiveScoring() : AnswerScoreDto {
+    private function caseSensitiveScoring() : float {
         $reached_points = 0;
-        $max_points = self::calculateMaxPoints($this->question);
  
-        foreach ($this->answer->getValue()->getAnswers() as $result) {
+        foreach ($this->answer->getAnswers() as $result) {
             foreach ($this->question->getAnswerOptions()->getOptions() as $correct) {
                 if ($correct->getScoringDefinition()->getText() === $result) {
                     $reached_points += $correct->getScoringDefinition()->getPoints();
@@ -114,7 +124,7 @@ class TextSubsetScoring extends AbstractScoring
             }
         }
 
-        return $this->createScoreDto($this->answer, $max_points, $reached_points, $this->getAnswerFeedbackType($reached_points,$max_points));
+        return $reached_points;
     }
     
     /**
@@ -122,11 +132,10 @@ class TextSubsetScoring extends AbstractScoring
      * @param int $distance
      * @return int
      */
-    private function levenshteinScoring(int $distance) : AnswerScoreDto {
+    private function levenshteinScoring(int $distance) : float {
         $reached_points = 0;
-        $max_points = $max_points = self::calculateMaxPoints($this->question);
-        
-        foreach ($this->answer->getValue()->getAnswers() as $result) {
+
+        foreach ($this->answer->getAnswers() as $result) {
             foreach ($this->question->getAnswerOptions()->getOptions() as $correct) {
                 if (levenshtein($correct->getScoringDefinition()->getText(), $result) <= $distance) {
                     $reached_points += $correct->getScoringDefinition()->getPoints();
@@ -135,7 +144,7 @@ class TextSubsetScoring extends AbstractScoring
             }
         }
 
-        return $this->createScoreDto($this->answer, $max_points, $reached_points, $this->getAnswerFeedbackType($reached_points,$max_points));
+        return $reached_points;
     }
     
     /**
@@ -145,8 +154,7 @@ class TextSubsetScoring extends AbstractScoring
      */
     public static function generateFields(?AbstractConfiguration $config, AnswerOptions $options = null): ?array {
         /** @var TextSubsetScoringConfiguration $config */
-        global $DIC;
-        
+
         $fields = [];
 
         $text_matching = TextScoring::getScoringTypeSelectionField(self::VAR_TEXT_MATCHING);
@@ -163,26 +171,6 @@ class TextSubsetScoring extends AbstractScoring
     {
         return TextSubsetScoringConfiguration::create(
             intval($_POST[self::VAR_TEXT_MATCHING]));
-    }
-    
-    public static function calculateMaxPoints(QuestionDto $question) :int {
-        $amount = $question->getPlayConfiguration()->getEditorConfiguration()->getNumberOfRequestedAnswers();
-        
-        if(empty($amount)) {
-            return 0;
-        }
-        
-        $points = array_map(function($option) {
-            return $option->getScoringDefinition()->getPoints();
-        },
-        $question->getAnswerOptions()->getOptions());
-            
-            rsort($points);
-            
-        return array_reduce(array_slice($points, 0, $amount),
-            function($a, $b) {
-                return $a + $b;
-            });
     }
     
     public static function isComplete(Question $question): bool

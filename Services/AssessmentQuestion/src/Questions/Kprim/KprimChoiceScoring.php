@@ -3,7 +3,6 @@
 namespace ILIAS\AssessmentQuestion\Questions\Kprim;
 
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
-use ILIAS\AssessmentQuestion\DomainModel\AnswerScoreDto;
 use ILIAS\AssessmentQuestion\DomainModel\Question;
 use ILIAS\AssessmentQuestion\DomainModel\Answer\Answer;
 use ILIAS\AssessmentQuestion\DomainModel\Answer\Option\AnswerOptions;
@@ -24,18 +23,16 @@ class KprimChoiceScoring extends AbstractScoring {
     const VAR_POINTS = 'kcs_points';
     const VAR_HALF_POINTS = 'kcs_half_points_at';
     
-    function score(Answer $answer) : AnswerScoreDto {
-        $reached_points = 0;
-        $max_points = 0;
-
-        /** @var $answers KprimChoiceAnswer */
-        $answers = $answer->getValue();
+    /**
+     * @param KprimChoiceAnswer $answer
+     * @return float
+     */
+    function score(Answer $answer) : float {
         $count = 0;
-        
         foreach ($this->question->getAnswerOptions()->getOptions() as $option) {
             /** @var KprimChoiceScoringDefinition $scoring_definition */
             $scoring_definition = $option->getScoringDefinition();
-            $current_answer = $answers->getAnswerForId($option->getOptionId());
+            $current_answer = $answer->getAnswerForId($option->getOptionId());
             if (!is_null($current_answer)) {
                 if ($current_answer == true && $scoring_definition->isCorrectValue() ||
                     $current_answer == false && !$scoring_definition->isCorrectValue()) {
@@ -43,18 +40,25 @@ class KprimChoiceScoring extends AbstractScoring {
                 }
             }
         }
+        
         /** @var KprimChoiceScoringConfiguration $scoring_conf */
         $scoring_conf = $this->question->getPlayConfiguration()->getScoringConfiguration();
-        $max_points += $scoring_conf->getPoints();
+
         if ($count === count($this->question->getAnswerOptions()->getOptions())) {
-            $reached_points = $scoring_conf->getPoints();
+            return $scoring_conf->getPoints();
         } 
         else if (!is_null($scoring_conf->getHalfPointsAt()) &&
                  $count >= $scoring_conf->getHalfPointsAt()) {
-            $reached_points = floor($scoring_conf->getPoints() / 2);
+            return floor($scoring_conf->getPoints() / 2);
         }
-
-        return $this->createScoreDto($answer, $max_points, $reached_points, $this->getAnswerFeedbackType($reached_points,$max_points));
+        else {
+            return 0;
+        }
+    }
+    
+    protected function calculateMaxScore()
+    {
+        $this->max_score = $this->question->getPlayConfiguration()->getScoringConfiguration()->getPoints();
     }
     
     public function getBestAnswer(): Answer
@@ -73,7 +77,7 @@ class KprimChoiceScoring extends AbstractScoring {
             }
         }
         
-        return new Answer(0, $this->question->getId(), '','',0, KprimChoiceAnswer::create($answers));
+        return KprimChoiceAnswer::create($answers);
     }
     
     /**
@@ -107,7 +111,7 @@ class KprimChoiceScoring extends AbstractScoring {
      */
     public static function readConfig() : ?AbstractConfiguration {        
         return KprimChoiceScoringConfiguration::create(
-            intval($_POST[self::VAR_POINTS]),
+            floatval($_POST[self::VAR_POINTS]),
             array_key_exists(self::VAR_HALF_POINTS, $_POST) ? intval($_POST[self::VAR_HALF_POINTS]) : null);
     }
     

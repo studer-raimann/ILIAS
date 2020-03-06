@@ -4,7 +4,6 @@ namespace ILIAS\AssessmentQuestion\Questions\Kprim;
 
 
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
-use srag\CQRS\Aggregate\AbstractValueObject;
 
 /**
  * Class KprimChoiceScoringConfiguration
@@ -18,7 +17,7 @@ use srag\CQRS\Aggregate\AbstractValueObject;
  */
 class KprimChoiceScoringConfiguration extends AbstractConfiguration {
     /**
-     * @var int
+     * @var )float
      */
     protected $points;
     /**
@@ -31,7 +30,7 @@ class KprimChoiceScoringConfiguration extends AbstractConfiguration {
      * @param int $half_points_at
      * @return KprimChoiceScoringConfiguration
      */
-    static function create(?int $points = null, ?int $half_points_at = null) : KprimChoiceScoringConfiguration
+    static function create(?float $points = null, ?int $half_points_at = null) : KprimChoiceScoringConfiguration
         {
             $object = new KprimChoiceScoringConfiguration();
             $object->points = $points;
@@ -42,7 +41,7 @@ class KprimChoiceScoringConfiguration extends AbstractConfiguration {
     /**
      * @return ?int
      */
-    public function getPoints() : ?int
+    public function getPoints() : ?float
     {
         return $this->points;
     }

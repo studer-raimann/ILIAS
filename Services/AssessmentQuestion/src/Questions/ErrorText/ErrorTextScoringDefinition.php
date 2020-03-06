@@ -38,7 +38,7 @@ class ErrorTextScoringDefinition extends AnswerDefinition {
      */
     protected $correct_text;
     /**
-     * @var int
+     * @var float
      */
     protected $points;
     
@@ -52,7 +52,7 @@ class ErrorTextScoringDefinition extends AnswerDefinition {
      *
      * @param int $points
      */
-    public function __construct(int $wrong_word_index, int $wrong_word_length, ?string $correct_text, int $points)
+    public function __construct(int $wrong_word_index, int $wrong_word_length, ?string $correct_text, float $points)
     {
         $this->wrong_word_index = $wrong_word_index;
         $this->wrong_word_length = $wrong_word_length;
@@ -142,7 +142,7 @@ class ErrorTextScoringDefinition extends AnswerDefinition {
             intval($_POST[self::getPostKey($index, self::VAR_WORD_INDEX)]),
             intval($_POST[self::getPostKey($index, self::VAR_WORD_LENGTH)]),
             ilAsqHtmlPurifier::getInstance()->purify($_POST[self::getPostKey($index, self::VAR_CORRECT_TEXT)]),
-            intval($_POST[self::getPostKey($index, self::VAR_POINTS)]));
+            floatval($_POST[self::getPostKey($index, self::VAR_POINTS)]));
     }
     
     public function getValues(): array {

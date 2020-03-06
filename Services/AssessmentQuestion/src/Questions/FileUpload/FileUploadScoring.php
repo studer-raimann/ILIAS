@@ -3,7 +3,6 @@
 namespace ILIAS\AssessmentQuestion\Questions\FileUpload;
 
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
-use ILIAS\AssessmentQuestion\DomainModel\AnswerScoreDto;
 use ILIAS\AssessmentQuestion\DomainModel\Question;
 use ILIAS\AssessmentQuestion\DomainModel\QuestionDto;
 use ILIAS\AssessmentQuestion\DomainModel\Answer\Answer;
@@ -44,19 +43,30 @@ class FileUploadScoring extends AbstractScoring {
         $this->configuration = $question->getPlayConfiguration()->getScoringConfiguration();
     }
     
-    function score(Answer $answer) : AnswerScoreDto {
+    function score(Answer $answer) : float {
         $reached_points = 0;
-        
-        $max_points = $this->configuration->getPoints();
 
         if ($this->configuration->isCompletedBySubmition()) {
-            $reached_points = $max_points;
+            $reached_points = $this->getMaxScore();
         }
         else {
             // TODO go look for manual scoring or throw exception
         }
 
-        return $this->createScoreDto($answer, $max_points, $reached_points, $this->getAnswerFeedbackType($reached_points,$max_points));
+        return $reached_points;
+    }
+    
+    protected function calculateMaxScore()
+    {
+        $this->max_score = $this->configuration->getPoints();
+    }
+    
+    /**
+     * Implementation of best answer for upload not possible
+     */
+    public function getBestAnswer(): Answer
+    {
+        throw new Exception("Best Answer for File Upload Impossible");
     }
     
     /**
@@ -72,8 +82,8 @@ class FileUploadScoring extends AbstractScoring {
         $points->setSize(2);
         $fields[self::VAR_POINTS] = $points;
         
-        $completed_by_submition = new ilCheckboxInputGUI($DIC->language()->txt('asq_label_completed_by_submition'), 
-                                                         self::VAR_COMPLETED_ON_UPLOAD);
+        $completed_by_submition = new ilCheckboxInputGUI($DIC->language()->txt('asq_label_completed_by_submition'),
+            self::VAR_COMPLETED_ON_UPLOAD);
         $completed_by_submition->setInfo($DIC->language()->txt('asq_description_completed_by_submition'));
         $completed_by_submition->setValue(self::CHECKED);
         $fields[self::VAR_COMPLETED_ON_UPLOAD] = $completed_by_submition;
@@ -91,7 +101,7 @@ class FileUploadScoring extends AbstractScoring {
      */
     public static function readConfig() : ?AbstractConfiguration {
         return FileUploadScoringConfiguration::create(
-            intval($_POST[self::VAR_POINTS]),
+            floatval($_POST[self::VAR_POINTS]),
             $_POST[self::VAR_COMPLETED_ON_UPLOAD] === self::CHECKED);
     }
     
@@ -100,14 +110,6 @@ class FileUploadScoring extends AbstractScoring {
      */
     public static function getScoringDefinitionClass(): string {
         return EmptyScoringDefinition::class;
-    }
-    
-    /**
-     * Implementation of best answer for upload not possible
-     */
-    public function getBestAnswer(): Answer
-    {
-        throw new Exception("Best Answer for File Upload Impossible");
     }
     
     public static function isComplete(Question $question): bool

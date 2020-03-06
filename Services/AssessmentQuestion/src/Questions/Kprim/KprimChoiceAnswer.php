@@ -2,7 +2,7 @@
 
 namespace ILIAS\AssessmentQuestion\Questions\Kprim;
 
-use srag\CQRS\Aggregate\AbstractValueObject;
+use ILIAS\AssessmentQuestion\DomainModel\Answer\Answer;
 
 /**
  * Class KprimChoiceEditor
@@ -14,7 +14,7 @@ use srag\CQRS\Aggregate\AbstractValueObject;
  * @author  Martin Studer <ms@studer-raimann.ch>
  * @author  Theodor Truffer <tt@studer-raimann.ch>
  */
-class KprimChoiceAnswer extends AbstractValueObject {
+class KprimChoiceAnswer extends Answer {
     /**
      * @var int[]
      */

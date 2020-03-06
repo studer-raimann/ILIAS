@@ -36,7 +36,7 @@ class FormulaScoringVariable extends AbstractValueObject {
     protected $unit;
     
     /**
-     * @var float
+     * @var ?float
      */
     protected $multiple_of;
     
@@ -50,7 +50,7 @@ class FormulaScoringVariable extends AbstractValueObject {
     public static function create(float $min,
                                   float $max,
                                   string $unit,
-                                  float $multiple_of) : 
+                                  ?float $multiple_of) : 
                                   FormulaScoringVariable {
         $object = new FormulaScoringVariable();
         $object->min = $min;
@@ -85,7 +85,7 @@ class FormulaScoringVariable extends AbstractValueObject {
     }
 
     /**
-     * @return float
+     * @return ?float
      */
     public function getMultipleOf()
     {
@@ -99,15 +99,5 @@ class FormulaScoringVariable extends AbstractValueObject {
             self::VAR_UNIT => $this->unit,
             self::VAR_MULTIPLE_OF => $this->multiple_of
         ];
-    }
-    
-    public function equals(AbstractValueObject $other): bool
-    {
-        /** @var FormulaScoringVariable $other */
-        return get_class($this) === get_class($other) &&
-               abs($this->min - $other->min) < PHP_FLOAT_EPSILON &&
-               abs($this->max - $other->max) < PHP_FLOAT_EPSILON &&
-               $this->unit === $other->unit &&
-               abs($this->multiple_of - $other->multiple_of) < PHP_FLOAT_EPSILON;
     }
 }

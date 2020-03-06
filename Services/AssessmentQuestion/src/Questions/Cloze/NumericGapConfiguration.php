@@ -29,7 +29,7 @@ class NumericGapConfiguration extends ClozeGapConfiguration {
     protected $lower;
     
     /**
-     * @var ?int
+     * @var ?float
      */
     protected $points;
     
@@ -75,7 +75,7 @@ class NumericGapConfiguration extends ClozeGapConfiguration {
     /**
      * @return ?int
      */
-    public function getPoints() : ?int
+    public function getPoints() : ?float
     {
         return $this->points;
     }
@@ -86,5 +86,10 @@ class NumericGapConfiguration extends ClozeGapConfiguration {
     public function getFieldLength() : int
     {
         return $this->field_length;
+    }
+    
+    public function getMaxPoints(): float
+    {
+        return $this->points;
     }
 }

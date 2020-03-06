@@ -3,20 +3,18 @@
 namespace ILIAS\AssessmentQuestion\Questions\Essay;
 
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
-use ILIAS\AssessmentQuestion\DomainModel\AnswerScoreDto;
 use ILIAS\AssessmentQuestion\DomainModel\Question;
 use ILIAS\AssessmentQuestion\DomainModel\QuestionDto;
 use ILIAS\AssessmentQuestion\DomainModel\Answer\Answer;
 use ILIAS\AssessmentQuestion\DomainModel\Answer\Option\AnswerOptions;
 use ILIAS\AssessmentQuestion\DomainModel\Scoring\AbstractScoring;
+use ILIAS\AssessmentQuestion\DomainModel\Scoring\TextScoring;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Fields\AsqTableInput;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Fields\AsqTableInputFieldDefinition;
 use Exception;
 use ilNumberInputGUI;
 use ilRadioGroupInputGUI;
 use ilRadioOption;
-use ilSelectInputGUI;
-use ILIAS\AssessmentQuestion\DomainModel\Scoring\TextScoring;
 
 /**
  * Class EssayScoring
@@ -67,16 +65,15 @@ class EssayScoring extends AbstractScoring {
         $this->configuration = $question->getPlayConfiguration()->getScoringConfiguration();
     }
     
-    public function score(Answer $answer): AnswerScoreDto {
+    public function score(Answer $answer): float {
         if ($this->configuration->getScoringMode() === self::SCORING_MANUAL) {
             // TODO handle manual scoring
             throw new Exception("Dont run score on manual scoring");
         }
         else {
-            $reached_points = $this->generateScore($answer->getValue()->getText());
-            $max_points = $this->getMaxPoints();
-            
-            return $this->createScoreDto($answer, $max_points, $reached_points, $this->getAnswerFeedbackType($reached_points, $max_points));
+            $reached_points = $this->generateScore($answer->getText());
+
+            return $reached_points;
         }
     }
     
@@ -172,27 +169,28 @@ class EssayScoring extends AbstractScoring {
         return false;
     }
     
-    private function getMaxPoints() : float {
+    protected function calculateMaxScore() {
         if ($this->configuration->getScoringMode() === self::SCORING_AUTOMATIC_ANY) {
-            return array_sum(
-                array_map(function($answer_option) {
-                    return $answer_option->getScoringDefinition()->getPoints();
-                }, 
-                $this->question->getAnswerOptions()->getOptions()
-            ));
+            $this->max_score = 
+                array_sum(
+                    array_map(function($answer_option) {
+                        return $answer_option->getScoringDefinition()->getPoints();
+                    }, 
+                    $this->question->getAnswerOptions()->getOptions()
+                ));
         }
         else {
-            return $this->configuration->getPoints();
+            $this->max_score = $this->configuration->getPoints();
         }
     }
     
     public function getBestAnswer(): Answer
     {
-        $texts = implode(' ',array_map(function($answer_option) {
+        $text = implode(' ',array_map(function($answer_option) {
             return $answer_option->getScoringDefinition()->getText();
         }, $this->question->getAnswerOptions()->getOptions()));
         
-        return new Answer(0, '', '', 0, 0, $texts);
+        return EssayAnswer::create($text);
     }
     
     /**
@@ -305,13 +303,13 @@ class EssayScoring extends AbstractScoring {
     public static function readConfig()
     {
         $scoring_mode = intval($_POST[self::VAR_SCORING_MODE]);
-        $points = 0;
+        $points = 0.0;
         
         if ($scoring_mode === self::SCORING_AUTOMATIC_ALL) {
-            $points = intval($_POST[self::VAR_ANSWERS_ALL . self::VAR_POINTS]);
+            $points = floatval($_POST[self::VAR_ANSWERS_ALL . self::VAR_POINTS]);
         }
         else if ($scoring_mode === self::SCORING_AUTOMATIC_ONE) {
-            $points = intval($_POST[self::VAR_ANSWERS_ONE . self::VAR_POINTS]);
+            $points = floatval($_POST[self::VAR_ANSWERS_ONE . self::VAR_POINTS]);
         }
         
         return EssayScoringConfiguration::create(intval($_POST[self::VAR_TEXT_MATCHING]), 

@@ -3,7 +3,6 @@
 namespace ILIAS\AssessmentQuestion\DomainModel\Scoring;
 
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
-use ILIAS\AssessmentQuestion\DomainModel\AnswerScoreDto;
 use ILIAS\AssessmentQuestion\DomainModel\Question;
 use ILIAS\AssessmentQuestion\DomainModel\QuestionDto;
 use ILIAS\AssessmentQuestion\DomainModel\Answer\Answer;
@@ -21,13 +20,21 @@ use ILIAS\AssessmentQuestion\DomainModel\Answer\Option\AnswerOptions;
  */
 abstract class AbstractScoring
 {
-
+    const ANSWER_CORRECT = 1;
+    const ANSWER_INCORRECT = 2;
+    const ANSWER_CORRECTNESS_NOT_DETERMINABLLE = 3;
+    
     const SCORING_DEFINITION_SUFFIX = 'Definition';
+    
     /**
      * @var QuestionDto
      */
     protected $question;
 
+    /**
+     * @var float
+     */
+    protected $max_score;
 
     /**
      * AbstractScoring constructor.
@@ -39,10 +46,6 @@ abstract class AbstractScoring
     {
         $this->question = $question;
     }
-
-
-    abstract function score(Answer $answer) : AnswerScoreDto;
-
 
     /**
      * @return array|null
@@ -67,35 +70,40 @@ abstract class AbstractScoring
 
     public static abstract function isComplete(Question $question) : bool;
 
+    /**
+     * @param Answer $answer
+     * @return float
+     */
+    abstract function score(Answer $answer) : float;
 
+    public function getMaxScore() : float {
+        if (is_null($this->max_score)) {
+            $this->calculateMaxScore();
+        }
+        
+        return $this->max_score;
+    }
+    
+    protected abstract function calculateMaxScore();
+    
     /**
      * @param float $reached_points
      * @param float $max_points
      *
      * @return int
      */
-    public function getAnswerFeedbackType(float $reached_points, float $max_points) : int
+    public function getAnswerFeedbackType(float $reached_points) : int
     {
-        if ($max_points === 0) {
-            return AnswerScoreDto::ANSWER_FEEDBACK_TYPE_NOT_DETERMINABLLE;
+        if ($this->getMaxScore() < PHP_FLOAT_EPSILON) {
+            return self::ANSWER_CORRECTNESS_NOT_DETERMINABLLE;
         }
-        if ($reached_points === $max_points) {
-            return AnswerScoreDto::ANSWER_FEEDBACK_TYPE_CORRECT;
+        else if (abs($reached_points - $this->getMaxScore()) < PHP_FLOAT_EPSILON) {
+            return self::ANSWER_CORRECT;
         }
-
-        return AnswerScoreDto::ANSWER_FEEDBACK_TYPE_INCORRECT;
+        else {
+            return self::ANSWER_INCORRECT;
+        }
     }
-
-
-    protected function createScoreDto(Answer $answer, float $max_points, float $reached_points, $answer_feedback_type) : AnswerScoreDto
-    {
-
-
-        return AnswerScoreDto::createNew(
-            $max_points,
-            $reached_points,
-            0, //TODO
-            0, //TODO
-            $answer_feedback_type);
-    }
+    
+    public abstract function getBestAnswer() : Answer;
 }

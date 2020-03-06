@@ -73,6 +73,8 @@ class ErrorTextEditor extends AbstractEditor {
      * @return string
      */
     private function generateErrorText() : string {
+        $matches = [];
+        
         preg_match_all('/\S+/', $this->configuration->getSanitizedErrorText(), $matches);
         
         $words = $matches[0];

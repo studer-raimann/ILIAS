@@ -10,7 +10,6 @@ use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\AbstractEditor;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Component\Editor\ImageAndTextDisplayDefinition;
 use ilCheckboxInputGUI;
 use ilNumberInputGUI;
-use ilSelectInputGUI;
 use ilRadioGroupInputGUI;
 use ilTextInputGUI;
 use ilRadioOption;

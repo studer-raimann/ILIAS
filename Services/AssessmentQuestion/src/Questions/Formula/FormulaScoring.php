@@ -4,7 +4,6 @@ namespace ILIAS\AssessmentQuestion\Questions\Formula;
 
 use ILIAS\AssessmentQuestion\ilAsqHtmlPurifier;
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
-use ILIAS\AssessmentQuestion\DomainModel\AnswerScoreDto;
 use ILIAS\AssessmentQuestion\DomainModel\Question;
 use ILIAS\AssessmentQuestion\DomainModel\QuestionDto;
 use ILIAS\AssessmentQuestion\DomainModel\Answer\Answer;
@@ -12,6 +11,7 @@ use ILIAS\AssessmentQuestion\DomainModel\Answer\Option\AnswerOptions;
 use ILIAS\AssessmentQuestion\DomainModel\Scoring\AbstractScoring;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Fields\AsqTableInput;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Fields\AsqTableInputFieldDefinition;
+use ILIAS\UI\NotImplementedException;
 use EvalMath;
 use ilNumberInputGUI;
 use ilRadioGroupInputGUI;
@@ -54,16 +54,15 @@ class FormulaScoring extends AbstractScoring {
         $this->configuration = $question->getPlayConfiguration()->getScoringConfiguration();
     }
     
-    public function score(Answer $answer): AnswerScoreDto
+    public function score(Answer $answer): float
     {
-        $reached_points = 0;
-        $max_points = 0;
+        $reached_points = 0.0;
 
         foreach ($this->question->getAnswerOptions()->getOptions() as $option) {
             /** @var $result FormulaScoringDefinition */
             $result = $option->getScoringDefinition();
             
-            $answers = $answer->getValue()->getValues();
+            $answers = $answer->getValues();
             $formula = $result->getFormula();
             
             foreach($answers as $key => $value) {
@@ -114,11 +113,9 @@ class FormulaScoring extends AbstractScoring {
                     $reached_points += $result->getPoints();
                 }
             }
-            
-            $max_points += $result->getPoints();
         }
 
-        return $this->createScoreDto($answer, $max_points, $reached_points, $this->getAnswerFeedbackType($reached_points,$max_points));
+        return $reached_points;
     }
 
     /**
@@ -134,7 +131,17 @@ class FormulaScoring extends AbstractScoring {
     
     public function getBestAnswer(): Answer
     {
+        //TODO result debending on random number
+        throw new NotImplementedException("implement FormulaScoring->getBestAnswer()");
+    }
+    
+    protected function calculateMaxScore()
+    {
+        $this->max_score = 0.0;
         
+        foreach ($this->question->getAnswerOptions()->getOptions() as $option) {
+            $this->max_score += $option->getScoringDefinition()->getPoints();
+        }
     }
     
     /**
@@ -225,7 +232,9 @@ class FormulaScoring extends AbstractScoring {
                 floatval($raw_variable[FormulaScoringVariable::VAR_MIN]),
                 floatval($raw_variable[FormulaScoringVariable::VAR_MAX]),
                 ilAsqHtmlPurifier::getInstance()->purify($raw_variable[FormulaScoringVariable::VAR_UNIT]),
-                floatval($raw_variable[FormulaScoringVariable::VAR_MULTIPLE_OF]));
+                empty($raw_variable[FormulaScoringVariable::VAR_MULTIPLE_OF]) ? 
+                    null: 
+                    floatval($raw_variable[FormulaScoringVariable::VAR_MULTIPLE_OF]));
         }
         
         return FormulaScoringConfiguration::create(ilAsqHtmlPurifier::getInstance()->purify($_POST[self::VAR_UNITS]),

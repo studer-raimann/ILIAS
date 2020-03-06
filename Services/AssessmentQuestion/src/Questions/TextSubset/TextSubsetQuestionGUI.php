@@ -4,7 +4,6 @@ namespace ILIAS\AssessmentQuestion\Questions\TextSubset;
 
 use ILIAS\AssessmentQuestion\DomainModel\QuestionPlayConfiguration;
 use ILIAS\AssessmentQuestion\UserInterface\Web\Form\QuestionFormGUI;
-use ilNumberInputGUI;
 
 /**
  * Class TextSubsetQuestionGUI
@@ -36,12 +35,6 @@ class TextSubsetQuestionGUI extends QuestionFormGUI {
         foreach (TextSubsetEditor::generateFields($play->getEditorConfiguration()) as $field) {
             $this->addItem($field);
         }
-        
-        $max_available_points = new ilNumberInputGUI($this->lang->txt('asq_label_max_points'));
-        $max_available_points->setDisabled(true);
-        $max_available_points->setValue(TextSubsetScoring::calculateMaxPoints($this->initial_question));
-        $max_available_points->setSize(2);
-        $this->addItem($max_available_points);
         
         foreach (TextSubsetScoring::generateFields($play->getScoringConfiguration()) as $field) {
             $this->addItem($field);

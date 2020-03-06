@@ -3,7 +3,6 @@
 namespace ILIAS\AssessmentQuestion\Questions\ErrorText;
 
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
-use ILIAS\AssessmentQuestion\DomainModel\AnswerScoreDto;
 use ILIAS\AssessmentQuestion\DomainModel\Question;
 use ILIAS\AssessmentQuestion\DomainModel\Answer\Answer;
 use ILIAS\AssessmentQuestion\DomainModel\Answer\Option\AnswerOptions;
@@ -23,17 +22,15 @@ use ilNumberInputGUI;
 class ErrorTextScoring extends AbstractScoring {
     const VAR_POINTS_WRONG = 'ets_points_wrong';
     
-    function score(Answer $answer) : AnswerScoreDto {
-        $reached_points = 0;
-        $max_points = 0;
+    function score(Answer $answer) : float {
+        $reached_points = 0.0;
         
-        $selected_words = $answer->getValue()->getSelectedWordIndexes();
+        $selected_words = $answer->getSelectedWordIndexes();
         $correct_words = [];
         
         foreach ($this->question->getAnswerOptions()->getOptions() as $option) {
             /** @var ErrorTextScoringDefinition $scoring_definition */
             $scoring_definition = $option->getScoringDefinition();
-            $max_points += $scoring_definition->getPoints();
             
             if (in_array($scoring_definition->getWrongWordIndex(), $selected_words)) {           
                 //multiple words '(( ))'
@@ -69,11 +66,22 @@ class ErrorTextScoring extends AbstractScoring {
         //deduct wrong selections
         $reached_points -= count(array_diff($selected_words, $correct_words));
         
-        return $this->createScoreDto($answer, $max_points, $reached_points, $this->getAnswerFeedbackType($reached_points,$max_points));
+        return $reached_points;
+    }
+    
+    protected function calculateMaxScore()
+    {
+        $this->max_score = 0.0;
+        
+        foreach ($this->question->getAnswerOptions()->getOptions() as $option) {
+            /** @var ErrorTextScoringDefinition $scoring_definition */
+            $scoring_definition = $option->getScoringDefinition();
+            $this->max_score += $scoring_definition->getPoints();
+        }
     }
     
     public function getBestAnswer() : Answer {
-        $answers = [];
+        $selected_word_indexes = [];
         
         foreach ($this->question->getAnswerOptions()->getOptions() as $option) {
             /** @var ErrorTextScoringDefinition $scoring_definition */
@@ -81,11 +89,11 @@ class ErrorTextScoring extends AbstractScoring {
             
             for ($i = 0; $i < $scoring_definition->getWrongWordLength(); $i++) {
                 
-                $answers[] = $scoring_definition->getWrongWordIndex() + $i;
+                $selected_word_indexes[] = $scoring_definition->getWrongWordIndex() + $i;
             }
         }
         
-        return new Answer(0, $this->question->getId(), '','',0, json_encode($answers));
+        return ErrorTextAnswer::create($selected_word_indexes);
     }
     
     /**
@@ -115,7 +123,7 @@ class ErrorTextScoring extends AbstractScoring {
      * @return ?AbstractConfiguration|null
      */
     public static function readConfig() : ?AbstractConfiguration {
-        return ErrorTextScoringConfiguration::create(empty($_POST[self::VAR_POINTS_WRONG]) ? null : intval($_POST[self::VAR_POINTS_WRONG]));
+        return ErrorTextScoringConfiguration::create(empty($_POST[self::VAR_POINTS_WRONG]) ? null : floatval($_POST[self::VAR_POINTS_WRONG]));
     }
     
     public static function isComplete(Question $question): bool

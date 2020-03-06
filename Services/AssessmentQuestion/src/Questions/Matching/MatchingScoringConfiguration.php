@@ -16,17 +16,17 @@ use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
  */
 class MatchingScoringConfiguration extends AbstractConfiguration {
     /**
-     * @var ?int
+     * @var ?float
      */
     protected $wrong_deduction;
     
-    public static function create(?int $wrong_deduction = null) : MatchingScoringConfiguration {
+    public static function create(?float $wrong_deduction = null) : MatchingScoringConfiguration {
         $object = new MatchingScoringConfiguration();
         $object->wrong_deduction = $wrong_deduction;
         return $object;
     }
         
-    public function getWrongDeduction(): ?int {
+    public function getWrongDeduction(): ?float {
         return $this->wrong_deduction;
     }
 }

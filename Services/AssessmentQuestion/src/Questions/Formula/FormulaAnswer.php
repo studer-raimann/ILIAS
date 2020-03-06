@@ -2,7 +2,7 @@
 
 namespace ILIAS\AssessmentQuestion\Questions\Formula;
 
-use srag\CQRS\Aggregate\AbstractValueObject;
+use ILIAS\AssessmentQuestion\DomainModel\Answer\Answer;
 
 /**
  * Class FormulaAnswer
@@ -14,7 +14,7 @@ use srag\CQRS\Aggregate\AbstractValueObject;
  * @author  Martin Studer <ms@studer-raimann.ch>
  * @author  Theodor Truffer <tt@studer-raimann.ch>
  */
-class FormulaAnswer extends AbstractValueObject {
+class FormulaAnswer extends Answer {
     /**
      * @var ?array
      */

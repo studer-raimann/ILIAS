@@ -4,7 +4,6 @@ namespace ILIAS\AssessmentQuestion\Questions\MultipleChoice;
 
 
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
-use srag\CQRS\Aggregate\AbstractValueObject;
 
 /**
  * Class MultipleChoiceScoringConfiguration

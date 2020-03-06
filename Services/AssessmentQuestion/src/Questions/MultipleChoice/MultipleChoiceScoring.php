@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace ILIAS\AssessmentQuestion\Questions\MultipleChoice;
 
-use ILIAS\AssessmentQuestion\DomainModel\AnswerScoreDto;
 use ILIAS\AssessmentQuestion\DomainModel\Question;
 use ILIAS\AssessmentQuestion\DomainModel\Answer\Answer;
 use ILIAS\AssessmentQuestion\DomainModel\Answer\Option\AnswerOption;
@@ -22,26 +21,12 @@ use ILIAS\AssessmentQuestion\DomainModel\Scoring\AbstractScoring;
 class MultipleChoiceScoring extends AbstractScoring
 {
 
-    function score(Answer $answer): AnswerScoreDto
-    {
-        $reached_points = $this->scoreAnswer($answer);
-
-        $max_points = $this->scoreAnswer($this->getBestAnswer());
-
-        return $this->createScoreDto($answer, $max_points, $reached_points, $this->getAnswerFeedbackType($reached_points,$max_points));
-    }
-
-    /**
-     *
-     * @param
-     *            answer
-     */
-    private function scoreAnswer($answer)
+    function score(Answer $answer): float
     {
         $reached_points = 0;
-
-        $selected_options = $answer->getValue()->getSelectedIds();
-
+        
+        $selected_options = $answer->getSelectedIds();
+        
         /** @var AnswerOption $answer_option */
         foreach ($this->question->getAnswerOptions()->getOptions() as $answer_option) {
             if (in_array($answer_option->getOptionId(), $selected_options)) {
@@ -53,6 +38,11 @@ class MultipleChoiceScoring extends AbstractScoring
         return $reached_points;
     }
 
+    protected function calculateMaxScore()
+    {
+        $this->max_score = $this->score($this->getBestAnswer());
+    }
+    
     public function getBestAnswer(): Answer
     {
         $answers = [];
@@ -73,7 +63,7 @@ class MultipleChoiceScoring extends AbstractScoring
             ->getMaxAnswers();
         $answers = array_slice($answers, 0, $length);
 
-        return new Answer(0, $this->question->getId(), '',0,0, MultipleChoiceAnswer::create($answers));
+        return MultipleChoiceAnswer::create($answers);
     }
 
     public static function readConfig()

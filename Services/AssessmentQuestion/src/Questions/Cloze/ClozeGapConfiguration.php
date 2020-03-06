@@ -14,8 +14,10 @@ use srag\CQRS\Aggregate\AbstractValueObject;
  * @author  Martin Studer <ms@studer-raimann.ch>
  * @author  Theodor Truffer <tt@studer-raimann.ch>
  */
-class ClozeGapConfiguration extends AbstractValueObject {
+abstract class ClozeGapConfiguration extends AbstractValueObject {
     const TYPE_TEXT = 'clz_text';
     const TYPE_NUMBER = 'clz_number';
     const TYPE_DROPDOWN = 'clz_dropdown';
+    
+    abstract function getMaxPoints(): float;
 }

@@ -46,4 +46,18 @@ class SelectGapConfiguration extends ClozeGapConfiguration {
         
         return $var_array;
     }
+    
+    public function getMaxPoints(): float
+    {
+        $gap_max = 0;
+        
+        /** @var $gap ClozeGapItem */
+        foreach($this->items as $gap_item) {
+            if ($gap_item->getPoints() > $gap_max) {
+                $gap_max = $gap_item->getPoints();
+            }
+        }
+        
+        return $gap_max;
+    }
 }

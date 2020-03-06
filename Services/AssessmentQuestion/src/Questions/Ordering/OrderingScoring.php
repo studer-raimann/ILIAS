@@ -3,7 +3,6 @@
 namespace ILIAS\AssessmentQuestion\Questions\Ordering;
 
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
-use ILIAS\AssessmentQuestion\DomainModel\AnswerScoreDto;
 use ILIAS\AssessmentQuestion\DomainModel\Question;
 use ILIAS\AssessmentQuestion\DomainModel\Answer\Answer;
 use ILIAS\AssessmentQuestion\DomainModel\Answer\Option\AnswerOptions;
@@ -27,31 +26,34 @@ class OrderingScoring extends AbstractScoring
     const VAR_POINTS = 'os_points';
 
 
-    function score(Answer $answer) : AnswerScoreDto
+    function score(Answer $answer) : float
     {
-        $reached_points = 0; 
-        $max_points = 0;
+        $reached_points = 0.0; 
 
         /** @var OrderingScoringConfiguration $scoring_conf */
         $scoring_conf = $this->question->getPlayConfiguration()->getScoringConfiguration();
 
-        $answers = $answer->getValue()->getSelectedOrder();
+        $answers = $answer->getSelectedOrder();
 
         $reached_points = $scoring_conf->getPoints();
-        $max_points = $scoring_conf->getPoints();
+
         /* To be valid answers need to be in the same order as in the question definition
          * what means that the correct answer will just be an increasing amount of numbers
          * so if the number should get smaller it is an error.
          */
         for ($i = 0; $i < count($answers) - 1; $i++) {
             if ($answers[$i] > $answers[$i + 1]) {
-                $reached_points = 0;
+                $reached_points = 0.0;
             }
         }
         
-        return $this->createScoreDto($answer, $max_points, $reached_points, $this->getAnswerFeedbackType($reached_points,$max_points));
+        return $reached_points;
     }
 
+    protected function calculateMaxScore()
+    {
+        $this->max_score = $this->question->getPlayConfiguration()->getScoringConfiguration()->getPoints();
+    }
 
     public function getBestAnswer() : Answer
     {
@@ -61,7 +63,7 @@ class OrderingScoring extends AbstractScoring
             $answers[] = $i;
         }
 
-        return new Answer(0, $this->question->getId(), '', '', 0, json_encode($answers));
+        return OrderingAnswer::create($answers);
     }
 
 
@@ -93,7 +95,7 @@ class OrderingScoring extends AbstractScoring
     public static function readConfig()
     {
         return OrderingScoringConfiguration::create(
-            intval($_POST[self::VAR_POINTS]));
+            floatval($_POST[self::VAR_POINTS]));
     }
 
 

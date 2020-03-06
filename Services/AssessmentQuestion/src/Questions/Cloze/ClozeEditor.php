@@ -89,7 +89,7 @@ class ClozeEditor extends AbstractEditor {
                     TextGapConfiguration::Create(
                         array_map(function ($raw_item) {
                             return ClozeGapItem::create($raw_item[ClozeGapItem::VAR_TEXT], 
-                                                        intval($raw_item[ClozeGapItem::VAR_POINTS]));
+                                                        floatval($raw_item[ClozeGapItem::VAR_POINTS]));
                         }, AsqTableInput::readValuesFromPost($i . self::VAR_GAP_ITEMS, self::getClozeGapItemFieldDefinitions())),
                         intval($_POST[$i . self::VAR_GAP_SIZE]),
                         intval($_POST[$i . self::VAR_TEXT_METHOD]));
@@ -97,7 +97,7 @@ class ClozeEditor extends AbstractEditor {
                 $gap_configs[] = 
                     SelectGapConfiguration::Create(
                         array_map(function ($raw_item) {
-                            return ClozeGapItem::create($raw_item[ClozeGapItem::VAR_TEXT], intval($raw_item[ClozeGapItem::VAR_POINTS]));
+                            return ClozeGapItem::create($raw_item[ClozeGapItem::VAR_TEXT], floatval($raw_item[ClozeGapItem::VAR_POINTS]));
                         }, AsqTableInput::readValuesFromPost($i . self::VAR_GAP_ITEMS, self::getClozeGapItemFieldDefinitions())));
             }
             else if ($_POST[$i . self::VAR_GAP_TYPE] == ClozeGapConfiguration::TYPE_NUMBER) {
@@ -106,7 +106,7 @@ class ClozeEditor extends AbstractEditor {
                     floatval($_POST[$i . self::VAR_GAP_VALUE]), 
                     floatval($_POST[$i . self::VAR_GAP_UPPER]), 
                     floatval($_POST[$i . self::VAR_GAP_LOWER]), 
-                    intval($_POST[$i . self::VAR_GAP_POINTS]),
+                    floatval($_POST[$i . self::VAR_GAP_POINTS]),
                     intval($_POST[$i . self::VAR_GAP_SIZE]));
             }
             $i += 1;

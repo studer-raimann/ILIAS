@@ -23,11 +23,11 @@ class MultipleChoiceScoringDefinition extends AnswerDefinition {
 	const VAR_MCSD_UNSELECTED = 'mcsd_unselected';
 
 	/**
-	 * @var int
+	 * @var float
 	 */
 	protected $points_selected;
 	/**
-	 * @var int
+	 * @var float
 	 */
 	protected $points_unselected;
 
@@ -38,7 +38,7 @@ class MultipleChoiceScoringDefinition extends AnswerDefinition {
 	 * @param int $points_selected
 	 * @param int $points_unselected
 	 */
-	public function __construct(int $points_selected = 0, int $points_unselected = 0)
+	public function __construct(float $points_selected = 0.0, float $points_unselected = 0.0)
 	{
 		$this->points_selected = $points_selected;
 		$this->points_unselected = $points_unselected;
@@ -48,14 +48,14 @@ class MultipleChoiceScoringDefinition extends AnswerDefinition {
 	/**
 	 * @return int
 	 */
-	public function getPointsSelected(): int {
+	public function getPointsSelected(): float {
 		return $this->points_selected;
 	}
 
 	/**
 	 * @return int
 	 */
-	public function getPointsUnselected(): int {
+	public function getPointsUnselected(): float {
 		return $this->points_unselected;
 	}
 
@@ -80,8 +80,8 @@ class MultipleChoiceScoringDefinition extends AnswerDefinition {
 
 	public static function getValueFromPost(string $index) {
 		return new MultipleChoiceScoringDefinition(
-		    intval($_POST[self::getPostKey($index, self::VAR_MCSD_SELECTED)]),
-		    intval($_POST[self::getPostKey($index, self::VAR_MCSD_UNSELECTED)])
+		    floatval($_POST[self::getPostKey($index, self::VAR_MCSD_SELECTED)]),
+		    floatval($_POST[self::getPostKey($index, self::VAR_MCSD_UNSELECTED)])
 		);
 	}
 

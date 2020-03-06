@@ -3,7 +3,6 @@
 namespace ILIAS\AssessmentQuestion\Questions\Formula;
 
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
-use srag\CQRS\Aggregate\AbstractValueObject;
 
 /**
  * Class KprimChoiceScoringConfiguration
@@ -110,35 +109,5 @@ class FormulaScoringConfiguration extends AbstractConfiguration {
         }
         
         return $var_array;
-    }
-    
-    public function equals(AbstractValueObject $other): bool
-    {
-        /** @var FormulaScoringConfiguration $other */
-        return get_class($this) === get_class($other) &&
-               $this->units === $other->units &&
-               $this->precision === $other->precision &&
-               abs($this->tolerance - $other->tolerance) < PHP_FLOAT_EPSILON &&
-               $this->result_type === $other->result_type &&
-               $this->variablesMatch($other->getVariables());
-    }
-    
-    /**
-     * @param FormulaScoringVariable[] $other_variables
-     * @return bool
-     */
-    private function variablesMatch(array $other_variables) : bool {
-        if (count($this->variables) !== count($other_variables)) {
-            return false;
-        }
-        
-        $i = 0;
-        for ($i; i < count($this->variables); $i += 1) {
-            if($this->variables[i].equals($other_variables[i])) {
-                return false;
-            }
-        }
-        
-        return true;
     }
 }

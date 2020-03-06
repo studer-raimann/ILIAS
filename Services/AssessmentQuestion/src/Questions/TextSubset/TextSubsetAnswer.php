@@ -1,7 +1,7 @@
 <?php
 
 namespace ILIAS\AssessmentQuestion\Questions\TextSubset;
-use srag\CQRS\Aggregate\AbstractValueObject;
+use ILIAS\AssessmentQuestion\DomainModel\Answer\Answer;
 
 /**
  * Class TextSubsetAnswer
@@ -13,7 +13,7 @@ use srag\CQRS\Aggregate\AbstractValueObject;
  * @author  Martin Studer <ms@studer-raimann.ch>
  * @author  Theodor Truffer <tt@studer-raimann.ch>
  */
-class TextSubsetAnswer extends AbstractValueObject {
+class TextSubsetAnswer extends Answer {
     /**
      * @var ?int[]
      */

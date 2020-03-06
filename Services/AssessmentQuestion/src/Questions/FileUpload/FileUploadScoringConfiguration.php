@@ -3,7 +3,6 @@
 namespace ILIAS\AssessmentQuestion\Questions\FileUpload;
 
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
-use srag\CQRS\Aggregate\AbstractValueObject;
 
 /**
  * Class FileUploadScoringConfiguration
@@ -17,7 +16,7 @@ use srag\CQRS\Aggregate\AbstractValueObject;
  */
 class FileUploadScoringConfiguration extends AbstractConfiguration {
     /**
-     * @var ?int
+     * @var ?float
      */
     protected $points;
     
@@ -31,7 +30,7 @@ class FileUploadScoringConfiguration extends AbstractConfiguration {
      * @param bool $completed_by_submition
      * @return FileUploadScoringConfiguration
      */
-    static function create(?int $points = null, ?bool $completed_by_submition = null) : FileUploadScoringConfiguration
+    static function create(?float $points = null, ?bool $completed_by_submition = null) : FileUploadScoringConfiguration
     {
         $object = new FileUploadScoringConfiguration();
         $object->points = $points;
@@ -42,7 +41,7 @@ class FileUploadScoringConfiguration extends AbstractConfiguration {
     /**
      * @return int
      */
-    public function getPoints() : ?int {
+    public function getPoints() : ?float {
         return $this->points;
     }
     
@@ -51,13 +50,5 @@ class FileUploadScoringConfiguration extends AbstractConfiguration {
      */
     public function isCompletedBySubmition() : ?bool {
         return $this->completed_by_submition;
-    }
-    
-    public function equals(AbstractValueObject $other): bool
-    {
-        /** @var FileUploadScoringConfiguration $other */
-        return get_class($this) === get_class($other) &&
-               $this->points === $other->points &&
-               $this->completed_by_submition === $other->completed_by_submition;
     }
 }

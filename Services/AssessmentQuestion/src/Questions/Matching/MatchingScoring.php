@@ -3,7 +3,6 @@
 namespace ILIAS\AssessmentQuestion\Questions\Matching;
 
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
-use ILIAS\AssessmentQuestion\DomainModel\AnswerScoreDto;
 use ILIAS\AssessmentQuestion\DomainModel\Question;
 use ILIAS\AssessmentQuestion\DomainModel\Answer\Answer;
 use ILIAS\AssessmentQuestion\DomainModel\Answer\Option\AnswerOptions;
@@ -25,22 +24,19 @@ class MatchingScoring extends AbstractScoring
 {
     const VAR_WRONG_DEDUCTION = 'ms_wrong_deduction';
     
-    public function score(Answer $answer): AnswerScoreDto
+    public function score(Answer $answer): float
     {
         $matches = [];
-        $max_score = 0;
         $wrong_deduction = $this->question->getPlayConfiguration()->getScoringConfiguration()->getWrongDeduction();
         
         foreach ($this->question->getPlayConfiguration()->getEditorConfiguration()->getMatches() as $match) {
             $key = $match[MatchingEditor::VAR_MATCH_DEFINITION] . '-' . $match[MatchingEditor::VAR_MATCH_TERM];
-            $value = intval($match[MatchingEditor::VAR_MATCH_POINTS]);
-            $max_score += $value;
-            $matches[$key] = $value;
+            $matches[$key] = intval($match[MatchingEditor::VAR_MATCH_POINTS]);
         };
         
         $score = 0;
         
-        foreach ($answer->getValue()->getMatches() as $given_match) {
+        foreach ($answer->getMatches() as $given_match) {
             if(array_key_exists($given_match, $matches)) {
                 $score += $matches[$given_match];
             }
@@ -53,9 +49,28 @@ class MatchingScoring extends AbstractScoring
             $score = 0;
         }
         
-        return $this->createScoreDto($answer, $max_score, $score, $this->getAnswerFeedbackType($score,$max_score));
+        return $score;
     }
 
+    public function getBestAnswer(): Answer
+    {
+        $matches = [];
+        
+        foreach ($this->question->getPlayConfiguration()->getEditorConfiguration()->getMatches() as $match) {
+            $matches[] = $match[MatchingEditor::VAR_MATCH_DEFINITION] . '-' . $match[MatchingEditor::VAR_MATCH_TERM];
+        };
+        
+        return new MatchingAnswer($matches);
+    }
+    
+    protected function calculateMaxScore()
+    {
+        $this->max_score = 0;
+        
+        foreach ($this->question->getPlayConfiguration()->getEditorConfiguration()->getMatches() as $match) {
+            $this->max_score += intval($match[MatchingEditor::VAR_MATCH_POINTS]);
+        };        
+    }
     
     /**
      * @return array|null
@@ -78,8 +93,7 @@ class MatchingScoring extends AbstractScoring
     
     public static function readConfig()
     {
-        return MatchingScoringConfiguration::create(
-            intval($_POST[self::VAR_WRONG_DEDUCTION]));
+        return MatchingScoringConfiguration::create(empty($_POST[self::VAR_WRONG_DEDUCTION]) ? null : floatval($_POST[self::VAR_WRONG_DEDUCTION]));
     }  
     
     /**

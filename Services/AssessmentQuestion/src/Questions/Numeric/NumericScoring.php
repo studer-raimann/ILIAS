@@ -3,7 +3,6 @@
 namespace ILIAS\AssessmentQuestion\Questions\Numeric;
 
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
-use ILIAS\AssessmentQuestion\DomainModel\AnswerScoreDto;
 use ILIAS\AssessmentQuestion\DomainModel\Question;
 use ILIAS\AssessmentQuestion\DomainModel\Answer\Answer;
 use ILIAS\AssessmentQuestion\DomainModel\Answer\Option\AnswerOptions;
@@ -28,32 +27,35 @@ class NumericScoring extends AbstractScoring
     const VAR_LOWER_BOUND = 'ns_lower_bound';
     const VAR_UPPER_BOUND = 'ns_upper_bound';
 
-    function score(Answer $answer) : AnswerScoreDto
+    function score(Answer $answer) : float
     {
         $reached_points = 0;
-        $max_points = 0;
 
         /** @var NumericScoringConfiguration $scoring_conf */
         $scoring_conf = $this->question->getPlayConfiguration()->getScoringConfiguration();
 
-        $float_answer = $answer->getValue()->getValue();
+        $float_answer = $answer->getValue();
 
-        $max_points = $scoring_conf->getPoints();
         if ($float_answer !== null &&
             $scoring_conf->getLowerBound() <= $float_answer &&
             $scoring_conf->getUpperBound() >= $float_answer) {
             $reached_points = $scoring_conf->getPoints();
         }
 
-        return $this->createScoreDto($answer, $max_points, $reached_points, $this->getAnswerFeedbackType($reached_points,$max_points));
+        return $reached_points;
     }
 
+    protected function calculateMaxScore()
+    {
+        $this->max_score = $this->question->getPlayConfiguration()->getScoringConfiguration()->getPoints();
+    }
+    
     public function getBestAnswer(): Answer
     {
         /** @var NumericScoringConfiguration $conf */
         $conf = $this->question->getPlayConfiguration()->getScoringConfiguration();
         
-        return new Answer(0, $this->question->getId(), '','',0,  (string)(($conf->getUpperBound() + $conf->getLowerBound()) / 2));
+        return NumericAnswer::create(($conf->getUpperBound() + $conf->getLowerBound()) / 2);
     }
     
     /**

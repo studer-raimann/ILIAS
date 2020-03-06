@@ -48,6 +48,8 @@ class FormulaQuestionGUI extends QuestionFormGUI {
         $question_text->setUseRte(false);
         
         $this->option_form->setInfo($DIC->language()->txt('asq_info_results'));
+        
+        $DIC->ui()->mainTemplate()->addJavaScript("./Services/AssessmentQuestion/src/Questions/Formula/FormulaAuthoring.js");
     }
     
     private function getParseButton() : string {

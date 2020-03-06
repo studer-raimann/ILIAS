@@ -2,7 +2,7 @@
 
 namespace ILIAS\AssessmentQuestion\Questions\Ordering;
 
-use srag\CQRS\Aggregate\AbstractValueObject;
+use ILIAS\AssessmentQuestion\DomainModel\Answer\Answer;
 
 /**
  * Class OrderingAnswer
@@ -14,7 +14,7 @@ use srag\CQRS\Aggregate\AbstractValueObject;
  * @author  Martin Studer <ms@studer-raimann.ch>
  * @author  Theodor Truffer <tt@studer-raimann.ch>
  */
-class OrderingAnswer extends AbstractValueObject {
+class OrderingAnswer extends Answer {
     /**
      * @var ?int[]
      */

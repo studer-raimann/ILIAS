@@ -34,7 +34,7 @@ class FormulaScoringDefinition extends AnswerDefinition {
     protected $unit;
     
     /**
-     * @var ?int
+     * @var ?float
      */
     protected $points;
     
@@ -46,7 +46,7 @@ class FormulaScoringDefinition extends AnswerDefinition {
      * @param float $multiple_of
      * @param int $points
      */
-    public function __construct(string $formula, string $unit, int $points) {
+    public function __construct(string $formula, string $unit, float $points) {
         $this->formula = $formula;
         $this->unit = $unit;
         $this->points = $points;
@@ -71,7 +71,7 @@ class FormulaScoringDefinition extends AnswerDefinition {
     }
 
     /**
-     * @return int
+     * @return float
      */
     public function getPoints()
     {
@@ -115,7 +115,7 @@ class FormulaScoringDefinition extends AnswerDefinition {
     {          
         return new FormulaScoringDefinition(ilAsqHtmlPurifier::getInstance()->purify($_POST[self::getPostKey($index, self::VAR_FORMULA)]),
             ilAsqHtmlPurifier::getInstance()->purify($_POST[self::getPostKey($index, self::VAR_UNIT)]), 
-            intval($_POST[self::getPostKey($index, self::VAR_POINTS)]));            
+            floatval($_POST[self::getPostKey($index, self::VAR_POINTS)]));            
     }
 
     public static function deserialize(stdClass $data)

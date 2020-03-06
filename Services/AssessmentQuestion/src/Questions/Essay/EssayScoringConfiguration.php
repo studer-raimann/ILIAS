@@ -3,6 +3,7 @@
 namespace ILIAS\AssessmentQuestion\Questions\Essay;
 
 use ILIAS\AssessmentQuestion\DomainModel\AbstractConfiguration;
+use ILIAS\AssessmentQuestion\DomainModel\Scoring\TextScoring;
 
 /**
  * Class EssayScoringConfiguration
@@ -26,13 +27,13 @@ class EssayScoringConfiguration extends AbstractConfiguration {
     protected $scoring_mode;
     
     /**
-     * @var ?int
+     * @var ?float
      */
     protected $points;
     
-    public static function create(int $matching_mode = EssayScoring::TM_CASE_INSENSITIVE,
+    public static function create(int $matching_mode = TextScoring::TM_CASE_INSENSITIVE,
                                   int $scoring_mode = EssayScoring::SCORING_MANUAL,
-                                  ?int $points = null) : EssayScoringConfiguration {
+                                  ?float $points = null) : EssayScoringConfiguration {
         
         $object = new EssayScoringConfiguration();
         

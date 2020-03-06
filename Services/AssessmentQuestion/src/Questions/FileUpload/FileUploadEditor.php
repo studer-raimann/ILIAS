@@ -40,7 +40,7 @@ class FileUploadEditor extends AbstractEditor {
     private $configuration;
     
     public function __construct(QuestionDto $question) {
-        $this->selected_answers = [];
+        $this->files = [];
         $this->configuration = $question->getPlayConfiguration()->getEditorConfiguration();
         
         parent::__construct($question);
@@ -73,7 +73,7 @@ class FileUploadEditor extends AbstractEditor {
     {
         global $DIC;
         
-        $this->answer = FileUploadAnswer::create(json_decode(html_entity_decode($_POST[$this->getPostVar() . self::VAR_CURRENT_ANSWER]), true));
+        $this->files = json_decode(html_entity_decode($_POST[$this->getPostVar() . self::VAR_CURRENT_ANSWER]), true);
         
         if ($DIC->upload()->hasUploads() && !$DIC->upload()->hasBeenProcessed()) {
             $this->UploadNewFile();
@@ -81,7 +81,7 @@ class FileUploadEditor extends AbstractEditor {
         
         $this->deleteOldFiles();
         
-        return $this->answer;
+        return FileUploadAnswer::create($this->files);
     }
     
     private function UploadNewFile() {
@@ -104,7 +104,7 @@ class FileUploadEditor extends AbstractEditor {
                     Location::WEB,
                     $filename);
                 
-                $this->selected_answers[$pathinfo['basename']] = ILIAS_HTTP_PATH . '/' .
+                $this->files[$pathinfo['basename']] = ILIAS_HTTP_PATH . '/' .
                                             ILIAS_WEB_DIR . '/' .
                                             CLIENT_ID .  '/' .
                                             $folder .
@@ -114,12 +114,12 @@ class FileUploadEditor extends AbstractEditor {
     }
 
     private function deleteOldFiles() {
-        if(!empty($this->selected_answers)) {
-            $answers = $this->selected_answers;
+        if(!empty($this->files)) {
+            $answers = $this->files;
             
-            foreach ($answers as $key => $value) {
+            foreach (array_keys($answers) as $key) {
                 if (array_key_exists($this->getFileKey($key), $_POST)) {
-                    unset($this->selected_answers[$key]);
+                    unset($this->files[$key]);
                 }
             }
         }
@@ -157,7 +157,7 @@ class FileUploadEditor extends AbstractEditor {
                                   $this->configuration->getMaximumSize() ?? ini_get('upload_max_filesize')));
         $tpl->setVariable('POST_VAR', $this->getPostVar());
         $tpl->setVariable('CURRENT_ANSWER_NAME', $this->getPostVar() . self::VAR_CURRENT_ANSWER);
-        $tpl->setVariable('CURRENT_ANSWER_VALUE', htmlspecialchars(json_encode($this->selected_answers)));
+        $tpl->setVariable('CURRENT_ANSWER_VALUE', htmlspecialchars(json_encode(is_null($this->answer) ? null : $this->answer->getFiles())));
         
         if (!empty($this->configuration->getAllowedExtensions())) {
             $tpl->setCurrentBlock('allowed_extensions');
@@ -168,7 +168,7 @@ class FileUploadEditor extends AbstractEditor {
             
         }
         
-        if (count($this->answer->getFiles()) > 0) {
+        if (!is_null($this->answer) && count($this->answer->getFiles()) > 0) {
             $tpl->setCurrentBlock('files');
 
             foreach ($this->answer->getFiles() as $key => $value) {
