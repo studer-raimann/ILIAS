@@ -1,3 +1,6 @@
 [submodule "libs/ilias/CQRS"]
 	path = libs/ilias/CQRS
 	url = ../Libraries/CQRS.git
+[submodule "Customizing/global/plugins/Services/Repository/RepositoryObject/AssessmentTest"]
+	path = Customizing/global/plugins/Services/Repository/RepositoryObject/AssessmentTest
+	url = ../Plugins/assessmenttest.git
