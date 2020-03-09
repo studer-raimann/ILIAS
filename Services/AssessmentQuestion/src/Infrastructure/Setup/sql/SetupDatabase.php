@@ -33,10 +33,6 @@ class SetupDatabase {
         QuestionEventStoreAr::updateDB();
 	    QuestionListItemAr::updateDB();
 	    QuestionAr::updateDB();
-        TestResultAr::updateDB();
-
-
-
 
 	    //Migration
         //Migrate Contentpage Definition (here for the implementation the migration)
