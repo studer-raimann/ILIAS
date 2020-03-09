@@ -259,7 +259,8 @@ class ilSCORM2004ScoGUI extends ilSCORM2004NodeGUI
         $tbl->setTitle("Questions for " . $this->node_object->getTitle());
         $tbl->setHeaderNames(array("Question","Page"));
         $cols = array("question","page");
-        $tbl->setHeaderVars($cols, $header_params);
+        //		$tbl->setHeaderVars($cols, $header_params);
+        $tbl->setHeaderVars($cols, 0);
         $tbl->setColumnWidth(array("50%", "50%"));
         $tbl->disable("sort");
         $tbl->disable("footer");
@@ -267,6 +268,7 @@ class ilSCORM2004ScoGUI extends ilSCORM2004NodeGUI
         $tree = new ilTree($this->slm_object->getId());
         $tree->setTableNames('sahs_sc13_tree', 'sahs_sc13_tree_node');
         $tree->setTreeTablePK("slm_id");
+        $i = 0;
 
         foreach ($tree->getSubTree($tree->getNodeData($this->node_object->getId()), true, 'page') as $page) {
             // get question ids
@@ -423,7 +425,7 @@ class ilSCORM2004ScoGUI extends ilSCORM2004NodeGUI
         $ilCtrl = $this->ctrl;
         
         // init main template
-        $tpl = new ilGlobalTemplate("tpl.main.html", true, true);
+        $tpl = new ilGlobalTemplate("tpl.legacy_main.html", true, true, "Modules/Scorm2004");
         include_once("./Services/Style/Content/classes/class.ilObjStyleSheet.php");
         $tpl->setVariable("LOCATION_STYLESHEET", ilUtil::getStyleSheetLocation());
         $tpl->setBodyClass("");
@@ -436,10 +438,13 @@ class ilSCORM2004ScoGUI extends ilSCORM2004NodeGUI
         
         // get javascript
         include_once("./Services/jQuery/classes/class.iljQueryUtil.php");
-        iljQueryUtil::initjQuery();
-        iljQueryUtil::initjQueryUI();
+        iljQueryUtil::initjQuery($tpl);
+        iljQueryUtil::initjQueryUI($tpl);
         $tpl->addJavaScript("./Modules/Scorm2004/scripts/questions/pure.js");
         $tpl->addJavaScript("./Modules/Scorm2004/scripts/pager.js");
+        $tpl->addJavaScript("./Services/COPage/js/ilCOPagePres.js");
+        $tpl->addJavascript(iljQueryUtil::getLocalMaphilightPath());
+        $tpl->addCss("./Modules/Test/templates/default/ta.css");
 
         $tpl->addOnLoadCode("pager.Init();");
         
@@ -515,6 +520,7 @@ class ilSCORM2004ScoGUI extends ilSCORM2004NodeGUI
         
         //inline JS
         $output .='<script type="text/javascript" src="./Modules/Scorm2004/scripts/questions/question_handling.js"></script>';
+        $tpl->addOnLoadCode("ilias.questions.refresh_lang();");
         $tpl->setVariable("CONTENT", $output);
         $tpl->printToStdout();
         exit;
@@ -582,6 +588,7 @@ class ilSCORM2004ScoGUI extends ilSCORM2004NodeGUI
         $data = array();
         foreach ($export_files as $exp_file) {
             $filetype = $exp_file['type'];
+            $public_str = "";
             //	$public_str = ($exp_file["file"] == $this->object->getPublicExportFile($filetype))
             //		? " <b>(".$this->lng->txt("public").")<b>"
             //		: "";
@@ -665,6 +672,7 @@ class ilSCORM2004ScoGUI extends ilSCORM2004NodeGUI
         foreach ($export_files as $exp_file) {
             foreach ($_POST['file'] as $delete_file) {
                 if (strcmp($delete_file, $exp_file['file']) == 0) {
+                    $public_str = "";
                     //		$public_str = ($exp_file["file"] == $this->object->getPublicExportFile($exp_file["type"]))
                     //			? " <b>(".$this->lng->txt("public").")<b>"
                     //			: "";
@@ -716,6 +724,7 @@ class ilSCORM2004ScoGUI extends ilSCORM2004NodeGUI
         $tree = new ilTree($this->slm_object->getId());
         $tree->setTableNames('sahs_sc13_tree', 'sahs_sc13_tree_node');
         $tree->setTreeTablePK("slm_id");
+        $i = 0;
         foreach ($tree->getSubTree($tree->getNodeData($this->node_object->getId()), true, 'page') as $page) {
             $page_obj = new ilSCORM2004Page($page["obj_id"]);
             $page_obj->buildDom();

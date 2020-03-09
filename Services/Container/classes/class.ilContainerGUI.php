@@ -419,7 +419,7 @@ class ilContainerGUI extends ilObjectGUI implements ilDesktopItemHandling
         $ilSetting = $this->settings;
         $ilUser = $this->user;
         
-        if (!$ilSetting->get("enable_cat_page_edit")) {
+        if (!$ilSetting->get("enable_cat_page_edit") || $this->object->filteredSubtree()) {
             return;
         }
         
@@ -560,7 +560,11 @@ class ilContainerGUI extends ilObjectGUI implements ilDesktopItemHandling
      */
     public function getContentGUI()
     {
-        switch ($this->object->getViewMode()) {
+        $view_mode = $this->object->getViewMode();
+        if ($this->object->filteredSubtree()) {
+            $view_mode = ilContainer::VIEW_SIMPLE;
+        }
+        switch ($view_mode) {
             // all items in one block
             case ilContainer::VIEW_SIMPLE:
                 include_once("./Services/Container/classes/class.ilContainerSimpleContentGUI.php");
@@ -3063,6 +3067,7 @@ class ilContainerGUI extends ilObjectGUI implements ilDesktopItemHandling
      */
     protected function showPasswordInstructionObject($a_init = true)
     {
+        global $DIC;
         $tpl = $this->tpl;
         $ilToolbar = $this->toolbar;
         
@@ -3071,16 +3076,13 @@ class ilContainerGUI extends ilObjectGUI implements ilDesktopItemHandling
             $this->initFormPasswordInstruction();
         }
         
-        include_once('Services/WebDAV/classes/class.ilWebDAVUtil.php');
-        $dav_util = ilWebDAVUtil::getInstance();
-        $ilToolbar->addButton(
-            $this->lng->txt('mount_webfolder'),
-            $dav_util->getMountURI($this->object->getRefId()),
-            '_blank',
-            '',
-            $dav_util->getFolderURI($this->object->getRefId())
-        );
+        $uri_builder = new ilWebDAVUriBuilder($DIC->http()->request());
+        $href = $uri_builder->getUriToMountInstructionModalByRef($this->object->getRefId());
 
+        $btn = ilButton::getInstance();
+        $btn->setCaption('mount_webfolder');
+        $btn->setOnClick("triggerWebDAVModal('$href')");
+        $ilToolbar->addButtonInstance($btn);
 
         $tpl->setContent($this->form->getHTML());
     }

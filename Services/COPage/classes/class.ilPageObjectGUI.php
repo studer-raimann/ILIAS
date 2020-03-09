@@ -1913,26 +1913,10 @@ class ilPageObjectGUI
             $pc_obj->setFullscreenLink($this->determineFullscreenLink());
 
             // post xsl page content modification by pc elements
-            $output = $pc_obj->modifyPageContentPostXsl($output, $this->getOutputMode());
-            
-            // javascript files
-            $js_files = $pc_obj->getJavascriptFiles($this->getOutputMode());
-            foreach ($js_files as $js) {
-                $main_tpl->addJavascript($js);
-            }
-
-            // css files
-            $css_files = $pc_obj->getCssFiles($this->getOutputMode());
-            foreach ($css_files as $css) {
-                $main_tpl->addCss($css);
-            }
-
-            // onload code
-            $onload_code = $pc_obj->getOnloadCode($this->getOutputMode());
-            foreach ($onload_code as $code) {
-                $main_tpl->addOnloadCode($code);
-            }
+            $output = $pc_obj->modifyPageContentPostXsl($output, $this->getOutputMode(), $this->getAbstractOnly());
         }
+
+        $this->addResourcesToTemplate($main_tpl);
         
         //		$output = $this->selfAssessmentRendering($output);
 
@@ -2264,7 +2248,7 @@ class ilPageObjectGUI
         
         // debug ghost element
         if (DEVMODE == 1) {
-            $btpl->touchBlock("debug_ghost");
+//            $btpl->touchBlock("debug_ghost");
         }
 
         // bullet list
@@ -2433,26 +2417,53 @@ class ilPageObjectGUI
         );
 
         include_once("./Services/UIComponent/AdvancedSelectionList/classes/class.ilAdvancedSelectionListGUI.php");
+
+        $split_button = ilSplitButtonGUI::getInstance();
+        $split_button->isPrimary(true);
+        $split_button_items = [];
+
+
         $sdd = new ilAdvancedSelectionListGUI();
         $sdd->setPullRight(false);
         $sdd->setListTitle($lng->txt("save") . "...");
 
         if ($a_save_return) {
-            $btpl->setCurrentBlock("save_return");
-            $btpl->setVariable("TXT_SAVE_RETURN", $lng->txt("save_return"));
-            $btpl->parseCurrentBlock();
+            //$btpl->setCurrentBlock("save_return");
+            //$btpl->setVariable("TXT_SAVE_RETURN", $lng->txt("save_return"));
+            //$btpl->parseCurrentBlock();
             $sdd->addItem($lng->txt("save_return"), "", "#", "", "", "", "", "", "ilCOPage.cmdSaveReturn(false); return false;");
+
+            $item = ilLinkButton::getInstance();
+            $item->setCaption('save_return');
+            $item->setOnClick("ilCOPage.cmdSaveReturn(false); return false;");
+            $split_button_items[] = $item;
         }
 
         if ($a_save_new) {
-            $btpl->setCurrentBlock("save_new");
-            $btpl->setVariable("TXT_SAVE_NEW", $lng->txt("save_new"));
-            $btpl->parseCurrentBlock();
+            //$btpl->setCurrentBlock("save_new");
+            //$btpl->setVariable("TXT_SAVE_NEW", $lng->txt("save_new"));
+            //$btpl->parseCurrentBlock();
             $sdd->addItem($lng->txt("save_new"), "", "#", "", "", "", "", "", "ilCOPage.cmdSaveReturn(true); return false;");
+            $item = ilLinkButton::getInstance();
+            $item->setCaption('save_new');
+            $item->setOnClick("ilCOPage.cmdSaveReturn(true); return false;");
+            $split_button_items[] = $item;
+
         }
 
         $sdd->addItem($lng->txt("save"), "", "#", "", "", "", "", "", "ilCOPage.cmdSave(null); return false;");
+        $item = ilLinkButton::getInstance();
+        $item->setCaption('save');
+        $item->setOnClick("ilCOPage.cmdSave(null); return false;");
+        $split_button_items[] = $item;
+
         $sdd->addItem($lng->txt("cancel"), "", "#", "", "", "", "", "", "ilCOPage.cmdCancel(); return false;");
+        /*
+        $item = ilLinkButton::getInstance();
+        $item->setCaption('cancel');
+        $item->setOnClick("\"ilCOPage.cmdCancel(); return false;");
+        $split_button_items[] = $item;*/
+
 
         if ($a_anchors) {
             $btpl->setCurrentBlock("bb_anc_button");
@@ -2465,7 +2476,18 @@ class ilPageObjectGUI
             );
         }
 
-        $btpl->setVariable("SAVE_DROPDOWN", $sdd->getHTML());
+        $first = true;
+        foreach ($split_button_items as $item) {
+            if ($first) {
+                $item->setPrimary(true);
+                $split_button->setDefaultButton($item);
+            } else {
+                $split_button->addMenuItem(new ilButtonToSplitButtonMenuItemAdapter($item));
+            }
+            $first = false;
+        }
+        $btpl->setVariable("SPLIT_BUTTON", $split_button->render());
+        //$btpl->setVariable("SAVE_DROPDOWN", $sdd->getHTML());
 
         /*		// footnote
                 $btpl->setVariable("TXT_ILN", $this->lng->txt("cont_text_iln"));
@@ -2530,22 +2552,40 @@ class ilPageObjectGUI
      */
     public function downloadFile()
     {
-        $this->obj->buildDom();
-        
-        include_once("./Services/COPage/classes/class.ilPCFileList.php");
-        $files = ilPCFileList::collectFileItems($this->obj, $this->obj->getDomDoc());
+        $download_ok = false;
 
-        $file = explode("_", $_GET["file_id"]);
         require_once("./Modules/File/classes/class.ilObjFile.php");
-        $file_id = $file[count($file) - 1];
+        $pg_obj = $this->getPageObject();
+        $pg_obj->buildDom();
+        $int_links = $pg_obj->getInternalLinks();
+        foreach ($int_links as $il) {
+            if ($il["Target"] == str_replace("_file_", "_dfile_", $_GET["file_id"])) {
+                $file = explode("_", $_GET["file_id"]);
+                $file_id = (int) $file[count($file) - 1];
+                $download_ok = true;
+            }
+        }
+        if (in_array($_GET["file_id"], $pg_obj->getAllFileObjIds())) {
+            $file = explode("_", $_GET["file_id"]);
+            $file_id = (int) $file[count($file) - 1];
+            $download_ok = true;
+        }
 
-        // file must be in page
-        if (!in_array($file_id, $files)) {
+        $pcs = ilPageContentUsage::getUsagesOfPage($pg_obj->getId(), $pg_obj->getParentType().":pg", 0, false);
+        foreach ($pcs as $pc) {
+            $files = ilObjFile::_getFilesOfObject("mep:pg", $pc["id"], 0);
+            $file = explode("_", $_GET["file_id"]);
+            $file_id = (int) $file[count($file) - 1];
+            if (in_array($file_id, $files)) {
+                $download_ok = true;
+            }
+        }
+
+        if ($download_ok) {
+            $fileObj = new ilObjFile($file_id, false);
+            $fileObj->sendFile();
             exit;
         }
-        $fileObj = new ilObjFile($file_id, false);
-        $fileObj->sendFile();
-        exit;
     }
     
     /**
@@ -2660,8 +2700,8 @@ class ilPageObjectGUI
                 $anchor = str_replace(
                     "TocH",
                     "TocA",
-                    substr($a_output, $os, strpos($a_output, "<", $os) - $os - 3)
-                    );
+                    substr($a_output, $os, strpos($a_output, "<", $os) - $os - 4)
+                );
 
                 // get heading
                 $tag_start = stripos($a_output, "<h" . $level . " ", $os);
@@ -3664,5 +3704,26 @@ class ilPageObjectGUI
     public function getPagePermaLink()
     {
         return "";
+    }
+
+    /**
+     * Add resources to template
+     * @param ilGlobalTemplateInterface $tpl
+     */
+    protected function addResourcesToTemplate(ilGlobalTemplateInterface $tpl)
+    {
+        $collector = new \ILIAS\COPage\ResourcesCollector($this->getOutputMode(), $this->getPageObject());
+
+        foreach ($collector->getJavascriptFiles() as $js) {
+            $tpl->addJavascript($js);
+        }
+
+        foreach ($collector->getCssFiles() as $css) {
+            $tpl->addCss($css);
+        }
+
+        foreach ($collector->getOnloadCode() as $code) {
+            $tpl->addOnloadCode($code);
+        }
     }
 }

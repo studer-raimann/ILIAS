@@ -15,6 +15,14 @@ il.UI.maincontrols = il.UI.maincontrols || {};
 					this.renderer.render(this.model.getState());
 				},
 				/**
+				 * remove a certain tool
+				 */
+				removeTool: function(mapping_id) {
+					var tool_id = mappings[mapping_id];
+					this.model.actions.removeTool(tool_id);
+					this.renderer.render(this.model.getState());
+				},
+				/**
 				 * Just open the tools, activate last one
 				 */
 				disengageAll: function() {
@@ -223,6 +231,7 @@ il.UI.maincontrols = il.UI.maincontrols || {};
 				adjustToScreenSize: adjustToScreenSize,
 				init: init,
 				engageTool: external_commands.engageTool,
+				removeTool: external_commands.removeTool,
 				disengageAll: external_commands.disengageAll,
 				clearStates: external_commands.clearStates
 			};
@@ -493,7 +502,34 @@ il.UI.maincontrols = il.UI.maincontrols || {};
 				}
 				return hash;
 			},
+			compressEntries = function(entries) {
+				var k, v, ret = {};
+				for(k in entries) {
+					v = entries[k];
+					ret[k] = [
+						v['removeable'] ? 1:0,
+						v['engaged'] ? 1:0,
+						v['hidden'] ? 1:0
+					];
+				}
+				return ret;
+			},
+			decompressEntries = function(entries) {
+				var k, v, ret = {};
+				for(k in entries) {
+					v = entries[k];
+					ret[k] = {
+						"id": k,
+						"removeable": !!v[0],
+						"engaged": !!v[1],
+						"hidden": !!v[2]
+					};
+				}
+				return ret;
+			},
 			storeStates = function(state) {
+				state.entries = compressEntries(state.entries);
+				state.tools = compressEntries(state.tools);
 				cs = storage();
 				for(idx in state) {
 					cs.add(idx, state[idx]);
@@ -503,6 +539,10 @@ il.UI.maincontrols = il.UI.maincontrols || {};
 			},
 			readStates = function() {
 				cs = storage();
+				if (("entries" in cs.items) && ("tools" in cs.items)) {
+					cs.items.entries = decompressEntries(cs.items.entries);
+					cs.items.tools = decompressEntries(cs.items.tools);
+				}
 				return cs.items;
 			},
 			/**
