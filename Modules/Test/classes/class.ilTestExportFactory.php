@@ -39,8 +39,8 @@ class ilTestExportFactory
 
             case ilObjTest::QUESTION_SET_TYPE_DYNAMIC:
 
-				require_once 'Modules/Test/classes/class.ilTestExportDynamicQuestionSet.php';
-				return new ilTestExportDynamicQuestionSet($this->testOBJ, $mode);
-		}
-	}
+                require_once 'Modules/Test/classes/class.ilTestExportDynamicQuestionSet.php';
+                return new ilTestExportDynamicQuestionSet($this->testOBJ, $mode);
+        }
+    }
 }

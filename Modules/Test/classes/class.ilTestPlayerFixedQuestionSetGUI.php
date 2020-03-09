@@ -1,14 +1,14 @@
 <?php
 /* Copyright (c) 1998-2013 ILIAS open source, Extended GPL, see docs/LICENSE */
+
 require_once 'Modules/Test/classes/class.ilTestOutputGUI.php';
 
 /**
+ * @author		Björn Heyser <bheyser@databay.de>
+ * @version		$Id$
  *
- * @author Björn Heyser <bheyser@databay.de>
- * @version $Id$
- *         
- * @package Modules/Test
- *         
+ * @package     Modules/Test
+ *
  * @ilCtrl_Calls ilTestPlayerFixedQuestionSetGUI: ilAssGenFeedbackPageGUI
  * @ilCtrl_Calls ilTestPlayerFixedQuestionSetGUI: ilAssSpecFeedbackPageGUI
  * @ilCtrl_Calls ilTestPlayerFixedQuestionSetGUI: ilAssQuestionHintRequestGUI
@@ -21,15 +21,14 @@ require_once 'Modules/Test/classes/class.ilTestOutputGUI.php';
  */
 class ilTestPlayerFixedQuestionSetGUI extends ilTestOutputGUI
 {
-
     protected function buildTestPassQuestionList()
     {
         global $DIC;
         $ilPluginAdmin = $DIC['ilPluginAdmin'];
-
+        
         require_once 'Modules/TestQuestionPool/classes/class.ilAssQuestionList.php';
         $questionList = new ilAssQuestionList($this->db, $this->lng, $ilPluginAdmin);
-
+        
         $questionList->setParentObjId($this->object->getId());
 
         $questionList->setQuestionInstanceTypeFilter(ilAssQuestionList::QUESTION_INSTANCE_TYPE_DUPLICATES);

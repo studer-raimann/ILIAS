@@ -18,7 +18,6 @@ require_once 'Modules/Test/classes/class.ilTestOutputGUI.php';
  * @ilCtrl_Calls ilTestPlayerRandomQuestionSetGUI: ilTestPasswordProtectionGUI
  * @ilCtrl_Calls ilTestPlayerRandomQuestionSetGUI: ilTestAnswerOptionalQuestionsConfirmationGUI
  * @ilCtrl_Calls ilTestPlayerRandomQuestionSetGUI: ilConfirmationGUI
- * @ilCtrl_Calls ilTestPlayerRandomQuestionSetGUI: ilAsqQuestionProcessingGUI
  */
 class ilTestPlayerRandomQuestionSetGUI extends ilTestOutputGUI
 {

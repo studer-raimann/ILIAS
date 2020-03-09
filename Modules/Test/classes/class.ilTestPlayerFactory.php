@@ -6,7 +6,7 @@
  *
  * @author		Björn Heyser <bheyser@databay.de>
  * @version		$Id$
- * 
+ *
  * @package		Modules/Test
  */
 class ilTestPlayerFactory
@@ -39,8 +39,8 @@ class ilTestPlayerFactory
         switch ($this->testOBJ->getQuestionSetType()) {
             case ilObjTest::QUESTION_SET_TYPE_FIXED:
 
-				require_once 'Modules/Test/classes/class.ilTestPlayerFixedQuestionSetGUI.php';
-				return new ilTestPlayerFixedQuestionSetGUI($this->testOBJ);
+                require_once 'Modules/Test/classes/class.ilTestPlayerFixedQuestionSetGUI.php';
+                return new ilTestPlayerFixedQuestionSetGUI($this->testOBJ);
 
             case ilObjTest::QUESTION_SET_TYPE_RANDOM:
                 

@@ -1,7 +1,5 @@
 <?php
 /* Copyright (c) 1998-2013 ILIAS open source, Extended GPL, see docs/LICENSE */
-use ILIAS\Services\AssessmentQuestion\PublicApi\Authoring\AuthoringQuestion;
-use ILIAS\Services\AssessmentQuestion\PublicApi\Common\AuthoringContextContainer;
 
 require_once './Modules/Test/exceptions/class.ilTestException.php';
 require_once './Services/Object/classes/class.ilObjectGUI.php';
@@ -48,7 +46,6 @@ require_once 'Modules/Test/classes/class.ilTestParticipantAccessFilter.php';
  * @ilCtrl_Calls ilObjTestGUI: ilTestSkillAdministrationGUI
  * @ilCtrl_Calls ilObjTestGUI: ilAssQuestionPreviewGUI
  * @ilCtrl_Calls ilObjTestGUI: ilTestQuestionBrowserTableGUI, ilTestInfoScreenToolbarGUI, ilLTIProviderObjectSettingGUI
- * @ilCtrl_Calls ilObjTestGUI: ilAsqQuestionAuthoringGUI
  *
  * @ingroup ModulesTest
  */
@@ -89,14 +86,7 @@ class ilObjTestGUI extends ilObjectGUI
     protected $testAccess;
 
     /**
-     *
-     * @var AsqAuthoringService
-     */
-    public $asqAuthoringService;
-
-    /**
      * Constructor
-     *
      * @access public
      */
     public function __construct()
@@ -142,62 +132,6 @@ class ilObjTestGUI extends ilObjectGUI
             $tabsManager->initSettingsTemplate();
             $this->setTabsManager($tabsManager);
         }
-    }
-
-    protected function forwardToAsqAuthoring()
-    {
-        global $DIC; /* @var \ILIAS\DI\Container $DIC */
-
-        $DIC->ctrl()->saveParameter($this, self::AUTHORING_CONTEXT_PARAMETER);
-
-        $this->getTabsManager()->getQuestionsSubTabs();
-
-        switch ($_GET[self::AUTHORING_CONTEXT_PARAMETER]) {
-            case self::AUTHORING_CONTEXT_LIST_VIEW:
-
-                $this->getTabsManager()->activateSubTab(ilTestTabsManager::SUBTAB_ID_QUESTIONS);
-
-                $backLink = $DIC->ui()
-                    ->factory()
-                    ->link()
-                    ->standard($DIC->language()
-                    ->txt('back'), $DIC->ctrl()
-                    ->getLinkTarget($this, 'questions'));
-
-                break;
-
-            case self::AUTHORING_CONTEXT_PAGE_VIEW:
-
-                $this->getTabsManager()->activateSubTab(ilTestTabsManager::SUBTAB_ID_EXPRESSPAGE);
-
-                $backLink = $DIC->ui()
-                    ->factory()
-                    ->link()
-                    ->standard($DIC->language()
-                    ->txt('back'), $DIC->ctrl()
-                    ->getLinkTargetByClass('ilTestExpresspageObjectGUI', 'showPage'));
-
-                break;
-
-            default:
-
-                $backLink = $DIC->ui()
-                    ->factory()
-                    ->link()
-                    ->standard('', '#');
-        }
-
-        $authoring_context_container = new AuthoringContextContainer(
-            $backLink, 
-            $this->object->getRefId(), 
-            $this->object->getId(), 
-            $this->object->getType(), 
-            $DIC->user()->getId(), 
-            $DIC->access()->checkAccess('write', '', $this->object->getRefId()));
-        
-        $exAsqAuthoringGUI = new ilAsqQuestionAuthoringGUI($authoring_context_container);
-
-        $DIC->ctrl()->forwardCommand($exAsqAuthoringGUI);
     }
 
     /**
@@ -267,13 +201,6 @@ class ilObjTestGUI extends ilObjectGUI
         $this->determineObjectiveOrientedContainer();
         
         switch ($next_class) {
-            case strtolower(ilAsqQuestionAuthoringGUI::class):
-                $this->prepareOutput();
-                $this->addHeaderAction();
-
-                $this->forwardToAsqAuthoring();
-                break;
-
             case 'illtiproviderobjectsettinggui':
                 $this->prepareOutput();
                 $this->addHeaderAction();
@@ -861,7 +788,8 @@ class ilObjTestGUI extends ilObjectGUI
     }
     
     /**
-     * @return mixed
+     * @return int
+     * @throws ilTestException
      */
     protected function fetchAuthoringQuestionIdParameter()
     {
@@ -881,7 +809,7 @@ class ilObjTestGUI extends ilObjectGUI
         if ($this->object->checkQuestionParent($qid)) {
             return $qid;
         }
-        
+
         throw new ilTestException('question id does not relate to parent object!');
     }
     
@@ -1441,8 +1369,6 @@ class ilObjTestGUI extends ilObjectGUI
 
     public function randomselectObject()
     {
-        global $DIC;
-        $ilUser = $DIC['ilUser'];
         $this->getTabsManager()->getQuestionsSubTabs();
         $this->getTabsManager()->activateSubTab(ilTestTabsManager::SUBTAB_ID_QST_LIST_VIEW);
 
@@ -1961,7 +1887,7 @@ class ilObjTestGUI extends ilObjectGUI
         $ilHelp = $DIC['ilHelp']; /* @var ilHelpGUI $ilHelp */
 
         $this->getTabsManager()->getQuestionsSubTabs();
-        $this->getTabsManager()->activateSubTab(ilTestTabsManager::SUBTAB_ID_QUESTIONS);
+        $this->getTabsManager()->activateSubTab(ilTestTabsManager::SUBTAB_ID_QST_LIST_VIEW);
 
         $subScreenId = array('createQuestion');
 
@@ -2088,7 +2014,7 @@ class ilObjTestGUI extends ilObjectGUI
         }
 
         $this->getTabsManager()->getQuestionsSubTabs();
-        $this->getTabsManager()->activateSubTab(ilTestTabsManager::SUBTAB_ID_QUESTIONS);
+        $this->getTabsManager()->activateSubTab(ilTestTabsManager::SUBTAB_ID_QST_LIST_VIEW);
 
         // #11631, #12994
         $this->ctrl->setParameter($this, 'q_id', '');
@@ -2423,7 +2349,6 @@ class ilObjTestGUI extends ilObjectGUI
         $template->setVariable("VALUE_MAXIMUM_POINTS", ilUtil::prepareFormOutput($max_points));
         
         if ($isPdfDeliveryRequest) {
-            require_once 'class.ilTestPDFGenerator.php';
             ilTestPDFGenerator::generatePDF($template->get(), ilTestPDFGenerator::PDF_OUTPUT_DOWNLOAD, $this->object->getTitleFilenameCompliant(), PDF_PRINT_VIEW_QUESTIONS);
         } else {
             $this->tpl->setVariable("PRINT_CONTENT", $template->get());
@@ -2441,7 +2366,7 @@ class ilObjTestGUI extends ilObjectGUI
     {
         global $DIC;
         $ilAccess = $DIC['ilAccess'];
-        $ilias = $DIC['ilias'];
+
         if (!$ilAccess->checkAccess("write", "", $this->ref_id)) {
             // allow only write access
             ilUtil::sendInfo($this->lng->txt("cannot_edit_test"), true);
@@ -2454,9 +2379,6 @@ class ilObjTestGUI extends ilObjectGUI
 
         $isPdfDeliveryRequest = isset($_GET['pdf']) && $_GET['pdf'];
 
-        global $DIC;
-        $ilUser = $DIC['ilUser'];
-        $print_date = mktime(date("H"), date("i"), date("s"), date("m"), date("d"), date("Y"));
         $max_points= 0;
         $counter = 1;
 
@@ -2488,17 +2410,20 @@ class ilObjTestGUI extends ilObjectGUI
             $max_points += $question_gui->object->getMaximumPoints();
         }
 
-
-
         $template->setVariable("TITLE", ilUtil::prepareFormOutput($this->object->getTitle()));
         $template->setVariable("PRINT_TEST", ilUtil::prepareFormOutput($this->lng->txt("review_view")));
         $template->setVariable("TXT_PRINT_DATE", ilUtil::prepareFormOutput($this->lng->txt("date")));
-        $template->setVariable("VALUE_PRINT_DATE", ilUtil::prepareFormOutput(strftime("%c", $print_date)));
+        $usedRelativeDates = ilDatePresentation::useRelativeDates();
+        ilDatePresentation::setUseRelativeDates(false);
+        $template->setVariable(
+            "VALUE_PRINT_DATE",
+            ilDatePresentation::formatDate(new ilDateTime(time(), IL_CAL_UNIX))
+        );
+        ilDatePresentation::setUseRelativeDates($usedRelativeDates);
         $template->setVariable("TXT_MAXIMUM_POINTS", ilUtil::prepareFormOutput($this->lng->txt("tst_maximum_points")));
         $template->setVariable("VALUE_MAXIMUM_POINTS", ilUtil::prepareFormOutput($max_points));
 
         if ($isPdfDeliveryRequest) {
-            require_once 'class.ilTestPDFGenerator.php';
             ilTestPDFGenerator::generatePDF($template->get(), ilTestPDFGenerator::PDF_OUTPUT_DOWNLOAD, $this->object->getTitleFilenameCompliant(), PDF_PRINT_VIEW_QUESTIONS);
         } else {
             $this->ctrl->setParameter($this, "pdf", "1");

@@ -127,6 +127,6 @@ class ilTestSequenceFactory
             }
         }
 
-		return $this->testSequences[$activeId][$pass];
-	}
+        return $this->testSequences[$activeId][$pass];
+    }
 }

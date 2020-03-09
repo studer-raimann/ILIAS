@@ -11,10 +11,6 @@
  */
 abstract class ilTestQuestionSetConfig
 {
-    const TYPE_RANDOM = 'RANDOM_QUEST_SET';
-    const TYPE_DYNAMIC = 'DYNAMIC_QUEST_SET';
-    const TYPE_FIXED = 'FIXED_QUEST_SET';
-    
     /**
      * global $tree object instance
      *
@@ -165,5 +161,5 @@ abstract class ilTestQuestionSetConfig
         return $questionPoolPathString;
     }
 
-	abstract public function isResultTaxonomyFilterSupported();
+    abstract public function isResultTaxonomyFilterSupported();
 }
