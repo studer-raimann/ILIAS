@@ -22,7 +22,7 @@ use ILIAS\UI\NotImplementedException;
  * @author  Martin Studer <ms@studer-raimann.ch>
  * @author  Theodor Truffer <tt@studer-raimann.ch>
  */
-class QuestionEventStoreRepository implements EventStore {
+class QuestionEventStoreRepository extends EventStore {
 
 	//TODO Constructor with DIC->DB-Connection - we will be a microservice
 

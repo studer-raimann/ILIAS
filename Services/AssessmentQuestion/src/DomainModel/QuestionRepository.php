@@ -26,10 +26,6 @@ class QuestionRepository extends AbstractEventSourcedAggregateRepository {
 	 * @var EventStore
 	 */
 	private $event_store;
-	/**
-	 * @var QuestionRepository
-	 */
-	private static $instance;
 
     /**
      * QuestionRepository constructor.
@@ -37,17 +33,6 @@ class QuestionRepository extends AbstractEventSourcedAggregateRepository {
 	protected function __construct() {
 		parent::__construct();
 		$this->event_store = new QuestionEventStoreRepository();
-	}
-
-    /**
-     * @return QuestionRepository
-     */
-	public static function getInstance() {
-		if (self::$instance === null) {
-			self::$instance = new QuestionRepository();
-		}
-
-		return self::$instance;
 	}
 
 	/**
