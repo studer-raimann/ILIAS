@@ -28,15 +28,15 @@ Additionally the consuming component has an opportunity to provide any command l
 
 # Public Services
 
-##AuthoringQuestion
+## AuthoringQuestion
 This service offers a wide range of link generation tools.
-###Get question creation link
+### Get question creation link
 The authoring question service offers a creation form for questions. You can get the link to this form as follows:
 ```
 AuthoringQuestion::getCreationLink([])
 ```
 Please note that the ILIAS Ctrl-Flow will pass through your current GUI Class! And you are responsible for checking the permissions for this action!
-###Get question edit link
+### Get question edit link
 Additionally, the service offers an edit link to a specific question:
 ```
 AuthoringQuestion::getEditLink($question_id)
@@ -48,9 +48,9 @@ Apart from these two main use cases, the service also offers:
 - getEditFeedbacksLink()
 - getEditHintsLink()
 
-###Set question UID
+### Set question UID
 TODO
-##AssessmentFactory
+## AssessmentFactory
 This service provides handy singleton instances for the question service and answer service.
 
 ```
@@ -61,42 +61,42 @@ $question_service = $assessment_factory->question();
 // Get answer service
 $answer_service = $assessment_factory->answer();
 ```
-##QuestionService
+## QuestionService
 Use this service to manage questions.
-###Get Questions
+### Get Questions
 There are several ways to fetch questions. Currently, it's possible to fetch questions with either their UUID or with a container id.
-####Fetch with UUID
+#### Fetch with UUID
 ```
 $question = $question_service->getQuestionByQuestionId($id)
 ```
-####Fetch with container ID
+#### Fetch with container ID
 ```
 $questions = $question_service->getQuestionsOfContainer($container_id)
 ```
-###Create Questions
+### Create Questions
 ```
 $question = $question_service->createQuestion($type, $container_id, $content_editing_mode);
 ```
-###Update Questions
+### Update Questions
 ```
 $question_service->saveQuestion($question);
 ```
-###Delete Questions
+### Delete Questions
 Not yet implemented.
 ##AnswerService
 This service offers means to receive answer-specific data from questions.
 ```
 $answer_service = new AnswerService()
 ```
-###Get score
+### Get score
 ```
 $score = $answer_service->getScore($question, $answer)
 ```
-###Get max score
+### Get max score
 ```
 $max_score = $answer_service->getMaxScore($question)
 ```
-###Get best answer
+### Get best answer
 ```
 $best_answer = $answer_service->getBestAnswer($question)
 ```
