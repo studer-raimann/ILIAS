@@ -124,6 +124,8 @@ abstract class QuestionFormGUI extends ilPropertyFormGUI {
             $this->addItem($this->option_form);
         }
         
+        $DIC->ui()->mainTemplate()->addJavaScript('./Services/AssessmentQuestion/js/AssessmentQuestionAuthoring.js');
+        
         $this->postInit();
     }
     

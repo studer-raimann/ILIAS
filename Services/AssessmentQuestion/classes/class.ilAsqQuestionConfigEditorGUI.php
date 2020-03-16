@@ -71,10 +71,6 @@ class ilAsqQuestionConfigEditorGUI
             $form = $this->buildForm($question);
         }
 
-        $DIC->ui()->mainTemplate()->addJavaScript(
-            'Services/AssessmentQuestion/js/AssessmentQuestionAuthoring.js'
-        );
-
         $DIC->ui()->mainTemplate()->setContent($form->getHTML());
     }
 
