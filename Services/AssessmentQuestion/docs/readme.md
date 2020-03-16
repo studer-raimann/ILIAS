@@ -22,8 +22,6 @@ The Assessment Question API provides the following Services:
 
 The consuming component is responsible for checking the RBAC Permissions. 
 
-Additionally the consuming component has an opportunity to provide any command link either as a button (like the well known check button) rendered within the question canvas or as an entry in an question actions menu (e.g. discard or postpone solution).
-
 Please also note that assessment questions are accessed with a UUID.
 
 # Public Services
@@ -39,22 +37,12 @@ $creationLink = AuthoringQuestion::getCreationLink([]);
 // Apply the generated link onto a GUI component
 self::dic()->toolbar()->addButton($creationLink->getLabel(), $creationLink->getAction());
 ```
-2. The next step is to add a ilCtrl_Calls to ilAsqQuestionAuthoringGUI. Make sure to reload the control structure, if necessary.
+2. The next step is to add a ilCtrl_Calls from your component to ilAsqQuestionAuthoringGUI. Make sure to reload the control structure, if necessary.
 ```
 @ilCtrl_Calls      ilObjYourGUI: ilAsqQuestionAuthoringGUI
 ```
 3. Catch any redirects to the `ilAsqQuestionAuthoringGUI` class within the `executeCommand()` or `performCommand()` methods, depending on whether you're working with a plugin or not. Consult step 5 on how to properly implement a forwarding mechanism tailored to this service.
-```
-switch (strtolower($next_class)) {
-            case strtolower(ilAsqQuestionAuthoringGUI::class):
-                $this->prepareOutput();
-                $this->addHeaderAction();
 
-                $this->forwardToAsqAuthoring();
-                break;
-                ...
-}
-```
 4. It is highly advised to verify the permissions of users trying to access link generation methods.
 ```
 switch (strtolower($next_class)) {
@@ -65,7 +53,6 @@ switch (strtolower($next_class)) {
                 ...
 }
 ```
-5. Within the empty forwarding method defined in step 3 we have to define a callback method as well as pass other required metadata. The callback method will be called after we are done using the external service. (`self::CALLBACK_METHOD`)
 
 An AuthoringContextContainer object is required to hold this metadata. The following parameters are required:
 ```
@@ -75,48 +62,46 @@ int $objId,
 string $objType,
 int $actorId,
 bool $writeAccess,
-array $afterQuestionCreationCtrlClassPath,
-string $afterQuestionCreationCtrlCommand
 ```
 The context has to be passed on to an `ilAsqQuestionAuthoringGUI` object. The last step is to forward the `ilAsqQuestionAuthoringGUI` object. An implementation of this functionality may look like this:
 
 ```
 protected function forwardToAsqAuthoring()
 {
-    global $DIC;
-
-    $backLink = $DIC->ui()
-        ->factory()
-        ->link()
-        ->standard($DIC->language()
-            ->txt('back'), $DIC->ctrl()
-            ->getLinkTarget($this, self::CMD_SHOW_CONTENTS));
-
-
-    $authoring_context_container = new AuthoringContextContainer(
-        $backLink,
-        $this->object->getRefId(),
-        $this->object->getId(),
-        $this->object->getType(),
-        $DIC->user()->getId(),
-        $DIC->access()->checkAccess('write', '', $this->object->getRefId()),
-        [self::class],
-        self::CALLBACK_METHOD);
-
-    $exAsqAuthoringGUI = new ilAsqQuestionAuthoringGUI($authoring_context_container);
-
-    $DIC->ctrl()->forwardCommand($exAsqAuthoringGUI);
+	$backLink = self::dic()->ui()->factory()->link()->standard(
+	    self::dic()->language()->txt('back'), 
+	    self::dic()->ctrl()->getLinkTarget($this, self::CURRENT_COMMAND)); 
+	
+	$authoring_context_container = new AuthoringContextContainer(
+	    $backLink,
+	    $this->object->getRefId(),
+	    $this->object->getId(),
+	    $this->object->getType(),
+	    self::dic()->user()->getId(),
+	    self::dic()->access()->checkAccess('write', '', $this->object->getRefId()));
+	    
+	$asq = new ilAsqQuestionAuthoringGUI($authoring_context_container);
+	
+	self::dic()->ctrl()->forwardCommand($asq);
 }
 ```
-The callback method may be able to fetch certain parameters now using either `$_GET` or `$_POST` e.g. a newly created question UUID (getCreationLink()), depending on the called link generation type.
+
 ### Get question creation link
 The authoring question service offers a creation form for questions. You can get the link to this form as follows:
-```
-$ctrl_stack = [];
 
-AuthoringQuestion::getCreationLink($ctrl_stack);
+```
+$link =AuthoringQuestion::getCreationLink([]);
+```
+
+It is recommended that you add your current call stack to the link to create:
+
+```
+$link = AuthoringQuestion::getCreationLink(array_map(function($item) {
+    return $item['class'];
+}, self::dic()->ctrl()->getCallHistory()));
 ```
 Please note that the ILIAS Ctrl-Flow will pass through your current GUI Class! And you are responsible for checking the permissions for this action!
+
 ### Get question edit link
 Additionally, the service offers an edit link to a specific question:
 ```
@@ -130,8 +115,6 @@ Apart from these two main use cases, the service also offers:
 - getEditFeedbacksLink()
 - getEditHintsLink()
 
-### Set question UID
-TODO
 ## AssessmentFactory
 This service provides handy singleton instances for the question service and answer service. It may be accessed using DIC.
 
@@ -154,6 +137,7 @@ $question = $question_service->getQuestionByQuestionId($id)
 ```
 #### Fetch with container ID
 A container is the object where questions are created and is thus basically the owner of these questions.
+This method is a basic way to get questions of an object and is discuraged from actual use, as Question consumers are expected to store the ids of their quesitons themselves.
 ```
 $questions = $question_service->getQuestionsOfContainer($container_id)
 ```
@@ -166,28 +150,74 @@ $question = $question_service->createQuestion($type, $container_id, $content_edi
 $question_service->saveQuestion($question);
 ```
 ### Delete Questions
-Not yet implemented.
+Not yet implemented. Will trigger the delete event, so that loading the question or trying to perform changes on it throw events.
 ### Other
 #### Get question component
-TODO
+
+Gets the question component from the service, the question component can be used to display questions.
+
+Example:
+
+```
+$question = $question_service->getQuestionByQuestionId($id);
+$component = $question_service->getQuestionComponent($question);
+
+$component->renderHtml(); //renders the questions html (returns string)
+```
+
+The component can be provided with an answer through the method setAnswer().
+The entered answer of the user can be extracted from the component through the method readAnswer();
+
 #### Get question edit form
-TODO
+
+Returns the form used to edit the question. The form is of the type ilPropertyFormGUI and works like one.
+It is easyer to use the provided classes that you can get by using AuthoringQuestion.
+
+example:
+
+```
+$question = $DIC->assessment()->question()->getQuestionByQuestionId($question_id);
+$form = $DIC->assessment()->question()->getQuestionEditForm($question);
+$form->setFormAction($DIC->ctrl()->getFormAction($this, self::CMD_SHOW_FORM));
+$form->addCommandButton(self::CMD_SAVE_FORM, $DIC->language()->txt('save'));
+$DIC->ui()->mainTemplate()->setContent($form->getHTML());
+```
+
+to save:
+
+```
+$question = $form->getQuestion();
+$DIC->assessment()->question()->saveQuestion($question);
+```
+
 #### Get question page
-TODO
+
+Gets the Question surrounded by the stuff from the ilias object editor. To get the question component in it use the getQuestionComponent Method.
+
 ## AnswerService
 This service offers means to receive answer-specific data from questions.
 ```
 $answer_service = new AnswerService()
 ```
 ### Get score
+
+Get the reached score for the provided answer and question.
+
 ```
 $score = $answer_service->getScore($question, $answer)
 ```
 ### Get max score
+
+Get the maximal possible score of a question.
+
 ```
 $max_score = $answer_service->getMaxScore($question)
 ```
 ### Get best answer
+
+Gets the best answer that is possible on that question.
+caveat. some question types do not have a best possible answer (FileUploadQuestions ...)
+
 ```
 $best_answer = $answer_service->getBestAnswer($question)
 ```
