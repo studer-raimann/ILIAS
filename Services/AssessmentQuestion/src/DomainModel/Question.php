@@ -136,7 +136,7 @@ class Question extends AbstractEventSourcedAggregateRoot implements IsRevisable
      */
     protected function applyQuestionCreatedEvent(QuestionCreatedEvent $event)
     {
-        $this->id = $event->getAggregateId();
+        $this->aggregate_id = $event->getAggregateId();
         $this->creator_id = $event->getInitiatingUserId();
         $this->container_obj_id = $event->getContainerId();
         $this->question_int_id = $event->getItemId();
