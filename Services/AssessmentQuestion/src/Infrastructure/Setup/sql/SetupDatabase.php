@@ -2,11 +2,10 @@
 
 namespace ILIAS\AssessmentQuestion\Infrastructure\Setup\sql;
 
-use ilCtrlStructureReader;
+use ILIAS\AssessmentQuestion\Infrastructure\Persistence\SimpleStoredAnswer;
 use ILIAS\AssessmentQuestion\Infrastructure\Persistence\EventStore\QuestionEventStoreAr;
-use ILIAS\AssessmentQuestion\Infrastructure\Persistence\Projection\QuestionListItemAr;
 use ILIAS\AssessmentQuestion\Infrastructure\Persistence\Projection\QuestionAr;
-use ILIAS\Modules\Test\Result\TestResultAr;
+use ILIAS\AssessmentQuestion\Infrastructure\Persistence\Projection\QuestionListItemAr;
 
 /**
  * Class SetupDatabase
@@ -25,6 +24,7 @@ class SetupDatabase {
         $DIC->database()->dropTable(QuestionEventStoreAr::STORAGE_NAME, false);
         $DIC->database()->dropTable(QuestionListItemAr::STORAGE_NAME, false);
         $DIC->database()->dropTable(QuestionAr::STORAGE_NAME, false);
+        $DIC->database()->dropTable(SimpleStoredAnswer::STORAGE_NAME, false);
         $DIC->database()->dropTable("asq_user_answer_scpre", false);
         $DIC->database()->dropTable("asq_user_test_score", false);
 
@@ -33,6 +33,7 @@ class SetupDatabase {
         QuestionEventStoreAr::updateDB();
 	    QuestionListItemAr::updateDB();
 	    QuestionAr::updateDB();
+	    SimpleStoredAnswer::updateDB();
 
 	    //Migration
         //Migrate Contentpage Definition (here for the implementation the migration)
