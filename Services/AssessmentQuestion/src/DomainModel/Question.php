@@ -2,9 +2,7 @@
 
 namespace ILIAS\AssessmentQuestion\DomainModel;
 
-use ILIAS\AssessmentQuestion\DomainModel\Answer\Answer;
 use ILIAS\AssessmentQuestion\DomainModel\Answer\Option\AnswerOptions;
-use ILIAS\AssessmentQuestion\DomainModel\Event\QuestionAnswerAddedEvent;
 use ILIAS\AssessmentQuestion\DomainModel\Event\QuestionAnswerOptionsSetEvent;
 use ILIAS\AssessmentQuestion\DomainModel\Event\QuestionCreatedEvent;
 use ILIAS\AssessmentQuestion\DomainModel\Event\QuestionDataSetEvent;
@@ -34,13 +32,7 @@ use srag\CQRS\Event\DomainEvents;
  */
 class Question extends AbstractEventSourcedAggregateRoot implements IsRevisable
 {
-
-    //TODO get that from DB
     const SYSTEM_USER_ID = 3;
-    /**
-     * @var DomainObjectId
-     */
-    private $id;
     /**
      * @var RevisionId
      */
@@ -195,18 +187,8 @@ class Question extends AbstractEventSourcedAggregateRoot implements IsRevisable
         $this->hints = $event->getHints();
     }
 
-
     /**
-     * @param QuestionAnswerAddedEvent $event
-     */
-    protected function applyQuestionAnswerAddedEvent(QuestionAnswerAddedEvent $event)
-    {
-        $answer = $event->getAnswer();
-        $this->answers[$answer->getTestId()][$answer->getRevisionKey()][$answer->getAnswererId()][$answer->getAttemptNumber()] = $answer;
-    }
-
-    /**
-     * @param QuestionAnswerAddedEvent $event
+     * @param QuestionFeedbackSetEvent $event
      */
     protected function applyQuestionFeedbackSetEvent(QuestionFeedbackSetEvent $event)
     {
@@ -485,11 +467,6 @@ class Question extends AbstractEventSourcedAggregateRoot implements IsRevisable
         }
 
         return $question;
-    }
-
-    public function getAggregateId() : DomainObjectId
-    {
-        return $this->id;
     }
     
     public function isQuestionComplete() : bool {
