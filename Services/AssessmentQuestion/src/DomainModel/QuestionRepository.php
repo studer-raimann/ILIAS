@@ -23,7 +23,7 @@ use srag\CQRS\Event\EventStore;
 class QuestionRepository extends AbstractEventSourcedAggregateRepository {
 
 	/**
-	 * @var EventStore
+	 * @var QuestionEventStoreRepository
 	 */
 	private $event_store;
 
@@ -56,5 +56,11 @@ class QuestionRepository extends AbstractEventSourcedAggregateRepository {
 	 */
 	public function getNextId() : int {
 	    return $this->event_store->getNextId();
+	}
+	
+	public function getAggregateByIliasId(int $id) : Question {
+	    $aggregate_id = $this->event_store->getAggregateIdOfIliasId($id);
+	    
+	    return $this->getAggregateRootById($aggregate_id);
 	}
 }

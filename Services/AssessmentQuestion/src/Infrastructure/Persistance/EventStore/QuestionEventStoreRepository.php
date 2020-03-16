@@ -2,15 +2,14 @@
 
 namespace ILIAS\AssessmentQuestion\Infrastructure\Persistence\EventStore;
 
+use ILIAS\UI\NotImplementedException;
+use ilAsqException;
 use srag\CQRS\Aggregate\DomainObjectId;
 use srag\CQRS\Event\AbstractDomainEvent;
 use srag\CQRS\Event\AbstractIlContainerItemDomainEvent;
 use srag\CQRS\Event\DomainEvents;
 use srag\CQRS\Event\EventID;
 use srag\CQRS\Event\EventStore;
-use srag\CQRS\Event\AbstractIlContainerDomainEvent;
-use ILIAS\UI\NotImplementedException;
-
 
 /**
  * Class QuestionEventStoreRepository
@@ -76,7 +75,30 @@ class QuestionEventStoreRepository extends EventStore {
 		return $event_stream;
 	}
 
-
+	/**
+	 * @param int $id
+	 * @return DomainObjectId
+	 */
+	public function getAggregateIdOfIliasId(int $id) : DomainObjectId {
+	    global $DIC;
+	    
+	    // TODO join with not in select QuestionDeletedEvent
+	    $sql = "SELECT aggregate_id FROM " . QuestionEventStoreAr::STORAGE_NAME . " where event_name = 'QuestionCreatedEvent' and item_id = " . $DIC->database()->quote($id,'integer');
+	    $res = $DIC->database()->query($sql);
+	    
+	    $row = $DIC->database()->fetchAssoc($res);
+	    
+	    $guid = $row['aggregate_id'];
+	    
+	    if(is_null($guid)) {
+	        //TODO translate?
+	        throw new ilAsqException(sprintf("Aggregate with ilias ID %s not found", $id));
+	    }
+	    else {
+	       return new DomainObjectId($guid);
+	    }
+	}
+	
     /**
      * @param int $container_obj_id
      *

@@ -45,7 +45,7 @@ class QuestionService extends ASQService
     }
     
     public function getQuestionByIliasObjectId(int $id) : QuestionDto {
-        
+        return QuestionDto::CreateFromQuestion(QuestionRepository::getInstance()->getAggregateByIliasId($id));
     }
     
     public function getQuestionsOfContainer(int $container_id) : array {
