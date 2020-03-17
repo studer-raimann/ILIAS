@@ -7,7 +7,7 @@ use ILIAS\Filesystem\Filesystems;
 use ILIAS\FileUpload\FileUpload;
 use ILIAS\GlobalScreen\Services;
 use ILIAS\Refinery\Factory;
-use ILIAS\Services\AssessmentQuestion\PublicApi\Factory\AssessmentFactory;
+use ILIAS\Services\AssessmentQuestion\PublicApi\AssessmentFactory;
 
 /**
  * Customizing of pimple-DIC for ILIAS.

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace ILIAS\Services\AssessmentQuestion\PublicApi\Factory;
+namespace ILIAS\Services\AssessmentQuestion\PublicApi;
 
 use ILIAS\AssessmentQuestion\DomainModel\ContentEditingMode;
 use ILIAS\AssessmentQuestion\DomainModel\Question;
@@ -28,7 +28,7 @@ use ILIAS\AssessmentQuestion\Infrastructure\Persistence\EventStore\QuestionEvent
  * @author  Martin Studer <ms@studer-raimann.ch>
  * @author  Theodor Truffer <tt@studer-raimann.ch>
  *
- * @package ILIAS\Services\AssessmentQuestion\PublicApi\Factory
+ * @package ILIAS\Services\AssessmentQuestion\PublicApi
  */
 class QuestionService extends ASQService
 {

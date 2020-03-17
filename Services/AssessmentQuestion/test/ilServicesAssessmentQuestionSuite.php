@@ -3,8 +3,6 @@
 
 use PHPUnit\Framework\TestSuite;
 
-require_once('./libs/composer/vendor/autoload.php');
-
 /**
  * Class ilServicesAssessmentQuestionSuite
  *
@@ -18,19 +16,18 @@ class ilServicesAssessmentQuestionSuite extends TestSuite
 	 * @var array
 	 */
 	protected static $testSuites = array(
-		
-		'Services/AssessmentQuestion/test/ilHelloWorldTest.php' => 'ilHelloWorldTest'
-		
+		'Services/AssessmentQuestion/test/ClozeQuestionTest.php' => 'ILIAS\AssessmentQuestion\Questions\Cloze\ClozeQuestionTest'
 	);
 	
-	/**
-	 * @return ilServicesAssessmentQuestionSuite
-	 * @throws ReflectionException
-	 */
 	public static function suite()
 	{
-		chdir( dirname( __FILE__ ) );
-		chdir('../../../');
+	    if (defined('ILIAS_PHPUNIT_CONTEXT')) {
+	        include_once("./Services/PHPUnit/classes/class.ilUnitUtil.php");
+	        ilUnitUtil::performInitialisation();
+	    } else {
+	        chdir(dirname(__FILE__));
+	        chdir('../../../');
+	    }
 
 		$suite = new ilServicesAssessmentQuestionSuite();
 	

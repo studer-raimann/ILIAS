@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace ILIAS\Services\AssessmentQuestion\PublicApi\Factory;
+namespace ILIAS\Services\AssessmentQuestion\PublicApi;
 
 /**
  * Class ASQService
@@ -12,7 +12,7 @@ namespace ILIAS\Services\AssessmentQuestion\PublicApi\Factory;
  * @author  Martin Studer <ms@studer-raimann.ch>
  * @author  Theodor Truffer <tt@studer-raimann.ch>
  *
- * @package ILIAS\Services\AssessmentQuestion\PublicApi\Factory
+ * @package ILIAS\Services\AssessmentQuestion\PublicApi
  */
 abstract class ASQService {
     /**
