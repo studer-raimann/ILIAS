@@ -327,6 +327,23 @@ class ilDclTableViewFieldSetting extends ActiveRecord
 
 
     /**
+     * @param bool $visible_create
+     */
+    public function setNotVisibleCreate($not_visible_create) {
+        $this->visible_create = !$not_visible_create;
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function isNotVisibleCreate()
+    {
+        return !$this->visible_create;
+    }
+
+
+    /**
      * @return bool
      */
     public function isVisibleEdit()
@@ -341,6 +358,24 @@ class ilDclTableViewFieldSetting extends ActiveRecord
     public function setVisibleEdit($visible_edit)
     {
         $this->visible_edit = $visible_edit;
+    }
+
+
+    /**
+     * @param bool $visible_edit
+     */
+    public function setNotVisibleEdit($not_visible_edit)
+    {
+        $this->visible_edit = !$not_visible_edit;
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function isNotVisibleEdit()
+    {
+        return !$this->visible_edit;
     }
 
 

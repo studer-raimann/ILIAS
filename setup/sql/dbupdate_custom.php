@@ -104,3 +104,78 @@ if ($ilDB->tableColumnExists('il_dcl_field', 'is_locked')) {
     $ilDB->dropTableColumn('il_dcl_field', 'is_locked');
 }
 ?>
+<#8>
+<?php
+if (!$ilDB->tableColumnExists('il_dcl_tableview', 'step_vs')) {
+    $ilDB->addTableColumn(
+        'il_dcl_tableview',
+        'step_vs',
+        array(
+            'type'    => 'integer',
+            'length'  => 1,
+            'notnull' => true,
+            'default' => 1
+        )
+    );
+}
+?>
+<#9>
+<?php
+if (!$ilDB->tableColumnExists('il_dcl_tableview', 'step_c')) {
+    $ilDB->addTableColumn(
+        'il_dcl_tableview',
+        'step_c',
+        array(
+            'type'    => 'integer',
+            'length'  => 1,
+            'notnull' => true,
+            'default' => 0
+        )
+    );
+}
+?>
+<#10>
+<?php
+if (!$ilDB->tableColumnExists('il_dcl_tableview', 'step_e')) {
+    $ilDB->addTableColumn(
+        'il_dcl_tableview',
+        'step_e',
+        array(
+            'type'    => 'integer',
+            'length'  => 1,
+            'notnull' => true,
+            'default' => 0
+        )
+    );
+}
+?>
+<#11>
+<?php
+if (!$ilDB->tableColumnExists('il_dcl_tableview', 'step_o')) {
+    $ilDB->addTableColumn(
+        'il_dcl_tableview',
+        'step_o',
+        array(
+            'type'    => 'integer',
+            'length'  => 1,
+            'notnull' => true,
+            'default' => 0
+        )
+    );
+}
+?>
+<#12>
+<?php
+if (!$ilDB->tableColumnExists('il_dcl_tableview', 'step_s')) {
+    $ilDB->addTableColumn(
+        'il_dcl_tableview',
+        'step_s',
+        array(
+            'type'    => 'integer',
+            'length'  => 1,
+            'notnull' => true,
+            'default' => 0
+        )
+    );
+}
+?>

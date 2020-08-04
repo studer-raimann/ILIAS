@@ -59,6 +59,7 @@ class ilDclCreateViewDefinitionGUI extends ilPageObjectGUI
         $table = new ilDclCreateViewTableGUI($this);
         $this->table_gui = $table;
         $this->tpl->setContent($table->getHTML());
+
     }
 
 
@@ -238,10 +239,22 @@ class ilDclCreateViewDefinitionGUI extends ilPageObjectGUI
         foreach ($this->tableview->getFieldSettings() as $setting) {
 
             if (!$setting->getFieldObject()->isStandardField()) {
-                // Checkboxes
-                foreach (array("Locked", "Required", "VisibleCreate") as $attribute) {
-                    $key = $attribute . '_' . $setting->getField();
-                    $setting->{'set' . $attribute}($_POST[$key] == 'on');
+
+                // Radio Inputs
+                foreach (array("RadioGroup") as $attribute) {
+                    $selection_key = $attribute . '_' . $setting->getField();
+                    $selection = $_POST[$selection_key];
+                    $selected_radio_attribute = explode("_", $selection)[0];
+
+                    foreach (array("Locked", "Required", "VisibleCreate", "NotVisibleCreate") as $radio_attribute) {
+                        $result = false;
+
+                        if ($selected_radio_attribute === $radio_attribute) {
+                            $result = true;
+                        }
+
+                        $setting->{'set' . $radio_attribute}($result);
+                    }
                 }
 
                 // Text Inputs
@@ -252,6 +265,13 @@ class ilDclCreateViewDefinitionGUI extends ilPageObjectGUI
 
                 $setting->update();
             }
+        }
+
+        // Set Workflow flag to true
+        $view = ilDclTableView::getCollection()->where(array("id" => filter_input(INPUT_GET, "tableview_id")))->first();
+        if (!is_null($view)) {
+            $view->setStepC(true);
+            $view->save();
         }
 
         ilUtil::sendSuccess($this->lng->txt('dcl_msg_tableview_updated'), true);

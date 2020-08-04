@@ -1,15 +1,26 @@
 <tr class="{CSS_ROW}" id="{ID}">
 	<td class="name">{TITLE}</td>
 	<td class="std">
-		<input type="checkbox" name="Locked_{FIELD_ID}" {IS_LOCKED} {HIDDEN}>
+		<input type="radio" id="v_{FIELD_ID}" name="RadioGroup_{FIELD_ID}" value="VisibleCreate_{FIELD_ID}" {HIDDEN} {IS_VISIBLE}>
+		<label for="v_{FIELD_ID}" {HIDDEN}>{TEXT_VISIBLE}</label>
+		<input type="radio" id="rv_{FIELD_ID}" name="RadioGroup_{FIELD_ID}" value="Required_{FIELD_ID}" {HIDDEN} {IS_REQUIRED}>
+		<label for="rv_{FIELD_ID}" {HIDDEN}>{TEXT_REQUIRED_VISIBLE}</label>
+		<input type="radio" id="lv_{FIELD_ID}" name="RadioGroup_{FIELD_ID}" value="Locked_{FIELD_ID}" {HIDDEN} {IS_LOCKED}>
+		<label for="lv_{FIELD_ID}" {HIDDEN}>{TEXT_LOCKED_VISIBLE}</label>
+		<input type="radio" id="nv_{FIELD_ID}" name="RadioGroup_{FIELD_ID}" value="NotVisibleCreate_{FIELD_ID}" {HIDDEN} {IS_NOT_VISIBLE}>
+		<label for="nv_{FIELD_ID}" {HIDDEN}>{TEXT_NOT_VISIBLE}</label>
 	</td>
+	<!--
 	<td class="std">
 		<input type="checkbox" name="Required_{FIELD_ID}" {IS_REQUIRED} {HIDDEN}>
 	</td>
+	-->
 	<td class="std">
 		<input type="text" name="DefaultValue_{FIELD_ID}" value="{DEFAULT_VALUE}" {HIDDEN}>
 	</td>
+	<!--
 	<td class="std">
 		<input type="checkbox" name="VisibleCreate_{FIELD_ID}" {IS_VISIBLE} {HIDDEN}>
 	</td>
+	-->
 </tr>

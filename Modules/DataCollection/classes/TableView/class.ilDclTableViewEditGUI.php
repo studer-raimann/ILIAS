@@ -149,9 +149,42 @@ class ilDclTableViewEditGUI
                         $this->tpl->setContent($ilDclTableViewEditFormGUI->getHTML());
                         break;
                     case 'editGeneralSettings':
+                        $settings_tpl = new ilTemplate("tpl.dcl_settings.html", true, true, "Modules/DataCollection");
                         $this->setTabs('general_settings');
                         $ilDclTableViewEditFormGUI = new ilDclTableViewEditFormGUI($this, $this->tableview);
-                        $this->tpl->setContent($ilDclTableViewEditFormGUI->getHTML());
+
+                        global $DIC;
+                        $f = $DIC->ui()->factory()->listing()->workflow();
+                        $renderer = $DIC->ui()->renderer();
+
+                        // Set Workflow flag to true
+                        $view = ilDclTableView::getCollection()->where(array("id" => filter_input(INPUT_GET, "tableview_id")))->first();
+                        if (!is_null($view)) {
+                            //setup steps
+                            $step = $f->step('', '');
+                            $steps = [
+                                $f->step($this->lng->txt('dcl_view_settings'))
+                                    ->withAvailability($step::AVAILABLE)->withStatus($view->getStepVs() ? 3 : 4),
+                                $f->step($this->lng->txt('dcl_create_entry_rules'))
+                                    ->withAvailability($step::AVAILABLE)->withStatus($view->getStepC() ? 3 : 4),
+                                $f->step($this->lng->txt('dcl_edit_entry_rules'))
+                                    ->withAvailability($step::AVAILABLE)->withStatus($view->getStepE() ? 3 : 4),
+                                $f->step($this->lng->txt('dcl_list_visibility_and_filter'))
+                                    ->withAvailability($step::AVAILABLE)->withStatus($view->getStepO() ? 3 : 4),
+                                $f->step($this->lng->txt('dcl_detailed_view'))
+                                    ->withAvailability($step::AVAILABLE)->withStatus($view->getStepS() ? 3 : 1),
+                            ];
+
+                            //setup linear workflow
+                            $wf = $f->linear($this->lng->txt('dcl_view_configuration'), $steps);
+                            $settings_tpl->setVariable("WORKFLOW", $renderer->render($wf));
+                        }
+
+
+
+                        $settings_tpl->setVariable("SETTINGS", $ilDclTableViewEditFormGUI->getHTML());
+
+                        $this->tpl->setContent($settings_tpl->get());
                         break;
                     case 'editFieldSettings':
                         $this->setTabs('field_settings');
@@ -169,11 +202,11 @@ class ilDclTableViewEditGUI
 
     protected function setTabs($active)
     {
-        $this->tabs_gui->addTab('general_settings', $this->lng->txt('settings'), $this->ctrl->getLinkTarget($this, 'editGeneralSettings'));
+        $this->tabs_gui->addTab('general_settings', $this->lng->txt('dcl_view_settings'), $this->ctrl->getLinkTarget($this, 'editGeneralSettings'));
+        $this->tabs_gui->addTab('create_view', $this->lng->txt('dcl_create_entry_rules'), $this->ctrl->getLinkTargetByClass('ilDclCreateViewDefinitionGUI', 'presentation'));
+        $this->tabs_gui->addTab('edit_view', $this->lng->txt('dcl_edit_entry_rules'), $this->ctrl->getLinkTargetByClass('ilDclEditViewDefinitionGUI', 'presentation'));
         $this->tabs_gui->addTab('field_settings', $this->lng->txt('dcl_list_visibility_and_filter'), $this->ctrl->getLinkTarget($this, 'editFieldSettings'));
         $this->tabs_gui->addTab('detailed_view', $this->lng->txt('dcl_detailed_view'), $this->ctrl->getLinkTargetByClass('ilDclDetailedViewDefinitionGUI', 'edit'));
-        $this->tabs_gui->addTab('edit_view', $this->lng->txt('dcl_edit_entry_rules'), $this->ctrl->getLinkTargetByClass('ilDclEditViewDefinitionGUI', 'presentation'));
-        $this->tabs_gui->addTab('create_view', $this->lng->txt('dcl_create_entry_rules'), $this->ctrl->getLinkTargetByClass('ilDclCreateViewDefinitionGUI', 'presentation'));
         $this->tabs_gui->setTabActive($active);
     }
 
@@ -238,6 +271,14 @@ class ilDclTableViewEditGUI
 
             $setting->update();
         }
+
+        // Set Workflow flag to true
+        $view = ilDclTableView::getCollection()->where(array("id" => filter_input(INPUT_GET, "tableview_id")))->first();
+        if (!is_null($view)) {
+            $view->setStepO(true);
+            $view->save();
+        }
+
         ilUtil::sendSuccess($this->lng->txt('dcl_msg_tableview_updated'), true);
         $this->ctrl->saveParameter($this->parent_obj, 'tableview_id');
         $this->ctrl->redirect($this, 'editFieldSettings');

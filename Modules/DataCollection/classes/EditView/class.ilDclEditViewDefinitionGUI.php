@@ -239,7 +239,7 @@ class ilDclEditViewDefinitionGUI extends ilPageObjectGUI
 
             if (!$setting->getFieldObject()->isStandardField()) {
                 // Checkboxes from custom fields
-                foreach (array("Locked", "Required", "VisibleEdit") as $attribute) {
+                foreach (array("Locked", "Required", "VisibleEdit", "NotVisibleEdit") as $attribute) {
                     $key = $attribute . '_' . $setting->getField();
                     $setting->{'set' . $attribute}($_POST[$key] == 'on');
                 }
@@ -252,6 +252,13 @@ class ilDclEditViewDefinitionGUI extends ilPageObjectGUI
                 }
             }
             $setting->update();
+        }
+
+        // Set Workflow flag to true
+        $view = ilDclTableView::getCollection()->where(array("id" => filter_input(INPUT_GET, "tableview_id")))->first();
+        if (!is_null($view)) {
+            $view->setStepE(true);
+            $view->save();
         }
 
         ilUtil::sendSuccess($this->lng->txt('dcl_msg_tableview_updated'), true);

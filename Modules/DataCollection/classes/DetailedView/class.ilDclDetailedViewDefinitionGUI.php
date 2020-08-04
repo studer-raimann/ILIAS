@@ -137,6 +137,25 @@ class ilDclDetailedViewDefinitionGUI extends ilPageObjectGUI
     }
 
 
+    public function editActivation()
+    {
+        parent::editActivation();
+    }
+
+
+    public function edit()
+    {
+        return parent::edit();
+    }
+
+
+
+    public function setEditPreview($a_editpreview)
+    {
+        parent::setEditPreview($a_editpreview);
+    }
+
+
     /**
      *
      */

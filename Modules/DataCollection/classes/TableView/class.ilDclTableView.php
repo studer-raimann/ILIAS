@@ -65,6 +65,46 @@ class ilDclTableView extends ActiveRecord
      */
     protected $tableview_order;
     /**
+     * @var bool
+     *
+     * @db_has_field        true
+     * @db_fieldtype        integer
+     * @db_length           1
+     */
+    protected $step_vs;
+    /**
+     * @var bool
+     *
+     * @db_has_field        true
+     * @db_fieldtype        integer
+     * @db_length           1
+     */
+    protected $step_c;
+    /**
+     * @var bool
+     *
+     * @db_has_field        true
+     * @db_fieldtype        integer
+     * @db_length           1
+     */
+    protected $step_e;
+    /**
+     * @var bool
+     *
+     * @db_has_field        true
+     * @db_fieldtype        integer
+     * @db_length           1
+     */
+    protected $step_o;
+    /**
+     * @var bool
+     *
+     * @db_has_field        true
+     * @db_fieldtype        integer
+     * @db_length           1
+     */
+    protected $step_s;
+    /**
      * @var ilDclBaseFieldModel[]
      */
     protected $visible_fields_cache;
@@ -185,6 +225,96 @@ class ilDclTableView extends ActiveRecord
     public function setTableviewOrder($tableview_order)
     {
         $this->tableview_order = $tableview_order;
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function isStepVs() : bool
+    {
+        return $this->step_vs;
+    }
+
+
+    /**
+     * @param bool $step_vs
+     */
+    public function setStepVs(bool $step_vs) : void
+    {
+        $this->step_vs = $step_vs;
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function isStepC() : bool
+    {
+        return $this->step_c;
+    }
+
+
+    /**
+     * @param bool $step_c
+     */
+    public function setStepC(bool $step_c) : void
+    {
+        $this->step_c = $step_c;
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function isStepE() : bool
+    {
+        return $this->step_e;
+    }
+
+
+    /**
+     * @param bool $step_e
+     */
+    public function setStepE(bool $step_e) : void
+    {
+        $this->step_e = $step_e;
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function isStepO() : bool
+    {
+        return $this->step_o;
+    }
+
+
+    /**
+     * @param bool $step_o
+     */
+    public function setStepO(bool $step_o) : void
+    {
+        $this->step_o = $step_o;
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function isStepS() : bool
+    {
+        return $this->step_s;
+    }
+
+
+    /**
+     * @param bool $step_s
+     */
+    public function setStepS(bool $step_s) : void
+    {
+        $this->step_s = $step_s;
     }
 
 
