@@ -10128,6 +10128,7 @@ dcl#:#dcl_list_fields#:#Fields
 dcl#:#dcl_list_visibility_and_filter#:#Overview
 dcl#:#dcl_view_settings#:#View Settings
 dcl#:#dcl_view_configuration#:#View Configuration
+dcl#:#dcl_configuration_complete#:#Configuration Complete
 dcl#:#dcl_add_new_field#:#Add New Field
 dcl#:#dcl_add_new_table#:#Add New Table
 dcl#:#dcl_add_new_view#:#Add New View

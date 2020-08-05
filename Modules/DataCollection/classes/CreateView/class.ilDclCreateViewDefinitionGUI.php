@@ -246,7 +246,7 @@ class ilDclCreateViewDefinitionGUI extends ilPageObjectGUI
                     $selection = $_POST[$selection_key];
                     $selected_radio_attribute = explode("_", $selection)[0];
 
-                    foreach (array("Locked", "Required", "VisibleCreate", "NotVisibleCreate") as $radio_attribute) {
+                    foreach (array("LockedCreate", "RequiredCreate", "VisibleCreate", "NotVisibleCreate") as $radio_attribute) {
                         $result = false;
 
                         if ($selected_radio_attribute === $radio_attribute) {

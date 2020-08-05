@@ -232,26 +232,39 @@ class ilDclEditViewDefinitionGUI extends ilPageObjectGUI
      * Save table entries
      */
     public function saveTable() {
+        // die(var_dump($_POST));
         /**
          * @var ilDclTableViewFieldSetting $setting
          */
         foreach ($this->tableview->getFieldSettings() as $setting) {
 
             if (!$setting->getFieldObject()->isStandardField()) {
-                // Checkboxes from custom fields
-                foreach (array("Locked", "Required", "VisibleEdit", "NotVisibleEdit") as $attribute) {
-                    $key = $attribute . '_' . $setting->getField();
-                    $setting->{'set' . $attribute}($_POST[$key] == 'on');
-                }
-            } else {
-                if ($setting->getField() === 'owner') {
-                    foreach (array("Locked", "VisibleEdit") as $attribute) {
-                        $key = $attribute . '_' . $setting->getField();
-                        $setting->{'set' . $attribute}($_POST[$key] == 'on');
+
+                // Radio Inputs
+                foreach (array("RadioGroup") as $attribute) {
+                    $selection_key = $attribute . '_' . $setting->getField();
+                    $selection = $_POST[$selection_key];
+                    $selected_radio_attribute = explode("_", $selection)[0];
+
+                    foreach (array("LockedEdit", "RequiredEdit", "VisibleEdit", "NotVisibleEdit") as $radio_attribute) {
+                        $result = false;
+
+                        if ($selected_radio_attribute === $radio_attribute) {
+                            $result = true;
+                        }
+
+                        $setting->{'set' . $radio_attribute}($result);
                     }
                 }
+
+                // Text Inputs
+                foreach (array("DefaultValue") as $attribute) {
+                    $key = $attribute . '_' . $setting->getField();
+                    $setting->{'set' . $attribute}($_POST[$key]);
+                }
+
+                $setting->update();
             }
-            $setting->update();
         }
 
         // Set Workflow flag to true

@@ -231,7 +231,7 @@ class ilDclTableView extends ActiveRecord
     /**
      * @return bool
      */
-    public function isStepVs() : bool
+    public function isStepVs()
     {
         return $this->step_vs;
     }
@@ -240,7 +240,7 @@ class ilDclTableView extends ActiveRecord
     /**
      * @param bool $step_vs
      */
-    public function setStepVs(bool $step_vs) : void
+    public function setStepVs($step_vs)
     {
         $this->step_vs = $step_vs;
     }
@@ -249,7 +249,7 @@ class ilDclTableView extends ActiveRecord
     /**
      * @return bool
      */
-    public function isStepC() : bool
+    public function isStepC()
     {
         return $this->step_c;
     }
@@ -258,7 +258,7 @@ class ilDclTableView extends ActiveRecord
     /**
      * @param bool $step_c
      */
-    public function setStepC(bool $step_c) : void
+    public function setStepC($step_c)
     {
         $this->step_c = $step_c;
     }
@@ -267,7 +267,7 @@ class ilDclTableView extends ActiveRecord
     /**
      * @return bool
      */
-    public function isStepE() : bool
+    public function isStepE()
     {
         return $this->step_e;
     }
@@ -276,7 +276,7 @@ class ilDclTableView extends ActiveRecord
     /**
      * @param bool $step_e
      */
-    public function setStepE(bool $step_e) : void
+    public function setStepE($step_e)
     {
         $this->step_e = $step_e;
     }
@@ -285,7 +285,7 @@ class ilDclTableView extends ActiveRecord
     /**
      * @return bool
      */
-    public function isStepO() : bool
+    public function isStepO()
     {
         return $this->step_o;
     }
@@ -294,7 +294,7 @@ class ilDclTableView extends ActiveRecord
     /**
      * @param bool $step_o
      */
-    public function setStepO(bool $step_o) : void
+    public function setStepO($step_o)
     {
         $this->step_o = $step_o;
     }
@@ -303,7 +303,7 @@ class ilDclTableView extends ActiveRecord
     /**
      * @return bool
      */
-    public function isStepS() : bool
+    public function isStepS()
     {
         return $this->step_s;
     }
@@ -312,7 +312,7 @@ class ilDclTableView extends ActiveRecord
     /**
      * @param bool $step_s
      */
-    public function setStepS(bool $step_s) : void
+    public function setStepS($step_s)
     {
         $this->step_s = $step_s;
     }
@@ -604,5 +604,17 @@ class ilDclTableView extends ActiveRecord
         $view->create($create_default_settings);
 
         return $view;
+    }
+
+
+    /**
+     * Check if the configuration of the view is complete. The step "single" is
+     * optional and therefore omitted.
+     *
+     * @return bool
+     */
+    public function validateConfigCompletion()
+    {
+        return $this->step_vs && $this->step_c && $this->step_e && $this->step_o;
     }
 }

@@ -9979,6 +9979,7 @@ dcl#:#dcl_list_fields#:#Felder
 dcl#:#dcl_list_visibility_and_filter#:#Übersicht
 dcl#:#dcl_view_settings#:#Ansichtseinstellungen
 dcl#:#dcl_view_configuration#:#Ansichtskonfiguration
+dcl#:#dcl_configuration_complete#:#Konfiguration abgeschlossen
 dcl#:#dcl_record#:#Eintrag
 dcl#:#dcl_add_new_field#:#Feld hinzufügen
 dcl#:#dcl_add_new_table#:#Neue Tabelle hinzufügen

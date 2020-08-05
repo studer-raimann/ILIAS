@@ -59,11 +59,11 @@ class ilDclEditViewTableGUI extends ilTable2GUI
             $this->tpl->setVariable('TEXT_REQUIRED_VISIBLE', $lng->txt('dcl_tableview_required_visible'));
             $this->tpl->setVariable('TEXT_LOCKED_VISIBLE', $lng->txt('dcl_tableview_locked_visible'));
             $this->tpl->setVariable('TEXT_NOT_VISIBLE', $lng->txt('dcl_tableview_not_visible'));
-            $this->tpl->setVariable('IS_LOCKED', $a_set->isLocked() ? 'checked' : '');
-            $this->tpl->setVariable('IS_REQUIRED', $a_set->isRequired() ? 'checked' : '');
+            $this->tpl->setVariable('IS_LOCKED', $a_set->isLockedEdit() ? 'checked' : '');
+            $this->tpl->setVariable('IS_REQUIRED', $a_set->isRequiredEdit() ? 'checked' : '');
             $this->tpl->setVariable('DEFAULT_VALUE', $a_set->getDefaultValue());
-            $this->tpl->setVariable('IS_VISIBLE', $a_set->isVisibleCreate() ? 'checked' : '');
-            $this->tpl->setVariable('IS_NOT_VISIBLE', !$a_set->isVisibleCreate() ? 'checked' : '');
+            $this->tpl->setVariable('IS_VISIBLE', $a_set->isVisibleEdit() ? 'checked' : '');
+            $this->tpl->setVariable('IS_NOT_VISIBLE', !$a_set->isVisibleEdit() ? 'checked' : '');
         } else {
             $this->tpl->setVariable('HIDDEN', 'hidden');
         }

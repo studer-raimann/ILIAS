@@ -43,14 +43,6 @@ class ilDclTableViewFieldSetting extends ActiveRecord
      */
     protected $field;
     /**
-     * @var bool
-     *
-     * @db_has_field        true
-     * @db_fieldtype        integer
-     * @db_length           1
-     */
-    protected $visible;
-    /**
      * @var boolean
      *
      * @db_has_field        true
@@ -81,7 +73,7 @@ class ilDclTableViewFieldSetting extends ActiveRecord
      * @db_fieldtype        integer
      * @db_length           1
      */
-    protected $required;
+    protected $required_create;
     /**
      * @var bool
      *
@@ -89,7 +81,7 @@ class ilDclTableViewFieldSetting extends ActiveRecord
      * @db_fieldtype        integer
      * @db_length           1
      */
-    protected $locked;
+    protected $locked_create;
     /**
      * @var string
      *
@@ -116,6 +108,22 @@ class ilDclTableViewFieldSetting extends ActiveRecord
      * @db_length           1
      */
     protected $visible_edit;
+    /**
+     * @var bool
+     *
+     * @db_has_field        true
+     * @db_fieldtype        integer
+     * @db_length           1
+     */
+    protected $required_edit;
+    /**
+     * @var bool
+     *
+     * @db_has_field        true
+     * @db_fieldtype        integer
+     * @db_length           1
+     */
+    protected $locked_edit;
 
 
     /**
@@ -161,24 +169,6 @@ class ilDclTableViewFieldSetting extends ActiveRecord
     public function setField($field)
     {
         $this->field = $field;
-    }
-
-
-    /**
-     * @return boolean
-     */
-    public function isVisible()
-    {
-        return $this->visible;
-    }
-
-
-    /**
-     * @param boolean $visible
-     */
-    public function setVisible($visible)
-    {
-        $this->visible = $visible;
     }
 
 
@@ -257,36 +247,72 @@ class ilDclTableViewFieldSetting extends ActiveRecord
     /**
      * @return bool
      */
-    public function isRequired()
+    public function isRequiredCreate()
     {
-        return $this->required;
+        return $this->required_create;
     }
 
 
     /**
-     * @param bool $required
+     * @param bool $required_create
      */
-    public function setRequired($required)
+    public function setRequiredCreate($required_create)
     {
-        $this->required = $required;
+        $this->required_create = $required_create;
     }
 
 
     /**
      * @return bool
      */
-    public function isLocked()
+    public function isLockedCreate()
     {
-        return $this->locked;
+        return $this->locked_create;
     }
 
 
     /**
-     * @param bool $locked
+     * @param bool $locked_create
      */
-    public function setLocked($locked)
+    public function setLockedCreate($locked_create)
     {
-        $this->locked = $locked;
+        $this->locked_create = $locked_create;
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function isRequiredEdit()
+    {
+        return $this->required_edit;
+    }
+
+
+    /**
+     * @param bool $required_edit
+     */
+    public function setRequiredEdit($required_edit)
+    {
+        $this->required_edit = $required_edit;
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function isLockedEdit()
+    {
+        return $this->locked_edit;
+    }
+
+
+    /**
+     * @param bool $locked_edit
+     */
+    public function setLockedEdit($locked_edit)
+    {
+        $this->locked_edit = $locked_edit;
     }
 
 
@@ -424,7 +450,12 @@ class ilDclTableViewFieldSetting extends ActiveRecord
     {
         $this->setFilterChangeable($orig->isFilterChangeable());
         $this->setInFilter($orig->isInFilter());
-        $this->setVisible($orig->isVisible());
+        $this->setVisibleCreate($orig->isVisibleCreate());
+        $this->setVisibleEdit($orig->isVisibleEdit());
+        $this->setLockedCreate($orig->isLockedCreate());
+        $this->setLockedEdit($orig->isLockedEdit());
+        $this->setRequiredCreate($orig->isRequiredCreate());
+        $this->setRequiredEdit($orig->isRequiredEdit());
         $this->setFilterValue($orig->getFilterValue());
         $this->create();
     }

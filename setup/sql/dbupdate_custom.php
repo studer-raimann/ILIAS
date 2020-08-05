@@ -14,10 +14,10 @@ if (!$ilDB->tableColumnExists('il_dcl_tview_set', 'default_value')) {
 ?>
 <#2>
 <?php
-if (!$ilDB->tableColumnExists('il_dcl_tview_set', 'required')) {
+if (!$ilDB->tableColumnExists('il_dcl_tview_set', 'required_create')) {
     $ilDB->addTableColumn(
         'il_dcl_tview_set',
-        'required',
+        'required_create',
         array(
             'type'    => 'integer',
             'length'  => 1,
@@ -29,10 +29,10 @@ if (!$ilDB->tableColumnExists('il_dcl_tview_set', 'required')) {
 ?>
 <#3>
 <?php
-if (!$ilDB->tableColumnExists('il_dcl_tview_set', 'locked')) {
+if (!$ilDB->tableColumnExists('il_dcl_tview_set', 'locked_create')) {
     $ilDB->addTableColumn(
         'il_dcl_tview_set',
-        'locked',
+        'locked_create',
         array(
             'type'    => 'integer',
             'length'  => 1,
@@ -170,6 +170,36 @@ if (!$ilDB->tableColumnExists('il_dcl_tableview', 'step_s')) {
     $ilDB->addTableColumn(
         'il_dcl_tableview',
         'step_s',
+        array(
+            'type'    => 'integer',
+            'length'  => 1,
+            'notnull' => true,
+            'default' => 0
+        )
+    );
+}
+?>
+<#13>
+<?php
+if (!$ilDB->tableColumnExists('il_dcl_tview_set', 'required_edit')) {
+    $ilDB->addTableColumn(
+        'il_dcl_tview_set',
+        'required_edit',
+        array(
+            'type'    => 'integer',
+            'length'  => 1,
+            'notnull' => true,
+            'default' => 0
+        )
+    );
+}
+?>
+<#14>
+<?php
+if (!$ilDB->tableColumnExists('il_dcl_tview_set', 'locked_edit')) {
+    $ilDB->addTableColumn(
+        'il_dcl_tview_set',
+        'locked_edit',
         array(
             'type'    => 'integer',
             'length'  => 1,
