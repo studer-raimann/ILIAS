@@ -43,6 +43,14 @@ class ilDclTableViewFieldSetting extends ActiveRecord
      */
     protected $field;
     /**
+     * @var bool
+     *
+     * @db_has_field        true
+     * @db_fieldtype        integer
+     * @db_length           1
+     */
+    protected $visible;
+    /**
      * @var boolean
      *
      * @db_has_field        true
@@ -169,6 +177,24 @@ class ilDclTableViewFieldSetting extends ActiveRecord
     public function setField($field)
     {
         $this->field = $field;
+    }
+
+
+    /**
+     * @return boolean
+     */
+    public function isVisible()
+    {
+        return $this->visible;
+    }
+
+
+    /**
+     * @param boolean $visible
+     */
+    public function setVisible($visible)
+    {
+        $this->visible = $visible;
     }
 
 
@@ -458,6 +484,7 @@ class ilDclTableViewFieldSetting extends ActiveRecord
         $this->setRequiredEdit($orig->isRequiredEdit());
         $this->setFilterValue($orig->getFilterValue());
         $this->create();
+        return $this->getId();
     }
 
 

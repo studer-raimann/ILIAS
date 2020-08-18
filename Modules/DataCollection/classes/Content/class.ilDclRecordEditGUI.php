@@ -315,7 +315,16 @@ class ilDclRecordEditGUI
                             $item->setRequired($field_setting->isRequired());
                         }
 
-                        $item->setValue($field_setting->getDefaultValue());
+                        $f = new ilDclDefaultValueFactory();
+
+                        $matches = $f->find($field_setting->getFieldObject()->getDatatypeId(), $field_setting->getId());
+
+                        if (!is_null($matches)) {
+                            $first_element = reset($matches);
+                            if ($first_element !== false) {
+                                $item->setValue($first_element->getValue());
+                            }
+                        }
 
                         $this->form->addItem($item);
                     }

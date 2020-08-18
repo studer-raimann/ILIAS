@@ -497,8 +497,10 @@ class ilDclTableView extends ActiveRecord
             $field_set->setField($field_id);
             $field_set->setVisible(!ilDclStandardField::_isStandardField($field_id));
             $field_set->setFilterChangeable(true);
-            $field_set->setLocked(false);
-            $field_set->setRequired(true);
+            $field_set->setLockedCreate(false);
+            $field_set->setLockedEdit(false);
+            $field_set->setRequiredCreate(false);
+            $field_set->setRequiredEdit(false);
             $field_set->setVisibleCreate(true);
             $field_set->setVisibleEdit(true);
             $field_set->create();
@@ -517,7 +519,16 @@ class ilDclTableView extends ActiveRecord
         $this->setOrder($orig->getOrder());
         $this->setDescription($orig->getDescription());
         $this->setRoles($orig->getRoles());
+        $this->setStepVs($orig->isStepVs());
+        $this->setStepC($orig->isStepC());
+        $this->setStepE($orig->isStepE());
+        $this->setStepO($orig->isStepO());
+        $this->setStepS($orig->isStepS());
         $this->create(false); //create default setting, adjust them later
+
+        //clone default values
+        $f = new ilDclDefaultValueFactory();
+
 
         //clone fieldsettings
         foreach ($orig->getFieldSettings() as $orig_fieldsetting) {
@@ -530,7 +541,19 @@ class ilDclTableView extends ActiveRecord
                 //standard fields
                 $new_fieldsetting->setField($orig_fieldsetting->getField());
             }
-            $new_fieldsetting->cloneStructure($orig_fieldsetting);
+            $new_field_id = $new_fieldsetting->cloneStructure($orig_fieldsetting);
+
+            //clone default value
+            $f = new ilDclDefaultValueFactory();
+            $datatype = $orig_fieldsetting->getFieldObject()->getDatatypeId();
+            $match = $f->find($datatype, $orig_fieldsetting->getId());
+
+            if (!is_null($match)) {
+                $new_default_value = $f->create($datatype);
+                $new_default_value->setTviewSetId($new_field_id);
+                $new_default_value->setValue($match->getValue());
+                $new_default_value->create();
+            }
         }
 
         //clone pageobject

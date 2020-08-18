@@ -7,6 +7,16 @@
  */
 class ilDclCreateViewTableGUI extends ilTable2GUI
 {
+    const VALID_DEFAULT_VALUE_TYPES = [
+        ilDclDatatype::INPUTFORMAT_NUMBER,
+        ilDclDatatype::INPUTFORMAT_TEXT,
+        ilDclDatatype::INPUTFORMAT_BOOLEAN,
+        ilDclDatatype::INPUTFORMAT_DATETIME
+    ];
+
+    protected $default_value_factory;
+
+
     public function __construct(ilDclCreateViewDefinitionGUI $a_parent_obj)
     {
         global $DIC;
@@ -14,6 +24,7 @@ class ilDclCreateViewTableGUI extends ilTable2GUI
         $ilCtrl = $DIC['ilCtrl'];
         parent::__construct($a_parent_obj);
 
+        $this->default_value_factory = new ilDclDefaultValueFactory();
         $this->setId('dcl_tableviews');
         $this->setTitle($lng->txt('dcl_tableview_fieldsettings'));
         $this->addColumn($lng->txt('dcl_tableview_fieldtitle'), null, 'auto');
@@ -54,6 +65,14 @@ class ilDclCreateViewTableGUI extends ilTable2GUI
         global $DIC;
         $lng = $DIC['lng'];
         $field = $a_set->getFieldObject();
+        $match = $this->default_value_factory->find(intval($field->getDataTypeId()), $a_set->getId());
+
+        /** @var ilDclTextInputGUI $item */
+        $item = ilDclCache::getFieldRepresentation($field)->getInputField(new ilPropertyFormGUI());
+
+        if (!is_null($match)) {
+            $item->setValue($match->getValue());
+        }
 
         if (!$field->isStandardField()) {
             $this->tpl->setVariable('TEXT_VISIBLE', $lng->txt('dcl_tableview_visible'));
@@ -65,6 +84,10 @@ class ilDclCreateViewTableGUI extends ilTable2GUI
             $this->tpl->setVariable('DEFAULT_VALUE', $a_set->getDefaultValue());
             $this->tpl->setVariable('IS_VISIBLE', $a_set->isVisibleCreate() ? 'checked' : '');
             $this->tpl->setVariable('IS_NOT_VISIBLE', !$a_set->isVisibleCreate() ? 'checked' : '');
+            if (!is_null($item) && in_array($field->getDatatypeId(), self::VALID_DEFAULT_VALUE_TYPES)) {
+                $item->setPostVar("default_" . $a_set->getId() . "_" . $field->getDatatypeId());
+                $this->tpl->setVariable('INPUT', $item->render());
+            }
         } else {
             $this->tpl->setVariable('HIDDEN', 'hidden');
         }

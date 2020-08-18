@@ -233,6 +233,38 @@ class ilDclCreateViewDefinitionGUI extends ilPageObjectGUI
      * Save table entries
      */
     public function saveTable() {
+        $f = new ilDclDefaultValueFactory();
+        foreach ($_POST as $key => $value) {
+            if (strpos($key, "default_") === 0) {
+                $parts = explode("_", $key);
+                $id = $parts[1];
+                $data_type_id = intval($parts[2]);
+
+                // Delete all field values associated with this id
+                $existing_values = $f->find($data_type_id, $id);
+
+                foreach ($existing_values as $existing_value) {
+                    $existing_value->delete();
+                }
+
+                // Create fields
+                if ($value !== '') {
+                    // Check number field
+                    if ($data_type_id === ilDclDatatype::INPUTFORMAT_NUMBER) {
+                        if (!ctype_digit($value)) {
+                            ilUtil::sendFailure("--Wrong Datatype--", true);
+                            $this->ctrl->saveParameter($this, 'tableview_id');
+                            $this->ctrl->redirect($this, 'presentation');
+                        }
+                    }
+
+                    $default_value = $f->create($data_type_id);
+                    $default_value->setTviewSetId($id);
+                    $default_value->setValue($value);
+                    $default_value->create();
+                }
+            }
+        }
         /**
          * @var ilDclTableViewFieldSetting $setting
          */

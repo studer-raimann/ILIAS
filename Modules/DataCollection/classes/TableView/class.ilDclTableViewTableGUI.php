@@ -123,6 +123,7 @@ class ilDclTableViewTableGUI extends ilTable2GUI
             $this->ctrl->setParameterByClass('ildcltableviewgui', 'tableview_id', $id);
             $this->ctrl->setParameterByClass('ilDclDetailedViewDefinitionGUI', 'tableview_id', $id);
             $alist->addItem($this->lng->txt('edit'), '', $this->ctrl->getLinkTargetByClass('ildcltablevieweditgui', 'editGeneralSettings'));
+            $alist->addItem($this->lng->txt('copy'), '', $this->ctrl->getLinkTargetByClass('ildcltablevieweditgui', 'copy'));
             $alist->addItem($this->lng->txt('delete'), '', $this->ctrl->getLinkTargetByClass('ildcltablevieweditgui', 'confirmDelete'));
 
             return $alist->getHTML();

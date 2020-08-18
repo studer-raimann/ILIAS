@@ -209,3 +209,81 @@ if (!$ilDB->tableColumnExists('il_dcl_tview_set', 'locked_edit')) {
     );
 }
 ?>
+<#15>
+<?php
+$fields = array(
+    'id'       => array(
+        'type'   => 'integer',
+        'length' => '4',
+
+    ),
+    'tview_set_id' => array(
+        'type'   => 'integer',
+        'length' => '4',
+
+    ),
+    'value'      => array(
+        'type'   => 'text',
+        'length' => '4000',
+
+    )
+);
+
+if (!$ilDB->tableExists('il_dcl_stloc1_default')) {
+    $ilDB->createTable('il_dcl_stloc1_default', $fields);
+    $ilDB->addPrimaryKey('il_dcl_stloc1_default', array('id'));
+    $ilDB->createSequence("il_dcl_stloc1_default");
+}
+?>
+<#16>
+<?php
+$fields = array(
+    'id'       => array(
+        'type'   => 'integer',
+        'length' => '4',
+
+    ),
+    'tview_set_id' => array(
+        'type'   => 'integer',
+        'length' => '4',
+
+    ),
+    'value'      => array(
+        'type'   => 'integer',
+        'length' => '4',
+
+    )
+);
+
+if (!$ilDB->tableExists('il_dcl_stloc2_default')) {
+    $ilDB->createTable('il_dcl_stloc2_default', $fields);
+    $ilDB->addPrimaryKey('il_dcl_stloc2_default', array('id'));
+    $ilDB->createSequence("il_dcl_stloc2_default");
+}
+?>
+<#17>
+<?php
+$fields = array(
+    'id' => array(
+        'type' => 'integer',
+        'length' => 4,
+        'notnull' => true
+    ),
+    'tview_set_id' => array(
+        'type' => 'integer',
+        'length' => 4,
+        'notnull' => true
+    ),
+    'value' => array(
+        'type' => 'timestamp',
+        'notnull' => true
+    ),
+);
+
+if (!$ilDB->tableExists('il_dcl_stloc3_default')) {
+    $ilDB->createTable('il_dcl_stloc3_default', $fields);
+    $ilDB->addPrimaryKey('il_dcl_stloc3_default', array('id'));
+    $ilDB->createSequence("il_dcl_stloc3_default");
+}
+?>
+

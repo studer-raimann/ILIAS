@@ -365,4 +365,15 @@ class ilDclTableViewEditGUI
             );
         }
     }
+
+
+    public function copy()
+    {
+        $new_tableview = new ilDclTableView();
+        $new_tableview->setTableId($this->table->getId());
+        $new_tableview->cloneStructure($this->tableview, array());
+        $this->table->sortTableViews();
+        ilUtil::sendSuccess($this->lng->txt('--COPY SUCCESSFUL-- (probably not lol)'), true);
+        $this->cancel();
+    }
 }
