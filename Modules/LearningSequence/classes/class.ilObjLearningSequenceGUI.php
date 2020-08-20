@@ -65,6 +65,8 @@ class ilObjLearningSequenceGUI extends ilContainerGUI
     const CMD_CANCEL_DELETE = "cancelDelete";
     const CMD_DELETE_CONFIRMED = "confirmedDelete";
     const CMD_PERFORM_PASTE = 'performPasteIntoMultipleObjects';
+    const CMD_SHOW_TRASH = 'trash';
+    const CMD_UNDELETE = 'undelete';
 
     const TAB_VIEW_CONTENT = "view_content";
     const TAB_MANAGE = "manage";
@@ -126,6 +128,15 @@ class ilObjLearningSequenceGUI extends ilContainerGUI
 
         $this->object = $this->getObject();
         $this->data_factory = new \ILIAS\Data\Factory();
+    }
+
+    protected function recordLearningSequenceRead() {
+        ilChangeEvent::_recordReadEvent(
+            $this->object->getType(),
+            $this->object->getRefId(),
+            $this->object->getId(),
+            $this->user->getId()
+        );
     }
 
     public function executeCommand()
@@ -191,6 +202,10 @@ class ilObjLearningSequenceGUI extends ilContainerGUI
                 }
                 $this->ctrl->redirectByClass($struct, $cmd);
                 break;
+            case 'ilobjtestgui':
+                $struct = ['ilrepositorygui','ilobjtestgui'];
+                $this->ctrl->redirectByClass($struct, $cmd);
+                break;
 
             case false:
                 if ($cmd === '') {
@@ -249,6 +264,12 @@ class ilObjLearningSequenceGUI extends ilContainerGUI
                         break;
                     case self::CMD_PERFORM_PASTE:
                         $this->performPasteIntoMultipleObjectsObject();
+                        break;
+                    case self::CMD_SHOW_TRASH:
+                        $this->trashObject();
+                        break;
+                    case self::CMD_UNDELETE:
+                        $this->undeleteObject();
                         break;
 
                     case self::CMD_CANCEL_CUT:
@@ -322,9 +343,11 @@ class ilObjLearningSequenceGUI extends ilContainerGUI
         }
         if ($this->checkAccess("read")) {
             $this->learnerView(self::CMD_LEARNER_VIEW);
+            $this->recordLearningSequenceRead();
             return;
         }
         $this->info(self::CMD_INFO);
+        $this->recordLearningSequenceRead();
     }
 
     protected function manageContent(string $cmd = self::CMD_CONTENT)
@@ -513,7 +536,7 @@ class ilObjLearningSequenceGUI extends ilContainerGUI
                 || (
                     $this->getObject()->getLSSettings()->getMembersGallery()
                     &&
-                    $this->object->isMember((int) $this->user->getId())
+                    $this->getObject()->getLSRoles()->isMember((int) $this->user->getId())
                 )
             ) {
                 $this->tabs->addTab(
@@ -562,7 +585,7 @@ class ilObjLearningSequenceGUI extends ilContainerGUI
             $this->getLinkTarget(self::CMD_LEARNER_VIEW)
         );
 
-        if ($this->checkAccess("edit_permission")) {
+        if ($this->checkAccess("write")) {
             $this->tabs->addSubTab(
                 self::TAB_MANAGE,
                 $this->lng->txt(self::TAB_MANAGE),

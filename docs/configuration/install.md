@@ -20,6 +20,7 @@ ILIAS is a powerful Open Source Learning Management System for developing and re
    1. [Database Recommendations](#database-recommendations)
 1. [Manual Installation on Linux](#manual-installation-on-linux)
    1. [Git Clone/Checkout](#git-clonecheckout)
+   1. [Build PHP-Dependencies and Artifacts](#build-php-dependencies-and-artifacts)
 1. [Dependency Installation](#dependency-installation)
    1. [Apache Installation/Configuration](#apache-installationconfiguration)
    1. [PHP Installation/Configuration](#php-installationconfiguration)
@@ -27,6 +28,7 @@ ILIAS is a powerful Open Source Learning Management System for developing and re
       1. [MySQL Strict Mode \(5.6+\)](#mysql-strict-mode-56)
       1. [MySQL Perfomance tuning \(OPTIONAL\)](#mysql-perfomance-tuning-optional)
    1. [E-Mail Configuration \(OPTIONAL\)](#e-mail-configuration-optional)
+   1. [WebDAV Configuration \(OPTIONAL\)](#webdav-configuration-optional)
    1. [Install other Depedencies](#install-other-depedencies)
       1. [Optional Dependencies](#optional-dependencies)
    1. [Installation Wizard](#installation-wizard)
@@ -39,7 +41,7 @@ ILIAS is a powerful Open Source Learning Management System for developing and re
    1. [Major Upgrade](#major-upgrade)
    1. [Database Update](#database-update)
    1. [Information on Updates](#information-on-updates)
-1. [Upgrading Dependencies](#upgrading-dependencies)
+1. [DBMS](#dbms)
    1. [PHP](#php)
    1. [MySQL](#mysql)
    1. [ImageMagick](#imagemagick)
@@ -103,7 +105,7 @@ Please note that different configurations SHOULD be possible, but it might be ha
   * Server OS: Linux
   * Web Server: Apache 2.4 (mod_php, php-fpm)
   * Databases: MySQL/MariaDB 5.6 and 5.7 and Galera (experimental), PostgreSQL 9.x
-  * PHP: Version 7.2 and 7.3 are supported
+  * PHP: Version 7.2, 7.3 and 7.4 are supported
   * zip: 3.0+
   * unzip: 6.0+
   * Imagemagick: 6.8.9-9+
@@ -115,17 +117,18 @@ Please note that different configurations SHOULD be possible, but it might be ha
 ### Client
 
   * Desktop: Windows 7+, MacOS X 10.7+, Linux
-  * Web Browser: IE11+, Microsoft Edge, Firefox 14+, Chrome 18+, Safari 7+
+  * Web Browser: Microsoft Edge, Firefox 14+, Chrome 18+, Safari 7+
 
 <a name="database-recommendations"></a>
 ## Database Recommendations
 
-> Please note that installing ILIAS in utf8mb4-collations is currently not supported! ILIAS supports utf8mb3 only.
+> Please note that installing ILIAS in utf8mb4-collations is currently not supported! ILIAS supports UTF-8 (with 3 bytes per character, such as utf8_general_ci) only.
 
 We RECOMMEND to use MySQL/MariaDB with the following settings:
 
   * InnoDB storage engine
-  * utf8_general_ci
+  * Character Set: utf8
+  * Collation: utf8_general_ci
   * query_cache_size (> 16M)
   * join_buffer_size (> 128.0K, or always use indexes with joins)
   * table_open_cache (> 400)
@@ -151,18 +154,35 @@ We RECOMMEND to clone from GitHub as this will offer some kind of autoupdate for
 <a name="git-clonecheckout"></a>
 ## Git Clone/Checkout
 
-To checkout the ILIAS release 5.2 in ```/var/www/html/ilias/``` use the following commands:
+To checkout the ILIAS release 6 in ```/var/www/html/ilias/``` use the following commands:
 
 ```
 cd /var/www/html/
 git clone https://github.com/ILIAS-eLearning/ILIAS.git ilias
 cd ilias
-git checkout release_5-2
+git checkout release_6
 chown www-data:www-data /var/www/html/ilias -R
 ```
 The files SHOULD be owned by your webserver user/group (e.g. ```www-data``` or ```apache```) the mode SHOULD be 644 for files and 755 for directories.
 
 For more details on file access rights see [File Access Rights](#file-access-rights) in the Security section of this document.
+
+<a name="build-php-dependencies-and-artifacts"></a>
+## Build PHP-Dependencies and Artifacts
+
+The repository of ILIAS doesn't contain all code that is required to run. To
+download the required PHP-dependencies and to create static artifacts from
+the source, run the following in your ILIAS folder:
+
+```
+composer install --no-dev
+```
+
+This requires that the php dependency manager [composer](https://getcomposer.org/)
+is available in your $PATH.
+
+The files SHOULD be owned by your webserver user/group (e.g. ```www-data``` or
+```apache```) the mode SHOULD be 644 for files and 755 for directories.
 
 <a name="dependency-installation"></a>
 # Dependency Installation
@@ -190,7 +210,7 @@ Usually Apache ships with a default configuration (e.g. ```/etc/apache2/sites-en
 
     DocumentRoot /var/www/html/ilias/
     <Directory /var/www/html/>
-        Options FollowSymLinks
+        Options FollowSymLinks -Indexes
         AllowOverride All
         Require all granted
     </Directory>
@@ -202,6 +222,14 @@ Usually Apache ships with a default configuration (e.g. ```/etc/apache2/sites-en
     ErrorLog /var/log/apache2/error.log
     CustomLog /var/log/apache2/access.log combined
 </VirtualHost>
+```
+
+In order to secure access to the files in your `data` directory, you SHOULD
+enable `mod\_rewrite` on Debian/Ubuntu (should be enabled by default on
+RHEL/CentOS):
+
+```
+a2enmod rewrite
 ```
 
 Please take care to [restrict access to the setup-folder](#secure-installation-files)
@@ -379,6 +407,25 @@ hostname=yourserver.example.com
 FromLineOverride=YES
 ```
 
+<a name="webdav-configuration-optional"></a>
+## WebDAV Configuration (OPTIONAL)
+
+The recommended webserver configuration is either **Apache with mod_php** or **Nginx with PHP-FPM (> 1.3.8)**. Do NOT use **Apache with PHP-FPM** if you use WebDAV.
+
+### WebDAV with Windows Explorer
+Because of a special behaviour in the Windows Explorer, it sometimes fails to add a WebDAV connection with the error code "0x80070043 The Network Name Cannot Be Found".
+
+To prevent this behaviour, add the following rewrite rules to a .htaccess file in your webroot or to the corresponding section of the configuration of your webserver:
+
+```
+RewriteCond %{HTTP_USER_AGENT} ^(DavClnt)$
+RewriteCond %{REQUEST_METHOD} ^(OPTIONS)$
+RewriteRule .* "-" [R=401,L]
+```
+
+### WebDAV with Mac Finder
+To upload files, the WebDAV Client *Finder* on Mac uses chunked transfer encoding. Some webservers can't handle this way of uploading files and are serving ILIAS an empty files, which results in an empty file object on ILIAS. Due to a bug in apache, the configuration of **Apache with PHP-FPM** does not work with the *Mac Finder*. If you use WebDAV on your ILIAS installation, we recommend to either use **Apache with mod_php** or **Nginx with PHP-FPM (> 1.3.8)**.
+
 <a name="install-other-depedencies"></a>
 ## Install other Depedencies
 
@@ -504,6 +551,7 @@ To apply a minor update (e.g. v5.2.0 to v5.2.1) execute the following command in
 
 ```
 git pull
+composer install --no-dev
 ```
 
 In case of merge conflicts refer to [Resolving Conflicts - ILIAS Development Guide](http://www.ilias.de/docu/goto.php?target=pg_15604).
@@ -513,14 +561,15 @@ See [Database Update](#database-update) for details on how to complete the Upgra
 <a name="major-upgrade"></a>
 ## Major Upgrade
 
-To apply a major update (e.g. v5.1.0 to 5.2.0 or v4.x.x to 5.x.x) please check that your OS has the [proper dependency versions](#upgrading-dependencies) installed. If everything is fine change your default skin to Delos and apply this at least to your root user, otherwise ILIAS might become unusable due to changes in the layout templates. Then execute the following commands in your ILIAS basepath (e.g. ```/var/www/html/ilias/```):
+To apply a major update (e.g. v5.4.0 to 6.0) please check that your OS has the [proper dependency versions](#upgrading-dependencies) installed. If everything is fine change your default skin to Delos and apply this at least to your root user, otherwise ILIAS might become unusable due to changes in the layout templates. Then execute the following commands in your ILIAS basepath (e.g. ```/var/www/html/ilias/```):
 
 ```
 git fetch
-git checkout release_5-2
+git checkout release_6
+composer install --no-dev
 ```
 
-Replace ```release_5-2``` with the branch or tag you actually want to upgrade to. You can get a list of available branches by executing ```git branch -a``` and a list of all available tags by executing ```git tag```. Never use ```trunk``` or ```*beta``` for production.
+Replace ```release_6``` with the branch or tag you actually want to upgrade to. You can get a list of available branches by executing ```git branch -a``` and a list of all available tags by executing ```git tag```. Never use ```trunk``` or ```*beta``` for production.
 
 In case of merge conflicts refer to [Resolving Conflicts - ILIAS Development Guide](http://www.ilias.de/docu/goto.php?target=pg_15604).
 
@@ -550,7 +599,7 @@ When you upgrade from rather old versions please make sure that the dependencies
 
 | ILIAS Version   | PHP Version                           |
 |-----------------|---------------------------------------|
-| 6.0.x           | 7.2.x, 7.3.x                          |
+| 6.0.x           | 7.2.x, 7.3.x, 7.4                     |
 | 5.4.x           | 7.0.x, 7.1.x, 7.2.x, 7.3.x            |
 | 5.3.x           | 5.6.x, 7.0.x, 7.1.x                   |
 | 5.2.x           | 5.5.x - 5.6.x, 7.0.x, 7.1.x           |
@@ -561,18 +610,19 @@ When you upgrade from rather old versions please make sure that the dependencies
 | 4.0.x - 4.1.x   | 5.1.4 - 5.3.x                         |
 | 3.8.x - 3.10.x  | 5.1.4 - 5.2.x                         |
 
-<a name="mysql"></a>
-## MySQL
+<a name="dbms"></a>
+## DBMS
 
-| ILIAS Version   | MySQL Version                         |
-|-----------------|---------------------------------------|
-| 5.4.x - x.x.x   | 5.6.x, 5.7.x                          |
-| 5.3.x - 5.4.x   | 5.5.x, 5.6.x, 5.7.x                   |
-| 4.4.x - 5.2.x   | 5.0.x, 5.1.32 - 5.1.x, 5.5.x, 5.6.x   |
-| 4.2.x - 4.3.x   | 5.0.x, 5.1.32 - 5.1.x, 5.5.x          |
-| 4.0.x - 4.1.x   | 5.0.x, 5.1.32 - 5.1.x                 |
-| 3.10.x          | 4.1.x, 5.0.x, 5.1.32 - 5.1.x          |
-| 3.7.3 - 3.9.x   | 4.0.x - 5.0.x                         |
+| ILIAS Version   | MySQL Version                       | MariaDB Version         | Postgres (experimental)  |
+|-----------------|-------------------------------------|-------------------------|--------------------------|
+| 6.0 - 6.x       | 5.6.x, 5.7.x, 8.0.x                 | 10.0, 10.1, 10.2, 10.3  | 9.x                      |
+| 5.4.x - x.x.x   | 5.6.x, 5.7.x                        |                         |                          |
+| 5.3.x - 5.4.x   | 5.5.x, 5.6.x, 5.7.x                 |                         |                          |
+| 4.4.x - 5.2.x   | 5.0.x, 5.1.32 - 5.1.x, 5.5.x, 5.6.x |                         |                          |
+| 4.2.x - 4.3.x   | 5.0.x, 5.1.32 - 5.1.x, 5.5.x        |                         |                          |
+| 4.0.x - 4.1.x   | 5.0.x, 5.1.32 - 5.1.x               |                         |                          |
+| 3.10.x          | 4.1.x, 5.0.x, 5.1.32 - 5.1.x        |                         |                          |
+| 3.7.3 - 3.9.x   | 4.0.x - 5.0.x                       |                         |                          |
 
 <a name="imagemagick"></a>
 ## ImageMagick
@@ -602,19 +652,18 @@ Pull-Request will be assigned to the responsible maintainer(s). See further info
 <a name="reference-system"></a>
 ## Reference System
 
-The ILIAS Testserver (https://test54.ilias.de) is currently configured as follows:
+The ILIAS Testserver (https://test6.ilias.de) is currently configured as follows:
 
 | Package        | Version                     |
 |----------------|-----------------------------|
-| Distribution   | Ubuntu 16.04.1 LTS          |
-| MySQL          | MySQL 5.5.58                |
-| MariaDB        | 10.1                        |
-| PHP            | 7.1.20                      |
-| Apache         | 2.4.7                       |
-| Nginx          | 1.4.6                       |
+| Distribution   | Ubuntu 16.04.6 LTS          |
+| MariaDB        | 10.0.38                     |
+| mysql          | 5.6                         |
+| PHP            | 7.3.18                      |
+| Apache         | 2.4.18                      |
 | zip            | 3.0                         |
 | unzip          | 6.00                        |
-| JDK            | 1.7.0_121 (IcedTea 2.6.8)   |
-| NodeJS         | 8.9.4 LTS                   |
+| JDK            | 1.8.0_252                   |
+| NodeJS         | v10.20.1                    |
 
 Please note: Shibboleth won't work with Nginx.

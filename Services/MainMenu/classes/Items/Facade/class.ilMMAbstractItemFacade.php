@@ -17,7 +17,6 @@ use ILIAS\UI\Component\Link\Link;
 
 /**
  * Class ilMMAbstractItemFacade
- *
  * @author Fabian Schmid <fs@studer-raimann.ch>
  */
 abstract class ilMMAbstractItemFacade implements ilMMItemFacadeInterface
@@ -44,29 +43,24 @@ abstract class ilMMAbstractItemFacade implements ilMMItemFacadeInterface
      */
     protected $default_title = "-";
 
-
     /**
      * ilMMAbstractItemFacade constructor.
-     *
      * @param \ILIAS\GlobalScreen\Identification\IdentificationInterface $identification
      * @param Main                                                       $collector
-     *
      * @throws Throwable
      */
     public function __construct(\ILIAS\GlobalScreen\Identification\IdentificationInterface $identification, Main $collector)
     {
-        $this->identification = $identification;
-        $this->gs_item = $collector->getSingleItem($identification);
+        $this->identification   = $identification;
+        $this->gs_item          = $collector->getSingleItemFromRaw($identification);
         $this->type_information = $collector->getTypeInformationCollection()->get(get_class($this->gs_item));
-        $this->mm_item = ilMMItemStorage::register($this->gs_item);
+        $this->mm_item          = ilMMItemStorage::register($this->gs_item);
     }
-
 
     public function getId() : string
     {
         return $this->identification->serialize();
     }
-
 
     /**
      * @return bool
@@ -76,7 +70,6 @@ abstract class ilMMAbstractItemFacade implements ilMMItemFacadeInterface
         return ilMMItemStorage::find($this->getId()) !== null;
     }
 
-
     /**
      * @return bool
      */
@@ -84,7 +77,6 @@ abstract class ilMMAbstractItemFacade implements ilMMItemFacadeInterface
     {
         return $this->mm_item->getIdentification() == '';
     }
-
 
     /**
      * @return ilMMItemStorage
@@ -94,7 +86,6 @@ abstract class ilMMAbstractItemFacade implements ilMMItemFacadeInterface
         return $this->mm_item;
     }
 
-
     /**
      * @return \ILIAS\GlobalScreen\Identification\IdentificationInterface
      */
@@ -103,7 +94,6 @@ abstract class ilMMAbstractItemFacade implements ilMMItemFacadeInterface
         return $this->identification;
     }
 
-
     /**
      * @return isItem
      */
@@ -111,7 +101,6 @@ abstract class ilMMAbstractItemFacade implements ilMMItemFacadeInterface
     {
         return $this->gs_item;
     }
-
 
     public function getAmountOfChildren() : int
     {
@@ -122,12 +111,10 @@ abstract class ilMMAbstractItemFacade implements ilMMItemFacadeInterface
         return 0;
     }
 
-
     public function isAvailable() : bool
     {
         return (bool) ($this->gs_item->isAvailable() || $this->item()->isAlwaysAvailable());
     }
-
 
     /**
      * @inheritDoc
@@ -137,7 +124,6 @@ abstract class ilMMAbstractItemFacade implements ilMMItemFacadeInterface
         return (bool) ($this->mm_item->isActive() && $this->item()->isAvailable()) || $this->item()->isAlwaysAvailable();
     }
 
-
     /**
      * @inheritDoc
      */
@@ -146,7 +132,6 @@ abstract class ilMMAbstractItemFacade implements ilMMItemFacadeInterface
         return $this->item()->isAlwaysAvailable();
     }
 
-
     /**
      * @return string
      */
@@ -154,7 +139,6 @@ abstract class ilMMAbstractItemFacade implements ilMMItemFacadeInterface
     {
         return $this->identification->getProviderNameForPresentation();
     }
-
 
     /**
      * @return string
@@ -172,7 +156,6 @@ abstract class ilMMAbstractItemFacade implements ilMMItemFacadeInterface
         return $this->default_title;
     }
 
-
     /**
      * @param string $default_title
      */
@@ -180,7 +163,6 @@ abstract class ilMMAbstractItemFacade implements ilMMItemFacadeInterface
     {
         $this->default_title = $default_title;
     }
-
 
     /**
      * @return string
@@ -195,7 +177,6 @@ abstract class ilMMAbstractItemFacade implements ilMMItemFacadeInterface
         return "";
     }
 
-
     /**
      * @return string
      * @throws ReflectionException
@@ -205,18 +186,21 @@ abstract class ilMMAbstractItemFacade implements ilMMItemFacadeInterface
         return $this->type_information->getTypeNameForPresentation();
     }
 
-
     public function getParentIdentificationString() : string
     {
         if ($this->gs_item instanceof isChild) {
             $provider_name_for_presentation = $this->gs_item->getParent()->serialize();
+
+            $storage_parent = $this->mm_item->getParentIdentification();
+            if ($storage_parent !== $provider_name_for_presentation) {
+                return $storage_parent;
+            }
 
             return $provider_name_for_presentation;
         }
 
         return "";
     }
-
 
     /**
      * @return bool
@@ -242,7 +226,6 @@ abstract class ilMMAbstractItemFacade implements ilMMItemFacadeInterface
         return true;
     }
 
-
     /**
      * @inheritDoc
      */
@@ -251,6 +234,10 @@ abstract class ilMMAbstractItemFacade implements ilMMItemFacadeInterface
         return $this->gs_item instanceof isTopItem;
     }
 
+    public function isChild() : bool
+    {
+        return $this->item() instanceof isChild;
+    }
 
     /**
      * @inheritDoc
@@ -264,7 +251,6 @@ abstract class ilMMAbstractItemFacade implements ilMMItemFacadeInterface
         return false;
     }
 
-
     /**
      * @inheritDoc
      */
@@ -273,17 +259,14 @@ abstract class ilMMAbstractItemFacade implements ilMMItemFacadeInterface
         // TODO: Implement setIsTopItm() method.
     }
 
-
     /**
      * FSX check if doublette
-     *
      * @inheritDoc
      */
     public function getType() : string
     {
         return $this->type_information->getType();
     }
-
 
     /**
      * @param string $parent
@@ -293,7 +276,6 @@ abstract class ilMMAbstractItemFacade implements ilMMItemFacadeInterface
         $this->mm_item->setParentIdentification($parent);
     }
 
-
     /**
      * @inheritdoc
      */
@@ -301,7 +283,6 @@ abstract class ilMMAbstractItemFacade implements ilMMItemFacadeInterface
     {
         $this->mm_item->setPosition($position);
     }
-
 
     /**
      * @param bool $status
@@ -311,18 +292,15 @@ abstract class ilMMAbstractItemFacade implements ilMMItemFacadeInterface
         $this->mm_item->setActive($status);
     }
 
-
     public function supportsCustomIcon() : bool
     {
         return $this->gs_item instanceof hasSymbol;
     }
 
-
     public function getIconID() : ?string
     {
         return $this->mm_item->getIconId();
     }
-
 
     /**
      * @inheritDoc
@@ -332,7 +310,6 @@ abstract class ilMMAbstractItemFacade implements ilMMItemFacadeInterface
         $this->mm_item->setIconId($icon_id);
     }
 
-
     // CRUD
 
     public function update()
@@ -341,14 +318,12 @@ abstract class ilMMAbstractItemFacade implements ilMMItemFacadeInterface
         $this->mm_item->update();
     }
 
-
     public function create()
     {
         ilMMItemTranslationStorage::storeDefaultTranslation($this->identification, $this->default_title);
         $this->mm_item->create();
         ilMMItemStorage::register($this->gs_item);
     }
-
 
     /**
      * @inheritDoc
@@ -357,7 +332,7 @@ abstract class ilMMAbstractItemFacade implements ilMMItemFacadeInterface
     {
         if ($this->isDeletable()) {
             $serialize = $this->identification->serialize();
-            $mm = ilMMItemStorage::find($serialize);
+            $mm        = ilMMItemStorage::find($serialize);
             if ($mm instanceof ilMMItemStorage) {
                 $mm->delete();
             }

@@ -56,7 +56,7 @@ class MainNotificationCollector extends AbstractBaseCollector implements ItemCol
     }
 
 
-    public function filterItemsByVisibilty(bool $skip_async = false) : void
+    public function filterItemsByVisibilty(bool $async_only = false) : void
     {
         // TODO: Implement filterItemsByVisibilty() method.
     }
@@ -65,6 +65,16 @@ class MainNotificationCollector extends AbstractBaseCollector implements ItemCol
     public function prepareItemsForUIRepresentation() : void
     {
         // TODO: Implement prepareItemsForUIRepresentation() method.
+    }
+
+    public function cleanupItemsForUIRepresentation() : void
+    {
+        // TODO: Implement cleanupItemsForUIRepresentation() method.
+    }
+
+    public function sortItemsForUIRepresentation() : void
+    {
+        // TODO: Implement sortItemsForUIRepresentation() method.
     }
 
 

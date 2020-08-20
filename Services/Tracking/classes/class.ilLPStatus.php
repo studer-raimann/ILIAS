@@ -353,7 +353,7 @@ class ilLPStatus
             }
         }
         if ($a_users) {
-            $missing_users = array_diff($a_users, $not_attempted+$in_progress+$completed+$failed);
+            $missing_users = array_diff($a_users, $not_attempted + $in_progress + $completed + $failed);
             if ($missing_users) {
                 foreach ($missing_users as $user_id) {
                     ilLPStatusWrapper::_updateStatus($a_obj_id, $user_id);
@@ -901,7 +901,7 @@ class ilLPStatus
             include_once("./Services/Tracking/classes/class.ilLearningProgressBaseGUI.php");
             foreach ($res as $obj_id => $status) {
                 $path = ilLearningProgressBaseGUI::_getImagePathForStatus($status);
-                $text = ilLearningProgressBaseGUI::_getStatusText($status);
+                $text = ilLearningProgressBaseGUI::_getStatusText((int) $status);
                 $res[$obj_id] = [
                     "image" => ilUtil::img($path, $text),
                     "status" => $status

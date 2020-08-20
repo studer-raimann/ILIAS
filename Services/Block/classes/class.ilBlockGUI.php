@@ -539,7 +539,6 @@ abstract class ilBlockGUI
         //		$this->handleConfigStatus();
 
         $this->fillDataSection();
-
         if ($this->getRepositoryMode() && $this->isRepositoryObject()) {
             // #10993
             // @todo: fix this in new presentation somehow
@@ -1089,9 +1088,64 @@ abstract class ilBlockGUI
             ->withTargetURL($href, $this->getNavParameter() . "page")
             ->withTotalEntries($this->max_count)
             ->withPageSize($this->getLimit())
+            ->withMaxPaginationButtons(5)
             ->withCurrentPage((int) $this->getOffset() / $this->getLimit());
     }
 
+    /**
+     * Add repo commands
+     */
+    protected function addRepoCommands()
+    {
+        $access = $this->access;
+        $lng = $this->lng;
+        $ctrl = $this->ctrl;
+        $obj_def = $this->obj_def;
+
+        if ($this->getRepositoryMode() && $this->isRepositoryObject()) {
+            // #10993
+            // @todo: fix this in new presentation somehow
+            /*
+            if ($this->getAdminCommands()) {
+                $this->tpl->setCurrentBlock("block_check");
+                $this->tpl->setVariable("BL_REF_ID", $this->getRefId());
+                $this->tpl->parseCurrentBlock();
+            }*/
+
+            if ($access->checkAccess("delete", "", $this->getRefId())) {
+                $this->addBlockCommand(
+                    "ilias.php?baseClass=ilRepositoryGUI&ref_id=" . $_GET["ref_id"] . "&cmd=delete" .
+                    "&item_ref_id=" . $this->getRefId(),
+                    $lng->txt("delete")
+                );
+
+                // see ilObjectListGUI::insertCutCommand();
+                $this->addBlockCommand(
+                    "ilias.php?baseClass=ilRepositoryGUI&ref_id=" . $_GET["ref_id"] . "&cmd=cut" .
+                    "&item_ref_id=" . $this->getRefId(),
+                    $lng->txt("move")
+                );
+            }
+
+            // #14595 - see ilObjectListGUI::insertCopyCommand()
+            if ($access->checkAccess("copy", "", $this->getRefId())) {
+                $parent_type = ilObject::_lookupType($_GET["ref_id"], true);
+                $parent_gui = "ilObj" . $obj_def->getClassName($parent_type) . "GUI";
+
+                $ctrl->setParameterByClass("ilobjectcopygui", "source_id", $this->getRefId());
+                $copy_cmd = $ctrl->getLinkTargetByClass(
+                    array("ilrepositorygui", $parent_gui, "ilobjectcopygui"),
+                    "initTargetSelection"
+                );
+
+                // see ilObjectListGUI::insertCopyCommand();
+                $this->addBlockCommand(
+                    $copy_cmd,
+                    $lng->txt("copy")
+                );
+            }
+        }
+    }
 
     /**
      * Get HTML.
@@ -1101,9 +1155,17 @@ abstract class ilBlockGUI
         global $DIC;
         $factory = $DIC->ui()->factory();
         $renderer = $DIC->ui()->renderer();
+        $access = $this->access;
 
         $ctrl = $this->ctrl;
 
+        if ($this->isRepositoryObject()) {
+            if (!$access->checkAccess("read", "", $this->getRefId())) {
+                return "";
+            }
+        }
+
+        $this->addRepoCommands();
 
         switch ($this->getPresentation()) {
             case self::PRES_SEC_LEG:

@@ -68,6 +68,8 @@ class ilObjDataCollectionGUI extends ilObject2GUI
             ilYuiUtil::initConnection();
             ilOverlayGUI::initJavascript();
             $DIC->ui()->mainTemplate()->addJavaScript('Modules/DataCollection/js/ilDataCollection.js');
+            // # see  https://mantis.ilias.de/view.php?id=26463
+            $DIC->ui()->mainTemplate()->addJavaScript("./Services/UIComponent/Modal/js/Modal.js");
             $DIC->ui()->mainTemplate()->addJavaScript("Modules/DataCollection/js/datacollection.js");
             $this->tpl->addOnLoadCode(
                 "ilDataCollection.setEditUrl('" . $DIC->ctrl()->getLinkTargetByClass(
@@ -167,8 +169,9 @@ class ilObjDataCollectionGUI extends ilObject2GUI
         }
 
         $next_class = $DIC->ctrl()->getNextClass($this);
+        $cmd = $this->ctrl->getCmd();
 
-        if (!$this->getCreationMode() and $next_class != "ilinfoscreengui" and !$this->checkPermissionBool("read")) {
+        if (!$this->getCreationMode() and $next_class != "ilinfoscreengui" and $cmd != 'infoScreen' and !$this->checkPermissionBool("read")) {
             $DIC->ui()->mainTemplate()->loadStandardTemplate();
             $DIC->ui()->mainTemplate()->setContent("Permission Denied.");
 
@@ -274,7 +277,7 @@ class ilObjDataCollectionGUI extends ilObject2GUI
                 break;
 
             default:
-                switch ($this->ctrl->getCmd()) {
+                switch ($cmd) {
                     case 'edit': // this is necessary because ilObjectGUI only calls its own editObject (why??)
                         $this->prepareOutput();
                         $this->editObject();

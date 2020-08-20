@@ -60,7 +60,7 @@ class ilCourseFile
         $lng = $DIC['lng'];
 
         $this->ilErr = $ilErr;
-        $this->db  = $ilDB;
+        $this->db = $ilDB;
         $this->lng = $lng;
 
         $this->file_id = $a_file_id;
@@ -90,7 +90,7 @@ class ilCourseFile
 
             $target = new ilFSStorageCourse($a_target_id);
             $target->initInfoDirectory();
-            $source->copyFile($file_obj->getAbsolutePath(), $new_file->getAbsolutePath());
+            $source->copyFile($file_obj->getAbsolutePath(), $new_file->fss_storage->getInfoDirectory() . '/' . $new_file->getFileId());
         }
     }
 

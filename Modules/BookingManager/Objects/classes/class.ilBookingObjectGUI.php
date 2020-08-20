@@ -245,7 +245,7 @@ class ilBookingObjectGUI
     
     public function applyFilter()
     {
-        $table = new ilBookingObjectsTableGUI($this, 'render', $this->getPoolRefId(), $this->getPoolObjId(), $this->hasPoolSchedule(), $this->getPoolOverallLimit(), $this->repo_parent, $this->repo_parent_call);
+        $table = new ilBookingObjectsTableGUI($this, 'render', $this->getPoolRefId(), $this->getPoolObjId(), $this->hasPoolSchedule(), $this->getPoolOverallLimit(), $this->isManagementActivated());
         $table->resetOffset();
         $table->writeFilterToSession();
         $this->render();
@@ -253,7 +253,7 @@ class ilBookingObjectGUI
     
     public function resetFilter()
     {
-        $table = new ilBookingObjectsTableGUI($this, 'render', $this->getPoolRefId(), $this->getPoolObjId(), $this->hasPoolSchedule(), $this->getPoolOverallLimit(), $this->repo_parent, $this->repo_parent_call);
+        $table = new ilBookingObjectsTableGUI($this, 'render', $this->getPoolRefId(), $this->getPoolObjId(), $this->hasPoolSchedule(), $this->getPoolOverallLimit(), $this->isManagementActivated());
         $table->resetOffset();
         $table->resetFilter();
         $this->render();
@@ -577,6 +577,7 @@ class ilBookingObjectGUI
         $obj->delete();
 
         ilUtil::sendSuccess($lng->txt('book_object_deleted'), true);
+        $ilCtrl->setParameter($this, 'object_id', "");
         $ilCtrl->redirect($this, 'render');
     }
         

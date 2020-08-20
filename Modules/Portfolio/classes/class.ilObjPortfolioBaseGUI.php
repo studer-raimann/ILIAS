@@ -38,6 +38,7 @@ abstract class ilObjPortfolioBaseGUI extends ilObject2GUI
         $this->main_menu = $DIC["ilMainMenu"];
         $this->tpl = $DIC["tpl"];
         $ilUser = $DIC->user();
+        $this->ui = $DIC->ui();
         
         parent::__construct($a_id, $a_id_type, $a_parent_node_id);
 
@@ -166,7 +167,7 @@ abstract class ilObjPortfolioBaseGUI extends ilObject2GUI
      */
     public function setPermaLink($a_obj_id, $a_type)
     {
-        $this->perma_link = array("obj_id"=>$a_obj_id, "type"=>$a_type);
+        $this->perma_link = array("obj_id" => $a_obj_id, "type" => $a_type);
     }
         
     
@@ -722,12 +723,45 @@ abstract class ilObjPortfolioBaseGUI extends ilObject2GUI
                                         
             $this->setContentStyleSheet($this->tpl);
         }
-    
+
+        $this->showEditButton($current_page);
+
         // #10717
         $this->tpl->setContent($content .
             '<div class="ilClearFloat">' . $notes . '</div>');
     }
-    
+
+
+    /**
+     * Show edit button
+     */
+    protected function showEditButton($page_id)
+    {
+        if ($page_id == 0) {
+            return;
+        }
+        $page_class = ($this->getType() == "prtt")
+            ? "ilPortfolioTemplatePageGUI"
+            : "ilportfoliopagegui";
+        if (ilPortfolioPage::lookupType($page_id) == ilPortfolioPage::TYPE_PAGE) {
+            $this->ctrl->setParameterByClass($page_class, "ppage", $page_id);
+            $button = $this->ui->factory()->button()->standard(
+                $this->lng->txt("edit"),
+                $this->ctrl->getLinkTargetByClass($page_class, "edit")
+            );
+        } else {
+            $this->ctrl->setParameterByClass("ilobjbloggui", "ppage", $page_id);
+            $this->ctrl->setParameterByClass("ilobjbloggui", "prt_id", (int) $_GET["prt_id"]);
+            $button = $this->ui->factory()->button()->standard(
+                $this->lng->txt("edit"),
+                $this->ctrl->getLinkTargetByClass([$page_class, "ilobjbloggui"], "render")
+            );
+        }
+        if ($this->checkPermissionBool("write")) {
+            $this->tpl->setHeaderActionMenu($this->ui->renderer()->render($button));
+        }
+    }
+
     /**
      * Render banner, user name
      *

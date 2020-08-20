@@ -19,6 +19,11 @@ class ilPDSelectedItemsBlockMembershipsProvider implements ilPDSelectedItemsBloc
     protected $tree;
 
     /**
+     * @var ilAccessHandler
+     */
+    protected $access;
+
+    /**
      * ilPDSelectedItemsBlockSelectedItemsProvider constructor.
      * @param ilObjUser $actor
      */
@@ -27,7 +32,8 @@ class ilPDSelectedItemsBlockMembershipsProvider implements ilPDSelectedItemsBloc
         global $DIC;
 
         $this->actor = $actor;
-        $this->tree  = $DIC->repositoryTree();
+        $this->tree = $DIC->repositoryTree();
+        $this->access = $DIC->access();
     }
 
     /**
@@ -63,23 +69,28 @@ class ilPDSelectedItemsBlockMembershipsProvider implements ilPDSelectedItemsBloc
         foreach ($items as $key => $obj_id) {
             $item_references = ilObject::_getAllReferences($obj_id);
             foreach ($item_references as $ref_id) {
+                if (!$this->access->checkAccess('read', '', $ref_id)) {
+                    continue;
+                }
                 if ($this->tree->isInTree($ref_id)) {
                     $object = ilObjectFactory::getInstanceByRefId($ref_id);
 
                     $parent_ref_id = $this->tree->getParentId($ref_id);
-                    $par_left      = $this->tree->getLeftValue($parent_ref_id);
-                    $par_left      = sprintf("%010d", $par_left);
+                    $par_left = $this->tree->getLeftValue($parent_ref_id);
+                    $par_left = sprintf("%010d", $par_left);
 
-                    $references[$par_left . $object->getTitle() . $ref_id] = array(
-                        'ref_id'      => $ref_id,
-                        'obj_id'      => $obj_id,
-                        'type'        => $object->getType(),
-                        'title'       => $object->getTitle(),
-                        'description' => $object->getDescription(),
-                        'parent_ref'  => $parent_ref_id,
-                        'start'       => $object->getType() == 'grp' ? $object->getStart() : $object->getCourseStart(),
-                        'end'         => $object->getType() == 'grp' ? $object->getEnd()   : $object->getCourseEnd()
-                    );
+                    if ($parent_ref_id != RECOVERY_FOLDER_ID) {
+                        $references[$par_left . $object->getTitle() . $ref_id] = array(
+                            'ref_id' => $ref_id,
+                            'obj_id' => $obj_id,
+                            'type' => $object->getType(),
+                            'title' => $object->getTitle(),
+                            'description' => $object->getDescription(),
+                            'parent_ref' => $parent_ref_id,
+                            'start' => $object->getType() == 'grp' ? $object->getStart() : $object->getCourseStart(),
+                            'end' => $object->getType() == 'grp' ? $object->getEnd() : $object->getCourseEnd()
+                        );
+                    }
                 }
             }
         }

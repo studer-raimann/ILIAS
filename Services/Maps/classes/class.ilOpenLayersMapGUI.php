@@ -85,8 +85,8 @@ class ilOpenLayersMapGUI extends ilMapGUI
 
 
         $lng->loadLanguageModule("maps");
-        $tpl->addCss("libs/bower/bower_components/OpenLayers/ol.css");
-        $tpl->addJavaScript("libs/bower/bower_components/OpenLayers/ol.js");
+        $tpl->addCss("libs/bower/bower_components/openlayers/build/ol.css");
+        $tpl->addJavaScript("libs/bower/bower_components/openlayers/build/ol.js");
         $tpl->addCss("Services/Maps/css/service_openlayers.css");
         $tpl->addJavaScript("Services/Maps/js/ServiceOpenLayers.js");
 
@@ -109,26 +109,26 @@ class ilOpenLayersMapGUI extends ilMapGUI
                     $info = htmlspecialchars($user->getFirstName() . " " . $user->getLastName());
                     $delim = "<br \/>";
                     if ($user->getPref("public_institution") == "y") {
-                        $info.= $delim . htmlspecialchars($user->getInstitution());
+                        $info .= $delim . htmlspecialchars($user->getInstitution());
                         $delim = ", ";
                     }
                     if ($user->getPref("public_department") == "y") {
-                        $info.= $delim . htmlspecialchars($user->getDepartment());
+                        $info .= $delim . htmlspecialchars($user->getDepartment());
                     }
                     $delim = "<br \/>";
                     if ($user->getPref("public_street") == "y") {
-                        $info.= $delim . htmlspecialchars($user->getStreet());
+                        $info .= $delim . htmlspecialchars($user->getStreet());
                     }
                     if ($user->getPref("public_zip") == "y") {
-                        $info.= $delim . htmlspecialchars($user->getZipcode());
+                        $info .= $delim . htmlspecialchars($user->getZipcode());
                         $delim = " ";
                     }
                     if ($user->getPref("public_city") == "y") {
-                        $info.= $delim . htmlspecialchars($user->getCity());
+                        $info .= $delim . htmlspecialchars($user->getCity());
                     }
                     $delim = "<br \/>";
                     if ($user->getPref("public_country") == "y") {
-                        $info.= $delim . htmlspecialchars($user->getCountry());
+                        $info .= $delim . htmlspecialchars($user->getCountry());
                     }
                     $this->tpl->setVariable(
                         "USER_INFO",

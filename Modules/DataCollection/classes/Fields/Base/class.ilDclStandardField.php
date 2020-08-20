@@ -73,38 +73,38 @@ class ilDclStandardField extends ilDclBaseFieldModel
         $lng = $DIC['lng'];
         $stdfields = array(
             array(
-                "id"          => "id",
-                "title"       => $lng->txt("dcl_id"),
+                "id" => "id",
+                "title" => $lng->txt("dcl_id"),
                 "description" => $lng->txt("dcl_id_description"),
                 "datatype_id" => ilDclDatatype::INPUTFORMAT_NUMBER
             ),
             array(
-                "id"          => "create_date",
-                "title"       => $lng->txt("dcl_creation_date"),
+                "id" => "create_date",
+                "title" => $lng->txt("dcl_creation_date"),
                 "description" => $lng->txt("dcl_creation_date_description"),
                 "datatype_id" => ilDclDatatype::INPUTFORMAT_DATETIME
             ),
             array(
-                "id"          => "last_update",
-                "title"       => $lng->txt("dcl_last_update"),
+                "id" => "last_update",
+                "title" => $lng->txt("dcl_last_update"),
                 "description" => $lng->txt("dcl_last_update_description"),
                 "datatype_id" => ilDclDatatype::INPUTFORMAT_DATETIME
             ),
             array(
-                "id"          => "owner",
-                "title"       => $lng->txt("dcl_owner"),
+                "id" => "owner",
+                "title" => $lng->txt("dcl_owner"),
                 "description" => $lng->txt("dcl_owner_description"),
                 "datatype_id" => ilDclDatatype::INPUTFORMAT_TEXT
             ),
             array(
-                "id"          => "last_edit_by",
-                "title"       => $lng->txt("dcl_last_edited_by"),
+                "id" => "last_edit_by",
+                "title" => $lng->txt("dcl_last_edited_by"),
                 "description" => $lng->txt("dcl_last_edited_by_description"),
                 "datatype_id" => ilDclDatatype::INPUTFORMAT_TEXT
             ),
             array(
-                'id'          => 'comments',
-                'title'       => $lng->txt('dcl_comments'),
+                'id' => 'comments',
+                'title' => $lng->txt('dcl_comments'),
                 'description' => $lng->txt('dcl_comments_desc'),
                 'datatype_id' => ilDclDatatype::INPUTFORMAT_NONE
             ),

@@ -86,7 +86,18 @@ class ilObjExercise extends ilObject
         $this->webFilesystem = $DIC->filesystem()->web();
 
         parent::__construct($a_id, $a_call_by_reference);
+        $this->mandatory_manager = $DIC->exercise()->internal()->service()->getMandatoryAssignmentManager($this);
+    }
 
+    /**
+     * Set id
+     * @param int $id
+     */
+    public function setId($id)
+    {
+        global $DIC;
+        parent::setId($id);
+        // this is needed, since e.g. ilObjectFactory initialises the object with id 0 and later sets the id
         $this->mandatory_manager = $DIC->exercise()->internal()->service()->getMandatoryAssignmentManager($this);
     }
 
@@ -312,7 +323,19 @@ class ilObjExercise extends ilObject
         );
 
         $cloneAction->cloneCertificate($this, $new_obj);
-            
+
+        // additional features
+        foreach (ilContainer::_getContainerSettings($this->getId()) as $keyword => $value) {
+            ilContainer::_writeContainerSetting($new_obj->getId(), $keyword, $value);
+        }
+
+        // org unit setting
+        $orgu_object_settings = new ilOrgUnitObjectPositionSetting($new_obj->getId());
+        $orgu_object_settings->setActive(
+            (int) ilOrgUnitGlobalSettings::getInstance()->isPositionAccessActiveForObject($this->getId())
+        );
+        $orgu_object_settings->update();
+
         return $new_obj;
     }
     
@@ -343,7 +366,7 @@ class ilObjExercise extends ilObject
         $ilAppEventHandler->raise(
             'Modules/Exercise',
             'delete',
-            array('obj_id'=>$this->getId())
+            array('obj_id' => $this->getId())
         );
 
         return true;
@@ -551,16 +574,16 @@ class ilObjExercise extends ilObject
             $overall_stat = "notgraded";
             if ($failed_a_mandatory) {
                 $overall_stat = "failed";
-            } elseif ($passed_all_mandatory) {
+            } elseif ($passed_all_mandatory && $cnt_passed > 0) {
                 $overall_stat = "passed";
             }
         }
 
-        $ret =  array(
+        $ret = array(
             "overall_status" => $overall_stat,
             "failed_a_mandatory" => $failed_a_mandatory);
         //echo "<br>p:".$cnt_passed.":ng:".$cnt_notgraded;
-        //var_dump($ret);
+        //var_dump($ret); exit;
         return $ret;
     }
     
@@ -618,7 +641,7 @@ class ilObjExercise extends ilObject
         $row = $cnt = 1;
         $excel->setCell($row, 0, $this->lng->txt("name"));
         foreach ($ass_data as $ass) {
-            $excel->setCell($row, $cnt++, $cnt-1);
+            $excel->setCell($row, $cnt++, $cnt - 1);
         }
         $excel->setCell($row, $cnt++, $this->lng->txt("exc_total_exc"));
         $excel->setCell($row, $cnt++, $this->lng->txt("exc_mark"));
@@ -673,7 +696,7 @@ class ilObjExercise extends ilObject
         $row = $cnt = 1;
         $excel->setCell($row, 0, $this->lng->txt("name"));
         foreach ($ass_data as $ass) {
-            $excel->setCell($row, $cnt++, $cnt-1);
+            $excel->setCell($row, $cnt++, $cnt - 1);
         }
         $excel->setCell($row++, $cnt++, $this->lng->txt("exc_total_exc"));
         $excel->setBold("A1:" . $excel->getColumnCoord($cnt) . "1");

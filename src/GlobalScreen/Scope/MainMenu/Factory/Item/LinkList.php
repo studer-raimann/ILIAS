@@ -2,19 +2,20 @@
 
 use ILIAS\GlobalScreen\Scope\MainMenu\Factory\AbstractChildItem;
 use ILIAS\GlobalScreen\Scope\MainMenu\Factory\hasSymbol;
+use ILIAS\GlobalScreen\Scope\MainMenu\Factory\hasSymbolTrait;
 use ILIAS\GlobalScreen\Scope\MainMenu\Factory\hasTitle;
 use ILIAS\GlobalScreen\Scope\MainMenu\Factory\supportsAsynchronousLoading;
-use ILIAS\UI\Component\Symbol\Symbol;
+use ILIAS\GlobalScreen\Scope\MainMenu\Factory\SymbolDecoratorTrait;
 use InvalidArgumentException;
 
 /**
  * Class LinkList
- *
  * @package ILIAS\GlobalScreen\MainMenu\Item
  */
 class LinkList extends AbstractChildItem implements hasTitle, supportsAsynchronousLoading, hasSymbol
 {
-
+    use SymbolDecoratorTrait;
+    use hasSymbolTrait;
     /**
      * @var string
      */
@@ -27,15 +28,9 @@ class LinkList extends AbstractChildItem implements hasTitle, supportsAsynchrono
      * @var bool
      */
     protected $supports_async_loading = false;
-    /**
-     * @var Symbol
-     */
-    private $symbol;
-
 
     /**
      * @param string $title
-     *
      * @return Link
      */
     public function withTitle(string $title) : hasTitle
@@ -46,7 +41,6 @@ class LinkList extends AbstractChildItem implements hasTitle, supportsAsynchrono
         return $clone;
     }
 
-
     /**
      * @return string
      */
@@ -55,10 +49,8 @@ class LinkList extends AbstractChildItem implements hasTitle, supportsAsynchrono
         return $this->title;
     }
 
-
     /**
      * @param array|callable|\Generator $links
-     *
      * @return LinkList
      */
     public function withLinks($links) : LinkList
@@ -90,7 +82,6 @@ class LinkList extends AbstractChildItem implements hasTitle, supportsAsynchrono
         return $clone;
     }
 
-
     /**
      * @return Link[]
      */
@@ -98,7 +89,6 @@ class LinkList extends AbstractChildItem implements hasTitle, supportsAsynchrono
     {
         return $this->links;
     }
-
 
     /**
      * @inheritDoc
@@ -111,42 +101,11 @@ class LinkList extends AbstractChildItem implements hasTitle, supportsAsynchrono
         return $clone;
     }
 
-
     /**
      * @inheritDoc
      */
     public function supportsAsynchronousLoading() : bool
     {
         return $this->supports_async_loading;
-    }
-
-
-    /**
-     * @inheritDoc
-     */
-    public function withSymbol(Symbol $symbol) : hasSymbol
-    {
-        $clone = clone($this);
-        $clone->symbol = $symbol;
-
-        return $clone;
-    }
-
-
-    /**
-     * @inheritDoc
-     */
-    public function getSymbol() : Symbol
-    {
-        return $this->symbol;
-    }
-
-
-    /**
-     * @inheritDoc
-     */
-    public function hasSymbol() : bool
-    {
-        return $this->symbol instanceof Symbol;
     }
 }

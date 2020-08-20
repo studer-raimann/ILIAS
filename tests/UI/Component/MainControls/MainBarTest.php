@@ -27,7 +27,8 @@ class MainBarTest extends ILIAS_UI_TestBase
             $counter_factory,
             new I\Symbol\Factory(
                 new I\Symbol\Icon\Factory(),
-                new I\Symbol\Glyph\Factory()
+                new I\Symbol\Glyph\Factory(),
+                new I\Symbol\Avatar\Factory()
             )
         );
         $this->factory = new I\MainControls\Factory($sig_gen, $slate_factory);
@@ -166,7 +167,9 @@ class MainBarTest extends ILIAS_UI_TestBase
             {
                 $f_icon = new I\Symbol\Icon\Factory();
                 $f_glyph = new I\Symbol\Glyph\Factory();
-                return new I\Symbol\Factory($f_icon, $f_glyph);
+                $f_avatar = new I\Symbol\Avatar\Factory();
+
+                return new I\Symbol\Factory($f_icon, $f_glyph, $f_avatar);
             }
             public function mainControls() : C\MainControls\Factory
             {
@@ -174,7 +177,8 @@ class MainBarTest extends ILIAS_UI_TestBase
                 $counter_factory = new I\Counter\Factory();
                 $symbol_factory = new I\Symbol\Factory(
                     new I\Symbol\Icon\Factory(),
-                    new I\Symbol\Glyph\Factory()
+                    new I\Symbol\Glyph\Factory(),
+                    new I\Symbol\Avatar\Factory()
                 );
                 $slate_factory = new I\MainControls\Slate\Factory($sig_gen, $counter_factory, $symbol_factory);
                 return new I\MainControls\Factory($sig_gen, $slate_factory);
@@ -223,22 +227,22 @@ class MainBarTest extends ILIAS_UI_TestBase
 
         $expected = <<<EOT
 			<div class="il-maincontrols-mainbar" id="id_12">
-				<div class="il-mainbar">
+				<nav class="il-mainbar" aria-label="mainbar_aria_label">
 					<div class="il-mainbar-triggers">
-						<div class="il-mainbar-entries" style="visibility: hidden">
+						<div class="il-mainbar-entries" role="menubar" style="visibility: hidden">
 							<button class="btn btn-bulky" data-action="#" id="id_1" ><div class="icon custom small" aria-label=""><img src="" /></div><span class="bulky-label">TestEntry</span></button>
 							<button class="btn btn-bulky" data-action="#" id="id_2" ><div class="icon custom small" aria-label=""><img src="" /></div><span class="bulky-label">TestEntry</span></button>
-							<button class="btn btn-bulky" id="id_3" ><div class="icon custom small" aria-label=""><img src="" /></div><span class="bulky-label">1</span></button>
-							<button class="btn btn-bulky" id="id_9" ><span class="glyph" aria-label="more"><span class="glyphicon glyphicon-option-horizontal" aria-hidden="true"></span></span><span class="bulky-label">more</span></button>
+							<button class="btn btn-bulky" id="id_3" role="menuitem" aria-haspopup="true" ><div class="icon custom small" aria-label=""><img src="" /></div><span class="bulky-label">1</span></button>
+							<button class="btn btn-bulky" id="id_9" role="menuitem" aria-haspopup="true" ><span class="glyph" aria-label="show_more"><span class="glyphicon glyphicon-option-horizontal" aria-hidden="true"></span></span><span class="bulky-label">more</span></button>
 						</div>
 					</div>
-				</div>
+				</nav>
 
 				<div class="il-mainbar-slates">
 					<div class="il-mainbar-tools-entries">
 						<div class="il-mainbar-tools-entries-bg"></div>
 					</div>
-					<div class="il-maincontrols-slate disengaged" id="id_8" data-depth-level="1">
+					<div class="il-maincontrols-slate disengaged" id="id_8" data-depth-level="1" role="menu">
 						<div class="il-maincontrols-slate-content" data-replace-marker="content">
 							<button class="btn btn-bulky" id="id_4" ><div class="icon custom small" aria-label=""><img src="" /></div><span class="bulky-label">1.1</span></button>
 
@@ -255,7 +259,7 @@ class MainBarTest extends ILIAS_UI_TestBase
 						</div>
 					</div>
 
-					<div class="il-maincontrols-slate disengaged" id="id_10" data-depth-level="1">
+					<div class="il-maincontrols-slate disengaged" id="id_10" data-depth-level="1" role="menu">
 						<div class="il-maincontrols-slate-content" data-replace-marker="content"></div>
 					</div>
 

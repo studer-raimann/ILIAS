@@ -39,35 +39,35 @@ final class DataSize
      * @var string[] $suffixMap
      */
     private static $suffixMap = [
-        self::Byte  => 'B',
+        self::Byte => 'B',
 
-        self::KB    => 'KB',
-        self::KiB   => 'KiB',
+        self::KB => 'KB',
+        self::KiB => 'KiB',
 
-        self::MB    => 'MB',
-        self::MiB   => 'MiB',
+        self::MB => 'MB',
+        self::MiB => 'MiB',
 
-        self::GB    => 'GB',
-        self::GiB   => 'GiB',
+        self::GB => 'GB',
+        self::GiB => 'GiB',
 
-        self::TB    => 'TB',
-        self::TiB   => 'TiB',
+        self::TB => 'TB',
+        self::TiB => 'TiB',
 
-        self::PB    => 'PB',
-        self::PiB   => 'PiB',
+        self::PB => 'PB',
+        self::PiB => 'PiB',
 
-        self::EB    => 'EB',
-        self::EiB   => 'EiB',
+        self::EB => 'EB',
+        self::EiB => 'EiB',
 
-        self::ZB    => 'ZB',
-        self::ZiB   => 'ZiB',
+        self::ZB => 'ZB',
+        self::ZiB => 'ZiB',
 
-        self::YB    => 'YB',
-        self::YiB   => 'YiB'
+        self::YB => 'YB',
+        self::YiB => 'YiB'
     ];
 
     public static $abbreviations = [
-        'B'    => self::Byte,
+        'B' => self::Byte,
 
         'KB' => self::KB,
         'K' => self::KiB,
@@ -123,16 +123,8 @@ final class DataSize
      *
      * @since 5.3
      */
-    public function __construct($size, $unit)
+    public function __construct(int $size, int $unit)
     {
-        if (!is_int($size)) {
-            throw new \InvalidArgumentException("Size must be of the type int.");
-        }
-
-        if (!is_int($unit)) {
-            throw new \InvalidArgumentException("Unit must be of the type int.");
-        }
-
         if (!isset(self::$suffixMap[$unit])) {
             throw new \InvalidArgumentException('The given data size unit is not valid, please check the provided class constants of the DataSize class.');
         }

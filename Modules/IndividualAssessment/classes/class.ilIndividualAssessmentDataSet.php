@@ -115,11 +115,11 @@ class ilIndividualAssessmentDataSet extends ilDataSet
                             'recordTemplate' => $settings->recordTemplate(),
                             'eventTimePlaceRequired' => (int) $settings->eventTimePlaceRequired(),
                             'file_required' => (int) $settings->fileRequired(),
-                            "contact" => $info->contact(),
-                            "responsibility" => $info->responsibility(),
-                            "phone" => $info->phone(),
-                            "mails" => $info->mails(),
-                            "consultation_hours" => $info->consultationHours()
+                            "contact" => $info->getContact(),
+                            "responsibility" => $info->getResponsibility(),
+                            "phone" => $info->getPhone(),
+                            "mails" => $info->getMails(),
+                            "consultation_hours" => $info->getConsultationHours()
                         );
                         $this->data[] = $data;
                     }
@@ -147,22 +147,24 @@ class ilIndividualAssessmentDataSet extends ilDataSet
 
         switch ($entity) {
             case "iass":
-                if ($new_id = $mapping->getMapping('Services/Container', 'objs', $rec['Id'])) {
+                if ($new_id = $mapping->getMapping('Services/Container', 'objs', $rec['id'])) {
                     $newObj = ilObjectFactory::getInstanceByObjId($new_id, false);
                 } else {
                     $newObj = new ilObjIndividualAssessment();
                     $newObj->create();
                 }
                 $settings = new ilIndividualAssessmentSettings(
-                    $newObj,
+                    (int) $newObj->getId(),
+                    (int) $newObj->getTitle(),
+                    (int) $newObj->getDescription(),
                     $rec["content"],
                     $rec["recordTemplate"],
-                    $rec['file_required'],
-                    $rec['eventTimePlaceRequired']
-                                                               );
+                    $rec['eventTimePlaceRequired'],
+                    $rec['file_required']
+                );
 
                 $info = new ilIndividualAssessmentInfoSettings(
-                    $newObj,
+                    (int) $newObj->getId(),
                     $rec['contact'],
                     $rec['responsibility'],
                     $rec['phone'],
@@ -176,8 +178,7 @@ class ilIndividualAssessmentDataSet extends ilDataSet
                 $newObj->setInfoSettings($info);
                 $newObj->update();
                 $newObj->updateInfo();
-
-                $mapping->addMapping("Modules/IndividualAssessment", "iass", $rec["Id"], $newObj->getId());
+                $mapping->addMapping("Modules/IndividualAssessment", "iass", $rec["id"], $newObj->getId());
                 break;
         }
     }

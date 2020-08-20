@@ -154,7 +154,8 @@ abstract class ilExplorerSelectInputGUI extends ilFormPropertyGUI implements ilT
         include_once("./Services/YUI/classes/class.ilYuiUtil.php");
         ilYuiUtil::initPanel();
         $GLOBALS["tpl"]->addJavascript("./Services/UIComponent/Explorer2/js/Explorer2.js");
-        
+        $GLOBALS["tpl"]->addJavascript("./Services/UIComponent/Modal/js/Modal.js");
+
         $tpl = new ilTemplate("tpl.prop_expl_select.html", true, true, "Services/UIComponent/Explorer2");
 
         if ($a_mode != "property_form") {
@@ -170,7 +171,7 @@ abstract class ilExplorerSelectInputGUI extends ilFormPropertyGUI implements ilT
                 $tpl->setVariable("HID_NAME", $this->getPostVar() . "[]");
                 $tpl->setVariable("HID_VAL", $v);
                 $tpl->parseCurrentBlock();
-                $val_txt.= $sep . $this->getTitleForNodeId($v);
+                $val_txt .= $sep . $this->getTitleForNodeId($v);
                 $sep = ", ";
                 $this->explorer_gui->setNodeOpen($v);
                 $this->explorer_gui->setNodeSelected($v);
@@ -213,13 +214,13 @@ abstract class ilExplorerSelectInputGUI extends ilFormPropertyGUI implements ilT
         $button->setCaption("select");
         $button->addCSSClass("ilExplSelectInputButS");
         $button->setOmitPreventDoubleSubmission(true);
-        $top_tb->addButtonInstance($button);
+        $top_tb->addStickyItem($button);
         
         $button = ilLinkButton::getInstance();
         $button->setCaption("cancel");
         $button->addCSSClass("ilExplSelectInputButC");
         $button->setOmitPreventDoubleSubmission(true);
-        $top_tb->addButtonInstance($button);
+        $top_tb->addStickyItem($button);
         
         // :TODO: we should probably clone the buttons properly
         $tpl->setVariable("TOP_TB", $top_tb->getHTML());

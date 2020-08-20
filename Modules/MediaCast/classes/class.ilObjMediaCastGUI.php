@@ -556,8 +556,8 @@ class ilObjMediaCastGUI extends ilObjectGUI
                     $values["duration"] = array("hh" => $length[0], "mm" => $length[1], "ss" => $length[2]);
                 }
                 
-                $values["value_" . $med->getPurpose()] = (strlen($med->getLocation())> 100) ? "..." . substr($med->getLocation(), strlen($med->getLocation()) - 100) : $med->getLocation();
-                $values["label_value_" . $med->getPurpose()] = (strlen($med->getLocation())> 100) ? "..." . substr($med->getLocation(), strlen($med->getLocation()) - 100) : $med->getLocation();
+                $values["value_" . $med->getPurpose()] = (strlen($med->getLocation()) > 100) ? "..." . substr($med->getLocation(), strlen($med->getLocation()) - 100) : $med->getLocation();
+                $values["label_value_" . $med->getPurpose()] = (strlen($med->getLocation()) > 100) ? "..." . substr($med->getLocation(), strlen($med->getLocation()) - 100) : $med->getLocation();
                 $values["mimetype_" . $med->getPurpose()] = $med->getFormat();
             }
         }
@@ -675,7 +675,7 @@ class ilObjMediaCastGUI extends ilObjectGUI
     {
         $duration = isset($this->form_gui)
             ? $this->form_gui->getInput("duration")
-            : array("hh"=>0, "mm"=>0, "ss"=>0);
+            : array("hh" => 0, "mm" => 0, "ss" => 0);
         if ($duration["hh"] == 0 && $duration["mm"] == 0 && $duration["ss"] == 0 && is_file($file)) {
             include_once("./Services/MediaObjects/classes/class.ilMediaAnalyzer.php");
             $ana = new ilMediaAnalyzer();
@@ -813,7 +813,7 @@ class ilObjMediaCastGUI extends ilObjectGUI
                 
                 if ($media_item == null) {
                     if ($purpose != "Standard" &&
-                       ($url_gui || $file_gui["size"]>0)) {
+                       ($url_gui || $file_gui["size"] > 0)) {
                         // check if we added an additional purpose when updating
                         // either by url or by file
                         $file = $this->createMediaItemForPurpose($mob, $purpose);
@@ -1601,8 +1601,8 @@ class ilObjMediaCastGUI extends ilObjectGUI
                 }
                 $mpl->setMimeType($med->getFormat());
                 //$mpl->setDisplayHeight($med->getHeight());
-                $mpl->setDisplayHeight("480");
-                $mpl->setDisplayWidth("640");
+                //$mpl->setDisplayHeight("480");
+                //$mpl->setDisplayWidth("320px");
                 $mpl->setVideoPreviewPic(ilWACSignedPath::signFile($mob->getVideoPreviewPic()));
                 $mpl->setTitle($item["title"]);
                 $mpl->setDescription($item["content"]);
@@ -1675,14 +1675,14 @@ class ilObjMediaCastGUI extends ilObjectGUI
             $med->update();
             
             $add = (is_array($ret) && count($ret) > 0)
-                ? "<br />" . implode($ret, "<br />")
+                ? "<br />" . implode("<br />", $ret)
                 : "";
             
             ilUtil::sendInfo($this->lng->txt("mcst_converted_file") . $add, true);
         } catch (ilException $e) {
             $ret = ilFFmpeg::getLastReturnValues();
             $add = (is_array($ret) && count($ret) > 0)
-                ? "<br />" . implode($ret, "<br />")
+                ? "<br />" . implode("<br />", $ret)
                 : "";
             ilUtil::sendFailure($e->getMessage() . $add, true);
         }
@@ -1734,7 +1734,7 @@ class ilObjMediaCastGUI extends ilObjectGUI
             if (DEVMODE == 1) {
                 $ret = ilFFmpeg::getLastReturnValues();
                 $add = (is_array($ret) && count($ret) > 0)
-                    ? "<br />" . implode($ret, "<br />")
+                    ? "<br />" . implode("<br />", $ret)
                     : "";
             }
             ilUtil::sendFailure($e->getMessage() . $add, true);

@@ -249,7 +249,7 @@ class ilCalendarAppointmentGUI
             
             // completion
             $completion_vals = array();
-            for ($i = 0; $i <= 100; $i+=5) {
+            for ($i = 0; $i <= 100; $i += 5) {
                 $completion_vals[$i] = $i . " %";
             }
             $compl = new ilSelectInputGUI(
@@ -272,7 +272,7 @@ class ilCalendarAppointmentGUI
             $resp = new ilNonEditableValueGUI($this->lng->txt('cal_responsible'), "", true);
             $delim = "";
             foreach ($users as $r) {
-                $value.= $delim . $r["lastname"] . ", " . $r["firstname"] . " [" . $r["login"] . "]";
+                $value .= $delim . $r["lastname"] . ", " . $r["firstname"] . " [" . $r["login"] . "]";
                 $delim = "<br />";
             }
             if (count($users) > 0) {
@@ -313,7 +313,7 @@ class ilCalendarAppointmentGUI
 
         // Notifications
         include_once './Services/Calendar/classes/class.ilCalendarSettings.php';
-        if (ilCalendarSettings::_getInstance()->isNotificationEnabled()  and count($cats->getNotificationCalendars())) {
+        if (ilCalendarSettings::_getInstance()->isNotificationEnabled() and count($cats->getNotificationCalendars())) {
             $selected_cal = new ilCalendarCategory($selected_calendar);
             $disabled = true;
             if ($selected_cal->getType() == ilCalendarCategory::TYPE_OBJ) {
@@ -340,7 +340,7 @@ class ilCalendarAppointmentGUI
      * @access protected
      * @return
      */
-    protected function add(ilPropertyFormGUI $form  = null)
+    protected function add(ilPropertyFormGUI $form = null)
     {
         global $DIC;
 
@@ -465,7 +465,7 @@ class ilCalendarAppointmentGUI
         $ilUser = $DIC['ilUser'];
 
         include_once './Services/Calendar/classes/class.ilCalendarMailNotification.php';
-        $notification =  new ilCalendarMailNotification();
+        $notification = new ilCalendarMailNotification();
         $notification->setAppointmentId($this->app->getEntryId());
         
         foreach ($this->notification->getRecipients() as $rcp) {
@@ -497,7 +497,7 @@ class ilCalendarAppointmentGUI
         $cat_info = ilCalendarCategories::_getInstance()->getCategoryInfo($a_cat_id);
         
         include_once './Services/Calendar/classes/class.ilCalendarMailNotification.php';
-        $notification =  new ilCalendarMailNotification();
+        $notification = new ilCalendarMailNotification();
         $notification->setAppointmentId($app_id);
         
         switch ($cat_info['type']) {
@@ -627,7 +627,7 @@ class ilCalendarAppointmentGUI
     {
         global $DIC;
 
-        $tpl = $DIC['tpl'];
+        $tpl = $DIC->ui()->mainTemplate();
         $ilUser = $DIC['ilUser'];
         $ilErr = $DIC['ilErr'];
         $ilHelp = $DIC['ilHelp'];
@@ -752,7 +752,7 @@ class ilCalendarAppointmentGUI
             $users = $this->app->readResponsibleUsers();
             $delim = "";
             foreach ($users as $r) {
-                $value.= $delim . $r["lastname"] . ", " . $r["firstname"] . " [" . $r["login"] . "]";
+                $value .= $delim . $r["lastname"] . ", " . $r["firstname"] . " [" . $r["login"] . "]";
                 $delim = "<br />";
             }
             if (count($users) > 0) {
@@ -1348,14 +1348,15 @@ class ilCalendarAppointmentGUI
         $ilUser = $DIC['ilUser'];
         $tpl = $DIC['tpl'];
         
-        $entry = (int) $_GET['app_id'];
-        $user = (int) $_GET['bkid'];
-
+        $entry_id = (int) $_GET['app_id'];
         $this->ctrl->saveParameter($this, 'app_id');
         
         include_once 'Services/Calendar/classes/class.ilCalendarEntry.php';
         include_once 'Services/Booking/classes/class.ilBookingEntry.php';
-        $entry = new ilCalendarEntry($entry);
+        $entry = new ilCalendarEntry($entry_id);
+        $booking = new \ilBookingEntry($entry->getContextId());
+        $user = $booking->getObjId();
+
 
         $form = $this->initFormConfirmBooking();
         $form->getItemByPostVar('date')->setValue(ilDatePresentation::formatPeriod($entry->getStart(), $entry->getEnd()));
@@ -1397,11 +1398,9 @@ class ilCalendarAppointmentGUI
     {
         global $DIC;
 
-        $ilUser = $DIC['ilUser'];
+        $ilUser = $DIC->user();
 
         $entry = (int) $_REQUEST['app_id'];
-        $user = (int) $_REQUEST['bkid'];
-        
         $form = $this->initFormConfirmBooking();
         if ($form->checkInput()) {
             // check if appointment is bookable
@@ -1483,7 +1482,6 @@ class ilCalendarAppointmentGUI
         $ilUser = $DIC['ilUser'];
 
         $entry = (int) $_POST['app_id'];
-        $user = (int) $_GET['bkid'];
 
         include_once 'Services/Calendar/classes/class.ilCalendarEntry.php';
         $entry = new ilCalendarEntry($entry);
@@ -1512,7 +1510,6 @@ class ilCalendarAppointmentGUI
 
         // do NOT delete original entry
         } elseif ($category->getType() == ilCalendarCategory::TYPE_BOOK) {
-            include_once 'Modules/BookingManager/classes/class.ilBookingReservation.php';
             $booking = new ilBookingReservation($entry->getContextId());
             $booking->setStatus(ilBookingReservation::STATUS_CANCELLED);
             $booking->update();

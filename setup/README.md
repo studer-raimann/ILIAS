@@ -35,7 +35,7 @@ read messages from the setup carefully and act accordingly. If you do not change
 config file, it is safe to execute the installation process a second time for the
 same installation a during the initial setup process.
 
-Do not discard the `config.js` you use for the installation, you will need it later
+Do not discard the `config.json` you use for the installation, you will need it later
 on to update that installation. If you want to overwrite specific fields in the
 configuration file you can use the `--config="a.b.c=value"` option, even several
 times. The nested field `a.b.c` from the config file will then be overwritten with
@@ -94,6 +94,7 @@ are printed bold**, all other fields might be ommitted. A minimal example is
   * *type* of the database, one of `innodb`, `mysql`, `postgres`, `galera`, defaults
     to `innodb`
   * *host* the database server runs on, defaults to `localhost`
+  * *port* the database server uses, defaults to `3306`
   * *database* name to be used, defaults to `ilias`
   * **user** to be used to connect to the database
   * **password**  to be used to connect to the database
@@ -129,13 +130,13 @@ are printed bold**, all other fields might be ommitted. A minimal example is
   * *path_to_phantom_js* executable
 * *preview* contains settings for Services/Preview
   * *path_to_ghostscript* executable
-  * *mediaobject* contains settings for Services/MediaObjects
+* *mediaobject* contains settings for Services/MediaObjects
   * *path_to_ffmpeg* executable
 * *style* configuration to change the ILIAS look
   * *manage_system_styles* via a GUI in the installation
   * *path_to_lessc* to compile less to css
 * **systemfolder** settings for Module/SystemFolder
-  * **client** information
+  * *client* information
     * *name* of the ILIASinstallation
     * *description* of the installation
     * *institution* that provides the installation
@@ -151,7 +152,7 @@ are printed bold**, all other fields might be ommitted. A minimal example is
     * *country* of said person
     * *phone* of said person
     * **email** of said person
-* **utilities** contains settings for Services/Utilities
+* *utilities* contains settings for Services/Utilities
   * *path_to_convert* from ImageMagick, to resize images
   * *path_to_zip*" to zip files
   * *path_to_unzip*" to unzip files

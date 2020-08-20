@@ -82,7 +82,7 @@ class MainToolCollector extends AbstractBaseCollector implements ItemCollector
     }
 
 
-    public function filterItemsByVisibilty(bool $skip_async = false) : void
+    public function filterItemsByVisibilty(bool $async_only = false) : void
     {
         $this->tools = array_filter($this->tools, $this->getVisibleFilter());
     }
@@ -93,7 +93,15 @@ class MainToolCollector extends AbstractBaseCollector implements ItemCollector
         array_walk($this->tools, function (isToolItem $tool) {
             $this->applyTypeInformation($tool);
         });
+    }
 
+    public function cleanupItemsForUIRepresentation() : void
+    {
+        // TODO: Implement cleanupItemsForUIRepresentation() method.
+    }
+
+    public function sortItemsForUIRepresentation() : void
+    {
         usort($this->tools, $this->getItemSorter());
     }
 

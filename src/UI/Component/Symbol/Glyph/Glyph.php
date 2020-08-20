@@ -10,7 +10,7 @@ use ILIAS\UI\Component\Clickable;
 /**
  * This describes how a glyph could be modified during construction of UI.
  */
-interface Glyph extends \ILIAS\UI\Component\Symbol\Symbol, \ILIAS\UI\Component\JavaScriptBindable, Clickable
+interface Glyph extends \ILIAS\UI\Component\Symbol\Symbol, Clickable
 {
     // Types of glyphs:
     const SETTINGS = "settings";
@@ -24,7 +24,6 @@ interface Glyph extends \ILIAS\UI\Component\Symbol\Symbol, \ILIAS\UI\Component\J
     const NEXT = "next";
     const SORT_ASCENDING = "sortAscending";
     const SORT_DESCENDING = "sortDescending";
-    const SORT = "sort";
     const USER = "user";
     const MAIL = "mail";
     const NOTIFICATION = "notification";
@@ -119,4 +118,12 @@ interface Glyph extends \ILIAS\UI\Component\Symbol\Symbol, \ILIAS\UI\Component\J
      * @return Glyph
      */
     public function withUnavailableAction();
+
+    /**
+    * Get a Glyph like this with an action.
+    *
+    * @param string $action
+    * @return mixed
+    */
+    public function withAction($action);
 }

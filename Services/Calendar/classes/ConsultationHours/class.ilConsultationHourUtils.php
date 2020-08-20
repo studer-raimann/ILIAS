@@ -9,6 +9,89 @@
  */
 class ilConsultationHourUtils
 {
+    public static function getConsultationHourLinksForRepositoryObject(int $ref_id, int $current_user_id, array $ctrl_class_structure)
+    {
+        global $DIC;
+
+        $ctrl = $DIC->ctrl();
+        $lng = $DIC->language();
+        $logger = $DIC->logger()->cal();
+
+        $obj_id = \ilObject::_lookupObjId($ref_id);
+        $participants = \ilParticipants::getInstance($ref_id);
+        $candidates = array_unique(array_merge(
+            $participants->getAdmins(),
+            $participants->getTutors()
+        ));
+        $users = \ilBookingEntry::lookupBookableUsersForObject($obj_id, $candidates);
+        $now = new \ilDateTime(time(), IL_CAL_UNIX);
+        $links = [];
+        foreach ($users as $user_id) {
+
+            $next_entry = null;
+            $appointments = \ilConsultationHourAppointments::getAppointments($user_id);
+            foreach ($appointments as $entry) {
+                // find next entry
+                if (ilDateTime::_before($entry->getStart(), $now, IL_CAL_DAY)) {
+                    continue;
+                }
+                $booking_entry = new ilBookingEntry($entry->getContextId());
+                if (!in_array($obj_id, $booking_entry->getTargetObjIds())) {
+                    continue;
+                }
+                if (!$booking_entry->isAppointmentBookableForUser($entry->getEntryId(), $current_user_id)) {
+                    continue;
+                }
+                $next_entry = $entry;
+                break;
+            }
+
+            $ctrl->setParameterByClass(end($ctrl_class_structure), 'ch_user_id', $user_id);
+            if ($next_entry instanceof \ilCalendarEntry) {
+                $ctrl->setParameterByClass(end($ctrl_class_structure), 'seed', $next_entry->getStart()->get(IL_CAL_DATE));
+            }
+            $current_link = [
+                'link' => $ctrl->getLinkTargetByClass($ctrl_class_structure, 'selectCHCalendarOfUser'),
+                'txt' => str_replace("%1", ilObjUser::_lookupFullname($user_id), $lng->txt("cal_consultation_hours_for_user"))
+            ];
+            $links[] = $current_link;
+        }
+        // Reset control structure links
+        $ctrl->setParameterByClass(end($ctrl_class_structure), 'seed', '');
+        $ctrl->setParameterByClass(end($ctrl_class_structure), 'ch_user_id', '');
+        return $links;
+    }
+
+
+
+    /**
+     * @param ilBookingEntry $booking
+     * @param ilDateTime     $start
+     * @param ilDateTime     $end
+     * @return int[]
+     * @throws ilDatabaseException
+     */
+    public static function findCalendarAppointmentsForBooking(\ilBookingEntry $booking, \ilDateTime $start, \ilDateTime $end)
+    {
+        global $DIC;
+
+        $db = $DIC->database();
+
+        $query = 'select ce.cal_id from cal_entries ce ' .
+            'join cal_cat_assignments cca on ce.cal_id = cca.cal_id ' .
+            'join cal_categories cc on cca.cat_id = cc.cat_id '.
+            'where context_id = ' . $db->quote($booking->getId(), 'integer') . ' ' .
+            'and starta = ' . $db->quote($start->get(IL_CAL_DATETIME, '', \ilTimeZone::UTC), \ilDBConstants::T_TIMESTAMP) . ' ' .
+            'and enda = ' . $db->quote($end->get(IL_CAL_DATETIME, '', \ilTimeZone::UTC), \ilDBConstants::T_TIMESTAMP) . ' ' .
+            'and type = ' . $db->quote(\ilCalendarCategory::TYPE_CH, 'integer');
+        $res = $db->query($query);
+
+        $calendar_apppointments = [];
+        while ($row = $res->fetchRow(\ilDBConstants::FETCHMODE_OBJECT)) {
+            $calendar_apppointments[] = $row->cal_id;
+        }
+        return $calendar_apppointments;
+    }
 
 
     /**
@@ -74,7 +157,7 @@ class ilConsultationHourUtils
             $app->getStart(),
             ilCalendarCategory::TYPE_CH,
             false
-            );
+        );
         foreach ($user_apps as $uapp_id) {
             $uapp = new ilCalendarEntry($uapp_id);
             $uapp->delete();

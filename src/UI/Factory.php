@@ -225,7 +225,6 @@ interface Factory
      *      popovers: >
      *          Dropdowns only provide a list of possible actions. Popovers can include more diverse
      *          and flexible content.
-     *
      * rules:
      *   usage:
      *      1: >
@@ -277,6 +276,9 @@ interface Factory
      *      7: >
      *           The focus MAY leave the Dropdown if tab is pressed while focusing the last
      *           element. This differs from the behaviour in Popovers and Modals.
+     *      8: >
+     *           Dropdowns MUST set the aria-label describing the contained options, if the
+     *           term "Actions" does not describe the contained options well.
      * ---
      * @return  \ILIAS\UI\Component\Dropdown\Factory
      */
@@ -304,6 +306,13 @@ interface Factory
      * rules:
      *   usage:
      *     1: Crumbs MUST trigger navigation to other resources of the system.
+     *   accessibility:
+     *     1: >
+     *        The HTML tag < nav > MUST be used for the Breadcrumbs to be
+     *        identified as the ARIA Landmark Role "Navigation".
+     *     2: >
+     *        The "aria-label" attribute MUST be set for Breadcrumbs,
+     *        which MUST be language-dependant.
      * ---
      * @param 	\ILIAS\UI\Component\Link\Standard[] 	$crumbs 	a list of Links
      * @return 	\ILIAS\UI\Component\Breadcrumbs\Breadcrumbs

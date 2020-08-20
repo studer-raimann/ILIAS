@@ -45,18 +45,11 @@ class RepositoryMainBarProvider extends AbstractStaticMainMenuProvider
             ->withVisibilityCallable($access_helper->isRepositoryReadable())
             ->withParent($top)
             ->withSymbol($icon)
-            ->withPosition(20);
+            ->withPosition(10);
 
         // Tree-View
-        $mode = ($_SESSION["il_rep_mode"] == "flat")
-            ? "tree"
-            : "flat";
-        $link = "ilias.php?baseClass=ilRepositoryGUI&cmd=frameset&set_mode=" . $mode . "&ref_id=" . $_GET["ref_id"];
-        $title = ($mode == "flat")
-            ? $this->dic->language()->txt("mm_repo_tree_view_act")
-            : $this->dic->language()->txt("mm_repo_tree_view_deact");
-
         $title = $this->dic->language()->txt("mm_rep_tree_view");
+
         $icon = $this->dic->ui()->factory()->symbol()->icon()->custom(\ilUtil::getImagePath("outlined/icon_reptr.svg"), $title);
 
         /*
@@ -88,8 +81,8 @@ class RepositoryMainBarProvider extends AbstractStaticMainMenuProvider
             ->complex($this->if->identifier('last_visited'))
             ->withTitle($this->dic->language()->txt('last_visited'))
             ->withSupportsAsynchronousLoading(true)
-            ->withVisibilityCallable($access_helper->isUserLoggedIn())
-            ->withPosition(40)
+            ->withVisibilityCallable($access_helper->isUserLoggedIn($access_helper->isRepositoryReadable()))
+            ->withPosition(30)
             ->withSymbol($icon)
             ->withParent($top)
             ->withContentWrapper(function () use ($p) {
@@ -162,7 +155,7 @@ class RepositoryMainBarProvider extends AbstractStaticMainMenuProvider
                 $ititle = ilUtil::shortenText(strip_tags($nav_item["title"]), 50, true); // #11023
                 $obj_id = ilObject::_lookupObjectId($nav_item["ref_id"]);
                 $items[] = $f->item()->standard(
-                    $f->button()->shy($ititle, $nav_item["link"])
+                    $f->link()->standard($ititle, $nav_item["link"])
                 )->withLeadIcon($f->symbol()->icon()->custom(ilObject::_getIcon($obj_id), $ititle));
             }
             $first = false;

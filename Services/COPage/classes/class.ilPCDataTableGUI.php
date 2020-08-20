@@ -28,6 +28,10 @@ class ilPCDataTableGUI extends ilPCTableGUI
      */
     protected $main_tpl;
 
+    /**
+     * @var \ILIAS\GlobalScreen\ScreenContext\ContextServices
+     */
+    protected $tool_context;
 
     /**
     * Constructor
@@ -43,6 +47,7 @@ class ilPCDataTableGUI extends ilPCTableGUI
         $this->tabs = $DIC->tabs();
         parent::__construct($a_pg_obj, $a_content_obj, $a_hier_id, $a_pc_id);
         $this->setCharacteristics(array("StandardTable" => $this->lng->txt("cont_StandardTable")));
+        $this->tool_context = $DIC->globalScreen()->tool()->context();
     }
 
     /**
@@ -458,6 +463,8 @@ class ilPCDataTableGUI extends ilPCTableGUI
         $main_tpl = $this->main_tpl;
 
 
+        $this->tool_context->current()->addAdditionalData(ilCOPageEditGSToolProvider::SHOW_EDITOR, true);
+
         if (!ilPageEditorGUI::_doJSEditing()) {
             return $this->editDataCl();
         }
@@ -657,6 +664,9 @@ class ilPCDataTableGUI extends ilPCTableGUI
             ", " . ilUtil::getStyleSheetLocation() . ", ./Services/COPage/css/tiny_extra.css');
 			ilCOPage.editTD('cell_0_0');
 				");
+        foreach (ilPCParagraphGUI::_getTextCharacteristics($this->getStyleId()) as $c) {
+            $GLOBALS["tpl"]->addOnloadCode("ilCOPage.addTextFormat('" . $c . "');");
+        }
 
         $cfg = $this->getPageConfig();
 

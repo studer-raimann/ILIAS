@@ -45,7 +45,7 @@ class ilDBUpdate
         // workaround to allow setup migration
         $this->client_ini = $client_ini;
         if ($a_db_handler) {
-            $this->db =&$a_db_handler;
+            $this->db = &$a_db_handler;
             $this->PATH = "./";
         } else {
             global $DIC;
@@ -362,13 +362,13 @@ class ilDBUpdate
 
                 if ($this->applyUpdateNr($i) == false) {
                     $msg[] = array("msg" => "update_error: " . $this->error,
-                                   "nr"  => $i,);
+                                   "nr" => $i,);
                     $this->updateMsg = $msg;
 
                     return false;
                 } else {
                     $msg[] = array("msg" => "update_applied",
-                                   "nr"  => $i,);
+                                   "nr" => $i,);
                 }
             }
 
@@ -431,12 +431,12 @@ class ilDBUpdate
     /**
      * apply an update
      *
-     * @param int nr number what patch to apply
+     * @param int nr number what patch to apply (Reference: Patch for https://mantis.ilias.de/view.php?id=28550)
      *
      * @return bool
      * @access private
      */
-    public function applyUpdateNr($nr, $hotfix = false, $custom_update = false)
+    public function applyUpdateNr(&$nr, $hotfix = false, $custom_update = false)
     {
         $ilCtrlStructureReader = null;
         $ilMySQLAbstraction = null;
@@ -557,8 +557,8 @@ class ilDBUpdate
         $res = $this->db->query($query);
         while ($row = $res->fetchRow()) {
             $status = $this->getTableStatus($row[0]);
-            $a[] = array("name"   => $status["Table"],
-                         "table"  => $row[0],
+            $a[] = array("name" => $status["Table"],
+                         "table" => $row[0],
                          "status" => $status["Msg_text"],);
         }
 
@@ -600,7 +600,7 @@ class ilDBUpdate
     {
         $this->readHotfixInfo();
         $this->hotfix_setting->set(
-            "db_hotfixes_" . $this->hotfix_version[0] . "_" . $this->hotfix_version[1],
+            "db_hotfixes_" . $this->hotfix_version[0],
             $a_version
         );
         $this->hotfix_current_version = $a_version;
@@ -651,11 +651,11 @@ class ilDBUpdate
         $version_array = explode(".", $ilias_version);
         $this->hotfix_version[0] = $version_array[0];
         $this->hotfix_version[1] = $version_array[1];
-        $hotfix_file = $this->PATH . "setup/sql/" . $this->hotfix_version[0] . "_" . $this->hotfix_version[1] . "_hotfixes.php";
+        $hotfix_file = $this->PATH . "setup/sql/" . $this->hotfix_version[0] . "_hotfixes.php";
         if (is_file($hotfix_file)) {
             $this->hotfix_content = @file($hotfix_file);
             $this->hotfix_current_version = (int) $this->hotfix_setting->get(
-                "db_hotfixes_" . $this->hotfix_version[0] . "_" . $this->hotfix_version[1]
+                "db_hotfixes_" . $this->hotfix_version[0]
             );
             $this->hotfix_file_version = $this->readHotfixFileVersion($this->hotfix_content);
         }
@@ -704,13 +704,13 @@ class ilDBUpdate
 
                 if ($this->applyUpdateNr($i, true) == false) {
                     $msg[] = array("msg" => "update_error: " . $this->error,
-                                   "nr"  => $i,);
+                                   "nr" => $i,);
                     $this->updateMsg = $msg;
 
                     return false;
                 } else {
                     $msg[] = array("msg" => "hotfix_applied",
-                                   "nr"  => $i,);
+                                   "nr" => $i,);
                 }
             }
 
@@ -817,13 +817,13 @@ class ilDBUpdate
 
                 if ($this->applyUpdateNr($i, false, true) == false) {
                     $msg[] = array("msg" => "update_error: " . $this->error,
-                                   "nr"  => $i,);
+                                   "nr" => $i,);
                     $this->updateMsg = $msg;
 
                     return false;
                 } else {
                     $msg[] = array("msg" => "custom_update_applied",
-                                   "nr"  => $i,);
+                                   "nr" => $i,);
                 }
             }
 

@@ -8,7 +8,6 @@ use ILIAS\UI\Component\Component;
 
 /**
  * Class TopParentItemRenderer
- *
  * @author Fabian Schmid <fs@studer-raimann.ch>
  */
 class TopParentItemRenderer extends BaseTypeRenderer
@@ -18,7 +17,6 @@ class TopParentItemRenderer extends BaseTypeRenderer
         MakeSlateAsync::unhash insteadof SlateSessionStateCode;
     }
     use isSupportedTrait;
-
 
     /**
      * @inheritDoc

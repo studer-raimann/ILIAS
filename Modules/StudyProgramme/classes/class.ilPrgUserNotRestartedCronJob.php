@@ -15,11 +15,6 @@ class ilPrgUserNotRestartedCronJob extends ilCronJob
     protected $user_assignments_db;
 
     /**
-     * @var ilObjUser
-     */
-    protected $usr;
-
-    /**
      * @var ilLog
      */
     protected $log;
@@ -34,7 +29,6 @@ class ilPrgUserNotRestartedCronJob extends ilCronJob
         global $DIC;
 
         $this->user_assignments_db = ilStudyProgrammeDIC::dic()['ilStudyProgrammeUserAssignmentDB'];
-        $this->usr = $DIC['ilUser'];
         $this->log = $DIC['ilLog'];
         $this->lng = $DIC['lng'];
     }
@@ -119,26 +113,24 @@ class ilPrgUserNotRestartedCronJob extends ilCronJob
     {
         $result = new ilCronJobResult();
         $result->setStatus(ilCronJobResult::STATUS_OK);
-        $now = date('Y-m-d');
         foreach ($this->user_assignments_db->getDueToRestartAndMail() as $assignment) {
             try {
-                $prg_settings = $assignment->getStudyProgramme()->getRawSettings();
-                $auto_re_assign = $prg_settings->getRestartPeriod();
+                $prg = $assignment->getStudyProgramme();
+                $validity_of_qualification = $prg->getValidityOfQualificationSettings();
+                $auto_re_assign = $validity_of_qualification->getRestartPeriod();
                 if ($auto_re_assign == -1) {
                     continue;
                 }
 
-                $inform_by_days = $prg_settings->getReminderNotRestartedByUserDays();
+                $auto_mail_settings = $prg->getAutoMailSettings();
+                $inform_by_days = $auto_mail_settings->getReminderNotRestartedByUserDays();
                 if (is_null($inform_by_days)) {
                     continue;
                 }
-
                 $restart_date = $assignment->getRestartDate();
                 $restart_date->sub(new DateInterval(('P' . $inform_by_days . 'D')));
 
-                if ($restart_date->format("Y-m-d") > $now) {
-                    $assignment->informUserByMailToRestart();
-                }
+                $assignment->informUserByMailToRestart();
             } catch (ilException $e) {
                 $this->log->write('an error occured: ' . $e->getMessage());
             }

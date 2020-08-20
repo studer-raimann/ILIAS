@@ -241,7 +241,7 @@ class ilDclCreateViewDefinitionGUI extends ilPageObjectGUI
                 $data_type_id = intval($parts[2]);
 
                 // Delete all field values associated with this id
-                $existing_values = $f->find($data_type_id, $id);
+                $existing_values = ilDclTableViewBaseDefaultValue::findAll($data_type_id, $id);
 
                 foreach ($existing_values as $existing_value) {
                     $existing_value->delete();
@@ -252,7 +252,7 @@ class ilDclCreateViewDefinitionGUI extends ilPageObjectGUI
                     // Check number field
                     if ($data_type_id === ilDclDatatype::INPUTFORMAT_NUMBER) {
                         if (!ctype_digit($value)) {
-                            ilUtil::sendFailure("--Wrong Datatype--", true);
+                            ilUtil::sendFailure($this->lng->txt('dcl_tableview_default_value_fail'), true);
                             $this->ctrl->saveParameter($this, 'tableview_id');
                             $this->ctrl->redirect($this, 'presentation');
                         }

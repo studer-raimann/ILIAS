@@ -147,10 +147,12 @@ class ilNonEditableValueGUI extends ilSubEnabledFormPropertyGUI implements ilTab
             $value = ilUtil::prepareFormOutput($value);
         }
         $tpl->setVariable("VALUE", $value);
-        $tpl->setVariable("ID", $this->getFieldId());
+        if ($this->getFieldId() != "") {
+            $tpl->setVariable("ID", ' id="'.$this->getFieldId().'" ');
+        }
         $tpl->parseCurrentBlock();
         
-        if ($this->getMulti() && $postvar!= "" && !$this->getDisabled()) {
+        if ($this->getMulti() && $postvar != "" && !$this->getDisabled()) {
             $tpl->setVariable("MULTI_ICONS", $this->getMultiIconsHTML());
         }
 

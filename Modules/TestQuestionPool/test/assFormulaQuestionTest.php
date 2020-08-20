@@ -54,50 +54,50 @@ class assFormulaQuestionTest extends assBaseTestCase
      */
     public function simpleRatedCalculationsData()
     {
-        $points    = 5;
+        $points = 5;
         $precision = 2;
 
         $meter = new assFormulaQuestionUnit();
         $meter->initFormArray([
-            'unit_id'        => 1,
-            'category'       => 1,
-            'sequence'       => 1,
-            'unit'           => 'Meter',
-            'factor'         => 1,
-            'baseunit_fi'    => -1,
+            'unit_id' => 1,
+            'category' => 1,
+            'sequence' => 1,
+            'unit' => 'Meter',
+            'factor' => 1,
+            'baseunit_fi' => -1,
             'baseunit_title' => ''
         ]);
 
         $centimeter = new assFormulaQuestionUnit();
         $centimeter->initFormArray([
-            'unit_id'        => 2,
-            'category'       => 1,
-            'sequence'       => 2,
-            'unit'           => 'Centimeter',
-            'factor'         => 0.01,
-            'baseunit_fi'    => 1,
+            'unit_id' => 2,
+            'category' => 1,
+            'sequence' => 2,
+            'unit' => 'Centimeter',
+            'factor' => 0.01,
+            'baseunit_fi' => 1,
             'baseunit_title' => 'Meter'
         ]);
 
         $newtonmetre = new assFormulaQuestionUnit();
         $newtonmetre->initFormArray([
-            'unit_id'        => 3,
-            'category'       => 1,
-            'sequence'       => 3,
-            'unit'           => 'Newton Metre',
-            'factor'         => 1,
-            'baseunit_fi'    => -1,
+            'unit_id' => 3,
+            'category' => 1,
+            'sequence' => 3,
+            'unit' => 'Newton Metre',
+            'factor' => 1,
+            'baseunit_fi' => -1,
             'baseunit_title' => ''
         ]);
 
         $newtoncentimeter = new assFormulaQuestionUnit();
         $newtoncentimeter->initFormArray([
-            'unit_id'        => 4,
-            'category'       => 1,
-            'sequence'       => 4,
-            'unit'           => 'Newton Centimeter',
-            'factor'         => 0.01,
-            'baseunit_fi'    => 3,
+            'unit_id' => 4,
+            'category' => 1,
+            'sequence' => 4,
+            'unit' => 'Newton Centimeter',
+            'factor' => 0.01,
+            'baseunit_fi' => 3,
             'baseunit_title' => 'Newton Metre'
         ]);
 
@@ -390,7 +390,7 @@ class assFormulaQuestionTest extends assBaseTestCase
             // RESULT_NO_SELECTION
             [$r11, $variables, $results, '1/3', null, true],
             // Test for #22381
-            [$r12, $variables, $results, '3.1', null, true],
+            [$r12, $variables, $results, '3.0', null, true],
         ];
     }
 }

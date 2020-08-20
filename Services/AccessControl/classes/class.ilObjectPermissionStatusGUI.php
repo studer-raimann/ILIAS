@@ -49,7 +49,7 @@ class ilObjectPermissionStatusGUI
         $rbacreview = $DIC['rbacreview'];
         $tpl = $DIC['tpl'];
 
-        $this->lng =  $lng;
+        $this->lng = $lng;
         $this->ilCtrl = $ilCtrl;
         $this->tpl = $tpl;
         $this->object = $a_obj;
@@ -235,8 +235,7 @@ class ilObjectPermissionStatusGUI
         $class = $objDefinition->getClassName($a_type);
         $location = $objDefinition->getLocation($a_type);
         $full_class = "ilObj" . $class . "Access";
-        include_once($location . "/class." . $full_class . ".php");
-        
+
         $cmds = call_user_func(array($full_class, "_getCommands"));
         
         array_push($cmds, array('permission' => 'visible','cmd' => 'info'));
@@ -255,7 +254,7 @@ class ilObjectPermissionStatusGUI
         $ilUser = $DIC['ilUser'];
 
         if (!isset($_POST['user_login'])) {
-            $user =&$ilUser;
+            $user = &$ilUser;
         } else {
             include_once('Services/User/classes/class.ilObjUser.php');
             $user_id = ilObjUser::_lookupId($_POST['user_login']);
@@ -265,7 +264,7 @@ class ilObjectPermissionStatusGUI
 
 
             if ($user === false or $user->getType() != 'usr') {
-                $user =&$ilUser;
+                $user = &$ilUser;
                 ilUtil::sendFailure($this->lng->txt('info_err_user_not_exist'));
             } else {
                 ilUtil::sendInfo($this->lng->txt('info_user_view_changed'));

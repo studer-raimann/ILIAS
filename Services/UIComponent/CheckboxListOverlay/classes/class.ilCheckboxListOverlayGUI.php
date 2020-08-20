@@ -171,7 +171,7 @@ class ilCheckboxListOverlayGUI
     /**
     * Get selection list HTML
     */
-    public function getHTML()
+    public function getHTML($pull_right = true)
     {
         $lng = $this->lng;
         
@@ -191,8 +191,7 @@ class ilCheckboxListOverlayGUI
         
         // do not repeat title (accessibility) -> empty alt
         $tpl->setVariable("TXT_SEL_TOP", $this->getLinkTitle());
-        $tpl->setVariable("ALT_SEL_TOP", "");
-        
+
         $tpl->parseCurrentBlock();
         
         reset($items);
@@ -208,7 +207,11 @@ class ilCheckboxListOverlayGUI
             }
             $tpl->parseCurrentBlock();
         }
-        
+
+        if ($pull_right) {
+            $tpl->touchBlock("pr");
+        }
+
         $tpl->setVariable("ID", $this->getId());
         $tpl->setVariable("HIDDEN_VAR", $this->getHiddenVar());
         $tpl->setVariable("CMD_SUBMIT", $this->getFormCmd());

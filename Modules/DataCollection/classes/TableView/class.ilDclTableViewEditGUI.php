@@ -7,8 +7,6 @@
  * @ingroup      ModulesDataCollection
  *
  * @ilCtrl_Calls ilDclTableViewEditGUI: ilDclDetailedViewDefinitionGUI
- * @ilCtrl_Calls ilDclTableViewEditGUI: ilDclEditViewDefinitionGUI
- * @ilCtrl_Calls ilDclTableViewEditGUI: ilDclCreateViewDefinitionGUI
  */
 class ilDclTableViewEditGUI
 {
@@ -75,8 +73,9 @@ class ilDclTableViewEditGUI
 
         $this->ctrl->saveParameterByClass('ilDclTableEditGUI', 'table_id');
         $this->ctrl->saveParameter($this, 'tableview_id');
-        $tableview_title = $this->tableview->getTitle() ? $this->tableview->getTitle() : '';
-        $locator->addItem($tableview_title, $this->ctrl->getLinkTarget($this, 'show'));
+        if ($this->tableview->getTitle()) {
+            $locator->addItem($this->tableview->getTitle(), $this->ctrl->getLinkTarget($this, 'show'));
+        }
         $this->tpl->setLocator();
     }
 
@@ -149,7 +148,8 @@ class ilDclTableViewEditGUI
                         $this->tpl->setContent($ilDclTableViewEditFormGUI->getHTML());
                         break;
                     case 'editGeneralSettings':
-                        $settings_tpl = new ilTemplate("tpl.dcl_settings.html", true, true, "Modules/DataCollection");
+                        $settings_tpl = new ilTemplate("tpl.dcl_settings.html", true, true, 'Modules/DataCollection');
+
                         $this->setTabs('general_settings');
                         $ilDclTableViewEditFormGUI = new ilDclTableViewEditFormGUI($this, $this->tableview);
 

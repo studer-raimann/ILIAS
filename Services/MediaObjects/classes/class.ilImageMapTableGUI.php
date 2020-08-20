@@ -107,7 +107,7 @@ class ilImageMapTableGUI extends ilTable2GUI
         $areas = array();
         
         include_once("./Services/MediaObjects/classes/class.ilMapArea.php");
-        for ($i=1; $i<=$max; $i++) {
+        for ($i = 1; $i <= $max; $i++) {
             $area = new ilMapArea($st_item->getId(), $i);
             $areas[] = array("nr" => $i, "area" => $area, "title" => $area->getTitle());
         }
@@ -158,7 +158,7 @@ class ilImageMapTableGUI extends ilTable2GUI
         
         $this->tpl->setVariable(
             "VAL_COORDS",
-            implode(explode(",", $area->getCoords()), ", ")
+            implode(", ", explode(",", $area->getCoords()))
         );
         switch ($area->getLinkType()) {
             case "ext":

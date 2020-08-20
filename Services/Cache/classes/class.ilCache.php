@@ -224,13 +224,14 @@ class ilCache
             ));
             
         // In 1/2000 times, delete old entries
-        $num = rand(1, 2000);
+        $random = new \ilRandom();
+        $num = $random->int(1, 2000);
         if ($num == 500) {
             $ilDB->manipulate(
                 "DELETE FROM $table WHERE " .
                 " ilias_version <> " . $ilDB->quote(ILIAS_VERSION_NUMERIC, "text") .
                 " OR expire_time < " . $ilDB->quote(time(), "integer")
-                );
+            );
         }
     }
     

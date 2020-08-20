@@ -52,8 +52,13 @@ abstract class ilDclSelectionFieldModel extends ilDclBaseFieldModel
                 . ") ";
         } else {
             if ($this->isMulti()) {
-                $where_str .= "filter_stloc_{$this->getId()}.value LIKE "
-                    . $ilDB->quote("%$filter_value%", 'text');
+                $where_str .= " (" .
+                    "filter_stloc_{$this->getId()}.value = " . $ilDB->quote("[$filter_value]", 'text') . " OR " .
+                    "filter_stloc_{$this->getId()}.value LIKE " . $ilDB->quote("%\"$filter_value\"%", 'text') . " OR " .
+                    "filter_stloc_{$this->getId()}.value LIKE " . $ilDB->quote("%,$filter_value,%", 'text') . " OR " .
+                    "filter_stloc_{$this->getId()}.value LIKE " . $ilDB->quote("%[$filter_value,%", 'text') . " OR " .
+                    "filter_stloc_{$this->getId()}.value LIKE " . $ilDB->quote("%,$filter_value]%", 'text') .
+                    ") ";;
             } else {
                 $where_str .= "filter_stloc_{$this->getId()}.value = "
                     . $ilDB->quote($filter_value, 'integer');
@@ -117,10 +122,10 @@ abstract class ilDclSelectionFieldModel extends ilDclBaseFieldModel
     public function fillPropertiesForm(ilPropertyFormGUI &$form)
     {
         $values = array(
-            'table_id'    => $this->getTableId(),
-            'field_id'    => $this->getId(),
-            'title'       => $this->getTitle(),
-            'datatype'    => $this->getDatatypeId(),
+            'table_id' => $this->getTableId(),
+            'field_id' => $this->getId(),
+            'title' => $this->getTitle(),
+            'datatype' => $this->getDatatypeId(),
             'description' => $this->getDescription(),
             'unique'      => $this->isUnique(),
         );
@@ -259,6 +264,10 @@ abstract class ilDclSelectionFieldModel extends ilDclBaseFieldModel
     {
         global $DIC;
         $ilDB = $DIC['ilDB'];
+
+        if ($this->isMulti()) {
+            return null;
+        }
 
         $sql_obj = new ilDclRecordQueryObject();
 

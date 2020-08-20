@@ -294,8 +294,12 @@ class ilDclRecordEditGUI
                     // If edit mode
                     if ($this->record_id) {
                         $visible = $field_setting->getVisibleEdit();
+                        $locked = $field_setting->getLockedEdit();
+                        $required = $field_setting->getRequiredEdit();
                     } else {
                         $visible = $field_setting->getVisibleCreate();
+                        $locked = $field_setting->getLockedCreate();
+                        $required = $field_setting->getRequiredCreate();
                     }
 
                     if ($visible) {
@@ -304,25 +308,34 @@ class ilDclRecordEditGUI
                             continue; // Fields calculating values at runtime, e.g. ilDclFormulaFieldModel do not have input
                         }
 
-                        if (!ilObjDataCollectionAccess::hasWriteAccess($this->parent_obj->ref_id) && $field_setting->isLocked()) {
+                        if (!ilObjDataCollectionAccess::hasWriteAccess($this->parent_obj->ref_id)) {
                             $item->setDisabled(true);
                         }
 
-                        // A simultaneously locked and required field can cause problems as the form can't be saved with an empty value
-                        if ($field_setting->isLocked() && $field_setting->isRequired()) {
-                            $item->setRequired(false);
-                        } else {
-                            $item->setRequired($field_setting->isRequired());
+                        $item->setRequired($required);
+                        $match = null;
+
+                        // If creation mode
+                        if (!$this->record_id) {
+                            $match = ilDclTableViewBaseDefaultValue::findSingle($field_setting->getFieldObject()->getDatatypeId(), $field_setting->getId());
+
+                            if ($match !== null) {;
+                                if ($item instanceof ilDclCheckboxInputGUI) {
+                                    $item->setChecked($match->getValue());
+                                } else {
+                                    $item->setValue($match->getValue());
+                                }
+                            }
                         }
 
-                        $f = new ilDclDefaultValueFactory();
+                        if ($locked) {
+                            $item->setDisabled(true);
 
-                        $matches = $f->find($field_setting->getFieldObject()->getDatatypeId(), $field_setting->getId());
-
-                        if (!is_null($matches)) {
-                            $first_element = reset($matches);
-                            if ($first_element !== false) {
-                                $item->setValue($first_element->getValue());
+                            // If locked and creation mode -> Set default values
+                            if ($match !== null && !$this->record_id) {
+                                $locked_prop = new ilHiddenInputGUI($item->getPostVar());
+                                $locked_prop->setValue($item->getValue());
+                                $this->form->addItem($locked_prop);
                             }
                         }
 
@@ -633,10 +646,10 @@ class ilDclRecordEditGUI
             $dispatchEvent = "update";
 
             $dispatchEventData = array(
-                'dcl'       => $this->parent_obj->getDataCollectionObject(),
-                'table_id'  => $this->table_id,
+                'dcl' => $this->parent_obj->getDataCollectionObject(),
+                'table_id' => $this->table_id,
                 'record_id' => $record_obj->getId(),
-                'record'    => $record_obj,
+                'record' => $record_obj,
             );
 
             if ($create_mode) {

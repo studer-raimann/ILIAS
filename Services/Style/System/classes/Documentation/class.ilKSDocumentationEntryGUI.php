@@ -68,6 +68,7 @@ class ilKSDocumentationEntryGUI
         $current_opened_node_id = $_GET["node_id"];
 
         if ($current_opened_node_id) {
+            $DIC->ctrl()->setParameterByClass("ilsystemstyledocumentationgui", "node_id", $current_opened_node_id);
             $this->setEntry($entries->getEntryById($_GET["node_id"]));
         } else {
             $this->setEntry($entries->getRootEntry());
@@ -145,7 +146,9 @@ class ilKSDocumentationEntryGUI
                 $content_part_1 = $this->f->legacy($example);
                 $code = str_replace("<?php\n", "", file_get_contents($path));
                 $geshi = new GeSHi($code, "php");
-                $content_part_2 = $this->f->legacy($geshi->parse_code());
+                //@Todo: we need a code container UI Component
+                $code_html = "<div class='code-container'>" . $geshi->parse_code() . "</div>";
+                $content_part_2 = $this->f->legacy($code_html);
                 $content = array($content_part_1,$content_part_2);
                 $sub_panels[] = $this->f->panel()->sub($title, $content);
             }

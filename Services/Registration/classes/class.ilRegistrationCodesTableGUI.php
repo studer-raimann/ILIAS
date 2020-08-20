@@ -22,8 +22,9 @@ class ilRegistrationCodesTableGUI extends ilTable2GUI
     {
         global $DIC;
 
-        $ilCtrl = $DIC['ilCtrl'];
-        $lng = $DIC['lng'];
+        $ilCtrl = $DIC->ctrl();
+        $lng = $DIC->language();
+        $access = $DIC->access();
         
         $this->setId("registration_code");
         
@@ -51,7 +52,10 @@ class ilRegistrationCodesTableGUI extends ilTable2GUI
 
         $this->setSelectAllCheckbox("id[]");
         $this->setTopCommands(true);
-        $this->addMultiCommand("deleteConfirmation", $lng->txt("delete"));
+
+        if($access->checkAccess("write", '', $a_parent_obj->ref_id)) {
+            $this->addMultiCommand("deleteConfirmation", $lng->txt("delete"));
+        }
         
         $this->addCommandButton("exportCodes", $lng->txt("registration_codes_export"));
         
@@ -146,7 +150,7 @@ class ilRegistrationCodesTableGUI extends ilTable2GUI
                         break;
                     
                     case "absolute":
-                        $result[$k]["alimit"] =  $this->lng->txt("reg_access_limitation_mode_absolute_target") .
+                        $result[$k]["alimit"] = $this->lng->txt("reg_access_limitation_mode_absolute_target") .
                             ": " . ilDatePresentation::formatDate(new ilDate($code["alimitdt"], IL_CAL_DATE));
                         break;
                     
@@ -211,7 +215,7 @@ class ilRegistrationCodesTableGUI extends ilTable2GUI
         
         include_once("./Services/Form/classes/class.ilSelectInputGUI.php");
         include_once './Services/AccessControl/classes/class.ilObjRole.php';
-        $options = array("" => $this->lng->txt("registration_roles_all"))+
+        $options = array("" => $this->lng->txt("registration_roles_all")) +
             $this->role_map;
         $si = new ilSelectInputGUI($this->lng->txt("role"), "role");
         $si->setOptions($options);

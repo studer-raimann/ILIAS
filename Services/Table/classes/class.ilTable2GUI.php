@@ -58,7 +58,7 @@ class ilTable2GUI extends ilTableGUI
     protected $show_rows_selector = true; // JF, 2014-10-27
     protected $rows_selector_off = false;
 
-    protected $nav_determined= false;
+    protected $nav_determined = false;
     protected $limit_determined = false;
     protected $filters_determined = false;
     protected $columns_determined = false;
@@ -1396,7 +1396,10 @@ class ilTable2GUI extends ilTableGUI
         if ($allcolumnswithwidth) {
             foreach ((array) $this->column as $column) {
                 $this->tpl->setCurrentBlock("tbl_colgroup_column");
-                $this->tpl->setVariable("COLGROUP_COLUMN_WIDTH", $column["width"]);
+                $width = (is_numeric($column["width"]))
+                    ? $column["width"]."px"
+                    : $column["width"];
+                $this->tpl->setVariable("COLGROUP_COLUMN_WIDTH", " style=\"width:" . $width . "\"");
                 $this->tpl->parseCurrentBlock();
             }
         }
@@ -1432,7 +1435,10 @@ class ilTable2GUI extends ilTableGUI
             ) {
                 $this->tpl->setCurrentBlock("tbl_header_no_link");
                 if ($column["width"] != "") {
-                    $this->tpl->setVariable("TBL_COLUMN_WIDTH_NO_LINK", " width=\"" . $column["width"] . "\"");
+                    $width = (is_numeric($column["width"]))
+                        ? $column["width"]."px"
+                        : $column["width"];
+                    $this->tpl->setVariable("TBL_COLUMN_WIDTH_NO_LINK", " style=\"width:" . $width . "\"");
                 }
                 if ($column["class"] != "") {
                     $this->tpl->setVariable("TBL_COLUMN_CLASS_NO_LINK", " class=\"" . $column["class"] . "\"");
@@ -1473,7 +1479,10 @@ class ilTable2GUI extends ilTableGUI
 
             // only set width if a value is given for that column
             if ($column["width"] != "") {
-                $this->tpl->setVariable("TBL_COLUMN_WIDTH", " width=\"" . $column["width"] . "\"");
+                $width = (is_numeric($column["width"]))
+                    ? $column["width"]."px"
+                    : $column["width"];
+                $this->tpl->setVariable("TBL_COLUMN_WIDTH", " style=\"width:" . $width . "\"");
             }
             if ($column["class"] != "") {
                 $this->tpl->setVariable("TBL_COLUMN_CLASS", " class=\"" . $column["class"] . "\"");
@@ -1747,7 +1756,7 @@ class ilTable2GUI extends ilTableGUI
         $ilCtrl = $this->ctrl;
 
         $this->tpl->setVariable("CSS_TABLE", $this->getStyle("table"));
-        $this->tpl->setVariable("DATA_TABLE", (int) $this->getIsDataTable());
+        //$this->tpl->setVariable("DATA_TABLE", (int) $this->getIsDataTable());
         if ($this->getId() != "") {
             $this->tpl->setVariable("ID", 'id="' . $this->getId() . '"');
         }
@@ -1880,7 +1889,7 @@ class ilTable2GUI extends ilTableGUI
                 );
                 $this->tpl->setVariable(
                     "F_INPUT_ID",
-                    $item->getFieldId()
+                    $item->getTableFilterLabelFor()
                 );
                 $this->tpl->setVariable(
                     "INPUT_HTML",
@@ -1943,7 +1952,7 @@ class ilTable2GUI extends ilTableGUI
             // apply should be the first submit because of enter/return, inserting hidden submit
             $this->tpl->setVariable("HIDDEN_CMD_APPLY", $this->filter_cmd);
 
-            $this->tpl->setVariable("FILTER_SELECTOR", $cb_over->getHTML());
+            $this->tpl->setVariable("FILTER_SELECTOR", $cb_over->getHTML(false));
             $this->tpl->parseCurrentBlock();
         }
 
@@ -1953,7 +1962,7 @@ class ilTable2GUI extends ilTableGUI
 
             if ($ccnt > 0) {
                 if ($ccnt < $this->getFilterCols()) {
-                    for ($i = $ccnt; $i<=$this->getFilterCols(); $i++) {
+                    for ($i = $ccnt; $i <= $this->getFilterCols(); $i++) {
                         $this->tpl->touchBlock("filter_empty_cell");
                     }
                 }
@@ -2162,12 +2171,12 @@ class ilTable2GUI extends ilTableGUI
         }
 
         // table footer linkbar
-        if ($this->enabled["linkbar"] && $this->enabled["footer"] && $this->limit  != 0
+        if ($this->enabled["linkbar"] && $this->enabled["footer"] && $this->limit != 0
              && $this->max_count > 0) {
             $layout = array(
-                            "link"	=> $this->footer_style,
-                            "prev"	=> $this->footer_previous,
-                            "next"	=> $this->footer_next,
+                            "link" => $this->footer_style,
+                            "prev" => $this->footer_previous,
+                            "next" => $this->footer_next,
                             );
             //if (!$this->getDisplayAsBlock())
             //{
@@ -2427,7 +2436,7 @@ class ilTable2GUI extends ilTableGUI
             // links to other pages
             $offset_arr = array();
             for ($i = 1 ;$i <= $pages ; $i++) {
-                $newoffset = $this->getLimit() * ($i-1);
+                $newoffset = $this->getLimit() * ($i - 1);
 
                 $nav_value = $this->getOrderField() . ":" . $this->getOrderDirection() . ":" . $newoffset;
                 $offset_arr[$nav_value] = $i;
@@ -2468,7 +2477,7 @@ class ilTable2GUI extends ilTableGUI
                     $LinkBar .= $sep;
                 }
                 $LinkBar .= "<a href=\"" . $this->custom_next . $hash . "\">" . $layout_next . "</a>";
-            } elseif (!(($this->getOffset() / $this->getLimit())==($pages-1)) && ($pages!=1) &&
+            } elseif (!(($this->getOffset() / $this->getLimit()) == ($pages - 1)) && ($pages != 1) &&
                 !$this->custom_prev_next) {
                 if ($LinkBar != "") {
                     $LinkBar .= $sep;
@@ -2709,7 +2718,7 @@ class ilTable2GUI extends ilTableGUI
                 $this->tpl->setVariable("TXT_EXECUTE", $lng->txt("execute"));
                 $this->tpl->parseCurrentBlock();
             }
-        } elseif (count($this->multi) == 1  && $this->dataExists()) {
+        } elseif (count($this->multi) == 1 && $this->dataExists()) {
             $this->tpl->setCurrentBlock("tbl_single_cmd");
             $sel = array();
             foreach ($this->multi as $mc) {
@@ -3228,7 +3237,7 @@ class ilTable2GUI extends ilTableGUI
                 $a_excel->setCell($a_row, $col++, $title);
             }
         }
-        $a_excel->setBold("A" . $a_row . ":" . $a_excel->getColumnCoord($col-1) . $a_row);
+        $a_excel->setBold("A" . $a_row . ":" . $a_excel->getColumnCoord($col - 1) . $a_row);
     }
 
     /**

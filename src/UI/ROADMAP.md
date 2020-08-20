@@ -165,7 +165,22 @@ In the footer's template, an input-tag in cconunction with some inline-js is
 used to display the perma-link. This should be substituted by a non-input 
 block-element, respectively an UI-Component on its own.
 
+### Get rid of < div > under < body > element in Standard Page template (beginner)
+In the template of the Standard Page, one level under the < body > element,
+a < div > element is used. This level seems redundant and not giving any advantages
+over just starting with < body >. We should remove the < div > element, but must
+keep the functionalities, which are coupled to the "class"-attribute of the element.
+
+
 ## Long Term
+
+### Tooltips and Tooltippable
+
+Tooltips are currently not yet implemented as UI components. Since 
+probably many UI components have or will have tooltips, the introduction
+ of a tooltippable interface should be discussed. This interface can
+  easily receive tooltips (either as a UI component or much simpler as
+   text) and can be implemented for all relevant UI components.
 
 ### Remove special case for UI-demo in `Implement\Layout\Page\Renderer::setHeaderVars`
 

@@ -399,8 +399,8 @@ class ilDclTableView extends ActiveRecord
     {
         return ilDclTableViewFieldSetting::where(
             array(
-                "tableview_id"               => $this->id,
-                'in_filter'                  => 1,
+                "tableview_id" => $this->id,
+                'in_filter' => 1,
                 'il_dcl_tfield_set.table_id' => $this->getTableId(),
             )
         )->innerjoin('il_dcl_tfield_set', 'field', 'field', array())
@@ -420,8 +420,8 @@ class ilDclTableView extends ActiveRecord
             $visible = ilDclTableViewFieldSetting::
             where(
                 array(
-                    "tableview_id"               => $this->id,
-                    'visible'                    => true,
+                    "tableview_id" => $this->id,
+                    'visible' => true,
                     'il_dcl_tfield_set.table_id' => $this->getTableId(),
                 )
             )->innerjoin('il_dcl_tfield_set', 'field', 'field', array())->orderBy('il_dcl_tfield_set.field_order')->get();
@@ -440,7 +440,7 @@ class ilDclTableView extends ActiveRecord
     {
         return ilDclTableViewFieldSetting::where(
             array(
-                'tableview_id'               => $this->getId(),
+                'tableview_id' => $this->getId(),
                 'il_dcl_tfield_set.table_id' => $this->getTableId(),
             )
         )->innerjoin('il_dcl_tfield_set', 'field', 'field', array('field_order'))->orderBy('field_order')->get();
@@ -488,7 +488,7 @@ class ilDclTableView extends ActiveRecord
         if (!ilDclTableViewFieldSetting::where(
             array(
                 'tableview_id' => $this->id,
-                'field'        => $field_id,
+                'field' => $field_id,
             )
         )->get()
         ) {
@@ -544,9 +544,8 @@ class ilDclTableView extends ActiveRecord
             $new_field_id = $new_fieldsetting->cloneStructure($orig_fieldsetting);
 
             //clone default value
-            $f = new ilDclDefaultValueFactory();
             $datatype = $orig_fieldsetting->getFieldObject()->getDatatypeId();
-            $match = $f->find($datatype, $orig_fieldsetting->getId());
+            $match = ilDclTableViewBaseDefaultValue::findSingle($datatype, $orig_fieldsetting->getId());
 
             if (!is_null($match)) {
                 $new_default_value = $f->create($datatype);
@@ -624,6 +623,11 @@ class ilDclTableView extends ActiveRecord
         $lng = $DIC['lng'];
         $view->setTitle($lng->txt('dcl_title_standardview'));
         $view->setTableviewOrder(10);
+        $view->setStepVs(true);
+        $view->setStepC(false);
+        $view->setStepE(false);
+        $view->setStepO(false);
+        $view->setStepS(false);
         $view->create($create_default_settings);
 
         return $view;

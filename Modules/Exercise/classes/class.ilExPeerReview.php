@@ -30,6 +30,7 @@ class ilExPeerReview
         $this->user = $DIC->user();
         $this->assignment = $a_assignment;
         $this->assignment_id = $a_assignment->getId();
+        $this->log = ilLoggerFactory::getLogger("exc");
     }
     
     public function hasPeerReviewGroups()
@@ -61,7 +62,7 @@ class ilExPeerReview
         return $user_ids;
     }
     
-    protected function initPeerReviews()
+    public function initPeerReviews()
     {
         $ilDB = $this->db;
                 
@@ -81,21 +82,26 @@ class ilExPeerReview
             $rater_ids = $user_ids;
             $matrix = array();
 
-            $max = min(sizeof($user_ids)-1, $this->assignment->getPeerReviewMin());
+            // max number of assignments per rater?
+            $max = min(sizeof($user_ids) - 1, $this->assignment->getPeerReviewMin());
             for ($loop = 0; $loop < $max; $loop++) {
+
+                // put values in keys
                 $run_ids = array_combine($user_ids, $user_ids);
-                
+
+                // for all users as rater
                 foreach ($rater_ids as $rater_id) {
                     $possible_peer_ids = $run_ids;
-                    
-                    // may not rate himself
-                    unset($possible_peer_ids[$rater_id]);
-                    
-                    // already has linked peers
+
+
+                    // if the rater has already peers, remove them from possible peers
                     if (array_key_exists($rater_id, $matrix)) {
                         $possible_peer_ids = array_diff($possible_peer_ids, $matrix[$rater_id]);
                     }
-                    
+
+                    // possible peers are all users without the rater
+                    unset($possible_peer_ids[$rater_id]);
+
                     // #15665 / #15883
                     if (!sizeof($possible_peer_ids)) {
                         // no more possible peers left?  start over with all valid users
@@ -115,9 +121,21 @@ class ilExPeerReview
                         
                     // #14947
                     if (sizeof($possible_peer_ids)) {
-                        $peer_id = array_rand($possible_peer_ids);
-                        if (!array_key_exists($rater_id, $matrix)) {
-                            $matrix[$rater_id] = array();
+
+                        // avoid "last rater has to rate himself" in first loop
+                        // (this ensures, that all peers have at least one rater)
+                        // see #26908
+                        if ($loop == 0 && count($possible_peer_ids) == 2) {
+                            $last_rater = end($temp = array_values($rater_ids));
+                            $peer_id = (current($possible_peer_ids) == $last_rater)
+                                ? current($possible_peer_ids)
+                                : next($possible_peer_ids);
+                            $this->log->debug("Ensure all peers have a rater.");
+                        } else {
+                            $peer_id = array_rand($possible_peer_ids);
+                            if (!array_key_exists($rater_id, $matrix)) {
+                                $matrix[$rater_id] = array();
+                            }
                         }
                         $matrix[$rater_id][] = $peer_id;
                     }
@@ -234,7 +252,7 @@ class ilExPeerReview
             $items = @unserialize($data);
             if (!is_array($items)) {
                 // v1 - pcomment == text
-                $items = array("text"=>$data);
+                $items = array("text" => $data);
             }
             return $items;
         }
@@ -282,7 +300,7 @@ class ilExPeerReview
             $values = @unserialize($data);
             if (!is_array($values)) {
                 // v1 - pcomment == text
-                $values = array("text"=>$data);
+                $values = array("text" => $data);
             }
         }
         
@@ -443,7 +461,7 @@ class ilExPeerReview
             " WHERE ass_id = " . $ilDB->quote($this->assignment_id, "integer"));
         $cnt = $ilDB->fetchAssoc($set);
         $cnt = (int) $cnt["cnt"];
-        return $cnt-1;
+        return $cnt - 1;
     }
     
     public function getNumberOfMissingFeedbacksForReceived()
@@ -465,7 +483,7 @@ class ilExPeerReview
         // there could be less participants than stated in the min required setting
         $min = min($max, $needed);
                 
-        return max(0, $min-$this->countGivenFeedback());
+        return max(0, $min - $this->countGivenFeedback());
     }
         
     public function isFeedbackValidForPassed($a_user_id)
@@ -496,7 +514,7 @@ class ilExPeerReview
                 // there could be less participants than stated in the min required setting
                 $min = min($max, $this->assignment->getPeerReviewMin());
                 
-                return (($min-$no_of_feedbacks) < 1);
+                return (($min - $no_of_feedbacks) < 1);
         }
     }
 
