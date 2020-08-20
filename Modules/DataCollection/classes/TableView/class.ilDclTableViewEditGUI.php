@@ -373,7 +373,7 @@ class ilDclTableViewEditGUI
         $new_tableview->setTableId($this->table->getId());
         $new_tableview->cloneStructure($this->tableview, array());
         $this->table->sortTableViews();
-        ilUtil::sendSuccess($this->lng->txt('--COPY SUCCESSFUL-- (probably not lol)'), true);
+        ilUtil::sendSuccess($this->lng->txt("dcl_tableview_copy"), true);
         $this->cancel();
     }
 }

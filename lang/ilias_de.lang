@@ -10353,6 +10353,7 @@ dcl#:#dcl_tableview#:#Ansicht
 dcl#:#dcl_detailed_view#:#Einzelansicht
 dcl#:#dcl_edit_entry_rules#:#Bearbeitungsregeln definieren
 dcl#:#dcl_create_entry_rules#:#Erstellungsregeln definieren
+dcl#:#dcl_tableview_copy#:#Ansicht erfolgreich kopiert
 dcl#:#dcl_tableview_add#:#Neue Ansicht hinzufügen
 dcl#:#dcl_tableview_fieldtitle#:#Feld-Titel
 dcl#:#dcl_tableview_locked#:#Gesperrt

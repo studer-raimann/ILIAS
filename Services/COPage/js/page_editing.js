@@ -159,6 +159,7 @@ var ilCOPage =
 	cmdSave: function (switch_to)
 	{
 		$('#ilsaving').removeClass("ilNoDisplay");
+		dispatchEvent(new CustomEvent("edit_paragraph_save"));
 
 		// table editing
 		if (ilCOPage.current_td != "")
@@ -223,6 +224,12 @@ var ilCOPage =
 	{
 		$('#ilsaving').removeClass("ilNoDisplay");
 
+		if (and_new) {
+			dispatchEvent(new CustomEvent("edit_paragraph_save_new"));
+		} else {
+			dispatchEvent(new CustomEvent("edit_paragraph_save_return"));
+		}
+
 		var ed = tinyMCE.get('tinytarget');
 		this.autoResize(ed);
 		this.setEditStatus(false);
@@ -279,6 +286,8 @@ var ilCOPage =
 
 	cmdCancel: function ()
 	{
+		dispatchEvent(new CustomEvent("edit_paragraph_cancel"));
+
 		var ed = tinyMCE.get('tinytarget');
 		this.autoResize(ed);
 		this.setEditStatus(false);
@@ -2037,6 +2046,7 @@ var ed_para = null;
 function editParagraph(div_id, mode, switched)
 {
 //	ilCOPage.setEditStatus(true);
+	dispatchEvent(new CustomEvent("edit_paragraph_open"));
 	cmd_called = true;
 	if (openedMenu != "")
 	{

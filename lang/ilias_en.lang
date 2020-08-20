@@ -10183,6 +10183,7 @@ dcl#:#dcl_tableview#:#View
 dcl#:#dcl_detailed_view#:#Single
 dcl#:#dcl_edit_entry_rules#:#Define Editing Rules
 dcl#:#dcl_create_entry_rules#:#Define Creation Rules
+dcl#:#dcl_tableview_copy#:#View successfully copied
 dcl#:#dcl_tableview_add#:#Add New View
 dcl#:#dcl_tableview_fieldtitle#:#Field Title
 dcl#:#dcl_tableview_locked#:#Locked
