@@ -1,7 +1,6 @@
 $(document).ready(function () {
 
     function hideToolbar(toolbar) {
-        console.log("ugh2");
         toolbar.style.display = "none";
     }
 
