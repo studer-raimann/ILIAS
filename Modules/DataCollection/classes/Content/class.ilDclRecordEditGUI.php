@@ -293,13 +293,13 @@ class ilDclRecordEditGUI
                 if ($field_setting->getTableViewId() == $this->tableview_id) {
                     // If edit mode
                     if ($this->record_id) {
-                        $visible = $field_setting->getVisibleEdit();
-                        $locked = $field_setting->getLockedEdit();
-                        $required = $field_setting->getRequiredEdit();
+                        $visible = $field_setting->isVisibleEdit();
+                        $locked = $field_setting->isLockedEdit();
+                        $required = $field_setting->isRequiredEdit();
                     } else {
-                        $visible = $field_setting->getVisibleCreate();
-                        $locked = $field_setting->getLockedCreate();
-                        $required = $field_setting->getRequiredCreate();
+                        $visible = $field_setting->isVisibleCreate();
+                        $locked = $field_setting->isLockedCreate();
+                        $required = $field_setting->isRequiredCreate();
                     }
 
                     if ($visible) {
@@ -620,9 +620,10 @@ class ilDclRecordEditGUI
                     if ($field_setting->getTableViewId() == $this->tableview_id) {
                         // If edit mode
                         if ($create_mode) {
-                            $visible = $field_setting->getVisibleCreate();
+                            $visible = $field_setting->isVisibleCreate();
                         } else {
-                            $visible = $field_setting->getVisibleEdit();
+                            // Don't change locked values in edit mode - They need to stay the same
+                            $visible = $field_setting->isVisibleEdit() && !$field_setting->isLockedEdit();
                         }
 
                         if ($visible) {
@@ -748,6 +749,28 @@ class ilDclRecordEditGUI
             exit();
         } else {
             ilUtil::sendFailure($message, $keep);
+
+            // Fill locked fields on edit mode - otherwise they are empty (workaround)
+            if (isset($this->record_id)) {
+                $record_obj = ilDclCache::getRecordCache($this->record_id);
+                if ($record_obj->getId()) {
+                    //Get Table Field Definitions
+                    $allFields = $this->table->getFields();
+                    foreach ($allFields as $field) {
+                        $field_settings = $field->getFieldSettings();
+                        foreach ($field_settings as $field_setting) {
+                            if (
+                                $field_setting->isLockedEdit() &&
+                                $field_setting->getTableViewId() == $this->tableview_id &&
+                                $field_setting->isVisibleEdit()
+                            ) {
+                                $record_obj->fillRecordFieldFormInput($field->getId(), $this->form);
+                            }
+                        }
+                    }
+                }
+            }
+
             $this->tpl->setContent($this->getLanguageJsKeys() . $this->form->getHTML());
         }
     }
