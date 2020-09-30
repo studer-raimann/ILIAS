@@ -3,6 +3,8 @@
 use \ILIAS\Setup;
 use \ILIAS\UI;
 use \ILIAS\Refinery\Transformation;
+use ILIAS\Setup\Config;
+use ILIAS\Setup\Objective;
 
 class ilComponentsSetupAgent implements Setup\Agent
 {
@@ -50,6 +52,14 @@ class ilComponentsSetupAgent implements Setup\Agent
      * @inheritdoc
      */
     public function getBuildArtifactObjective() : Setup\Objective
+    {
+        return new Setup\Objective\NullObjective();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getMigrateObjective(Config $config = null) : Objective
     {
         return new Setup\Objective\NullObjective();
     }

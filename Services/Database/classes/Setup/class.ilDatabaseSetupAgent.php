@@ -6,6 +6,8 @@ use ILIAS\Setup;
 use ILIAS\Data\Factory as DataFactory;
 use ILIAS\Refinery\Factory as Refinery;
 use ILIAS\Refinery\Transformation;
+use ILIAS\Setup\Config;
+use ILIAS\Setup\Objective;
 
 class ilDatabaseSetupAgent implements Setup\Agent
 {
@@ -82,6 +84,14 @@ class ilDatabaseSetupAgent implements Setup\Agent
      * @inheritdocs
      */
     public function getBuildArtifactObjective() : Setup\Objective
+    {
+        return new Setup\Objective\NullObjective();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getMigrateObjective(Config $config = null) : Objective
     {
         return new Setup\Objective\NullObjective();
     }

@@ -6,6 +6,8 @@ use ILIAS\Setup;
 use ILIAS\Data\Factory as DataFactory;
 use ILIAS\Refinery\Factory as Refinery;
 use ILIAS\Refinery\Transformation;
+use ILIAS\Setup\Config;
+use ILIAS\Setup\Objective;
 
 class ilGlobalScreenSetupAgent implements Setup\Agent
 {
@@ -65,5 +67,13 @@ class ilGlobalScreenSetupAgent implements Setup\Agent
     public function getBuildArtifactObjective() : Setup\Objective
     {
         return new \ilGlobalScreenBuildProviderMapObjective();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getMigrateObjective(Config $config = null) : Objective
+    {
+        return new Setup\Objective\NullObjective();
     }
 }

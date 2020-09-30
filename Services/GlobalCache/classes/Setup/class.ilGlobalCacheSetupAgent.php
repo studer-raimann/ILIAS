@@ -5,6 +5,8 @@
 use ILIAS\Setup;
 use ILIAS\Refinery;
 use ILIAS\UI;
+use ILIAS\Setup\Config;
+use ILIAS\Setup\Objective;
 
 class ilGlobalCacheSetupAgent implements Setup\Agent
 {
@@ -101,6 +103,14 @@ class ilGlobalCacheSetupAgent implements Setup\Agent
      * @inheritdoc
      */
     public function getBuildArtifactObjective() : Setup\Objective
+    {
+        return new Setup\Objective\NullObjective();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getMigrateObjective(Config $config = null) : Objective
     {
         return new Setup\Objective\NullObjective();
     }

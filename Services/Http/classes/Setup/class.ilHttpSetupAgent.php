@@ -6,6 +6,8 @@ use ILIAS\Setup;
 use ILIAS\Refinery;
 use ILIAS\Data;
 use ILIAS\UI;
+use ILIAS\Setup\Config;
+use ILIAS\Setup\Objective;
 
 class ilHttpSetupAgent implements Setup\Agent
 {
@@ -90,6 +92,14 @@ class ilHttpSetupAgent implements Setup\Agent
      * @inheritdoc
      */
     public function getBuildArtifactObjective() : Setup\Objective
+    {
+        return new Setup\Objective\NullObjective();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getMigrateObjective(Config $config = null) : Objective
     {
         return new Setup\Objective\NullObjective();
     }

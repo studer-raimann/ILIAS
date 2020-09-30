@@ -49,6 +49,13 @@ interface Agent
     public function getUpdateObjective(Config $config = null) : Objective;
 
     /**
+     * Get the goal the agent wants to achieve on migration.
+     *
+     * @throw InvalidArgumentException if Config does not match the Agent..
+     */
+    public function getMigrateObjective(Config $config = null): Objective;
+
+    /**
      * Get the goal the agent wants to achieve to build artifacts.
      *
      * @throw InvalidArgumentException if Config does not match the Agent.

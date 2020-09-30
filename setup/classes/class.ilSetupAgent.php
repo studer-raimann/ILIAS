@@ -6,6 +6,8 @@ use ILIAS\Setup;
 use ILIAS\Refinery;
 use ILIAS\Data;
 use ILIAS\UI;
+use ILIAS\Setup\Objective;
+use ILIAS\Setup\Config;
 
 /**
  * Contains common objectives for the setup. Do not make additions here, in
@@ -130,4 +132,13 @@ class ilSetupAgent implements Setup\Agent
     {
         return new Setup\Objective\NullObjective();
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function getMigrateObjective(Config $config = null) : Objective
+    {
+        return new Setup\Objective\NullObjective();
+    }
+
 }

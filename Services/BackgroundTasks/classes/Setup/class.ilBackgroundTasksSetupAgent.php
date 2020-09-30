@@ -6,6 +6,8 @@ use ILIAS\Setup;
 use ILIAS\Refinery;
 use ILIAS\Data;
 use ILIAS\UI;
+use ILIAS\Setup\Objective;
+use ILIAS\Setup\Config;
 
 class ilBackgroundTasksSetupAgent implements Setup\Agent
 {
@@ -76,4 +78,13 @@ class ilBackgroundTasksSetupAgent implements Setup\Agent
     {
         return new Setup\Objective\NullObjective();
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function getMigrateObjective(Config $config = null) : Objective
+    {
+        return new Setup\Objective\NullObjective();
+    }
+
 }

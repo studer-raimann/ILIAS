@@ -5,6 +5,8 @@
 use ILIAS\Setup;
 use ILIAS\Refinery;
 use ILIAS\UI;
+use ILIAS\Setup\Config;
+use ILIAS\Setup\Objective;
 
 class ilMailSetupAgent implements Setup\Agent
 {
@@ -61,6 +63,14 @@ class ilMailSetupAgent implements Setup\Agent
      * @inheritdoc
      */
     public function getBuildArtifactObjective() : Setup\Objective
+    {
+        return new Setup\Objective\NullObjective();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getMigrateObjective(Config $config = null) : Objective
     {
         return new Setup\Objective\NullObjective();
     }

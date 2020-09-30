@@ -6,6 +6,8 @@ use ILIAS\Setup;
 use ILIAS\Refinery;
 use ILIAS\Data;
 use ILIAS\UI;
+use ILIAS\Setup\Config;
+use ILIAS\Setup\Objective;
 
 class ilStyleSetupAgent implements Setup\Agent
 {
@@ -75,5 +77,13 @@ class ilStyleSetupAgent implements Setup\Agent
     public function getBuildArtifactObjective() : Setup\Objective
     {
         return new ilKitchenSinkDataCollectedObjective();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getMigrateObjective(Config $config = null) : Objective
+    {
+        return new Setup\Objective\NullObjective();
     }
 }
