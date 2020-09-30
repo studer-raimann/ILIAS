@@ -67,6 +67,7 @@ function build_container_for_setup(string $executed_in_directory)
         return new \ILIAS\Setup\CLI\App(
             $c["command.install"],
             $c["command.update"],
+            $c["command.migrate"],
             $c["command.build-artifacts"],
             $c["command.reload-control-structure"]
         );
@@ -90,6 +91,13 @@ function build_container_for_setup(string $executed_in_directory)
             $c["agent"],
             $c["config_reader"],
             []// TODO: $c["common_preconditions"]
+        );
+    };
+    $c["command.migrate"] = function ($c) {
+        return new \ILIAS\Setup\CLI\MigrateCommand(
+            $c["agent"],
+            $c["config_reader"],
+            $c["common_preconditions"]
         );
     };
     $c["command.reload-control-structure"] = function ($c) {

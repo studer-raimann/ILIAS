@@ -119,7 +119,15 @@ class AgentCollection implements Agent
      */
     public function getUpdateObjective(Config $config = null) : Objective
     {
-        return $this->getXObjective("getUpdateObjective", $config);
+        return $this->getXObjective("getMigrateObjective", $config);
+    }
+
+    /**
+     * @inheritdocs
+     */
+    public function getMigrateObjective(Config $config = null) : Objective
+    {
+        return $this->getXObjective("getMigrateObjective", $config);
     }
 
     /**
