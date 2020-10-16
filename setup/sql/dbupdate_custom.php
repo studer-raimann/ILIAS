@@ -74,37 +74,67 @@ if (!$ilDB->tableColumnExists('il_dcl_tview_set', 'visible_edit')) {
 ?>
 <#6>
 <?php
+if (!$ilDB->tableColumnExists('il_dcl_tview_set', 'required_edit')) {
+    $ilDB->addTableColumn(
+        'il_dcl_tview_set',
+        'required_edit',
+        array(
+            'type'    => 'integer',
+            'length'  => 1,
+            'notnull' => true,
+            'default' => 0
+        )
+    );
+}
+?>
+<#7>
+<?php
+if (!$ilDB->tableColumnExists('il_dcl_tview_set', 'locked_edit')) {
+    $ilDB->addTableColumn(
+        'il_dcl_tview_set',
+        'locked_edit',
+        array(
+            'type'    => 'integer',
+            'length'  => 1,
+            'notnull' => true,
+            'default' => 0
+        )
+    );
+}
+?>
+<#8>
+<?php
 if ($ilDB->tableColumnExists('il_dcl_field', 'required')) {
     // Migration
     $res = $ilDB->query("SELECT id, required FROM il_dcl_field");
     while ($rec = $ilDB->fetchAssoc($res)) {
         $ilDB->queryF(
-            "UPDATE il_dcl_tview_set SET required = %s WHERE field = %s",
+            "UPDATE il_dcl_tview_set SET required_create = %s WHERE field = %s",
             array('integer', 'text'),
-            array($data['required'], $data['id'])
+            array($rec['required'], $rec['id'])
         );
     }
 
     $ilDB->dropTableColumn('il_dcl_field', 'required');
 }
 ?>
-<#7>
+<#9>
 <?php
 if ($ilDB->tableColumnExists('il_dcl_field', 'is_locked')) {
     // Migration
     $res = $ilDB->query("SELECT id, is_locked FROM il_dcl_field");
     while ($rec = $ilDB->fetchAssoc($res)) {
         $ilDB->queryF(
-            "UPDATE il_dcl_tview_set SET locked = %s WHERE field = %s",
+            "UPDATE il_dcl_tview_set SET required_locked = %s WHERE field = %s",
             array('integer', 'text'),
-            array($data['is_locked'], $data['id'])
+            array($rec['is_locked'], $rec['id'])
         );
     }
 
     $ilDB->dropTableColumn('il_dcl_field', 'is_locked');
 }
 ?>
-<#8>
+<#10>
 <?php
 if (!$ilDB->tableColumnExists('il_dcl_tableview', 'step_vs')) {
     $ilDB->addTableColumn(
@@ -119,7 +149,7 @@ if (!$ilDB->tableColumnExists('il_dcl_tableview', 'step_vs')) {
     );
 }
 ?>
-<#9>
+<#11>
 <?php
 if (!$ilDB->tableColumnExists('il_dcl_tableview', 'step_c')) {
     $ilDB->addTableColumn(
@@ -134,7 +164,7 @@ if (!$ilDB->tableColumnExists('il_dcl_tableview', 'step_c')) {
     );
 }
 ?>
-<#10>
+<#12>
 <?php
 if (!$ilDB->tableColumnExists('il_dcl_tableview', 'step_e')) {
     $ilDB->addTableColumn(
@@ -149,7 +179,7 @@ if (!$ilDB->tableColumnExists('il_dcl_tableview', 'step_e')) {
     );
 }
 ?>
-<#11>
+<#13>
 <?php
 if (!$ilDB->tableColumnExists('il_dcl_tableview', 'step_o')) {
     $ilDB->addTableColumn(
@@ -164,42 +194,12 @@ if (!$ilDB->tableColumnExists('il_dcl_tableview', 'step_o')) {
     );
 }
 ?>
-<#12>
+<#14>
 <?php
 if (!$ilDB->tableColumnExists('il_dcl_tableview', 'step_s')) {
     $ilDB->addTableColumn(
         'il_dcl_tableview',
         'step_s',
-        array(
-            'type'    => 'integer',
-            'length'  => 1,
-            'notnull' => true,
-            'default' => 0
-        )
-    );
-}
-?>
-<#13>
-<?php
-if (!$ilDB->tableColumnExists('il_dcl_tview_set', 'required_edit')) {
-    $ilDB->addTableColumn(
-        'il_dcl_tview_set',
-        'required_edit',
-        array(
-            'type'    => 'integer',
-            'length'  => 1,
-            'notnull' => true,
-            'default' => 0
-        )
-    );
-}
-?>
-<#14>
-<?php
-if (!$ilDB->tableColumnExists('il_dcl_tview_set', 'locked_edit')) {
-    $ilDB->addTableColumn(
-        'il_dcl_tview_set',
-        'locked_edit',
         array(
             'type'    => 'integer',
             'length'  => 1,
