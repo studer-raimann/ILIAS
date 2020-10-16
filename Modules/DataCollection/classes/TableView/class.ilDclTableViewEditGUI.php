@@ -7,6 +7,8 @@
  * @ingroup      ModulesDataCollection
  *
  * @ilCtrl_Calls ilDclTableViewEditGUI: ilDclDetailedViewDefinitionGUI
+ * @ilCtrl_Calls ilDclTableViewEditGUI: ilDclCreateViewDefinitionGUI
+ * @ilCtrl_Calls ilDclTableViewEditGUI: ilDclEditViewDefinitionGUI
  */
 class ilDclTableViewEditGUI
 {
