@@ -17,7 +17,7 @@ class ilObjAdministrativeNotificationAccess extends ilObjectAccess
     private $rbacsystem;
 
     /**
-     * ilObjMainMenuAccess constructor.
+     * ilObjAdministrativeNotificationAccess constructor.
      */
     public function __construct()
     {

@@ -10,7 +10,7 @@ class ilObjAdministrativeNotificationGUI extends ilObject2GUI
 {
 
     /**
-     * @var ilMMTabHandling
+     * @var ilADNTabHandling
      */
     private $tab_handling;
     /**
@@ -41,7 +41,7 @@ class ilObjAdministrativeNotificationGUI extends ilObject2GUI
     const TAB_MAIN = 'main';
 
     /**
-     * ilObjMainMenuGUI constructor.
+     * ilObjAdministrativeNotificationGUI constructor.
      */
     public function __construct()
     {
@@ -52,7 +52,7 @@ class ilObjAdministrativeNotificationGUI extends ilObject2GUI
 
         $this->tabs = $DIC['ilTabs'];
         $this->lng  = $DIC->language();
-        $this->lng->loadLanguageModule('mme');
+        $this->lng->loadLanguageModule('adn');
         $this->ctrl         = $DIC['ilCtrl'];
         $this->tpl          = $DIC['tpl'];
         $this->tree         = $DIC['tree'];

@@ -65,12 +65,12 @@ class ilADNTabHandling
         $this->help->setSubScreenId($subtab);
 
         if ($this->rbacsystem->checkAccess('visible,read', $this->ref_id)) {
-            /*
             $this->tabs->addTab(
-                ilObjMainMenuGUI::TAB_MAIN,
-                $this->lng->txt(ilObjMainMenuGUI::TAB_MAIN),
-                $this->ctrl->getLinkTargetByClass(ilObjMainMenuGUI::class, ilObjMainMenuGUI::TAB_MAIN)
+                ilObjAdministrativeNotificationGUI::TAB_MAIN,
+                $this->lng->txt(ilObjAdministrativeNotificationGUI::TAB_MAIN),
+                $this->ctrl->getLinkTargetByClass(ilObjAdministrativeNotificationGUI::class, ilObjAdministrativeNotificationGUI::TAB_MAIN)
             );
+            /*
             switch ($tab) {
                 case ilObjMainMenuGUI::TAB_MAIN:
                     $this->tabs->addSubTab(
@@ -92,11 +92,11 @@ class ilADNTabHandling
             $this->tabs->activateSubTab($subtab);*/
         }
         if ($this->rbacsystem->checkAccess('edit_permission', $this->ref_id)) {
-           /* $this->tabs->addTab(
+           $this->tabs->addTab(
                 'perm_settings',
                 $this->lng->txt('perm_settings'),
-                $this->ctrl->getLinkTargetByClass(array(ilObjMainMenuGUI::class, ilPermissionGUI::class), 'perm')
-            );*/
+                $this->ctrl->getLinkTargetByClass(array(ilObjAdministrativeNotificationGUI::class, ilPermissionGUI::class), 'perm')
+            );
         }
         if ($backtab) {
            /* $this->tabs->clearTargets();

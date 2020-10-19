@@ -1,7 +1,5 @@
 <?php
 
-use ILIAS\GlobalScreen\Scope\MainMenu\Collector\Renderer\Hasher;
-
 /**
  * Class ilADNAbstractGUI
  * @author            Fabian Schmid <fs@studer-raimann.ch>
@@ -9,7 +7,6 @@ use ILIAS\GlobalScreen\Scope\MainMenu\Collector\Renderer\Hasher;
 abstract class ilADNAbstractGUI
 {
     const IDENTIFIER = 'identifier';
-    use Hasher;
 
     /**
      * @var \ILIAS\DI\UIServices
@@ -48,7 +45,7 @@ abstract class ilADNAbstractGUI
      */
     public $tree;
     /**
-     * @var ilObjMainMenuAccess
+     * @var ilObjAdministrativeNotificationAccess
      */
     protected $access;
 
@@ -90,26 +87,6 @@ abstract class ilADNAbstractGUI
         return $standard;
     }
 
-    /**
-     * @return ilMMItemFacadeInterface
-     * @throws Throwable
-     */
-    protected function getMMItemFromRequest() : ilMMItemFacadeInterface
-    {
-        $r    = $this->http->request();
-        $get  = $r->getQueryParams();
-        $post = $r->getParsedBody();
-
-        if (!isset($post['cmd']) && isset($post['interruptive_items'])) {
-            $string         = $post['interruptive_items'][0];
-            $identification = $this->unhash($string);
-        } else {
-            $identification = $this->unhash($get[self::IDENTIFIER]);
-        }
-
-        return $this->repository->getItemFacadeForIdentificationString($identification);
-    }
-
     abstract protected function dispatchCommand(string $cmd) : string;
 
     public function executeCommand() : void
@@ -124,9 +101,9 @@ abstract class ilADNAbstractGUI
         }
 
         switch ($next_class) {
-            case strtolower(ilMMItemTranslationGUI::class):
-                $this->tab_handling->initTabs(ilObjMainMenuGUI::TAB_MAIN, self::CMD_VIEW_TOP_ITEMS, true);
-                $g = new ilMMItemTranslationGUI($this->getMMItemFromRequest(), $this->repository);
+            case strtolower(ilADNNotificationGUI::class):
+                $this->tab_handling->initTabs(ilObjAdministrativeNotificationGUI::TAB_MAIN, ilADNNotificationGUI::TAB_TABLE, false);
+                $g = new ilADNNotificationGUI($this->tab_handling);
                 $this->ctrl->forwardCommand($g);
                 break;
             default:
@@ -134,19 +111,4 @@ abstract class ilADNAbstractGUI
         }
     }
 
-    public function renderInterruptiveModal()
-    {
-        $f = $this->ui->factory();
-        $r = $this->ui->renderer();
-
-        $form_action  = $this->ctrl->getFormActionByClass(self::class, self::CMD_DELETE);
-        $delete_modal = $f->modal()->interruptive(
-            $this->lng->txt("delete"),
-            $this->lng->txt(self::CMD_CONFIRM_DELETE),
-            $form_action
-        );
-
-        echo $r->render([$delete_modal]);
-        exit;
-    }
 }
