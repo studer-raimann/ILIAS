@@ -113,6 +113,11 @@ if ($ilDB->tableColumnExists('il_dcl_field', 'required')) {
             array('integer', 'text'),
             array($rec['required'], $rec['id'])
         );
+        $ilDB->queryF(
+            "UPDATE il_dcl_tview_set SET required_edit = %s WHERE field = %s",
+            array('integer', 'text'),
+            array($rec['required'], $rec['id'])
+        );
     }
 
     $ilDB->dropTableColumn('il_dcl_field', 'required');
@@ -125,7 +130,12 @@ if ($ilDB->tableColumnExists('il_dcl_field', 'is_locked')) {
     $res = $ilDB->query("SELECT id, is_locked FROM il_dcl_field");
     while ($rec = $ilDB->fetchAssoc($res)) {
         $ilDB->queryF(
-            "UPDATE il_dcl_tview_set SET required_locked = %s WHERE field = %s",
+            "UPDATE il_dcl_tview_set SET locked_create = %s WHERE field = %s",
+            array('integer', 'text'),
+            array($rec['is_locked'], $rec['id'])
+        );
+        $ilDB->queryF(
+            "UPDATE il_dcl_tview_set SET locked_edit = %s WHERE field = %s",
             array('integer', 'text'),
             array($rec['is_locked'], $rec['id'])
         );
