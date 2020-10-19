@@ -16220,7 +16220,9 @@ adn#:#msg_form_button_update#:#Update
 adn#:#msg_form_button_cancel#:#Cancel
 adn#:#msg_form_button_delete#:#Delete
 adn#:#msg_form_title#:#Compose message
-adn#:#msg_success#:#Success
+adn#:#msg_success_created#:#Notification created.
+adn#:#msg_success_updated#:#Notification updated.
+adn#:#msg_success_deleted#:#Notification deleted.
 adn#:#msg_dismissable#:#Dismissable
 adn#:#msg_limit_to_roles#:#Limit to Roles
 adn#:#msg_limited_to_role_ids#:#Roles

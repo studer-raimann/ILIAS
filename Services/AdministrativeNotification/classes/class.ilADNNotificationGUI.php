@@ -69,7 +69,7 @@ class ilADNNotificationGUI extends ilADNAbstractGUI
         $form = new ilADNNotificationFormGUI($this, new ilADNNotification());
         $form->setValuesByPost();
         if ($form->saveObject()) {
-            ilUtil::sendInfo($this->lng->txt('msg_success'), true);
+            ilUtil::sendSuccess($this->lng->txt('msg_success_created'), true);
             $this->ctrl->redirect($this, self::CMD_DEFAULT);
         }
         $this->tpl->setContent($form->getHTML());
@@ -97,7 +97,7 @@ class ilADNNotificationGUI extends ilADNAbstractGUI
         $form         = new ilADNNotificationFormGUI($this, $notification);
         $form->setValuesByPost();
         if ($form->saveObject()) {
-            ilUtil::sendInfo($this->lng->txt('msg_success'), true);
+            ilUtil::sendSuccess($this->lng->txt('msg_success_updated'), true);
             $this->ctrl->redirect($this, self::CMD_DEFAULT);
         }
         return $form->getHTML();
@@ -119,13 +119,15 @@ class ilADNNotificationGUI extends ilADNAbstractGUI
     {
         $notification = $this->getNotificationFromRequest();
         $notification->delete();
-        ilUtil::sendInfo($this->lng->txt('msg_success'), true);
+        ilUtil::sendInfo($this->lng->txt('msg_success_deleted'), true);
         $this->cancel();
     }
 
     protected function resetForAll()
     {
-        $this->notMessage->resetForAllUsers();
+        $notification = $this->getNotificationFromRequest();
+
+        $notification->resetForAllUsers();
         $this->cancel();
     }
 
