@@ -270,28 +270,7 @@ class ilADNNotification extends ActiveRecord
      * @con_fieldtype  integer
      * @con_length     1
      */
-    protected $permanent = false;
-    /**
-     * @var bool
-     * @con_has_field  true
-     * @con_fieldtype  integer
-     * @con_length     1
-     */
-    protected $position = self::POS_TOP;
-    /**
-     * @var string
-     * @con_has_field  true
-     * @con_fieldtype  text
-     * @con_length     256
-     */
-    protected $additional_classes = '';
-    /**
-     * @var bool
-     * @con_has_field  true
-     * @con_fieldtype  integer
-     * @con_length     1
-     */
-    protected $prevent_login = false;
+    protected $permanent = true;
     /**
      * @var array
      * @con_has_field  true
