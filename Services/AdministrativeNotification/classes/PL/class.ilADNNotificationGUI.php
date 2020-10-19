@@ -1,0 +1,86 @@
+<?php
+
+/**
+ * Class ilADNNotificationGUI
+ *
+ * @author  Fabian Schmid <fs@studer-raimann.ch>
+ * @version 1.0.0
+ */
+class ilADNNotificationGUI {
+
+	const ALERT_SUCCESS = 'alert-success';
+	const ALERT_INFO = 'alert-info';
+	const ALERT_WARNING = 'alert-warning';
+	const ALERT_DANGER = 'alert-danger';
+	/**
+	 * @var array
+	 */
+	protected static $css_map = array(
+		ilADNNotification::TYPE_WARNING => self::ALERT_WARNING,
+		ilADNNotification::TYPE_ERROR => self::ALERT_DANGER,
+		ilADNNotification::TYPE_INFO => self::ALERT_INFO,
+	);
+	/**
+	 * @var ilTemplate
+	 */
+	protected $tpl;
+	/**
+	 * @var ilADNNotification
+	 */
+	protected $message;
+	/**
+	 * @var ilObjUser
+	 */
+	protected $usr;
+	/**
+	 * @var ilSystemNotificationsPlugin
+	 */
+	protected $pl;
+
+
+	/**
+	 * @param ilADNNotification $ilADNNotification
+	 */
+	public function __construct(ilADNNotification $ilADNNotification) {
+		global $DIC;
+		$this->message = $ilADNNotification;
+		$this->pl = ilSystemNotificationsPlugin::getInstance();
+		$this->tpl = $this->pl->getTemplate('default/tpl.notification.html');
+		$this->usr = $DIC->user();
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getHTML() {
+		$this->tpl->setVariable('TITLE', $this->message->getTitle());
+		$this->tpl->setVariable('BODY', $this->message->getBody());
+		$this->tpl->setVariable('ALERT_TYPE', self::$css_map[$this->message->getActiveType()]);
+		//		$this->tpl->setVariable('POSITION', $this->message->getPosition());
+		$this->tpl->setVariable('ADD_CSS', $this->message->getAdditionalClasses());
+		if (!$this->message->getPermanent()) {
+			$this->tpl->setVariable('EVENT', $this->message->getFullTimeFormated());
+		}
+		if ($this->message->isInterruptive()) {
+			$this->tpl->setVariable('INTERRUPTIVE', 'interruptive');
+		}
+		if ($this->message->isUserAllowedToDismiss($this->usr)) {
+			$this->tpl->setVariable('DISMISS_LINK', 'goto.php?target=xnot_dismiss_' . $this->message->getId());
+		}
+
+		return $this->tpl->get();
+	}
+
+
+	/**
+	 * @param string $html
+	 *
+	 * @return string
+	 */
+	public function append(&$html) {
+		$html = $html . $this->getHTML();
+
+		return $html;
+	}
+}
