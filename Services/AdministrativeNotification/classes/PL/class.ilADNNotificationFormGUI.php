@@ -258,7 +258,7 @@ class ilADNNotificationFormGUI extends ilPropertyFormGUI
             $this->addCommandButton(ilADNNotificationGUI::CMD_UPDATE, $this->txt('form_button_'
                 . ilADNNotificationGUI::CMD_UPDATE));
         }
-        $this->addCommandButton(ilADNNotificationGUI::CMD_CANCEL, $this->txt('form_button_' . ilSystemNotificationsConfigGUI::CMD_CANCEL));
+        $this->addCommandButton(ilADNNotificationGUI::CMD_CANCEL, $this->txt('form_button_' . ilADNNotificationGUI::CMD_CANCEL));
     }
 
     /**
