@@ -435,8 +435,11 @@ class ilDclTableView extends ActiveRecord
         return $this->visible_fields_cache;
     }
 
-
-    public function getFieldSettings()
+    /**
+     * @return ilDclTableViewFieldSetting[]
+     * @throws arException
+     */
+    public function getFieldSettings() : array
     {
         return ilDclTableViewFieldSetting::where(
             array(
@@ -446,6 +449,17 @@ class ilDclTableView extends ActiveRecord
         )->innerjoin('il_dcl_tfield_set', 'field', 'field', array('field_order'))->orderBy('field_order')->get();
     }
 
+    /**
+     * @param $field_id
+     * @return ilDclTableViewFieldSetting
+     */
+    public function getFieldSetting($field_id) : ilDclTableViewFieldSetting
+    {
+        return ilDclTableViewFieldSetting::where([
+            'tableview_id' => $this->getId(),
+            'field' => $field_id
+        ])->first();
+    }
 
     /**
      * @param bool $create_default_settings

@@ -54,7 +54,7 @@ class ilDclEditViewTableGUI extends ilTable2GUI
         $lng = $DIC['lng'];
         $field = $a_set->getFieldObject();
 
-        if (!$field->isStandardField()) {
+        if (!$field->isStandardField() || $field->getId() === 'owner') {
             $this->tpl->setVariable('TEXT_VISIBLE', $lng->txt('dcl_tableview_visible'));
             $this->tpl->setVariable('TEXT_REQUIRED_VISIBLE', $lng->txt('dcl_tableview_required_visible'));
             $this->tpl->setVariable('TEXT_LOCKED_VISIBLE', $lng->txt('dcl_tableview_locked_visible'));

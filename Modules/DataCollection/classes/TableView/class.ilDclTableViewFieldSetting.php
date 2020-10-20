@@ -183,7 +183,7 @@ class ilDclTableViewFieldSetting extends ActiveRecord
     /**
      * @return boolean
      */
-    public function isVisible()
+    public function isVisibleInList()
     {
         return $this->visible;
     }
@@ -379,9 +379,10 @@ class ilDclTableViewFieldSetting extends ActiveRecord
 
 
     /**
-     * @param bool $visible_create
+     * @param bool $not_visible_create
      */
-    public function setNotVisibleCreate($not_visible_create) {
+    public function setNotVisibleCreate(bool $not_visible_create) : void
+    {
         $this->visible_create = !$not_visible_create;
     }
 
@@ -389,7 +390,7 @@ class ilDclTableViewFieldSetting extends ActiveRecord
     /**
      * @return bool
      */
-    public function isNotVisibleCreate()
+    public function isNotVisibleCreate() : bool
     {
         return !$this->visible_create;
     }
@@ -412,24 +413,48 @@ class ilDclTableViewFieldSetting extends ActiveRecord
         $this->visible_edit = $visible_edit;
     }
 
-
     /**
-     * @param bool $visible_edit
+     * @param bool $not_visible
      */
-    public function setNotVisibleEdit($not_visible_edit)
+    public function setNotVisibleEdit(bool $not_visible) : void
     {
-        $this->visible_edit = !$not_visible_edit;
+        $this->visible_edit = !$not_visible;
     }
-
 
     /**
      * @return bool
      */
-    public function isNotVisibleEdit()
+    public function isNotVisibleEdit() : bool
     {
         return !$this->visible_edit;
     }
 
+    /**
+     * @param bool $creation_mode
+     * @return bool
+     */
+    public function isVisibleInForm(bool $creation_mode) : bool
+    {
+        return $creation_mode ? $this->isVisibleCreate() : $this->isVisibleEdit();
+    }
+
+    /**
+     * @param bool $creation_mode
+     * @return bool
+     */
+    public function isLocked(bool $creation_mode) : bool
+    {
+        return $creation_mode ? $this->isLockedCreate() : $this->isLockedEdit();
+    }
+
+    /**
+     * @param bool $creation_mode
+     * @return bool
+     */
+    public function isRequired(bool $creation_mode) : bool
+    {
+        return $creation_mode ? $this->isRequiredCreate() : $this->isRequiredEdit();
+    }
 
     /**
      * @param $field_name

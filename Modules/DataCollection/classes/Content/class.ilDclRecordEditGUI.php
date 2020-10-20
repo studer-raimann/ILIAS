@@ -288,81 +288,62 @@ class ilDclRecordEditGUI
         $allFields = $this->table->getRecordFields();
         $inline_css = '';
         foreach ($allFields as $field) {
-            $field_settings = $field->getFieldSettings();
-            foreach ($field_settings as $field_setting) {
-                if ($field_setting->getTableViewId() == $this->tableview_id) {
-                    // If edit mode
-                    if ($this->record_id) {
-                        $visible = $field_setting->isVisibleEdit();
-                        $locked = $field_setting->isLockedEdit();
-                        $required = $field_setting->isRequiredEdit();
-                    } else {
-                        $visible = $field_setting->isVisibleCreate();
-                        $locked = $field_setting->isLockedCreate();
-                        $required = $field_setting->isRequiredCreate();
-                    }
+            $field_setting = $field->getViewSetting($this->tableview_id);
+            if ($field_setting->isVisibleInForm(!$this->record_id)) {
+                $item = ilDclCache::getFieldRepresentation($field)->getInputField($this->form, $this->record_id);
+                if ($item === null) {
+                    continue; // Fields calculating values at runtime, e.g. ilDclFormulaFieldModel do not have input
+                }
 
-                    if ($visible) {
-                        $item = ilDclCache::getFieldRepresentation($field)->getInputField($this->form, $this->record_id);
-                        if ($item === null) {
-                            continue; // Fields calculating values at runtime, e.g. ilDclFormulaFieldModel do not have input
+                if (!ilObjDataCollectionAccess::hasWriteAccess($this->parent_obj->ref_id) && $field_setting->isLocked(!$this->record_id)) {
+                    $item->setDisabled(true);
+                }
+
+                $item->setRequired($field_setting->isRequired(!$this->record_id));
+                $default_value = null;
+
+                // If creation mode
+                if (!$this->record_id) {
+                    $default_value = ilDclTableViewBaseDefaultValue::findSingle($field_setting->getFieldObject()->getDatatypeId(), $field_setting->getId());
+
+                    if ($default_value !== null) {
+                        if ($item instanceof ilDclCheckboxInputGUI) {
+                            $item->setChecked($default_value->getValue());
+                        } else {
+                            $item->setValue($default_value->getValue());
                         }
-
-                        if (!ilObjDataCollectionAccess::hasWriteAccess($this->parent_obj->ref_id)) {
-                            $item->setDisabled(true);
-                        }
-
-                        $item->setRequired($required);
-                        $match = null;
-
-                        // If creation mode
-                        if (!$this->record_id) {
-                            $match = ilDclTableViewBaseDefaultValue::findSingle($field_setting->getFieldObject()->getDatatypeId(), $field_setting->getId());
-
-                            if ($match !== null) {;
-                                if ($item instanceof ilDclCheckboxInputGUI) {
-                                    $item->setChecked($match->getValue());
-                                } else {
-                                    $item->setValue($match->getValue());
-                                }
-                            }
-                        }
-
-                        if ($locked) {
-                            $item->setDisabled(true);
-
-                            // If locked and creation mode -> Set default values
-                            if ($match !== null && !$this->record_id) {
-                                $locked_prop = new ilHiddenInputGUI($item->getPostVar());
-                                $locked_prop->setValue($item->getValue());
-                                $this->form->addItem($locked_prop);
-                            }
-                        }
-
-                        $this->form->addItem($item);
                     }
                 }
+                $this->form->addItem($item);
+
+            } else if (!$this->record_id) {
+                // invisible fields with default value need hidden inputs in creation mode
+                $default_value = ilDclTableViewBaseDefaultValue::findSingle($field_setting->getFieldObject()->getDatatypeId(), $field_setting->getId());
+                if ($default_value !== null) {
+                    $item = new ilHiddenInputGUI('field_' . $field->getId());
+                    $item->setValue($default_value->getValue());
+                    $this->form->addItem($item);
+                }
             }
+
         }
 
         $this->tpl->addInlineCss($inline_css);
 
         // Add possibility to change the owner in edit mode
         if ($this->record_id) {
-            /** @var ilDclTableViewFieldSetting $field_setting */
-            foreach ($this->tableview->getFieldSettings() as $field_setting) {
-                if ($field_setting->getField() === 'owner' && $field_setting->isVisibleEdit()) {
-                    $ownerField = $this->table->getField('owner');
-                    $inputfield = ilDclCache::getFieldRepresentation($ownerField)->getInputField($this->form);
+            $field_setting = $this->tableview->getFieldSetting('owner');
+            if ($field_setting->isVisibleEdit()) {
+                $ownerField = $this->table->getField('owner');
+                $inputfield = ilDclCache::getFieldRepresentation($ownerField)->getInputField($this->form);
 
-                    if (!ilObjDataCollectionAccess::hasWriteAccess($this->parent_obj->ref_id) && $field_setting->isLocked()) {
-                        $inputfield->setDisabled(true);
-                    } else {
-                        $inputfield->setRequired(true);
-                    }
-
-                    $this->form->addItem($inputfield);
+                if (!ilObjDataCollectionAccess::hasWriteAccess($this->parent_obj->ref_id) && $field_setting->isLockedEdit()) {
+                    $inputfield->setDisabled(true);
+                } else {
+                    $inputfield->setRequired(true);
                 }
+
+                $this->form->addItem($inputfield);
             }
         }
 
@@ -399,11 +380,8 @@ class ilDclRecordEditGUI
             //Get Table Field Definitions
             $allFields = $this->table->getFields();
             foreach ($allFields as $field) {
-                $field_settings = $field->getFieldSettings();
-                foreach ($field_settings as $field_setting) {
-                    if ($field_setting->getTableViewId() == $this->tableview_id && $field_setting->isVisibleEdit()) {
-                        $record_obj->fillRecordFieldFormInput($field->getId(), $this->form);
-                    }
+                if ($field->getViewSetting($this->tableview_id)->isVisibleEdit()) {
+                    $record_obj->fillRecordFieldFormInput($field->getId(), $this->form);
                 }
             }
         } else {
@@ -438,7 +416,7 @@ class ilDclRecordEditGUI
         if ($permission) {
             $all_fields = $this->table->getRecordFields();
         } else {
-            $all_fields = $this->table->getEditableFields();
+            $all_fields = $this->table->getEditableFields(!$this->record_id);
         }
 
         $date_obj = new ilDateTime(time(), IL_CAL_UNIX);
@@ -527,12 +505,12 @@ class ilDclRecordEditGUI
         $record_obj->setLastUpdate($date_obj->get(IL_CAL_DATETIME));
         $record_obj->setLastEditBy($this->user->getId());
 
-        $create_mode = false;
+        $create_mode = !isset($this->record_id);
 
-        if (ilObjDataCollectionAccess::hasWriteAccess($this->parent_obj->ref_id)) {
+        if (ilObjDataCollectionAccess::hasWriteAccess($this->parent_obj->ref_id) || $create_mode) {
             $all_fields = $this->table->getRecordFields();
         } else {
-            $all_fields = $this->table->getEditableFields();
+            $all_fields = $this->table->getEditableFields(!$this->record_id);
         }
 
         //Check if we can create this record.
@@ -553,7 +531,7 @@ class ilDclRecordEditGUI
         }
 
         if ($valid) {
-            if (!isset($this->record_id)) {
+            if ($create_mode) {
                 if (!(ilObjDataCollectionAccess::hasPermissionToAddRecord($this->parent_obj->ref_id, $this->table_id))) {
                     $this->accessDenied();
 
@@ -615,26 +593,23 @@ class ilDclRecordEditGUI
 
             //edit values, they are valid we already checked them above
             foreach ($all_fields as $field) {
-                $field_settings = $field->getFieldSettings();
-                foreach ($field_settings as $field_setting) {
-                    if ($field_setting->getTableViewId() == $this->tableview_id) {
-                        // If edit mode
-                        if ($create_mode) {
-                            $visible = $field_setting->isVisibleCreate();
-                        } else {
-                            // Don't change locked values in edit mode - They need to stay the same
-                            $visible = $field_setting->isVisibleEdit() && !$field_setting->isLockedEdit();
-                        }
+                $field_setting = $field->getViewSetting($this->tableview_id);
+                // If edit mode
+                if ($create_mode) {
+                    $default_value = ilDclTableViewBaseDefaultValue::findSingle($field_setting->getFieldObject()->getDatatypeId(), $field_setting->getId());
+                    $visible = $default_value !== null || $field_setting->isVisibleCreate();
+                } else {
+                    // Don't change locked values in edit mode - They need to stay the same
+                    $visible = $field_setting->isVisibleEdit() && !$field_setting->isLockedEdit();
+                }
 
-                        if ($visible) {
-                            $record_obj->setRecordFieldValueFromForm($field->getId(), $this->form);
-                        }
-                    }
+                if ($visible) {
+                    $record_obj->setRecordFieldValueFromForm($field->getId(), $this->form);
                 }
             }
 
             // Do we need to set a new owner for this record?
-            if (!$create_mode) {
+            if (!$create_mode && $this->tableview->getFieldSetting('owner')->isVisibleEdit()) {
                 $owner_id = ilObjUser::_lookupId($_POST['field_owner']);
                 if (!$owner_id) {
                     $this->sendFailure($this->lng->txt('user_not_known'));
@@ -757,15 +732,12 @@ class ilDclRecordEditGUI
                     //Get Table Field Definitions
                     $allFields = $this->table->getFields();
                     foreach ($allFields as $field) {
-                        $field_settings = $field->getFieldSettings();
-                        foreach ($field_settings as $field_setting) {
-                            if (
-                                $field_setting->isLockedEdit() &&
-                                $field_setting->getTableViewId() == $this->tableview_id &&
-                                $field_setting->isVisibleEdit()
-                            ) {
-                                $record_obj->fillRecordFieldFormInput($field->getId(), $this->form);
-                            }
+                        $field_setting = $field->getViewSetting($this->tableview_id);
+                        if (
+                            $field_setting->isLockedEdit() &&
+                            $field_setting->isVisibleEdit()
+                        ) {
+                            $record_obj->fillRecordFieldFormInput($field->getId(), $this->form);
                         }
                     }
                 }
