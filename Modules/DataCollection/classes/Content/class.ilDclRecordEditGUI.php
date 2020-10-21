@@ -316,14 +316,6 @@ class ilDclRecordEditGUI
                 }
                 $this->form->addItem($item);
 
-            } else if (!$this->record_id) {
-                // invisible fields with default value need hidden inputs in creation mode
-                $default_value = ilDclTableViewBaseDefaultValue::findSingle($field_setting->getFieldObject()->getDatatypeId(), $field_setting->getId());
-                if ($default_value !== null) {
-                    $item = new ilHiddenInputGUI('field_' . $field->getId());
-                    $item->setValue($default_value->getValue());
-                    $this->form->addItem($item);
-                }
             }
 
         }
@@ -480,7 +472,6 @@ class ilDclRecordEditGUI
     {
         global $DIC;
         $ilAppEventHandler = $DIC['ilAppEventHandler'];
-        $ilUser = $DIC['ilUser'];
 
         $this->initForm();
 
@@ -594,17 +585,20 @@ class ilDclRecordEditGUI
             //edit values, they are valid we already checked them above
             foreach ($all_fields as $field) {
                 $field_setting = $field->getViewSetting($this->tableview_id);
-                // If edit mode
-                if ($create_mode) {
-                    $default_value = ilDclTableViewBaseDefaultValue::findSingle($field_setting->getFieldObject()->getDatatypeId(), $field_setting->getId());
-                    $visible = $default_value !== null || $field_setting->isVisibleCreate();
-                } else {
-                    // Don't change locked values in edit mode - They need to stay the same
-                    $visible = $field_setting->isVisibleEdit() && !$field_setting->isLockedEdit();
-                }
 
-                if ($visible) {
+                if ($field_setting->isVisibleInForm($create_mode) && 
+                    (!$field_setting->isLocked($create_mode) || ilObjDataCollectionAccess::hasWriteAccess($this->parent_obj->ref_id))) {
+                    // set all visible fields
                     $record_obj->setRecordFieldValueFromForm($field->getId(), $this->form);
+                } elseif ($create_mode) {
+                    // set default values when creating
+                    $default_value = ilDclTableViewBaseDefaultValue::findSingle(
+                        $field_setting->getFieldObject()->getDatatypeId(),
+                        $field_setting->getId()
+                    );
+                    if ($default_value !== null) {
+                        $record_obj->setRecordFieldValue($field->getId(), $default_value->getValue());
+                    }
                 }
             }
 

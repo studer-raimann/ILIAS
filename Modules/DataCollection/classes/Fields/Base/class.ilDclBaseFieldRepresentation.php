@@ -101,7 +101,7 @@ abstract class ilDclBaseFieldRepresentation
      * @param ilPropertyFormGUI $form
      * @param int               $record_id
      *
-     * @return null
+     * @return ?ilFormPropertyGUI
      */
     public function getInputField(ilPropertyFormGUI $form, $record_id = 0)
     {
