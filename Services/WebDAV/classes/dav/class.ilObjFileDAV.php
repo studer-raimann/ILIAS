@@ -126,7 +126,7 @@ class ilObjFileDAV extends ilObjectDAV implements Sabre\DAV\IFile
      */
     public function getContentType()
     {
-        return  $this->obj->guessFileType();
+        return  $this->obj->getFileType();
     }
     
     /**
