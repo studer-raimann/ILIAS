@@ -33,7 +33,7 @@ class ilObjFileImplementationStorage extends ilObjFileImplementationAbstract imp
          */
         $this->resource = $resource;
         $this->storage = $DIC->resourceStorage();
-        $this->debug();
+//        $this->debug();
     }
 
     private function debug() : void
@@ -55,8 +55,27 @@ class ilObjFileImplementationStorage extends ilObjFileImplementationAbstract imp
             return $files;
         };
 
-
         ilUtil::sendInfo('<pre>' . print_r($dir_reader($container), true) . '</pre>');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getFile($a_hist_entry_id = null)
+    {
+        $stream = $this->storage->consume()->stream($this->resource->getIdentification());
+        if ($a_hist_entry_id) {
+            $stream = $stream->setRevisionNumber($a_hist_entry_id);
+        }
+        return $stream->getStream()->getMetadata('uri');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getFileType()
+    {
+        return $this->resource->getCurrentRevision()->getInformation()->getMimeType();
     }
 
     /**

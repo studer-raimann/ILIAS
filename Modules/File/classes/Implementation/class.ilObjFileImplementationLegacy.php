@@ -2,8 +2,6 @@
 /* Copyright (c) 1998-2013 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 use ILIAS\Filesystem\Exception\FileNotFoundException;
-use ILIAS\Filesystem\Util\LegacyPathHelper;
-use ILIAS\Data\DataSize;
 
 /**
  * Class ilObjFileImplementationLegacy
@@ -263,7 +261,6 @@ class ilObjFileImplementationLegacy extends ilObjFileImplementationAbstract impl
                 $filesize = $size->getSize();
             }*/
 
-
             $version_objects[] = new ilObjFileVersion($version);
         }
 
@@ -378,4 +375,13 @@ class ilObjFileImplementationLegacy extends ilObjFileImplementationAbstract impl
     {
         return ilObjFileAccess::_isFileInline($this->getFileName());
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getFileType()
+    {
+        return '';
+    }
+
 }

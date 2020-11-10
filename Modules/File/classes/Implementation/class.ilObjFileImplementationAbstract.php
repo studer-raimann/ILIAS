@@ -1,7 +1,5 @@
 <?php
 
-use ILIAS\UI\NotImplementedException;
-
 /**
  * Class ilObjFileImplementationAbstract
  * @author Fabian Schmid <fs@studer-raimann.ch>
@@ -22,7 +20,7 @@ abstract class ilObjFileImplementationAbstract implements ilObjFileImplementatio
      */
     public function replaceFile($a_upload_file, $a_filename)
     {
-        // TODO: Implement replaceFile() method.
+
     }
 
     /**
@@ -30,7 +28,7 @@ abstract class ilObjFileImplementationAbstract implements ilObjFileImplementatio
      */
     public function addFileVersion($a_upload_file, $a_filename)
     {
-        // TODO: Implement addFileVersion() method.
+
     }
 
     /**
@@ -46,15 +44,7 @@ abstract class ilObjFileImplementationAbstract implements ilObjFileImplementatio
      */
     public function setFileType($a_type)
     {
-        throw new NotImplementedException();
-    }
 
-    /**
-     * @inheritDoc
-     */
-    public function getFileType()
-    {
-        throw new NotImplementedException();
     }
 
     /**
@@ -62,20 +52,12 @@ abstract class ilObjFileImplementationAbstract implements ilObjFileImplementatio
      */
     public function setFileSize($a_size)
     {
-        throw new NotImplementedException();
+
     }
 
     public function getFileSize()
     {
-        throw new NotImplementedException();
-    }
 
-    /**
-     * @inheritDoc
-     */
-    public function getFile($a_hist_entry_id = null)
-    {
-        throw new NotImplementedException();
     }
 
     /**
@@ -83,12 +65,12 @@ abstract class ilObjFileImplementationAbstract implements ilObjFileImplementatio
      */
     public function setVersion($a_version)
     {
-        throw new NotImplementedException();
+
     }
 
     public function getVersion()
     {
-        throw new NotImplementedException();
+
     }
 
     /**
@@ -96,12 +78,12 @@ abstract class ilObjFileImplementationAbstract implements ilObjFileImplementatio
      */
     public function setMaxVersion($a_max_version)
     {
-        throw new NotImplementedException();
+
     }
 
     public function getMaxVersion()
     {
-        throw new NotImplementedException();
+
     }
 
     /**
@@ -109,7 +91,7 @@ abstract class ilObjFileImplementationAbstract implements ilObjFileImplementatio
      */
     public function storeUnzipedFile($a_upload_file, $a_filename)
     {
-        throw new NotImplementedException();
+
     }
 
     /**
@@ -117,7 +99,7 @@ abstract class ilObjFileImplementationAbstract implements ilObjFileImplementatio
      */
     public function getSpecificVersion($version_id)
     {
-        throw new NotImplementedException();
+
     }
 
     /**
@@ -125,7 +107,7 @@ abstract class ilObjFileImplementationAbstract implements ilObjFileImplementatio
      */
     public function rollback($version_id)
     {
-        throw new NotImplementedException();
+
     }
 
 }
