@@ -6,25 +6,25 @@ use ILIAS\ResourceStorage\Resource\StorableResource;
 use ILIAS\ResourceStorage\StorageHandler\StorageHandler;
 
 /**
- * Class BaseConsumer
+ * Class SrcConsumer
  * @package ILIAS\ResourceStorage\Consumer
  */
-abstract class BaseConsumer implements DeliveryConsumer
+class SrcConsumer
 {
     use GetRevisionTrait;
 
     /**
      * @var StorageHandler
      */
-    protected $storage_handler;
+    private $storage_handler;
     /**
      * @var StorableResource
      */
-    protected $resource;
+    private $resource;
     /**
      * @var int|null
      */
-    protected $revision_number = null;
+    protected $revision_number;
 
     /**
      * DownloadConsumer constructor.
@@ -37,12 +37,20 @@ abstract class BaseConsumer implements DeliveryConsumer
         $this->storage_handler = $storage_handler;
     }
 
-    abstract function run() : void;
+    public function getSrc() : string
+    {
+        $revision = $this->getRevision();
+        $stream = $this->storage_handler->getStream($revision);
+        $base64 = base64_encode($stream->getContents());
+        $mime = $revision->getInformation()->getMimeType();
+
+        return "data:{$mime};base64,{$base64}";
+    }
 
     /**
      * @inheritDoc
      */
-    public function setRevisionNumber(int $revision_number) : DeliveryConsumer
+    public function setRevisionNumber(int $revision_number) : SrcConsumer
     {
         $this->revision_number = $revision_number;
         return $this;
