@@ -33,6 +33,7 @@ final class ilObjTalkTemplate extends ilObject
 
     public function create()
     {
+        $this->setOfflineStatus(true);
         parent::create();
     }
 
