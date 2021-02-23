@@ -16212,3 +16212,9 @@ common#:#lso_admin_form_byline#:#General Settings for Learning Sequences
 common#:#lso_admin_interval_label#:#Learning Progress Polling Interval (seconds)
 common#:#lso_admin_interval_byline#:#Poll Learning Progress every x seconds. Be careful! A low value will increase server-requests and have an impact on overall system performance. Please choose highest value possible!
 prg#:#no_srctype_or_id#:#Id and type may not be empty.
+common#:#objs_tala#:#Talk Templates
+common#:#objs_talt#:#Talk Templates
+common#:#obj_talt#:#Talk Template
+common#:#obj_tala#:#Talk Templates
+etal#:#mm_talk_template#:#Talk Templates
+orgu#:#mm_organisation#:#Organisation
