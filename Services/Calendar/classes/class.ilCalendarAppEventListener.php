@@ -56,6 +56,7 @@ class ilCalendarAppEventListener implements ilAppEventListener
             case 'Modules/Session':
             case 'Modules/Group':
             case 'Modules/Course':
+            case 'Modules/EmployeeTalk':
                 switch ($a_event) {
                     case 'create':
                         $logger->debug('Handling create event');

@@ -12,7 +12,7 @@ declare(strict_types=1);
  * @ilCtrl_Calls      ilObjTalkTemplateGUI: ilPermissionGUI
  * @ilCtrl_Calls      ilObjTalkTemplateGUI: ilInfoScreenGUI
  */
-final class ilObjTalkTemplateGUI extends ilObjectGUI
+final class ilObjTalkTemplateGUI extends ilContainerGUI
 {
     public function __construct()
     {
@@ -131,24 +131,11 @@ final class ilObjTalkTemplateGUI extends ilObjectGUI
     public function getAdminTabs()
     {
         $this->getTabs();
-
-        if ($this->checkPermissionBool("edit_permission")) {
-            $this->tabs_gui->addTab(
-                'perm_settings',
-                $this->lng->txt('perm_settings'),
-                $this->ctrl->getLinkTargetByClass(
-                    [
-                        get_class($this),
-                        'ilpermissiongui'
-                    ],
-                    'perm'
-                )
-            );
-        }
     }
 
     private function initMetaDataForm(ilPropertyFormGUI $form): ilAdvancedMDRecordGUI {
-        $md = new ilAdvancedMDRecordGUI(ilAdvancedMDRecordGUI::MODE_REC_SELECTION, $this->object->getType(), $this->object->getId());
+        $md = new ilAdvancedMDRecordGUI(ilAdvancedMDRecordGUI::MODE_REC_SELECTION, $this->object->getType(), $this->object->getId(), "etal");
+        $md->setRefId($this->object->getRefId());
         $md->setPropertyForm($form);
         return $md;
     }

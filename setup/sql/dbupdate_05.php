@@ -1269,7 +1269,7 @@ $map = [
     'ilPrtfGlobalScreenProvider' => 'ILIAS\\Portfolio\\Provider\\PortfolioMainBarProvider',
     'ilRepositoryGlobalScreenProvider' => 'ILIAS\\Repository\\Provider\\RepositoryMainBarProvider',
     'ilSkillGlobalScreenProvider' => 'ILIAS\\Skill\\Provider\\SkillMainBarProvider',
-    'ilStaffGlobalScreenProvider' => 'ILIAS\\MyStaff\\Provider\\StaffMainBarProvider',
+    'ilStaffGlobalScreenProvider' => 'ILIAS\\MyStaff\\Provider\\MyStaffListEntryProvider',
     'ilWorkspaceGlobalScreenProvider' => 'ILIAS\\PersonalWorkspace\\Provider\\WorkspaceMainBarProvider',
 ];
 

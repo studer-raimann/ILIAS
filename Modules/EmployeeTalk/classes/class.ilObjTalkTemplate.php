@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-final class ilObjTalkTemplate extends ilObject
+final class ilObjTalkTemplate extends ilContainer
 {
     const TABLE_NAME = 'etal_data';
     /**
@@ -35,6 +35,8 @@ final class ilObjTalkTemplate extends ilObject
     {
         $this->setOfflineStatus(true);
         parent::create();
+        $this->_writeContainerSetting($this->getId(), ilObjectServiceSettingsGUI::CUSTOM_METADATA, true);
+        //$this->_writeContainerSetting($this->getId(), ilObjectServiceSettingsGUI::ORGU_POSITION_ACCESS, true);
     }
 
 

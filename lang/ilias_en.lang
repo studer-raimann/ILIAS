@@ -16224,3 +16224,6 @@ talt#:#meta_adv_records#:#Metadata
 talt#:#talt_edit#:#General
 talt#:#talt_add#:#Add Template
 talt#:#talt_new#:#New Talk Template
+etal#:#mm_org_etal#:#Talks
+common#:#objs_etal#:#Employee Talks
+common#:#obj_etal#:#Employee Talk
