@@ -41,6 +41,7 @@ final class ilEmployeeTalkMyStaffListGUI implements ControlFlowCommandHandler
         $container = $GLOBALS['DIC'];
 
         $container->language()->loadLanguageModule('etal');
+        $container->language()->loadLanguageModule('orgu');
         $this->language = $container->language();
 
         $this->tabs = $container->tabs();
@@ -119,7 +120,7 @@ final class ilEmployeeTalkMyStaffListGUI implements ControlFlowCommandHandler
         }
 
         $adv = new ilAdvancedSelectionListGUI();
-        $adv->setListTitle($this->language->txt("cntr_add_new_item"));
+        $adv->setListTitle($this->language->txt("etal_add_new_item"));
         //$gl->getHTML();
         $adv->setGroupedList($gl);
         $adv->setStyle(ilAdvancedSelectionListGUI::STYLE_EMPH);

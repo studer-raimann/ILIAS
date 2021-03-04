@@ -16219,11 +16219,17 @@ common#:#obj_tala#:#Talk Templates
 common#:#obj_tala_desc#:#Talk Templates
 etal#:#mm_talk_template#:#Talk Templates
 orgu#:#mm_organisation#:#Organisation
-talt#:#talt_activation_online_info#:#Set the talk template online to make it visible and available for employees. If not, only administrators will have access to it.
-talt#:#meta_adv_records#:#Metadata
-talt#:#talt_edit#:#General
-talt#:#talt_add#:#Add Template
-talt#:#talt_new#:#New Talk Template
+etal#:#talt_activation_online_info#:#Set the talk template online to make it visible and available for employees. If not, only administrators will have access to it.
+etal#:#meta_adv_records#:#Metadata
+etal#:#talt_edit#:#General
+etal#:#talt_add#:#Add Template
+etal#:#talt_new#:#New Talk Template
 etal#:#mm_org_etal#:#Talks
 common#:#objs_etal#:#Employee Talks
 common#:#obj_etal#:#Employee Talk
+etal#:#etal_edit#:#General
+etal#:#etal_add#:#Add Talk
+etal#:#etal_new#:#New Talk
+etal#:#talt_etal#:#Employee Talk
+etal#:#date_of_talk#:#Start Date
+etal#:#etal_add_new_item#:#Add new Talk
