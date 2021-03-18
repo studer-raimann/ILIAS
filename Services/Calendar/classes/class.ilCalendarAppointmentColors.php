@@ -73,6 +73,11 @@ class ilCalendarAppointmentColors
             "#BC6F16",
             "#BA7832",
             "#B78B4D",
+            "#B59365"),
+        'etal' => array(
+            "#BC6F16",
+            "#BA7832",
+            "#B78B4D",
             "#B59365")
     );
 

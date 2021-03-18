@@ -53,8 +53,8 @@ final class MyStaffListEntryProvider extends AbstractStaticMainMenuProvider
 
         $title = $this->dic->language()->txt("mm_org_etal");
         $action = "ilias.php?baseClass=ilAdministrationGUI&ref_id=" . ilObjOrgUnit::getRootOrgRefId() . "&cmd=jump";
-        $icon = $this->dic->ui()->factory()->symbol()->icon()->standard('orgu', $title)
-                          ->withIsOutlined(true);
+        $icon = $this->dic->ui()->factory()->symbol()->icon()->standard('etal', $title)
+                          ->withIsOutlined(false);
 
         $items[] = $this->mainmenu->link($this->employeeTalkTemplateIdentifier)
                                   ->withAlwaysAvailable(false)

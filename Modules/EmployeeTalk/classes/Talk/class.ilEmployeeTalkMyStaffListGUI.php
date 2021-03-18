@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 use ILIAS\EmployeeTalk\UI\ControlFlowCommandHandler;
 use ILIAS\EmployeeTalk\UI\ControlFlowCommand;
+use OrgUnit\User\ilOrgUnitUser;
 
 /**
  * Class ilEmployeeTalkMyStaffListGUI
@@ -32,6 +33,10 @@ final class ilEmployeeTalkMyStaffListGUI implements ControlFlowCommandHandler
      * @var ilCtrl $controlFlow
      */
     private $controlFlow;
+    /**
+     * @var ilObjUser $currentUser
+     */
+    private $currentUser;
 
     public function __construct()
     {
@@ -49,6 +54,7 @@ final class ilEmployeeTalkMyStaffListGUI implements ControlFlowCommandHandler
         $this->controlFlow = $container->ctrl();
         $this->ui->mainTemplate()->setTitle($container->language()->txt('mm_org_etal'));
         $this->toolbar = $container->toolbar();
+        $this->currentUser = $container->user();
     }
 
     public function executeCommand() : bool
@@ -140,19 +146,24 @@ final class ilEmployeeTalkMyStaffListGUI implements ControlFlowCommandHandler
             $refIds = ilObjEmployeeTalk::_getAllReferences($val["obj_id"]);
             $talk = new ilObjEmployeeTalk(array_pop($refIds), true);
             $parent = $talk->getParent();
+            $talkData = $talk->getData();
+            $orgUser = ilOrgUnitUser::getInstanceById($talkData->getEmployee());
             $data[] = [
                 "ref_id" => $talk->getRefId(),
                 "etal_title" => $talk->getTitle(),
                 "etal_template" => $parent->getTitle(),
-                "etal_date" => "C",
-                "etal_superior" => "D",
-                "etal_employee" => "E",
-                "etal_status" => "F",
+                "etal_date" => $talkData->getStartDate()->get(
+                    IL_CAL_DATETIME,
+                    $this->currentUser->getTimeFormat(),
+                    $this->currentUser->getTimeZone()
+                ),
+                "etal_superior" => $orgUser->getSuperiors()[0] ?? '',
+                "etal_employee" => ilObjUser::_lookupLogin($talkData->getEmployee()),
+                "etal_status" => $talkData->isCompleted() ? $this->language->txt('etal_status_completed') : $this->language->txt('etal_status_pending'),
                 "action" => "none"
             ];
         }
         $table->setData($data);
-        //$table->setData([["A", "B", "C", "D", "E", "F"]]);
 
         return $table;
     }

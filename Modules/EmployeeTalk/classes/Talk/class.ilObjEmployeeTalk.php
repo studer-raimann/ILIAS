@@ -1,9 +1,11 @@
 <?php
 declare(strict_types=1);
 
+use ILIAS\Modules\EmployeeTalk\Talk\Repository\EmployeeTalkRepository;
+use ILIAS\Modules\EmployeeTalk\Talk\DAO\EmployeeTalk;
+
 final class ilObjEmployeeTalk extends ilObject
 {
-    const TABLE_NAME = 'etal_data';
     /**
      * @var int
      */
@@ -14,14 +16,14 @@ final class ilObjEmployeeTalk extends ilObject
     private static $root_id;
 
     /**
-     * @var ilDateTime | null $startDate
+     * @var EmployeeTalkRepository $repository
      */
-    private $startDate;
+    private $repository;
 
     /**
-     * @var ilDateTime | null $endDate
+     * @var EmployeeTalk $data
      */
-    private $endDate;
+    private $data;
 
     /**
      * @param int  $a_id
@@ -29,15 +31,19 @@ final class ilObjEmployeeTalk extends ilObject
      */
     public function __construct($a_id = 0, $a_call_by_reference = true)
     {
-        $this->type = "etal";
+        $this->setType('etal');
+
+        $this->repository = new \ILIAS\Modules\EmployeeTalk\Talk\Repository\IliasDBEmployeeTalkRepository($GLOBALS['DIC']->database());
+        $datetime = new ilDateTime(1, IL_CAL_UNIX);
+        $this->data = new EmployeeTalk(-1, $datetime, $datetime, false, '', '', -1, false);
+
         parent::__construct($a_id, $a_call_by_reference);
     }
 
     public function read()
     {
         parent::read();
-
-
+        $this->data = $this->repository->findByObjectId($this->getId());
     }
 
     public function create()
@@ -45,42 +51,46 @@ final class ilObjEmployeeTalk extends ilObject
         $this->setOfflineStatus(true);
         parent::create();
 
-        /*$app = new ilCalendarAppointmentTemplate(1);
+        $this->data->setObjectId($this->getId());
+        $this->repository->create($this->data);
+
+        $app = new ilCalendarAppointmentTemplate($this->getId());
         $app->setTitle($this->getTitle());
         $app->setSubtitle('etal_cal_meeting');
         $app->setTranslationType(IL_CAL_TRANSLATION_SYSTEM);
         $app->setDescription($this->getLongDescription());
-        $app->setStart($this->startDate);
-        $app->setEnd($this->endDate);
-        $apps[] = $app; */
+        $app->setStart($this->data->getStartDate());
+        $app->setEnd($this->data->getEndDate());
+        $apps[] = $app;
 
         /**
          * @var \ILIAS\DI\Container $container
          */
         $container = $GLOBALS['DIC'];
 
-        /*$container->event()->raise(
+        $container->event()->raise(
             'Modules/EmployeeTalk',
             'create',
             ['object' => $this,
-                  'obj_id' => $this->getId(),
-                  'appointments' => $apps
+             'obj_id' => $this->getId(),
+             'appointments' => $apps
             ]
-        );*/
+        );
     }
 
     public function update()
     {
         parent::update();
+        $this->repository->update($this->data);
 
-        /*$app = new ilCalendarAppointmentTemplate(1);
+        $app = new ilCalendarAppointmentTemplate($this->getId());
         $app->setTitle($this->getTitle());
         $app->setSubtitle('etal_cal_meeting');
         $app->setTranslationType(IL_CAL_TRANSLATION_SYSTEM);
         $app->setDescription($this->getLongDescription());
-        $app->setStart($this->startDate);
-        $app->setEnd($this->endDate);
-        $apps[] = $app; */
+        $app->setStart($this->data->getStartDate());
+        $app->setEnd($this->data->getEndDate());
+        $apps[] = $app;
 
         /**
          * @var \ILIAS\DI\Container $container
@@ -160,15 +170,33 @@ final class ilObjEmployeeTalk extends ilObject
          */
         $container = $GLOBALS['DIC'];
 
-        /*$container->event()->raise(
+        $container->event()->raise(
             'Modules/EmployeeTalk',
-            'create',
+            'delete',
             ['object' => $this,
                   'obj_id' => $this->getId(),
                   'appointments' => []
             ]
-        );*/
+        );
 
         return parent::delete();
+    }
+
+    /**
+     * @return EmployeeTalk
+     */
+    public function getData() : EmployeeTalk
+    {
+        return clone $this->data;
+    }
+
+    /**
+     * @param EmployeeTalk $data
+     * @return ilObjEmployeeTalk
+     */
+    public function setData(EmployeeTalk $data) : ilObjEmployeeTalk
+    {
+        $this->data = clone $data;
+        return $this;
     }
 }
