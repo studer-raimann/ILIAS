@@ -16233,3 +16233,7 @@ etal#:#etal_new#:#New Talk
 etal#:#talt_etal#:#Employee Talk
 etal#:#date_of_talk#:#Start Date
 etal#:#etal_add_new_item#:#Add new Talk
+etal#:#change_date_of_talk#:#Change date of talk
+etal#:#change_date_of_series#:#Change date of talk series
+etal#:#etal_status_pending#:#Pending
+etal#:#etal_status_completed#:#Completed
