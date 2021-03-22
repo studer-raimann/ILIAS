@@ -26,7 +26,7 @@ final class ilEmployeeTalkTableGUI extends ilTable2GUI
 
         $this->usr_id = $DIC->http()->request()->getQueryParams()['usr_id'];
 
-        $this->setPrefix('myst_etal_list');
+        $this->setPrefix('myst_etal_list_');
         $this->setFormName('myst_etal_list');
         $this->setId('myst_etal_list');
 
@@ -43,13 +43,21 @@ final class ilEmployeeTalkTableGUI extends ilTable2GUI
         $this->setEnableNumInfo(true);
         //$this->setExternalSegmentation(false);
 
-        $this->setExportFormats(array(self::EXPORT_EXCEL, self::EXPORT_CSV));
-
-        $this->setFilterCols(6);
-        $this->initFilter();
+        //$this->setExportFormats(array(self::EXPORT_EXCEL, self::EXPORT_CSV));
         $this->addColumns();
 
-        //$this->parseData();
+        $this->initFilter();
+    }
+
+    public function initFilter()
+    {
+        $this->setFilterCols(6);
+        $this->addFilterItemByMetaType('etal_title', self::FILTER_TEXT, false, $this->language->txt('title'));
+        $this->addFilterItemByMetaType('etal_template', self::FILTER_TEXT, false, $this->language->txt('type'));
+        $this->addFilterItemByMetaType('etal_date', self::FILTER_DATE, false, $this->language->txt('date_of_talk'));
+        $this->addFilterItemByMetaType('etal_superior', self::FILTER_TEXT, false, $this->language->txt('superior'));
+        $this->addFilterItemByMetaType('etal_employee', self::FILTER_TEXT, false, $this->language->txt('employee'));
+        $this->addFilterItemByMetaType('etal_status', self::FILTER_SELECT, false, $this->language->txt('status'));
     }
 
     private function addColumns(): void {
@@ -98,6 +106,12 @@ final class ilEmployeeTalkTableGUI extends ilTable2GUI
         $class = strtolower(ilObjEmployeeTalkGUI::class);
         $this->ctrl->setParameterByClass($class, "ref_id", $a_set["ref_id"]);
         $url = $this->ctrl->getLinkTargetByClass($class, ControlFlowCommand::DEFAULT);
+
+        $this->ctrl->setParameterByClass($class, "item_ref_id", $a_set["ref_id"]);
+        $deleteUrl = $this->ctrl->getLinkTargetByClass($class, ControlFlowCommand::DELETE_INDEX);
+        $deleteButton = ilLinkButton::getInstance();
+        $deleteButton->setUrl($deleteUrl);
+        $deleteButton->setCaption('delete');
         $this->tpl->setVariable("HREF_ETAL_TITLE", $url);
         $this->tpl->setVariable("VAL_ETAL_TITLE", $a_set['etal_title']);
         $this->tpl->setVariable("VAL_ETAL_TEMPLATE", $a_set['etal_template']);
@@ -105,6 +119,7 @@ final class ilEmployeeTalkTableGUI extends ilTable2GUI
         $this->tpl->setVariable("VAL_ETAL_SUPERIOR", $a_set['etal_superior']);
         $this->tpl->setVariable("VAL_ETAL_EMPLOYEE", $a_set['etal_employee']);
         $this->tpl->setVariable("VAL_ETAL_STATUS", $a_set['etal_status']);
+        $this->tpl->setVariable("ACTIONS", $deleteButton->render());
 
         //parent::fillRow($a_set);
 
