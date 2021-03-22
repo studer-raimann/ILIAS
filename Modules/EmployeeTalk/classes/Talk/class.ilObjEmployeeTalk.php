@@ -179,6 +179,8 @@ final class ilObjEmployeeTalk extends ilObject
             ]
         );
 
+        $this->repository->delete($this->getData());
+
         return parent::delete();
     }
 
@@ -199,4 +201,18 @@ final class ilObjEmployeeTalk extends ilObject
         $this->data = clone $data;
         return $this;
     }
+
+    public function cloneObject($a_target_id, $a_copy_id = 0, $a_omit_tree = false): ilObjEmployeeTalk
+    {
+        /**
+         * @var ilObjEmployeeTalk $talkClone
+         */
+        $talkClone = parent::cloneObject($a_target_id, $a_copy_id, $a_omit_tree);
+        $data = $this->getData()->setObjectId($talkClone->getId());
+        $this->repository->update($data);
+        $talkClone->setData($data);
+
+        return $talkClone;
+    }
+
 }
