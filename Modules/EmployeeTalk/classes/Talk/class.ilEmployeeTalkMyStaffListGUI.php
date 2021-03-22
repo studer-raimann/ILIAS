@@ -60,13 +60,52 @@ final class ilEmployeeTalkMyStaffListGUI implements ControlFlowCommandHandler
     public function executeCommand() : bool
     {
         $nextClass = $this->controlFlow->getNextClass();
+        $command = $this->controlFlow->getCmd(ControlFlowCommand::DEFAULT);
         switch ($nextClass) {
             case strtolower(ilObjEmployeeTalkGUI::class):
                 $gui = new ilObjEmployeeTalkGUI();
                 return $this->controlFlow->forwardCommand($gui);
+            case strtolower(ilFormPropertyDispatchGUI::class):
+                $this->controlFlow->setReturn($this, ControlFlowCommand::INDEX);
+                $table = new ilEmployeeTalkTableGUI($this, ControlFlowCommand::INDEX);
+                $table->executeCommand();
+                break;
             default:
-                return $this->view();
+                switch ($command) {
+                    case ControlFlowCommand::APPLY_FILTER:
+                        $this->applyFilter();
+                        return true;
+                    case ControlFlowCommand::RESET_FILTER:
+                        $this->resetFilter();
+                        return true;
+                    default:
+                        return $this->view();
+                }
+
         }
+    }
+
+    /**
+     *
+     */
+    public function applyFilter()
+    {
+        $table = new ilEmployeeTalkTableGUI($this, ControlFlowCommand::APPLY_FILTER);
+        $table->writeFilterToSession();
+        $table->resetOffset();
+        $this->view();
+    }
+
+
+    /**
+     *
+     */
+    public function resetFilter()
+    {
+        $table = new ilEmployeeTalkTableGUI($this, ControlFlowCommand::RESET_FILTER);
+        $table->resetOffset();
+        $table->resetFilter();
+        $this->view();
     }
 
     private function view(): bool {
@@ -143,11 +182,22 @@ final class ilEmployeeTalkMyStaffListGUI implements ControlFlowCommandHandler
         $talks = ilObject::_getObjectsByType("etal");
         $data = [];
         foreach ($talks as $key => $val) {
+            if (!ilObject::_hasUntrashedReference($val['obj_id'])) {
+                continue;
+            }
             $refIds = ilObjEmployeeTalk::_getAllReferences($val["obj_id"]);
             $talk = new ilObjEmployeeTalk(array_pop($refIds), true);
             $parent = $talk->getParent();
             $talkData = $talk->getData();
-            $orgUser = ilOrgUnitUser::getInstanceById($talkData->getEmployee());
+            $employeeName = $this->language->txt('etal_unknown_username');
+            $superiorName = $this->language->txt('etal_unknown_username');
+            $ownerId = $talk->getOwner();
+            if (ilObjUser::_exists($talk->getOwner())) {
+                $superiorName = ilObjUser::_lookupLogin($ownerId);
+            }
+            if (ilObjUser::_exists($talkData->getEmployee())) {
+                $employeeName = ilObjUser::_lookupLogin($talkData->getEmployee());
+            }
             $data[] = [
                 "ref_id" => $talk->getRefId(),
                 "etal_title" => $talk->getTitle(),
@@ -157,8 +207,8 @@ final class ilEmployeeTalkMyStaffListGUI implements ControlFlowCommandHandler
                     $this->currentUser->getTimeFormat(),
                     $this->currentUser->getTimeZone()
                 ),
-                "etal_superior" => $orgUser->getSuperiors()[0] ?? '',
-                "etal_employee" => ilObjUser::_lookupLogin($talkData->getEmployee()),
+                "etal_superior" => $superiorName,
+                "etal_employee" => $employeeName,
                 "etal_status" => $talkData->isCompleted() ? $this->language->txt('etal_status_completed') : $this->language->txt('etal_status_pending'),
                 "action" => "none"
             ];
