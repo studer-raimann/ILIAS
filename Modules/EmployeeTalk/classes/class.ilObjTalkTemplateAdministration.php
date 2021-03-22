@@ -72,11 +72,20 @@ final class ilObjTalkTemplateAdministration extends ilContainer
             $ilDB = $DIC['ilDB'];
             $q = "SELECT o.obj_id, r.ref_id FROM object_data o
 			INNER JOIN object_reference r ON r.obj_id = o.obj_id
-			WHERE title = " . $ilDB->quote('__TalkTemplateAdministration', 'text') . "";
+			WHERE title = " . $ilDB->quote('__TalkTemplateAdministration', 'text');
             $set = $ilDB->query($q);
             $res = $ilDB->fetchAssoc($set);
             self::$root_id = (int) $res["obj_id"];
             self::$root_ref_id = (int) $res["ref_id"];
+        }
+    }
+
+    public function getTitle(): string
+    {
+        if (parent::getTitle() !== "__TalkTemplateAdministration") {
+            return parent::getTitle();
+        } else {
+            return $this->lng->txt("objs_tala");
         }
     }
 
@@ -90,7 +99,7 @@ final class ilObjTalkTemplateAdministration extends ilContainer
      */
     public static function _exists($a_id, $a_reference = false, $type = null)
     {
-        return parent::_exists($a_id, $a_reference, "etal");
+        return parent::_exists($a_id, $a_reference, "tala");
     }
 
     /**
