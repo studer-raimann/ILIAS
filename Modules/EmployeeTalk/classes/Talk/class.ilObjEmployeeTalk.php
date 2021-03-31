@@ -6,6 +6,8 @@ use ILIAS\Modules\EmployeeTalk\Talk\DAO\EmployeeTalk;
 
 final class ilObjEmployeeTalk extends ilObject
 {
+    const TYPE = 'etal';
+
     /**
      * @var int
      */
@@ -31,7 +33,7 @@ final class ilObjEmployeeTalk extends ilObject
      */
     public function __construct($a_id = 0, $a_call_by_reference = true)
     {
-        $this->setType('etal');
+        $this->setType(self::TYPE);
 
         $this->repository = new \ILIAS\Modules\EmployeeTalk\Talk\Repository\IliasDBEmployeeTalkRepository($GLOBALS['DIC']->database());
         $datetime = new ilDateTime(1, IL_CAL_UNIX);
@@ -56,11 +58,12 @@ final class ilObjEmployeeTalk extends ilObject
 
         $app = new ilCalendarAppointmentTemplate($this->getId());
         $app->setTitle($this->getTitle());
-        $app->setSubtitle('etal_cal_meeting');
-        $app->setTranslationType(IL_CAL_TRANSLATION_SYSTEM);
+        $app->setSubtitle('');
+        $app->setTranslationType(IL_CAL_TRANSLATION_NONE);
         $app->setDescription($this->getLongDescription());
         $app->setStart($this->data->getStartDate());
         $app->setEnd($this->data->getEndDate());
+        $app->setLocation($this->data->getLocation());
         $apps[] = $app;
 
         /**
@@ -78,18 +81,21 @@ final class ilObjEmployeeTalk extends ilObject
         );
     }
 
+
+
     public function update()
     {
         parent::update();
         $this->repository->update($this->data);
 
-        $app = new ilCalendarAppointmentTemplate($this->getId());
+        $app = new ilCalendarAppointmentTemplate($this->getParent()->getId());
         $app->setTitle($this->getTitle());
-        $app->setSubtitle('etal_cal_meeting');
-        $app->setTranslationType(IL_CAL_TRANSLATION_SYSTEM);
+        $app->setSubtitle($this->getParent()->getTitle());
+        $app->setTranslationType(IL_CAL_TRANSLATION_NONE);
         $app->setDescription($this->getLongDescription());
         $app->setStart($this->data->getStartDate());
         $app->setEnd($this->data->getEndDate());
+        $app->setLocation($this->data->getLocation());
         $apps[] = $app;
 
         /**
@@ -97,14 +103,14 @@ final class ilObjEmployeeTalk extends ilObject
          */
         $container = $GLOBALS['DIC'];
 
-        /*$container->event()->raise(
+        $container->event()->raise(
             'Modules/EmployeeTalk',
             'update',
             ['object' => $this,
                   'obj_id' => $this->getId(),
                   'appointments' => $apps
             ]
-        );*/
+        );
     }
 
     /**
@@ -142,9 +148,9 @@ final class ilObjEmployeeTalk extends ilObject
         }
     }
 
-    public function getParent() : ilObjTalkTemplate
+    public function getParent() : ilObjEmployeeTalkSeries
     {
-        return new ilObjTalkTemplate($this->tree->getParentId($this->ref_id), true);
+        return new ilObjEmployeeTalkSeries($this->tree->getParentId($this->getRefId()), true);
     }
 
     /**
@@ -173,9 +179,10 @@ final class ilObjEmployeeTalk extends ilObject
         $container->event()->raise(
             'Modules/EmployeeTalk',
             'delete',
-            ['object' => $this,
-                  'obj_id' => $this->getId(),
-                  'appointments' => []
+            [
+                'object' => $this,
+                'obj_id' => $this->getId(),
+                'appointments' => []
             ]
         );
 

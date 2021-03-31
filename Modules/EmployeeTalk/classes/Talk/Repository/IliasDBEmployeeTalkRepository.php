@@ -91,15 +91,15 @@ final class IliasDBEmployeeTalkRepository implements EmployeeTalkRepository
         $statement = $statement->execute([$iliasUserId]);
 
         $talks = [];
-        while (($result = $statement->fetchObject()) !== null) {
+        while (($result = $statement->fetchObject()) !== false) {
             $talks[] = new EmployeeTalk(
                 intval($result->object_id),
                 new ilDateTime($result->start_date, IL_CAL_UNIX, ilTimeZone::UTC),
                 new ilDateTime($result->end_date, IL_CAL_UNIX, ilTimeZone::UTC),
                 boolval($result->all_day),
-                $result->series_id,
+                $result->series_id ?? '',
                 $result->location ?? '',
-                $result->employee,
+                intval($result->employee),
                 boolval($result->completed)
             );
         }
@@ -115,15 +115,15 @@ final class IliasDBEmployeeTalkRepository implements EmployeeTalkRepository
         $statement = $statement->execute([$seriesId]);
 
         $talks = [];
-        while (($result = $statement->fetchObject()) !== null) {
+        while (($result = $statement->fetchObject()) !== false) {
             $talks[] = new EmployeeTalk(
                 intval($result->object_id),
                 new ilDateTime($result->start_date, IL_CAL_UNIX, ilTimeZone::UTC),
                 new ilDateTime($result->end_date, IL_CAL_UNIX, ilTimeZone::UTC),
                 boolval($result->all_day),
-                $result->series_id,
+                $result->series_id ?? '',
                 $result->location ?? '',
-                $result->employee,
+                intval($result->employee),
                 boolval($result->completed)
             );
         }

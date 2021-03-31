@@ -256,10 +256,6 @@ final class ilObjEmployeeTalkGUI extends ilObjectGUI
         $completed->setChecked($data->isCompleted());
         $a_form->addItem($completed);
 
-        $header = new ilFormSectionHeaderGUI();
-        $header->setTitle("Date");
-        $a_form->addItem($header);
-
         $this->container->ctrl()->setParameterByClass(strtolower(ilEmployeeTalkAppointmentGUI::class), 'ref_id', $this->ref_id);
 
         $btnChangeThis = ilLinkButton::getInstance();
@@ -362,11 +358,10 @@ final class ilObjEmployeeTalkGUI extends ilObjectGUI
 
     private function initMetaDataForm(ilPropertyFormGUI $form): ilAdvancedMDRecordGUI {
         /**
-         * @var ilObjTalkTemplate $template
+         * @var ilObjEmployeeTalkSeries $series
          */
-        $template = $this->object->getParent();
-        $md = new ilAdvancedMDRecordGUI(ilAdvancedMDRecordGUI::MODE_EDITOR, $template->getType(), $template->getId(), $this->object->getType(), $this->object->getId());
-        //$md->setRefId($template->getRefId());
+        $series = $this->object->getParent();
+        $md = new ilAdvancedMDRecordGUI(ilAdvancedMDRecordGUI::MODE_EDITOR, $series->getType(), $series->getId(), $this->object->getType(), $this->object->getId());
         $md->setPropertyForm($form);
         return $md;
     }
@@ -524,5 +519,19 @@ final class ilObjEmployeeTalkGUI extends ilObjectGUI
         }
 
         return true;
+    }
+
+    public static function _goto(string $refId): void {
+        /**
+         * @var \ILIAS\DI\Container $container
+         */
+        $container = $GLOBALS['DIC'];
+        $container->ctrl()->setParameterByClass(strtolower(self::class), 'ref_id', $refId);
+        $container->ctrl()->redirectByClass([
+            strtolower(ilDashboardGUI::class),
+            strtolower(ilMyStaffGUI::class),
+            strtolower(ilEmployeeTalkMyStaffListGUI::class),
+            strtolower(self::class),
+        ], ControlFlowCommand::INDEX);
     }
 }

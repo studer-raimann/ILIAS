@@ -62,6 +62,9 @@ final class ilEmployeeTalkMyStaffListGUI implements ControlFlowCommandHandler
         $nextClass = $this->controlFlow->getNextClass();
         $command = $this->controlFlow->getCmd(ControlFlowCommand::DEFAULT);
         switch ($nextClass) {
+            case strtolower(ilObjEmployeeTalkSeriesGUI::class):
+                $gui = new ilObjEmployeeTalkSeriesGUI();
+                return $this->controlFlow->forwardCommand($gui);
             case strtolower(ilObjEmployeeTalkGUI::class):
                 $gui = new ilObjEmployeeTalkGUI();
                 return $this->controlFlow->forwardCommand($gui);
@@ -141,14 +144,15 @@ final class ilEmployeeTalkMyStaffListGUI implements ControlFlowCommandHandler
                 ? ilUtil::img($path, "") . " "
                 : "";
 
-            $base_url = $this->controlFlow->getLinkTargetByClass(strtolower(ilObjEmployeeTalkGUI::class), ControlFlowCommand::CREATE);
-            $url = $this->controlFlow->appendRequestTokenParameterString($base_url . "&new_type=etal");
+            $base_url = $this->controlFlow->getLinkTargetByClass(strtolower(ilObjEmployeeTalkSeriesGUI::class), ControlFlowCommand::CREATE);
+            $url = $this->controlFlow->appendRequestTokenParameterString($base_url . "&new_type=" . ilObjEmployeeTalkSeries::TYPE);
             $refId = ilObject::_getAllReferences(intval($item['obj_id']));
 
             // Templates only have one ref id
-            $url .= "&ref_id=" . array_pop($refId);
+            $url .= "&template=" . array_pop($refId);
+            $url .= "&ref_id=" . ilObjTalkTemplateAdministration::getRootRefId();
 
-            $ttip = ilHelp::getObjCreationTooltipText("etal");
+            $ttip = ilHelp::getObjCreationTooltipText("tals");
 
             $gl->addEntry(
                 $icon . $item["title"],
