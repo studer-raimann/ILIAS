@@ -2,16 +2,15 @@
 declare(strict_types=1);
 
 /**
- * Class ilObjOrgUnit GUI class
- * @author            : Oskar Truffer <ot@studer-raimann.ch>
- * @author            : Martin Studer <ms@studer-raimann.ch>
- * @author            : Stefan Wanzenried <sw@studer-raimann.ch>
+ * Class ilObjTalkTemplateAdministrationGUI GUI class
+ * @author            : Nicolas Schaefli <ns@studer-raimann.ch>
  * @ilCtrl_IsCalledBy ilObjTalkTemplateAdministrationGUI: ilAdministrationGUI
  * @ilCtrl_Calls      ilObjTalkTemplateAdministrationGUI: ilCommonActionDispatcherGUI
  * @ilCtrl_Calls      ilObjTalkTemplateAdministrationGUI: ilColumnGUI, ilObjectCopyGUI, ilUserTableGUI
  * @ilCtrl_Calls      ilObjTalkTemplateAdministrationGUI: ilPermissionGUI
  * @ilCtrl_Calls      ilObjTalkTemplateAdministrationGUI: ilInfoScreenGUI
  * @ilCtrl_Calls      ilObjTalkTemplateAdministrationGUI: ilObjTalkTemplateGUI
+ * @ilCtrl_Calls      ilObjTalkTemplateAdministrationGUI: ilObjEmployeeTalkSeriesGUI
  */
 final class ilObjTalkTemplateAdministrationGUI extends ilContainerGUI
 {
@@ -78,6 +77,7 @@ final class ilObjTalkTemplateAdministrationGUI extends ilContainerGUI
         $gui = new ilObjectAddNewItemGUI($this->object->getRefId());
         $gui->setMode(ilObjectDefinition::MODE_ADMINISTRATION);
         $gui->setCreationUrl($this->ctrl->getLinkTargetByClass(strtolower(ilObjTalkTemplateGUI::class), 'create'));
+        $gui->setDisabledObjectTypes([ilObjEmployeeTalkSeries::TYPE]);
         $gui->render();
     }
 
@@ -93,6 +93,16 @@ final class ilObjTalkTemplateAdministrationGUI extends ilContainerGUI
         }
 
         parent::renderObject();
+    }
+
+    /**
+     * Filter the view by talk templates because the talk series objects are also children of the talk template administration.
+     *
+     * @return ilContainerContentGUI
+     */
+    public function getContentGUI(): ilContainerContentGUI
+    {
+        return new ilContainerByTypeContentGUI($this, new ilContainerUserFilter(['std_' . ilContainerFilterField::STD_FIELD_OBJECT_TYPE => ilObjTalkTemplate::TYPE]));
     }
 
     public function getTabs(): void

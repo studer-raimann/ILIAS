@@ -72,7 +72,8 @@ final class ilObjTalkTemplateAdministration extends ilContainer
             $ilDB = $DIC['ilDB'];
             $q = "SELECT o.obj_id, r.ref_id FROM object_data o
 			INNER JOIN object_reference r ON r.obj_id = o.obj_id
-			WHERE title = " . $ilDB->quote('__TalkTemplateAdministration', 'text');
+			WHERE title = '__TalkTemplateAdministration'
+			LIMIT 1";
             $set = $ilDB->query($q);
             $res = $ilDB->fetchAssoc($set);
             self::$root_id = (int) $res["obj_id"];
