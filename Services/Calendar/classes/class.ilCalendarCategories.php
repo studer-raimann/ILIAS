@@ -531,9 +531,6 @@ class ilCalendarCategories
     {
         global $DIC;
 
-        $rbacsystem = $DIC['rbacsystem'];
-        
-        
         $this->readPublicCalendars();
         $this->readPrivateCalendars();
         $this->readConsultationHoursCalendar();
@@ -542,6 +539,14 @@ class ilCalendarCategories
         include_once('./Services/Membership/classes/class.ilParticipants.php');
         $this->readSelectedCategories(ilParticipants::_getMembershipByType($this->user_id, 'crs'));
         $this->readSelectedCategories(ilParticipants::_getMembershipByType($this->user_id, 'grp'));
+
+        $repository = new \ILIAS\Modules\EmployeeTalk\TalkSeries\Repository\IliasDBEmployeeTalkSeriesRepository($DIC->user(), $DIC->database());
+        $talks = $repository->findByOwnerAndEmployee();
+        $talkIds = array_map(function(ilObjEmployeeTalkSeries $item){
+            return $item->getId();
+        }, $talks);
+
+        $this->readSelectedCategories($talkIds);
         
         $this->addSubitemCalendars();
     }
@@ -1056,7 +1061,11 @@ class ilCalendarCategories
         
         $course_ids = array();
         foreach ($this->categories as $cat_id) {
-            if ($this->categories_info[$cat_id]['obj_type'] == 'crs' or $this->categories_info[$cat_id]['obj_type'] == 'grp') {
+            if (
+                $this->categories_info[$cat_id]['obj_type'] === 'crs' ||
+                $this->categories_info[$cat_id]['obj_type'] === 'grp' ||
+                $this->categories_info[$cat_id]['obj_type'] === 'tals'
+            ) {
                 $course_ids[] = $this->categories_info[$cat_id]['obj_id'];
             }
         }
@@ -1067,8 +1076,8 @@ class ilCalendarCategories
             "JOIN object_reference or2 ON t.child = or2.ref_id " .
             "JOIN object_data od2 ON or2.obj_id = od2.obj_id " .
             "JOIN cal_categories cc ON od2.obj_id = cc.obj_id " .
-            "WHERE " . $ilDB->in('od2.type', array('sess','exc'), false, 'text') .
-            "AND (od1.type = 'crs' OR od1.type = 'grp') " .
+            "WHERE " . $ilDB->in('od2.type', array('sess','exc', 'etal'), false, 'text') .
+            "AND (od1.type = 'crs' OR od1.type = 'grp' OR od1.type = 'tals') " .
             "AND " . $ilDB->in('od1.obj_id', $course_ids, false, 'integer') . ' ' .
             "AND or2.deleted IS NULL";
         
@@ -1090,7 +1099,9 @@ class ilCalendarCategories
         foreach ($this->categories as $cat_id) {
             if (
                 ($this->categories_info[$cat_id]['obj_type'] == 'crs' ||
-                $this->categories_info[$cat_id]['obj_type'] == 'grp') &&
+                $this->categories_info[$cat_id]['obj_type'] == 'grp' ||
+                $this->categories_info[$cat_id]['obj_type'] == 'tals'
+                ) &&
                 isset($this->categories_info[$cat_id]['obj_id']) &&
                 isset($course_sessions[$this->categories_info[$cat_id]['obj_id']]) &&
                 is_array($course_sessions[$this->categories_info[$cat_id]['obj_id']])) {
