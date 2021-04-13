@@ -60,15 +60,6 @@ final class ilObjEmployeeTalkSeriesGUI extends ilContainerGUI
                 //});
                 $this->container->ctrl()->forwardCommand($repo);
                 break;
-            case strtolower(ilEmployeeTalkAppointmentGUI::class):
-                $appointmentGUI = new ilEmployeeTalkAppointmentGUI(
-                    $this->tpl,
-                    $this->lng,
-                    $this->ctrl,
-                    $this->container->tabs()
-                );
-                $this->container->ctrl()->forwardCommand($appointmentGUI);
-                break;
             default:
                 return parent::executeCommand();
         }
@@ -308,6 +299,8 @@ final class ilObjEmployeeTalkSeriesGUI extends ilContainerGUI
         return $rec;
     }
 
+
+
     private function loadEtalkData(): EmployeeTalk {
 
         $location = $this->form->getInput('etal_location');
@@ -330,6 +323,7 @@ final class ilObjEmployeeTalkSeriesGUI extends ilContainerGUI
             '',
             $location ?? '',
             ilObjUser::getUserIdByLogin($employee),
+            false,
             false
         );
     }
