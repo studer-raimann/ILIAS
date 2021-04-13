@@ -1,6 +1,8 @@
 <?php
 
 use ILIAS\MyStaff\ilMyStaffAccess;
+use ILIAS\EmployeeTalk\UI\ControlFlowCommand;
+use ILIAS\Modules\EmployeeTalk\Talk\Repository\IliasDBEmployeeTalkRepository;
 
 /**
  * Class ilMStShowUserGUI
@@ -19,6 +21,7 @@ class ilMStShowUserGUI
     const TAB_SHOW_COURSES = 'show_courses';
     const TAB_SHOW_CERTIFICATES = 'show_certificates';
     const TAB_SHOW_COMPETENCES = 'show_competences';
+    const TAB_SHOW_TALKS = 'show_talks';
 
     /**
      * @var int
@@ -100,6 +103,19 @@ class ilMStShowUserGUI
             case strtolower(ilMStShowUserCompetencesGUI::class):
                 $this->addTabs(self::TAB_SHOW_COMPETENCES);
                 $gui = new ilMStShowUserCompetencesGUI($DIC);
+                $DIC->ctrl()->forwardCommand($gui);
+                break;
+            case strtolower(ilEmployeeTalkMyStaffUserGUI::class):
+                $this->addTabs(self::TAB_SHOW_TALKS);
+                $gui = new ilEmployeeTalkMyStaffUserGUI(
+                    ilMyStaffAccess::getInstance(),
+                    $DIC->ctrl(),
+                    $DIC->language(),
+                    $DIC->http()->request(),
+                    $DIC->ui()->mainTemplate(),
+                    $DIC->tabs(),
+                    new IliasDBEmployeeTalkRepository($DIC->database())
+                );
                 $DIC->ctrl()->forwardCommand($gui);
                 break;
             default:
@@ -199,6 +215,15 @@ class ilMStShowUserGUI
             $DIC->ctrl()->setParameterByClass(self::class, 'usr_id', $this->usr_id);
             $public_profile_url = $DIC->ctrl()->getLinkTargetByClass(self::class, self::CMD_SHOW_USER);
             $DIC->tabs()->addTab(self::TAB_SHOW_USER, $DIC->language()->txt('public_profile'), $public_profile_url);
+        }
+
+        if ($this->access->hasCurrentUserAccessToMyStaff()) {
+            $DIC->ctrl()->setParameterByClass(strtolower(self::class), 'usr_id', $this->usr_id);
+            $DIC->tabs()->addTab(self::TAB_SHOW_TALKS, $DIC->language()->txt('etal_talks'), $DIC->ctrl()->getLinkTargetByClass([
+                strtolower(ilMyStaffGUI::class),
+                strtolower(self::class),
+                strtolower(ilEmployeeTalkMyStaffUserGUI::class)
+            ], ControlFlowCommand::INDEX));
         }
 
         if ($active_tab_id) {
