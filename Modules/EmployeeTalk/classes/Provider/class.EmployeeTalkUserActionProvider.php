@@ -39,12 +39,12 @@ final class EmployeeTalkUserActionProvider extends ilUserActionProvider
         $jumpToUserTalkList->setType(self::JUMP_TO_USER_TALK_LIST);
         $jumpToUserTalkList->setText($this->language->txt('mm_org_etal'));
         $jumpToUserTalkList->setHref($this->controlFlow->getLinkTargetByClass([
-            ilDashboardGUI::class,
-            ilMyStaffGUI::class,
-            ilEmployeeTalkMyStaffListGUI::class,
-        ], ControlFlowCommand::INDEX));
-        $jumpToUserTalkList->setData([]);
-        // $jumpToUserTalkList->setData(['user_id' => ]);
+            strtolower(ilDashboardGUI::class),
+            strtolower(ilMyStaffGUI::class),
+            strtolower(ilMStShowUserGUI::class),
+            strtolower(ilEmployeeTalkMyStaffUserGUI::class),
+        ], ControlFlowCommand::INDEX) . "&usr_id=$a_target_user");
+
         $actions->addAction($jumpToUserTalkList);
 
         return $actions;
