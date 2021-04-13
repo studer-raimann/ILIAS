@@ -25,4 +25,10 @@ interface EmployeeTalkRepository
     function create(EmployeeTalk $talk): EmployeeTalk;
     function update(EmployeeTalk $talk): EmployeeTalk;
     function delete(EmployeeTalk $talk): void;
+    /**
+     * @param int[] $employees
+     *
+     * @return EmployeeTalk[]
+     */
+    function findByEmployees(array $employees): array;
 }

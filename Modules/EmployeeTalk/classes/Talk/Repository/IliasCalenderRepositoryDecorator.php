@@ -52,4 +52,8 @@ final class IliasCalenderRepositoryDecorator implements EmployeeTalkRepository
         $this->repository->delete($talk);
     }
 
+    function findByEmployees(array $employees) : array
+    {
+        return $this->repository->findByEmployees($employees);
+    }
 }

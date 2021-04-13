@@ -48,8 +48,19 @@ final class ilObjEmployeeTalkGUI extends ilObjectGUI
         $this->container->ui()->mainTemplate()->setTitle($this->container->language()->txt('mst_my_staff'));
     }
 
+    private function checkAccessOrFail(): void
+    {
+        $access = \ILIAS\MyStaff\ilMyStaffAccess::getInstance();
+        if (!$access->hasCurrentUserAccessToMyStaff() || !$access->hasCurrentUserAccessToUser($this->object->getData()->getEmployee())) {
+            ilUtil::sendFailure($this->lng->txt("permission_denied"), true);
+            $this->ctrl->redirectByClass(ilDashboardGUI::class, "");
+        }
+    }
+
     public function executeCommand() : bool
     {
+        $this->checkAccessOrFail();
+
         // determine next class in the call structure
         $next_class = $this->container->ctrl()->getNextClass($this);
 
@@ -79,7 +90,8 @@ final class ilObjEmployeeTalkGUI extends ilObjectGUI
                     $this->tpl,
                     $this->lng,
                     $this->ctrl,
-                    $this->container->tabs()
+                    $this->container->tabs(),
+                    $this->object
                 );
                 $this->container->ctrl()->forwardCommand($appointmentGUI);
                 break;
@@ -89,6 +101,41 @@ final class ilObjEmployeeTalkGUI extends ilObjectGUI
 
         //$this->container->ui()->mainTemplate()->printToStdout();
         return true;
+    }
+
+    public function editObject()
+    {
+        $this->tabs_gui->activateTab("settings");
+
+        $form = $this->initEditForm();
+        $values = $this->getEditFormValues();
+        if ($values) {
+            $form->setValuesByArray($values);
+        }
+
+        $this->addExternalEditFormCustom($form);
+
+        $this->tpl->setContent($form->getHTML());
+    }
+
+    public function updateObject()
+    {
+        $form = $this->initEditForm();
+        if ($form->checkInput() &&
+            $this->validateCustom($form)) {
+            $this->object->setTitle($form->getInput("title"));
+            $this->object->setDescription($form->getInput("desc"));
+            $this->updateCustom($form);
+            $this->object->update();
+
+            $this->afterUpdate();
+            return;
+        }
+
+        // display form again to correct errors
+        $this->tabs_gui->activateTab("settings");
+        $form->setValuesByPost();
+        $this->tpl->setContent($form->getHtml());
     }
 
     public function confirmedDeleteObject(): void
@@ -321,15 +368,9 @@ final class ilObjEmployeeTalkGUI extends ilObjectGUI
 
     public function getTabs(): void
     {
-        $read_access_ref_id = $this->rbacsystem->checkAccess('visible,read', $this->object->getRefId());
-        if ($read_access_ref_id) {
-            $this->tabs_gui->addTab('view_content', $this->lng->txt("content"), $this->ctrl->getLinkTarget($this, "view"));
-            $this->tabs_gui->addTab("info_short", "Info", $this->ctrl->getLinkTargetByClass(strtolower(ilInfoScreenGUI::class), "showSummary"));
-        }
-
-        if ($this->rbacsystem->checkAccess('write', '', $this->object->getRefId())) {
-            $this->tabs_gui->addTab('settings', $this->lng->txt("settings"), $this->ctrl->getLinkTarget($this, "edit"));
-        }
+        $this->tabs_gui->addTab('view_content', $this->lng->txt("content"), $this->ctrl->getLinkTarget($this, "view"));
+        $this->tabs_gui->addTab("info_short", "Info", $this->ctrl->getLinkTargetByClass(strtolower(ilInfoScreenGUI::class), "showSummary"));
+        $this->tabs_gui->addTab('settings', $this->lng->txt("settings"), $this->ctrl->getLinkTarget($this, "edit"));
 
         parent::getTabs();
     }

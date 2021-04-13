@@ -4204,3 +4204,30 @@ try {
     throw $exception;
 }
 ?>
+<#5652>
+<?php
+try {
+    if ($ilDB->supportsTransactions()) {
+        $ilDB->beginTransaction();
+    }
+    $etalTableName = 'etal_data';
+
+    $ilDB->addTableColumn($etalTableName, 'standalone_date',
+        [
+                'type' => 'integer',
+                'length' => 1,
+                'notnull' => true,
+                'default' => 0
+        ]
+    );
+
+    if ($ilDB->supportsTransactions()) {
+        $ilDB->commit();
+    }
+} catch (\Exception $exception) {
+    if ($ilDB->supportsTransactions()) {
+        $ilDB->rollback();
+    }
+    throw $exception;
+}
+?>

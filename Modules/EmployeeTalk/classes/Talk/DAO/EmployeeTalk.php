@@ -48,6 +48,11 @@ final class EmployeeTalk
     private $completed;
 
     /**
+     * @var bool $standalone
+     */
+    private $standalone;
+
+    /**
      * EmployeeTalk constructor.
      * @param int $objectId
      * @param ilDateTime $startDate
@@ -57,6 +62,7 @@ final class EmployeeTalk
      * @param string $location
      * @param int $employee
      * @param bool $completed
+     * @param bool $standalone
      */
     public function __construct(
         int $objectId,
@@ -66,7 +72,8 @@ final class EmployeeTalk
         string $seriesId,
         string $location,
         int $employee,
-        bool $completed
+        bool $completed,
+        bool $standalone
     ) {
         $this->objectId = $objectId;
         $this->startDate = $startDate;
@@ -76,6 +83,7 @@ final class EmployeeTalk
         $this->location = $location;
         $this->employee = $employee;
         $this->completed = $completed;
+        $this->standalone = $standalone;
     }
 
     /**
@@ -221,4 +229,24 @@ final class EmployeeTalk
         $this->completed = $completed;
         return $this;
     }
+
+    /**
+     * @return bool
+     */
+    public function isStandalone() : bool
+    {
+        return $this->standalone;
+    }
+
+    /**
+     * @param bool $standalone
+     * @return EmployeeTalk
+     */
+    public function setStandalone(bool $standalone) : EmployeeTalk
+    {
+        $this->standalone = $standalone;
+        return $this;
+    }
+
+
 }
