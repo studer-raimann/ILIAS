@@ -16237,6 +16237,9 @@ etal#:#change_date_of_talk#:#Change date of talk
 etal#:#change_date_of_series#:#Change date of talk series
 etal#:#etal_status_pending#:#Pending
 etal#:#etal_status_completed#:#Completed
+etal#:#etal_status_all#:#All
 etal#:#tals_add#:#Add Talks
 etal#:#tals_new#:#New Talks
 etal#:#cal_type_tals#:#Talks
+etal#:#etal_date_appointment_edit#:#Date of Talk
+etal#:#etal_date_series_edit#:#Date of Talk Series
