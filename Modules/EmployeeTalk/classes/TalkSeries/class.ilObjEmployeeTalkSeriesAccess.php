@@ -44,7 +44,10 @@ final class ilObjEmployeeTalkSeriesAccess extends ilObjectAccess
         return $commands;
     }
 
-
+    public static function _isOffline($a_obj_id)
+    {
+        return false;
+    }
 
     /**
      * @param string $a_target check whether goto script will succeed
