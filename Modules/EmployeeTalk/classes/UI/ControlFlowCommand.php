@@ -8,8 +8,8 @@ interface ControlFlowCommand
     const DEFAULT = "view";
     const INDEX = "view";
 
-    const CREATE_INDEX = "create_index";
     const CREATE = "create";
+    const SAVE = "save";
 
     const UPDATE_INDEX = "update";
     const UPDATE = "edit";
