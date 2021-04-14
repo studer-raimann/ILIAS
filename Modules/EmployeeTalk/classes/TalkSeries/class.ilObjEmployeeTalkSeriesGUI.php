@@ -5,6 +5,7 @@ use ILIAS\EmployeeTalk\UI\ControlFlowCommand;
 use OrgUnit\User\ilOrgUnitUser;
 use ILIAS\Modules\EmployeeTalk\Talk\DAO\EmployeeTalk;
 use ILIAS\Modules\EmployeeTalk\Talk\EmployeeTalkPeriod;
+use ILIAS\EmployeeTalk\Service\EmployeeTalkEmailNotificationService;
 
 /**
  * Class ilObjEmployeeTalkGUI
@@ -46,26 +47,89 @@ final class ilObjEmployeeTalkSeriesGUI extends ilContainerGUI
         $this->container->ui()->mainTemplate()->setTitle($this->container->language()->txt('mst_my_staff'));
     }
 
+    private function checkAccessOrFail(): void
+    {
+        $access = \ILIAS\MyStaff\ilMyStaffAccess::getInstance();
+        if (!$access->hasCurrentUserAccessToMyStaff()) {
+            ilUtil::sendFailure($this->lng->txt("permission_denied"), true);
+            $this->ctrl->redirectByClass(ilDashboardGUI::class, "");
+        }
+
+        $nextClass = $this->container->ctrl()->getNextClass($this);
+        $command = $this->container->ctrl()->getCmd();
+
+        // Stop User from creating talks with employees which dont belong to the respective orgunit
+        if ($nextClass === '' && $command === 'save') {
+            $userName = filter_input(INPUT_POST, 'employee', FILTER_CALLBACK, function($input) {
+                if (ilObjUser::_loginExists($input)) {
+                    return $input;
+                }
+
+                return null;
+            });
+
+            if (is_null($userName)) {
+                ilUtil::sendFailure($this->lng->txt("permission_denied"), true);
+                $this->ctrl->redirectByClass(strtolower(ilEmployeeTalkMyStaffListGUI::class), ControlFlowCommand::DEFAULT);
+            }
+
+            $userId = ilObjUser::_lookupId($userName);
+            if (!$access->hasCurrentUserAccessToUser($userId)) {
+                ilUtil::sendFailure($this->lng->txt("permission_denied"), true);
+                $this->ctrl->redirectByClass(strtolower(ilEmployeeTalkMyStaffListGUI::class), ControlFlowCommand::DEFAULT);
+            }
+        }
+    }
+
     public function executeCommand() : bool
     {
+        $this->checkAccessOrFail();
+
         // determine next class in the call structure
         $next_class = $this->container->ctrl()->getNextClass($this);
 
         switch($next_class) {
             case strtolower(ilRepositorySearchGUI::class):
                 $repo = new ilRepositorySearchGUI();
-                //$repo->addUserAccessFilterCallable(function () {
-                //    $orgUnitUser = ilOrgUnitUser::getInstanceById($this->container->user()->getId());
-                //    $orgUnitUser->addPositions()                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ;
-                //});
+                $repo->addUserAccessFilterCallable(function ($userIds) {
+
+                    /**
+                     * @var ilAccess $access
+                     */
+                    $access = $GLOBALS['DIC']->access();
+
+                    //this method does not check permissions (ILIAS 6.7)
+                    return $access->filterUserIdsForUsersPositionsAndPermission(
+                        $userIds,
+                        $this->user->getId(),
+                        ''
+                    );
+                });
                 $this->container->ctrl()->forwardCommand($repo);
                 break;
             default:
                 return parent::executeCommand();
         }
 
-        //$this->container->ui()->mainTemplate()->printToStdout();
         return true;
+    }
+
+    /**
+     * Talk Series does not use RBAC and therefore does not require the usual permission checks.
+     * Talk series it self can no longer be edited after creation.
+     *
+     * @param string $a_perm
+     * @param string $a_cmd
+     * @param string $a_type
+     * @param null   $a_ref_id
+     * @return bool
+     */
+    protected function checkPermissionBool($a_perm, $a_cmd = "", $a_type = "", $a_ref_id = null)
+    {
+        if ($a_perm === 'create') {
+            return true;
+        }
+        return false;
     }
 
     public function confirmedDeleteObject(): void
@@ -108,6 +172,19 @@ final class ilObjEmployeeTalkSeriesGUI extends ilContainerGUI
         //TODO: Fix double redirect bug ...
         ilUtil::sendSuccess($this->lng->txt("object_added"), true);
         $this->ctrl->redirectByClass(strtolower(ilEmployeeTalkMyStaffListGUI::class), ControlFlowCommand::DEFAULT, "", false);
+    }
+
+    protected function validateCustom(ilPropertyFormGUI $a_form): bool
+    {
+        /**
+         * @var ilTextInputGUI $userName
+         */
+        $userName = $a_form->getInput('employee');
+        if (!ilObjUser::_loginExists($userName->getValue())) {
+            $userName->setValidationFailureMessage("etal_invalid_user");
+            return false;
+        }
+        return parent::validateCustom($a_form); // TODO: Change the autogenerated stub
     }
 
     protected function initCreateForm($a_new_type)
@@ -164,6 +241,7 @@ final class ilObjEmployeeTalkSeriesGUI extends ilContainerGUI
             strtolower(self::class),
             strtolower(ilRepositorySearchGUI::class)
         ], 'doUserAutoComplete', '', true));
+
         $form->addItem($login);
 
         $form = $this->initDidacticTemplate($form);
@@ -196,6 +274,36 @@ final class ilObjEmployeeTalkSeriesGUI extends ilContainerGUI
     public function getAdminTabs()
     {
 
+    }
+
+    private function sendNotification(ilObjEmployeeTalk $talk): void {
+        return;
+        $data = $talk->getData();
+        $send_user = new ilObjUser($talk->getOwner());
+        $user = new ilObjUser($data->getEmployee());
+        $vcal_sender = new EmployeeTalkEmailNotificationService(
+            $user->getEmail(),
+            $send_user->getId(),
+            EmployeeTalkEmailNotificationService::METHOD_REQUEST,
+            md5('etal'. $talk->getId()),
+            $data->getStartDate(),
+            $data->getEndDate(),
+            0//$offering->getSaveSequence()
+        );
+        $vcal_sender->send();
+        $vcal_sender->setLocation($data->getLocation());
+
+        //Reformat Contact Administrative...
+        $arr_contact_administrative = explode(" ",$offering->getContactAdministrative());
+        if(count($arr_contact_administrative) > 0) {
+            $offering->setContactAdministrative($arr_contact_administrative[1]." ".$arr_contact_administrative[0]." ".$arr_contact_administrative[2]);
+        }
+        $placeholders = array(
+            'user' => $user,
+            'offering' => $offering,
+        );
+        //$sr_notification = srNotification::getInstanceByName('appointment');
+        //$sr_notification->send($vcal_sender, $placeholders, $user->getLanguage());
     }
 
     /**
@@ -340,11 +448,6 @@ final class ilObjEmployeeTalkSeriesGUI extends ilContainerGUI
         $template->cloneMetaData($talk);
         $talk->update();
 
-        //Copy enabled adv md records for tals
-        //$activeRecords = ilAdvancedMDRecord::_getActivatedRecordsByObjectType(ilObjTalkTemplate::TYPE, ilObjEmployeeTalk::TYPE);
-
-        //$mdSelection = ilAdvancedMDRecord::getObjRecSelection($template->getId(), ilObjEmployeeTalk::TYPE);
-        //ilAdvancedMDRecord::saveObjRecSelection($talk->getId(), ilObjEmployeeTalk::TYPE, $mdSelection);
         ilAdvancedMDValues::_cloneValues(
             $template->getId(),
             $talk->getId(),
@@ -391,6 +494,7 @@ final class ilObjEmployeeTalkSeriesGUI extends ilContainerGUI
         $data->setObjectId($talkSession->getId());
         $talkSession->setData($data);
         $talkSession->update();
+        $this->sendNotification($talkSession);
 
         if (!$recurrence->getFrequenceType()) {
             return true;
@@ -413,6 +517,7 @@ final class ilObjEmployeeTalkSeriesGUI extends ilContainerGUI
             $cloneData->setEndDate(new ilDateTime($endDate, IL_CAL_UNIX));
             $cloneObject->setData($cloneData);
             $cloneObject->update();
+            $this->sendNotification($talkSession);
         }
 
         return true;
