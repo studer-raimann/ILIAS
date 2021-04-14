@@ -60,13 +60,13 @@ final class ilObjEmployeeTalkSeriesGUI extends ilContainerGUI
 
         // Stop User from creating talks with employees which dont belong to the respective orgunit
         if ($nextClass === '' && $command === 'save') {
-            $userName = filter_input(INPUT_POST, 'employee', FILTER_CALLBACK, function($input) {
+            $userName = filter_input(INPUT_POST, 'etal_employee', FILTER_CALLBACK, ['options' => function($input) {
                 if (ilObjUser::_loginExists($input)) {
                     return $input;
                 }
 
                 return null;
-            });
+            }]);
 
             if (is_null($userName)) {
                 ilUtil::sendFailure($this->lng->txt("permission_denied"), true);
@@ -179,7 +179,7 @@ final class ilObjEmployeeTalkSeriesGUI extends ilContainerGUI
         /**
          * @var ilTextInputGUI $userName
          */
-        $userName = $a_form->getInput('employee');
+        $userName = $a_form->getInput('etal_employee');
         if (!ilObjUser::_loginExists($userName->getValue())) {
             $userName->setValidationFailureMessage("etal_invalid_user");
             return false;
