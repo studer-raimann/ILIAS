@@ -24,11 +24,40 @@ final class IliasDBEmployeeTalkRepository implements EmployeeTalkRepository
         $this->database = $database;
     }
 
+    function findAll(): array {
+        $statement = $this->database->prepare('SELECT * FROM etal_data;');
+        $statement = $statement->execute();
+        $talks = [];
+        while (($result = $statement->fetchObject()) !== false) {
+            $talks[] = $this->parseFromStdClass($result);
+        }
+
+        $this->database->free($statement);
+
+        return $talks;
+    }
+
     function findByEmployees(array $employees): array {
         $statement = $this->database->prepare('SELECT * FROM etal_data AS talk 
             WHERE ' . $this->database->in('employee', $employees, false, "integer")
             );
         $statement = $statement->execute();
+        $talks = [];
+        while (($result = $statement->fetchObject()) !== false) {
+            $talks[] = $this->parseFromStdClass($result);
+        }
+
+        $this->database->free($statement);
+
+        return $talks;
+    }
+
+    function findByEmployeesAndOwner(array $employees, int $owner): array {
+        $statement = $this->database->prepare('SELECT * FROM etal_data AS talk
+            INNER JOIN object_data AS od ON od.obj_id = talk.object_id
+            WHERE ' . $this->database->in('employee', $employees, false, "integer") . ' OR od.owner = ?;'
+            , ["integer"]);
+        $statement = $statement->execute([$owner]);
         $talks = [];
         while (($result = $statement->fetchObject()) !== false) {
             $talks[] = $this->parseFromStdClass($result);
@@ -121,12 +150,6 @@ final class IliasDBEmployeeTalkRepository implements EmployeeTalkRepository
         $this->database->free($statement);
 
         return $talks;
-    }
-
-    function deletePendingTalksByTalkSeries(\ilObjEmployeeTalkSeries $series): void {
-        $subItems = $subItems = $series->getSubItems()['_all'];
-        $statement = $this->database->prepare('SELECT * FROM etal_data WHERE employee=?;', ["integer"]);
-        $statement = $statement->execute([$iliasUserId]);
     }
 
     private function parseFromStdClass($stdClass): EmployeeTalk {

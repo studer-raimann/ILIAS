@@ -31,4 +31,16 @@ interface EmployeeTalkRepository
      * @return EmployeeTalk[]
      */
     function findByEmployees(array $employees): array;
+
+    /**
+     * @param int[] $employees
+     * @param int   $owner
+     * @return EmployeeTalk[]
+     */
+    function findByEmployeesAndOwner(array $employees, int $owner): array;
+
+    /**
+     * @return EmployeeTalk[]
+     */
+    function findAll(): array;
 }
