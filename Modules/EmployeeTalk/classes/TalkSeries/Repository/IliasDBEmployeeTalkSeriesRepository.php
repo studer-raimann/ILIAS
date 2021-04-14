@@ -41,7 +41,7 @@ final class IliasDBEmployeeTalkSeriesRepository
 
         //TODO: Alter table talks and store series id, which makes the
         $statement = $this->database->prepare("
-            SELECT UNIQUE(od.obj_id) AS objId, oRef.ref_id AS refId
+            SELECT DISTINCT od.obj_id AS objId, oRef.ref_id AS refId
             FROM (
                 SELECT tree.parent AS parent, talk.employee AS employee
                 FROM etal_data AS talk
