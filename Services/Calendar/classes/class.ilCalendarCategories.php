@@ -542,13 +542,13 @@ class ilCalendarCategories
 
         $repository = new \ILIAS\Modules\EmployeeTalk\TalkSeries\Repository\IliasDBEmployeeTalkSeriesRepository($DIC->user(), $DIC->database());
         $talks = $repository->findByOwnerAndEmployee();
-        $talkIds = array_map(function(ilObjEmployeeTalkSeries $item){
+        $talkIds = array_map(function(ilObjEmployeeTalkSeries $item) {
             return $item->getId();
         }, $talks);
 
-        $this->readSelectedCategories($talkIds);
+        $this->readSelectedCategories($talkIds, 0, false);
         
-        $this->addSubitemCalendars();
+        $this->addSubitemCalendars(false);
     }
     
     /**
@@ -983,7 +983,7 @@ class ilCalendarCategories
      * @access protected
      * @return
      */
-    protected function readSelectedCategories($a_obj_ids, $a_source_ref_id = 0)
+    protected function readSelectedCategories($a_obj_ids, $a_source_ref_id = 0, $check_permissions = true)
     {
         global $DIC;
 
@@ -1027,7 +1027,7 @@ class ilCalendarCategories
                     $exists = true;
                 }
             }
-            if (!$exists) {
+            if (!$exists && $check_permissions) {
                 continue;
             }
             $this->categories_info[$row->cat_id]['editable'] = $editable;
@@ -1070,7 +1070,7 @@ class ilCalendarCategories
             }
         }
         
-        $query = "SELECT od2.obj_id sess_id, od1.obj_id crs_id,cat_id, or2.ref_id sess_ref_id FROM object_data od1 " .
+        $query = "SELECT od2.obj_id sess_id, od1.obj_id crs_id,cat_id, or2.ref_id sess_ref_id, od2.type type FROM object_data od1 " .
             "JOIN object_reference or1 ON od1.obj_id = or1.obj_id " .
             "JOIN tree t ON or1.ref_id = t.parent " .
             "JOIN object_reference or2 ON t.child = or2.ref_id " .
@@ -1086,8 +1086,9 @@ class ilCalendarCategories
         $course_sessions = array();
         while ($row = $res->fetchRow(ilDBConstants::FETCHMODE_OBJECT)) {
             if (
-                !$access->checkAccessOfUser($this->user_id, 'read', '', $row->sess_ref_id) ||
-                !$access->checkAccessOfUser($this->user_id, 'visible', '', $row->sess_ref_id)
+                (!$access->checkAccessOfUser($this->user_id, 'read', '', $row->sess_ref_id) ||
+                !$access->checkAccessOfUser($this->user_id, 'visible', '', $row->sess_ref_id)) &&
+                $row->type !== 'etal'
             ) {
                 continue;
             }
