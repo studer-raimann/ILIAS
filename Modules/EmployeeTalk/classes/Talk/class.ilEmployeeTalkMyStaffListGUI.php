@@ -134,8 +134,12 @@ final class ilEmployeeTalkMyStaffListGUI implements ControlFlowCommandHandler
 
         $templates = new CallbackFilterIterator(
             new ArrayIterator(ilObject::_getObjectsByType("talt")),
-            function($item) {
-                return $item['offline'] === "0" || $item['offline'] === null;
+            function(array $item) {
+                return
+                    (
+                        $item['offline'] === "0" ||
+                        $item['offline'] === null
+                    ) && ilObjTalkTemplate::_hasUntrashedReference(intval($item['obj_id']));
             }
         );
 
