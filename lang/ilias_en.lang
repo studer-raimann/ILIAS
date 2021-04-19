@@ -16226,6 +16226,9 @@ etal#:#talt_add#:#Add Template
 etal#:#talt_new#:#New Talk Template
 etal#:#mm_org_etal#:#Talks
 common#:#objs_etal#:#Employee Talks
+common#:#obj_tals#:#Employee Talk Series
+common#:#tals_etal#:#Talk
+common#:#talt_etal#:#Talk
 common#:#obj_etal#:#Employee Talk
 etal#:#etal_edit#:#General
 etal#:#etal_add#:#Add Talk
@@ -16243,3 +16246,6 @@ etal#:#tals_new#:#New Talks
 etal#:#cal_type_tals#:#Talks
 etal#:#etal_date_appointment_edit#:#Date of Talk
 etal#:#etal_date_series_edit#:#Date of Talk Series
+etal#:#etal_unknown_username#:#Unknown User
+common#:#etal_talks#:#Talks
+etal#:#appointments#:#Appointments
