@@ -29,6 +29,7 @@ final class ilEmployeeTalkTableGUI extends ilTable2GUI
         $this->language = $container->language();
         $this->currentUser = $container->user();
         $this->language->loadLanguageModule('etal');
+        $this->language->loadLanguageModule('orgu');
 
         $this->setPrefix('myst_etal_list_');
         $this->setFormName('myst_etal_list');

@@ -181,7 +181,7 @@ final class ilEmployeeTalkAppointmentGUI implements ControlFlowCommandHandler
         $this->template->addJavaScript('./Services/Form/js/date_duration.js');
 
         $header = new ilFormSectionHeaderGUI();
-        $header->setTitle($this->language->txt('series'));
+        $header->setTitle($this->language->txt('appointments'));
         $form->addItem($header);
 
         $dur = new ilDateDurationInputGUI($this->language->txt('cal_fullday'), 'event');
@@ -200,7 +200,7 @@ final class ilEmployeeTalkAppointmentGUI implements ControlFlowCommandHandler
         $form->addItem($dur);
 
         // Recurrence
-        $cal = new ilRecurrenceInputGUI("Calender", "frequence");
+        $cal = new ilRecurrenceInputGUI($this->language->txt('cal_recurrences'), "frequence");
         $event = new ilCalendarRecurrence();
 
         $cal->allowUnlimitedRecurrences(false);
