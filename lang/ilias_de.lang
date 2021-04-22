@@ -16540,3 +16540,5 @@ obj#:#obj_select_one_language#:#Bitte genau eine Sprache auswählen
 common#:#user_avatar#:#Profilbild
 common#:#current_user_avatar#:#Ihr Profilbild
 common#:#user_avatar_of#:#Profilbild von
+common#:#file_system_clean_temp_dir_cron#:#Temporäres Verzeichnis säubern
+common#:#file_system_clean_temp_dir_cron_info#:#Dieser Job säubert das ILIAS temp-Verzeichnis von Dateien, welche älter als 1 Tag sind. Damit wird einer Anhäufung ungenutzter Dateien und damit einem erhöhten Speicherplatzverbrauch des temp-Verzeichnisses entgegengewirkt.
