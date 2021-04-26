@@ -114,7 +114,8 @@ class ilMStShowUserGUI
                     $DIC->http()->request(),
                     $DIC->ui()->mainTemplate(),
                     $DIC->tabs(),
-                    new IliasDBEmployeeTalkRepository($DIC->database())
+                    new IliasDBEmployeeTalkRepository($DIC->database()),
+                    $DIC->ui()
                 );
                 $DIC->ctrl()->forwardCommand($gui);
                 break;
