@@ -16226,23 +16226,23 @@ etal#:#talt_edit#:#Allgemein
 etal#:#talt_add#:#Erstellen
 etal#:#talt_new#:#Neue Gesprächsvorlage
 etal#:#mm_org_etal#:#Gespräch
-common#:#objs_etal#:#Mittarbeiter-Gespräche
-common#:#obj_tals#:#Mittarbeiter Gesprächsserie
+common#:#objs_etal#:#Mitarbeiter-Gespräche
+common#:#obj_tals#:#Mitarbeiter Gesprächsserie
 common#:#tals_etal#:#Gespräch
 common#:#talt_etal#:#Gespräch
-common#:#obj_etal#:#Mittarbeiter-Gespräch
+common#:#obj_etal#:#Mitarbeiter-Gespräch
 etal#:#etal_edit#:#Allgemein
 etal#:#etal_add#:#Hinzufügen
 etal#:#etal_new#:#Neues Gespräch
-etal#:#talt_etal#:#Mittarbeiter-Gespräch
+etal#:#talt_etal#:#Mitarbeiter-Gespräch
 etal#:#date_of_talk#:#Start Datum
 etal#:#etal_add_new_item#:#Neues Gespräch hinzufügen
-etal#:#change_date_of_talk#:#Gesprächsdatum Anpassen
-etal#:#change_date_of_series#:#Gesprächsserie Anpassen
+etal#:#change_date_of_talk#:#Gesprächsdatum anpassen
+etal#:#change_date_of_series#:#Gesprächsserie anpassen
 etal#:#etal_status_pending#:#Ausstehend
 etal#:#etal_status_completed#:#Abgeschlossen
 etal#:#etal_status_all#:#Alle
-etal#:#tals_add#:#Gespräche Hinzufügen
+etal#:#tals_add#:#Gespräche hinzufügen
 etal#:#tals_new#:#Neue Gesprächsserie
 etal#:#cal_type_tals#:#Gespräche
 etal#:#etal_date_appointment_edit#:#Gesprächsdatum
