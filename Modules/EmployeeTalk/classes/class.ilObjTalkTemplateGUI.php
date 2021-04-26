@@ -23,7 +23,7 @@ final class ilObjTalkTemplateGUI extends ilContainerGUI
 
         $this->type = 'talt';
 
-        $lng->loadLanguageModule("talt");
+        $lng->loadLanguageModule("etal");
         $lng->loadLanguageModule("meta");
     }
 
