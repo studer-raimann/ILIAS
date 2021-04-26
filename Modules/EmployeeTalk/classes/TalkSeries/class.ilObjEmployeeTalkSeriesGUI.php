@@ -6,6 +6,12 @@ use OrgUnit\User\ilOrgUnitUser;
 use ILIAS\Modules\EmployeeTalk\Talk\DAO\EmployeeTalk;
 use ILIAS\Modules\EmployeeTalk\Talk\EmployeeTalkPeriod;
 use ILIAS\EmployeeTalk\Service\EmployeeTalkEmailNotificationService;
+use ILIAS\EmployeeTalk\Service\VEvent;
+use ILIAS\EmployeeTalk\Service\VEventStatus;
+use ILIAS\EmployeeTalk\Service\VCalender;
+use ILIAS\EmployeeTalk\Service\VCalenderMethod;
+use ILIAS\EmployeeTalk\Service\VEventFactory;
+use ILIAS\EmployeeTalk\Service\VCalendarFactory;
 
 /**
  * Class ilObjEmployeeTalkGUI
@@ -276,34 +282,41 @@ final class ilObjEmployeeTalkSeriesGUI extends ilContainerGUI
 
     }
 
-    private function sendNotification(ilObjEmployeeTalk $talk): void {
-        return;
-        $data = $talk->getData();
-        $send_user = new ilObjUser($talk->getOwner());
-        $user = new ilObjUser($data->getEmployee());
-        $vcal_sender = new EmployeeTalkEmailNotificationService(
-            $user->getEmail(),
-            $send_user->getId(),
-            EmployeeTalkEmailNotificationService::METHOD_REQUEST,
-            md5('etal'. $talk->getId()),
-            $data->getStartDate(),
-            $data->getEndDate(),
-            0//$offering->getSaveSequence()
-        );
-        $vcal_sender->send();
-        $vcal_sender->setLocation($data->getLocation());
-
-        //Reformat Contact Administrative...
-        $arr_contact_administrative = explode(" ",$offering->getContactAdministrative());
-        if(count($arr_contact_administrative) > 0) {
-            $offering->setContactAdministrative($arr_contact_administrative[1]." ".$arr_contact_administrative[0]." ".$arr_contact_administrative[2]);
+    /**
+     * @param ilObjEmployeeTalk[] $talks
+     */
+    private function sendNotification(array $talks): void {
+        if (count($talks) === 0) {
+            return;
         }
-        $placeholders = array(
-            'user' => $user,
-            'offering' => $offering,
+
+        $firstTalk = $talks[0];
+        $talkTitle = $firstTalk->getTitle();
+        $superior = new ilObjUser($firstTalk->getOwner());
+        $employee = new ilObjUser($firstTalk->getData()->getEmployee());
+        $superiorName = $superior->getFullname();
+
+        $message = sprintf($this->lng->txt('notification_talks_created'), $superiorName) . "\r\n\r\n";
+        $message .= $this->lng->txt('notification_talks_date_details') . "\r\n";
+        $message .= sprintf($this->lng->txt('notification_talks_talk_title'), $talkTitle) . "\r\n";
+        $message .= $this->lng->txt('notification_talks_date_list_header') . ":\r\n";
+
+        foreach ($talks as $talk) {
+            $data = $talk->getData();
+            $startDate = $data->getStartDate()->get(IL_CAL_DATETIME);
+
+            $message .= "$startDate\r\n";
+        }
+
+        $vCalSender = new EmployeeTalkEmailNotificationService(
+            $message,
+            $talkTitle,
+            $employee->getEmail(),
+            $superior->getEmail(),
+            VCalendarFactory::getInstanceFromTalks($firstTalk->getParent())
         );
-        //$sr_notification = srNotification::getInstanceByName('appointment');
-        //$sr_notification->send($vcal_sender, $placeholders, $user->getLanguage());
+
+        $vCalSender->send();
     }
 
     /**
@@ -494,9 +507,11 @@ final class ilObjEmployeeTalkSeriesGUI extends ilContainerGUI
         $data->setObjectId($talkSession->getId());
         $talkSession->setData($data);
         $talkSession->update();
-        $this->sendNotification($talkSession);
+        $talks = [];
+        $talks[] = $talkSession;
 
         if (!$recurrence->getFrequenceType()) {
+            $this->sendNotification($talks);
             return true;
         }
 
@@ -517,8 +532,10 @@ final class ilObjEmployeeTalkSeriesGUI extends ilContainerGUI
             $cloneData->setEndDate(new ilDateTime($endDate, IL_CAL_UNIX));
             $cloneObject->setData($cloneData);
             $cloneObject->update();
-            $this->sendNotification($talkSession);
+            $talks[] = $cloneObject;
         }
+
+        $this->sendNotification($talks);
 
         return true;
     }

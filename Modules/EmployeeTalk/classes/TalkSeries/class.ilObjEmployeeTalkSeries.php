@@ -116,4 +116,9 @@ final class ilObjEmployeeTalkSeries extends ilContainer
         return parent::delete();
     }
 
+    public function hasChildren(): bool {
+        $children = $this->tree->getChildIds(intval($this->getRefId()));
+        return count($children) > 0;
+    }
+
 }

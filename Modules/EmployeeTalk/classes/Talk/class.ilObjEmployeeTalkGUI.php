@@ -5,6 +5,8 @@ use ILIAS\EmployeeTalk\UI\ControlFlowCommand;
 use OrgUnit\User\ilOrgUnitUser;
 use ILIAS\Modules\EmployeeTalk\Talk\DAO\EmployeeTalk;
 use ILIAS\Modules\EmployeeTalk\Talk\EmployeeTalkPeriod;
+use ILIAS\EmployeeTalk\Service\EmployeeTalkEmailNotificationService;
+use ILIAS\EmployeeTalk\Service\VCalendarFactory;
 
 /**
  * Class ilObjEmployeeTalkGUI
@@ -145,10 +147,66 @@ final class ilObjEmployeeTalkGUI extends ilObjectGUI
         }
 
         $ru = new ilRepUtilGUI($this);
-        $ru->deleteObjects($_GET["ref_id"], ilSession::get("saved_post"));
+        $refIds = ilSession::get("saved_post");
+        $talks = [];
+
+        foreach ($refIds as $refId) {
+            $talks[] = new ilObjEmployeeTalk(intval($refId), true);
+        }
+
+        $ru->deleteObjects($_GET["ref_id"], $refIds);
         ilSession::clear("saved_post");
 
+        $this->sendNotification($talks);
+
         $this->ctrl->redirectByClass(strtolower(ilEmployeeTalkMyStaffListGUI::class), ControlFlowCommand::DEFAULT, "", false);
+    }
+
+    /**
+     * @param ilObjEmployeeTalk[] $talks
+     */
+    private function sendNotification(array $talks): void {
+
+        $firstTalk = $talks[0];
+        $talkTitle = $firstTalk->getTitle();
+        $superior = new ilObjUser($firstTalk->getOwner());
+        $employee = new ilObjUser($firstTalk->getData()->getEmployee());
+        $superiorName = $superior->getFullname();
+        $series = $firstTalk->getParent();
+
+        $message = sprintf($this->lng->txt('notification_talks_removed'), $superiorName) . "\r\n\r\n";
+        $message .= $this->lng->txt('notification_talks_date_details') . "\r\n";
+        $message .= sprintf($this->lng->txt('notification_talks_talk_title'), $talkTitle) . "\r\n";
+        $message .= $this->lng->txt('notification_talks_date_list_header') . ":\r\n";
+
+        foreach ($talks as $talk) {
+            $data = $talk->getData();
+            $startDate = $data->getStartDate()->get(IL_CAL_DATETIME);
+
+            $message .= "$startDate\r\n";
+        }
+
+        // Check if we deleted the last talk of the series
+        $vCalSender = null;
+        if ($series->hasChildren()) {
+            $vCalSender = new EmployeeTalkEmailNotificationService(
+                $message,
+                $talkTitle,
+                $employee->getEmail(),
+                $superior->getEmail(),
+                VCalendarFactory::getInstanceFromTalks($series)
+            );
+        } else {
+            $vCalSender = new EmployeeTalkEmailNotificationService(
+                $message,
+                $talkTitle,
+                $employee->getEmail(),
+                $superior->getEmail(),
+                VCalendarFactory::getEmptyInstance($series, $talkTitle)
+            );
+        }
+
+        $vCalSender->send();
     }
 
     public function cancelDeleteObject()

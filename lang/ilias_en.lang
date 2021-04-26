@@ -16249,3 +16249,10 @@ etal#:#etal_date_series_edit#:#Date of Talk Series
 etal#:#etal_unknown_username#:#Unknown User
 common#:#etal_talks#:#Talks
 etal#:#appointments#:#Appointments
+etal#:#notification_talks_created#:#Sie wurden von %s zu einem Gespräch eingeladen.
+etal#:#notification_talks_updated#:#Folgende Gesprächstermine mit %s wurden angepasst.
+etal#:#notification_talks_removed#:#Folgende Termine mit %s wurden abgesagt.
+etal#:#notification_talks_subject#:#Termineinladung
+etal#:#notification_talks_date_details#:#Termindetails
+etal#:#notification_talks_talk_title#:#Titel: %s
+etal#:#notification_talks_date_list_header#:#Daten

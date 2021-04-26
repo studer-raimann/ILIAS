@@ -6,6 +6,8 @@ use ILIAS\EmployeeTalk\UI\ControlFlowCommand;
 use ILIAS\Modules\EmployeeTalk\Talk\DAO\EmployeeTalk;
 use ILIAS\Modules\EmployeeTalk\Talk\Repository\EmployeeTalkRepository;
 use ILIAS\Modules\EmployeeTalk\Talk\EmployeeTalkPeriod;
+use ILIAS\EmployeeTalk\Service\EmployeeTalkEmailNotificationService;
+use ILIAS\EmployeeTalk\Service\VCalendarFactory;
 
 /**
  * Class ilEmployeeTalkAppointmentGUI
@@ -122,8 +124,9 @@ final class ilEmployeeTalkAppointmentGUI implements ControlFlowCommandHandler
         $form = $this->initSeriesEditForm();
         if ($form->checkInput()) {
             $reoccurrence = $this->loadRecurrenceSettings($form);
-            $this->deletePendingTalks($this->talk->getParent());
-            $this->createRecurringTalks($form, $reoccurrence);
+            $parent = $this->talk->getParent();
+            $this->deletePendingTalks($parent);
+            $this->createRecurringTalks($form, $reoccurrence, $parent);
 
             ilUtil::sendSuccess($this->language->txt('saved_successfully'), true);
         }
@@ -242,6 +245,8 @@ final class ilEmployeeTalkAppointmentGUI implements ControlFlowCommandHandler
             $this->talk->setData($data);
             $this->talk->update();
 
+            $this->sendNotification([$this->talk]);
+
             ilUtil::sendSuccess($this->language->txt('saved_successfully'), true);
         }
 
@@ -250,6 +255,43 @@ final class ilEmployeeTalkAppointmentGUI implements ControlFlowCommandHandler
             $this->controlFlow->getLinkTargetByClass(strtolower(self::class),
                 ControlFlowCommand::UPDATE_INDEX) . $this->getEditModeParameter(ilEmployeeTalkAppointmentGUI::EDIT_MODE_APPOINTMENT)
         );
+    }
+
+    /**
+     * @param ilObjEmployeeTalk[] $talks
+     */
+    private function sendNotification(array $talks): void {
+        if (count($talks) === 0) {
+            return;
+        }
+
+        $firstTalk = $talks[0];
+        $talkTitle = $firstTalk->getTitle();
+        $superior = new ilObjUser($firstTalk->getOwner());
+        $employee = new ilObjUser($firstTalk->getData()->getEmployee());
+        $superiorName = $superior->getFullname();
+
+        $message = sprintf($this->language->txt('notification_talks_updated'), $superiorName) . "\r\n\r\n";
+        $message .= $this->language->txt('notification_talks_date_details') . "\r\n";
+        $message .= sprintf($this->language->txt('notification_talks_talk_title'), $talkTitle) . "\r\n";
+        $message .= $this->language->txt('notification_talks_date_list_header') . ":\r\n";
+
+        foreach ($talks as $talk) {
+            $data = $talk->getData();
+            $startDate = $data->getStartDate()->get(IL_CAL_DATETIME);
+
+            $message .= "$startDate\r\n";
+        }
+
+        $vCalSender = new EmployeeTalkEmailNotificationService(
+            $message,
+            $talkTitle,
+            $employee->getEmail(),
+            $superior->getEmail(),
+            VCalendarFactory::getInstanceFromTalks($firstTalk->getParent())
+        );
+
+        $vCalSender->send();
     }
 
     private function editMode(): string {
@@ -369,14 +411,15 @@ final class ilEmployeeTalkAppointmentGUI implements ControlFlowCommandHandler
 
     /**
      * create recurring talks
-     * @param ilPropertyFormGUI    $form
-     * @param ilCalendarRecurrence $recurrence
+     * @param ilPropertyFormGUI       $form
+     * @param ilCalendarRecurrence    $recurrence
+     * @param ilObjEmployeeTalkSeries $series
+     *
      * @return bool true if successful otherwise false
      * @throws ilDateTimeException
      */
-    private function createRecurringTalks(ilPropertyFormGUI $form, ilCalendarRecurrence $recurrence) : bool
+    private function createRecurringTalks(ilPropertyFormGUI $form, ilCalendarRecurrence $recurrence, ilObjEmployeeTalkSeries $series) : bool
     {
-        $talk = $this->talk->getParent();
         $data = $this->loadEtalkData($form);
 
         $firstAppointment = new EmployeeTalkPeriod(
@@ -402,13 +445,17 @@ final class ilEmployeeTalkAppointmentGUI implements ControlFlowCommandHandler
         $talkSession->create();
 
         $talkSession->createReference();
-        $talkSession->putInTree($talk->getRefId());
+        $talkSession->putInTree($series->getRefId());
 
         $data->setObjectId($talkSession->getId());
         $talkSession->setData($data);
         $talkSession->update();
 
+        $talks = [];
+        $talks[] = $talkSession;
+
         if (!$recurrence->getFrequenceType()) {
+            $this->sendNotification($talks);
             return true;
         }
 
@@ -421,7 +468,7 @@ final class ilEmployeeTalkAppointmentGUI implements ControlFlowCommandHandler
          */
         foreach ($dateIterator as $date) {
 
-            $cloneObject = $talkSession->cloneObject($talk->getRefId());
+            $cloneObject = $talkSession->cloneObject($series->getRefId());
             $cloneData = $cloneObject->getData();
 
             $cloneData->setStartDate($date);
@@ -429,7 +476,11 @@ final class ilEmployeeTalkAppointmentGUI implements ControlFlowCommandHandler
             $cloneData->setEndDate(new ilDateTime($endDate, IL_CAL_UNIX));
             $cloneObject->setData($cloneData);
             $cloneObject->update();
+
+            $talks[] = $cloneObject;
         }
+
+        $this->sendNotification($talks);
 
         return true;
     }
