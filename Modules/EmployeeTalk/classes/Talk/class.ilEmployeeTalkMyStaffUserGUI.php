@@ -6,6 +6,7 @@ use Psr\Http\Message\RequestInterface;
 use ILIAS\EmployeeTalk\UI\ControlFlowCommandHandler;
 use ILIAS\EmployeeTalk\UI\ControlFlowCommand;
 use ILIAS\Modules\EmployeeTalk\Talk\Repository\EmployeeTalkRepository;
+use ILIAS\DI\UIServices;
 
 /**
  * Class ilEmployeeTalkMyStaffUserGUI
@@ -14,6 +15,8 @@ use ILIAS\Modules\EmployeeTalk\Talk\Repository\EmployeeTalkRepository;
  *
  * @ilCtrl_IsCalledBy ilEmployeeTalkMyStaffUserGUI: ilMStShowUserGUI
  * @ilCtrl_IsCalledBy ilEmployeeTalkMyStaffUserGUI: ilFormPropertyDispatchGUI
+ *
+ * @ilCtrl_Calls ilEmployeeTalkMyStaffUserGUI: ilObjEmployeeTalkGUI, ilObjEmployeeTalkSeriesGUI
  */
 final class ilEmployeeTalkMyStaffUserGUI implements ControlFlowCommandHandler
 {
@@ -49,6 +52,10 @@ final class ilEmployeeTalkMyStaffUserGUI implements ControlFlowCommandHandler
      * @var EmployeeTalkRepository $repository
      */
     private $repository;
+    /**
+     * @var UIServices $ui
+     */
+    private $ui;
 
     /**
      * ilEmployeeTalkMyStaffUserGUI constructor.
@@ -59,6 +66,7 @@ final class ilEmployeeTalkMyStaffUserGUI implements ControlFlowCommandHandler
      * @param ilGlobalTemplateInterface $template
      * @param ilTabsGUI                 $tabs
      * @param EmployeeTalkRepository    $repository
+     * @param UIServices                $ui
      */
     public function __construct(
         ilMyStaffAccess $access,
@@ -67,7 +75,8 @@ final class ilEmployeeTalkMyStaffUserGUI implements ControlFlowCommandHandler
         RequestInterface $request,
         ilGlobalTemplateInterface $template,
         ilTabsGUI $tabs,
-        EmployeeTalkRepository $repository
+        EmployeeTalkRepository $repository,
+        UIServices $ui
     ) {
         $this->access = $access;
         $this->ctrl = $ctrl;
@@ -76,9 +85,11 @@ final class ilEmployeeTalkMyStaffUserGUI implements ControlFlowCommandHandler
         $this->template = $template;
         $this->tabs = $tabs;
         $this->repository = $repository;
+        $this->ui = $ui;
 
         $this->usrId = $this->request->getQueryParams()['usr_id'];
         $this->ctrl->setParameter($this, 'usr_id', $this->usrId);
+        $this->language->loadLanguageModule('etal');
     }
 
     /**
@@ -117,6 +128,18 @@ final class ilEmployeeTalkMyStaffUserGUI implements ControlFlowCommandHandler
                 $this->ctrl->setReturn($this, ControlFlowCommand::INDEX);
                 $table = new ilEmployeeTalkTableGUI($this, ControlFlowCommand::INDEX);
                 $table->executeCommand();
+                break;
+            case strtolower(ilObjEmployeeTalkSeriesGUI::class):
+                $gui = new ilObjEmployeeTalkSeriesGUI();
+                $this->ctrl->saveParameter($gui, 'template');
+                $this->ctrl->saveParameter($gui, 'new_type');
+                $this->ctrl->saveParameter($gui, 'usr_id');
+                $this->ctrl->redirectByClass([
+                    strtolower(ilDashboardGUI::class),
+                    strtolower(ilMyStaffGUI::class),
+                    strtolower(ilEmployeeTalkMyStaffListGUI::class),
+                    strtolower(ilObjEmployeeTalkSeriesGUI::class)
+                ], $cmd);
                 break;
             default:
                 switch ($cmd) {
@@ -157,10 +180,68 @@ final class ilEmployeeTalkMyStaffUserGUI implements ControlFlowCommandHandler
 
     private function view(): void
     {
+        $this->loadActionBar();
         $table = new ilEmployeeTalkTableGUI($this, ControlFlowCommand::INDEX);
 
         $talks = $this->repository->findByEmployee(intval($this->usrId));
         $table->setTalkData($talks);
         $this->template->setContent($table->getHTML());
+    }
+
+    private function loadActionBar(): void {
+        $gl = new ilGroupedListGUI();
+        $gl->setAsDropDown(true, false);
+
+        $templates = new CallbackFilterIterator(
+            new ArrayIterator(ilObject::_getObjectsByType("talt")),
+            function(array $item) {
+                return
+                    (
+                        $item['offline'] === "0" ||
+                        $item['offline'] === null
+                    ) && ilObjTalkTemplate::_hasUntrashedReference(intval($item['obj_id']));
+            }
+        );
+
+        foreach ($templates as $item) {
+            $type = $item["type"];
+
+            $path = ilObject::_getIcon('', 'tiny', $type);
+            $icon = ($path != "")
+                ? ilUtil::img($path, "") . " "
+                : "";
+
+            $base_url = $this->ctrl->getLinkTargetByClass(strtolower(ilObjEmployeeTalkSeriesGUI::class), ControlFlowCommand::CREATE);
+            $url = $this->ctrl->appendRequestTokenParameterString($base_url . "&new_type=" . ilObjEmployeeTalkSeries::TYPE);
+            $refId = ilObject::_getAllReferences(intval($item['obj_id']));
+
+            // Templates only have one ref id
+            $url .= "&template=" . array_pop($refId);
+            $url .= "&ref_id=" . ilObjTalkTemplateAdministration::getRootRefId();
+            $url .= '&usr_id=' . $this->usrId;
+
+            $ttip = ilHelp::getObjCreationTooltipText("tals");
+
+            $gl->addEntry(
+                $icon . $item["title"],
+                $url,
+                "_top",
+                "",
+                "",
+                $type,
+                $ttip,
+                "bottom center",
+                "top center",
+                false
+            );
+        }
+
+        $adv = new ilAdvancedSelectionListGUI();
+        $adv->setListTitle($this->language->txt("etal_add_new_item"));
+        //$gl->getHTML();
+        $adv->setGroupedList($gl);
+        $adv->setStyle(ilAdvancedSelectionListGUI::STYLE_EMPH);
+        //$this->toolbar->addDropDown($this->language->txt("cntr_add_new_item"), $adv->getHTML());
+        $this->ui->mainTemplate()->setVariable("SELECT_OBJTYPE_REPOS", $adv->getHTML());
     }
 }

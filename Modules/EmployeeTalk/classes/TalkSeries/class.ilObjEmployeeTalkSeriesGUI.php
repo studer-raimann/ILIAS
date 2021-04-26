@@ -17,6 +17,7 @@ use ILIAS\EmployeeTalk\Service\VCalendarFactory;
  * Class ilObjEmployeeTalkGUI
  *
  * @ilCtrl_IsCalledBy ilObjEmployeeTalkSeriesGUI: ilEmployeeTalkMyStaffListGUI
+ * @ilCtrl_IsCalledBy ilObjEmployeeTalkSeriesGUI: ilEmployeeTalkMyStaffUserGUI
  * @ilCtrl_Calls      ilObjEmployeeTalkSeriesGUI: ilCommonActionDispatcherGUI
  * @ilCtrl_Calls      ilObjEmployeeTalkSeriesGUI: ilRepositorySearchGUI
  * @ilCtrl_Calls      ilObjEmployeeTalkSeriesGUI: ilColumnGUI, ilObjectCopyGUI, ilUserTableGUI
@@ -35,6 +36,11 @@ final class ilObjEmployeeTalkSeriesGUI extends ilContainerGUI
      */
     private $form;
 
+    /**
+     * @var int $userId
+     */
+    private $userId;
+
     public function __construct()
     {
         parent::__construct([], $_GET["ref_id"], true, false);
@@ -49,6 +55,7 @@ final class ilObjEmployeeTalkSeriesGUI extends ilContainerGUI
         $this->type = ilObjEmployeeTalkSeries::TYPE;
 
         $this->setReturnLocation("save", strtolower(ilEmployeeTalkMyStaffListGUI::class));
+        $this->userId = $this->container->http()->request()->getQueryParams()['usr_id'];
 
         $this->container->ui()->mainTemplate()->setTitle($this->container->language()->txt('mst_my_staff'));
     }
@@ -175,7 +182,6 @@ final class ilObjEmployeeTalkSeriesGUI extends ilContainerGUI
         $this->copyTemplateValues($newObject);
         $this->createRecurringTalks($newObject, $event);
 
-        //TODO: Fix double redirect bug ...
         ilUtil::sendSuccess($this->lng->txt("object_added"), true);
         $this->ctrl->redirectByClass(strtolower(ilEmployeeTalkMyStaffListGUI::class), ControlFlowCommand::DEFAULT, "", false);
     }
@@ -247,6 +253,11 @@ final class ilObjEmployeeTalkSeriesGUI extends ilContainerGUI
             strtolower(self::class),
             strtolower(ilRepositorySearchGUI::class)
         ], 'doUserAutoComplete', '', true));
+
+        if ($this->userId) {
+            $user = new ilObjUser($this->userId);
+            $login->setValue($user->getLogin());
+        }
 
         $form->addItem($login);
 
