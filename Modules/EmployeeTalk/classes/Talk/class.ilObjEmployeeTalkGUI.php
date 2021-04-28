@@ -107,7 +107,7 @@ final class ilObjEmployeeTalkGUI extends ilObjectGUI
 
     public function editObject()
     {
-        $this->tabs_gui->activateTab("settings");
+        $this->tabs_gui->activateTab('view_content');
 
         $form = $this->initEditForm();
         $values = $this->getEditFormValues();
@@ -296,13 +296,14 @@ final class ilObjEmployeeTalkGUI extends ilObjectGUI
     public function viewObject()
     {
         $this->tabs_gui->activateTab('view_content');
+        $this->editObject();
     }
 
     public function getTabs(): void
     {
-        $this->tabs_gui->addTab('view_content', $this->lng->txt("content"), $this->ctrl->getLinkTarget($this, "view"));
+        $this->tabs_gui->addTab('view_content', $this->lng->txt("content"), $this->ctrl->getLinkTarget($this, ControlFlowCommand::UPDATE));
         $this->tabs_gui->addTab("info_short", "Info", $this->ctrl->getLinkTargetByClass(strtolower(ilInfoScreenGUI::class), "showSummary"));
-        $this->tabs_gui->addTab('settings', $this->lng->txt("settings"), $this->ctrl->getLinkTarget($this, "edit"));
+        //$this->tabs_gui->addTab('settings', $this->lng->txt("settings"), $this->ctrl->getLinkTarget($this, "edit"));
 
         parent::getTabs();
     }
