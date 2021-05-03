@@ -143,7 +143,7 @@ class ilOrgUnitUser
     protected function loadOrgUnitPositions() : array
     {
         $org_unit_user_repository = new ilOrgUnitUserRepository();
-        $org_unit_user_repository->loadPositions([$this->user_id]);
+        return $org_unit_user_repository->loadPositions([$this->user_id]);
     }
 
 
