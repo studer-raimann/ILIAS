@@ -8,6 +8,7 @@ use ilOrgUnitOperationContext;
 use ilOrgUnitOperationContextQueries;
 use ilOrgUnitOperationQueries;
 use ilOrgUnitUserAssignmentQueries;
+use OrgUnit\User\ilOrgUnitUser;
 
 /**
  * Class ilMyStaffAccess
@@ -83,6 +84,15 @@ class ilMyStaffAccess extends ilObjectAccess
         if (!$DIC->settings()->get("enable_my_staff")) {
             return false;
         }
+
+        $orgUnitUser = ilOrgUnitUser::getInstanceById($DIC->user()->getId());
+        $positions = $orgUnitUser->getOrgUnitPositions();
+        foreach($positions as $position) {
+            if($position->getId() === 2) {
+                return true;
+            }
+        }
+
 
         if ($this->hasCurrentUserAccessToUser()) {
             return true;
