@@ -2,7 +2,7 @@
 
 namespace OrgUnit\User;
 
-use OrgUnit\Positions\ilOrgUnitPosition;
+use ilOrgUnitPosition;
 
 class ilOrgUnitUser
 {
