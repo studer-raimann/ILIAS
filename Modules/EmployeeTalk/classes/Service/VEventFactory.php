@@ -23,19 +23,19 @@ final class VEventFactory
 
         return new VEvent(
             md5($talk->getType() . $talk->getId()),
-            $talk->getTitle(),
-            $talk->getTitle(),
+            (string) $talk->getTitle(),
+            (string) $talk->getTitle(),
             0,
             $status,
             $superiorName,
-            $superior->getEmail(),
-            $employee->getFullname(),
-            $employee->getEmail(),
+            (string) $superior->getEmail(),
+            (string) $employee->getFullname(),
+            (string) $employee->getEmail(),
             $data->getStartDate()->getUnixTime(),
             $data->getEndDate()->getUnixTime(),
             $data->isAllDay(),
             '',
-            $data->getLocation()
+            (string) $data->getLocation()
         );
     }
 }

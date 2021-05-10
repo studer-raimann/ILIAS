@@ -85,8 +85,9 @@ class ilMyStaffAccess extends ilObjectAccess
             return false;
         }
 
-        //all
-       return true;
+        if(\in_array($DIC->user()->getId(),ilOrgUnitUserAssignmentQueries::getInstance()->getUserIdsOfPosition(2))) {
+            return true;
+        }
 
 
         if ($this->hasCurrentUserAccessToUser()) {
