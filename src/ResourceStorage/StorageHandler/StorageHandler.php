@@ -5,11 +5,11 @@ namespace ILIAS\ResourceStorage\StorageHandler;
 use ILIAS\Filesystem\Stream\FileStream;
 use ILIAS\ResourceStorage\Identification\IdentificationGenerator;
 use ILIAS\ResourceStorage\Identification\ResourceIdentification;
+use ILIAS\ResourceStorage\Resource\StorableResource;
+use ILIAS\ResourceStorage\Revision\CloneRevision;
 use ILIAS\ResourceStorage\Revision\FileStreamRevision;
 use ILIAS\ResourceStorage\Revision\Revision;
 use ILIAS\ResourceStorage\Revision\UploadedFileRevision;
-use ILIAS\ResourceStorage\Resource\StorableResource;
-use ILIAS\ResourceStorage\Revision\CloneRevision;
 
 /**
  * Class FileResourceHandler
@@ -67,4 +67,9 @@ interface StorageHandler
      * @param StorableResource $resource
      */
     public function deleteResource(StorableResource $resource) : void;
+
+    /**
+     * @return string "link" or "rename"
+     */
+    public function movementImplementation(): string;
 }

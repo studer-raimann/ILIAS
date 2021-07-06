@@ -19,6 +19,10 @@ use ILIAS\ResourceStorage\Policy\NoneFileNamePolicy;
 
 class ilFileObjectToStorageMigrationRunner
 {
+    /**
+     * @var string
+     */
+    protected $movement_implementation;
 
     /**
      * @var ConsumerFactory
@@ -69,6 +73,7 @@ class ilFileObjectToStorageMigrationRunner
         $this->migration_log_handle = fopen($log_file_path, 'ab');
 
         $storage_handler = new FileSystemStorageHandler($this->file_system, Location::STORAGE);
+        $this->movement_implementation = $storage_handler->movementImplementation();
         $builder = new ResourceBuilder(
             $storage_handler,
             new RevisionARRepository(),
@@ -123,6 +128,7 @@ class ilFileObjectToStorageMigrationRunner
                 $version->getVersion(),
                 $version->getPath(),
                 $status,
+                $this->movement_implementation,
                 $aditional_info
             );
         }
@@ -149,6 +155,7 @@ class ilFileObjectToStorageMigrationRunner
         int $version,
         string $old_path,
         string $status,
+        string $movement_implementation,
         string $aditional_info = null
     ) : void {
         fputcsv($this->migration_log_handle, [
@@ -157,6 +164,7 @@ class ilFileObjectToStorageMigrationRunner
             $rid,
             $version,
             $status,
+            $movement_implementation,
             $aditional_info
         ], ";");
     }

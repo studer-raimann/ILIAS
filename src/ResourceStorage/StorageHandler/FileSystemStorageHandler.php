@@ -9,11 +9,11 @@ use ILIAS\FileUpload\Location;
 use ILIAS\ResourceStorage\Identification\IdentificationGenerator;
 use ILIAS\ResourceStorage\Identification\ResourceIdentification;
 use ILIAS\ResourceStorage\Identification\UniqueIDIdentificationGenerator;
+use ILIAS\ResourceStorage\Resource\StorableResource;
+use ILIAS\ResourceStorage\Revision\CloneRevision;
 use ILIAS\ResourceStorage\Revision\FileStreamRevision;
 use ILIAS\ResourceStorage\Revision\Revision;
 use ILIAS\ResourceStorage\Revision\UploadedFileRevision;
-use ILIAS\ResourceStorage\Resource\StorableResource;
-use ILIAS\ResourceStorage\Revision\CloneRevision;
 
 /**
  * Class FileSystemStorage
@@ -25,6 +25,10 @@ class FileSystemStorageHandler implements StorageHandler
 {
     const BASE = "storage";
     const DATA = 'data';
+    /**
+     * @var bool
+     */
+    protected $links_possible = false;
     /**
      * @var Filesystem
      */
@@ -41,7 +45,7 @@ class FileSystemStorageHandler implements StorageHandler
     /**
      * FileSystemStorageHandler constructor.
      * @param Filesystem $filesystem
-     * @param int        $location
+     * @param int $location
      * @internal
      */
     public function __construct(Filesystem $filesystem, int $location = Location::STORAGE)
@@ -49,12 +53,53 @@ class FileSystemStorageHandler implements StorageHandler
         $this->fs = $filesystem;
         $this->location = $location;
         $this->id = new UniqueIDIdentificationGenerator();
+        $this->links_possible = $this->determineLinksPossible();
+    }
+
+    private function determineLinksPossible(): bool
+    {
+        $random_filename = "test_" . random_int(10000, 99999);
+        $original_filename = self::BASE . "/" . $random_filename . '_orig';
+        $linked_filename = self::BASE . "/" . $random_filename . '_link';
+        $cleaner = function () use ($original_filename, $linked_filename) {
+            try {
+                $this->fs->delete($original_filename);
+                $this->fs->delete($linked_filename);
+            } catch (\Throwable $t) {
+
+            }
+        };
+
+        try {
+            // remove existing files
+            $cleaner();
+
+            // create file
+            $this->fs->write($original_filename, 'data');
+            $stream = $this->fs->readStream($original_filename);
+
+            // determine absolute pathes
+            $original_absolute_path = $stream->getMetadata('uri');
+            $linked_absolute_path = dirname($original_absolute_path) . "/" . $random_filename . '_link';
+
+            // try linking and unlinking
+            $linking = @link($original_absolute_path, $linked_absolute_path);
+            $unlinking = @unlink($original_absolute_path);
+            if ($linking && $unlinking && $this->fs->has($linked_filename)) {
+                $cleaner();
+                return true;
+            }
+            $cleaner();
+        } catch (\Throwable $t) {
+            return false;
+        }
+        return false;
     }
 
     /**
      * @inheritDoc
      */
-    public function getID() : string
+    public function getID(): string
     {
         return 'fsv1';
     }
@@ -62,12 +107,12 @@ class FileSystemStorageHandler implements StorageHandler
     /**
      * @inheritDoc
      */
-    public function getIdentificationGenerator() : IdentificationGenerator
+    public function getIdentificationGenerator(): IdentificationGenerator
     {
         return $this->id;
     }
 
-    public function has(ResourceIdentification $identification) : bool
+    public function has(ResourceIdentification $identification): bool
     {
         return $this->fs->has($this->getBasePath($identification));
     }
@@ -75,12 +120,12 @@ class FileSystemStorageHandler implements StorageHandler
     /**
      * @inheritDoc
      */
-    public function getStream(Revision $revision) : FileStream
+    public function getStream(Revision $revision): FileStream
     {
         return $this->fs->readStream($this->getRevisionPath($revision) . '/' . self::DATA);
     }
 
-    public function storeUpload(UploadedFileRevision $revision) : bool
+    public function storeUpload(UploadedFileRevision $revision): bool
     {
         global $DIC;
 
@@ -93,7 +138,7 @@ class FileSystemStorageHandler implements StorageHandler
     /**
      * @inheritDoc
      */
-    public function storeStream(FileStreamRevision $revision) : bool
+    public function storeStream(FileStreamRevision $revision): bool
     {
         try {
             if ($revision->keepOriginal()) {
@@ -101,8 +146,14 @@ class FileSystemStorageHandler implements StorageHandler
                 $this->fs->writeStream($this->getRevisionPath($revision) . '/' . self::DATA, $stream);
 
             } else {
-                $this->fs->rename(LegacyPathHelper::createRelativePath($revision->getStream()->getMetadata('uri')),
-                    $this->getRevisionPath($revision) . '/' . self::DATA);
+                $target = $revision->getStream()->getMetadata('uri');
+                if ($this->links_possible) {
+                    $test = link($target, $this->getAbsoluteRevisionPath($revision));
+                    unlink($target);
+                } else {
+                    $this->fs->rename(LegacyPathHelper::createRelativePath($target),
+                        $this->getRevisionPath($revision) . '/' . self::DATA);
+                }
             }
         } catch (\Throwable $t) {
             return false;
@@ -111,7 +162,7 @@ class FileSystemStorageHandler implements StorageHandler
         return true;
     }
 
-    public function cloneRevision(CloneRevision $revision) : bool
+    public function cloneRevision(CloneRevision $revision): bool
     {
         $stream = $this->getStream($revision->getRevisionToClone());
         try {
@@ -126,7 +177,7 @@ class FileSystemStorageHandler implements StorageHandler
     /**
      * @inheritDoc
      */
-    public function deleteRevision(Revision $revision) : void
+    public function deleteRevision(Revision $revision): void
     {
         $this->fs->deleteDir($this->getRevisionPath($revision));
     }
@@ -134,18 +185,31 @@ class FileSystemStorageHandler implements StorageHandler
     /**
      * @inheritDoc
      */
-    public function deleteResource(StorableResource $resource) : void
+    public function deleteResource(StorableResource $resource): void
     {
         $this->fs->deleteDir($this->getBasePath($resource->getIdentification()));
     }
 
-    private function getBasePath(ResourceIdentification $identification) : string
+    private function getBasePath(ResourceIdentification $identification): string
     {
         return self::BASE . '/' . str_replace("-", "/", $identification->serialize());
     }
 
-    private function getRevisionPath(Revision $revision) : string
+    private function getRevisionPath(Revision $revision): string
     {
         return $this->getBasePath($revision->getIdentification()) . '/' . $revision->getVersionNumber();
     }
+
+    private function getAbsoluteRevisionPath(Revision $revision): string
+    {
+        $str = rtrim(CLIENT_DATA_DIR, "/") . "/" . ltrim($this->getRevisionPath($revision), "/");
+        return $str;
+    }
+
+    public function movementImplementation(): string
+    {
+        return $this->links_possible ? 'link' : 'rename';
+    }
+
+
 }
