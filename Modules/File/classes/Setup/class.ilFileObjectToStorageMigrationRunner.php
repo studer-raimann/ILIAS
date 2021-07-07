@@ -72,7 +72,7 @@ class ilFileObjectToStorageMigrationRunner
         $this->database = $database;
         $this->migration_log_handle = fopen($log_file_path, 'ab');
 
-        $storage_handler = new FileSystemStorageHandler($this->file_system, Location::STORAGE);
+        $storage_handler = new FileSystemStorageHandler($this->file_system, Location::STORAGE, true);
         $this->movement_implementation = $storage_handler->movementImplementation();
         $builder = new ResourceBuilder(
             $storage_handler,

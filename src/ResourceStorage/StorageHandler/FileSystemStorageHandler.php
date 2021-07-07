@@ -48,12 +48,18 @@ class FileSystemStorageHandler implements StorageHandler
      * @param int $location
      * @internal
      */
-    public function __construct(Filesystem $filesystem, int $location = Location::STORAGE)
+    public function __construct(
+        Filesystem $filesystem,
+        int $location = Location::STORAGE,
+        bool $determine_linking_possible = false
+    )
     {
         $this->fs = $filesystem;
         $this->location = $location;
         $this->id = new UniqueIDIdentificationGenerator();
-        $this->links_possible = $this->determineLinksPossible();
+        if ($determine_linking_possible) {
+            $this->links_possible = $this->determineLinksPossible();
+        }
     }
 
     private function determineLinksPossible(): bool
